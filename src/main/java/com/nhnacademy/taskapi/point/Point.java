@@ -29,6 +29,7 @@ public class Point {
 
     @Builder
     public Point(BigDecimal pointCurrent, Member member) {
+        //jkkj
         this.pointCurrent = pointCurrent;
         this.member = member;
     }
