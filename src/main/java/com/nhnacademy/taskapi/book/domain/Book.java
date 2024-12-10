@@ -1,6 +1,6 @@
 package com.nhnacademy.taskapi.book.domain;
 
-import com.nhnacademy.taskapi.publisher.Publisher;
+import com.nhnacademy.taskapi.publisher.domain.Publisher;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
