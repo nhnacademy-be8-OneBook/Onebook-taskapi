@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.book.domain;
 
+import com.nhnacademy.taskapi.publisher.Publisher;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +21,8 @@ public class Book {
     @Column(name = "book_id")
     private long  bookId;
 
+
+    // 출판사 - 책 단방향 다대일
     @ManyToOne(optional = false)
     private Publisher publisher;
 
