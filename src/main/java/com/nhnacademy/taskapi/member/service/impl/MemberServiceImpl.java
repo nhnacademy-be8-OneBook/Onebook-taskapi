@@ -55,9 +55,9 @@ public class MemberServiceImpl {
     }
 
     // 회원 가입
-    public Member registerMember(Member member) {
-
-    }
+//    public Member registerMember(Member member) {
+//
+//    }
 
 
 
