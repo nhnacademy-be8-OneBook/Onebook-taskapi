@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -23,16 +22,13 @@ public class PointPolicy {
     @Column(nullable = false, length = 50)
     private String pointPolicyName;
 
-    // 조건 금액 (ex : if 00금액, 00금액 이상으로 적용)
-    @Column(precision = 10, scale = 2)
-    private BigDecimal pointPolicyConditionAmount;
+    private int pointPolicyConditionAmount;
 
     // 적립률
-    private BigDecimal pointPolicyRate;
+    private int pointPolicyRate;
 
     // 적립 금액
-    @Column(precision = 10, scale = 2)
-    private BigDecimal pointPolicyApplyAmount;
+    private int pointPolicyApplyAmount;
 
     // 적립 조건
     @NotNull(message = "포인트 적립 조건은 필수입니다.")
@@ -56,8 +52,8 @@ public class PointPolicy {
     private boolean pointPolicyState;
 
     @Builder
-    public PointPolicy(Long pointPolicyId, String pointPolicyName, BigDecimal pointPolicyRate, BigDecimal pointPolicyConditionAmount,
-                       String pointPolicyCondition, BigDecimal pointPolicyApplyAmount, LocalDate pointPolicyCreatedAt,
+    public PointPolicy(Long pointPolicyId, String pointPolicyName, int pointPolicyRate, int pointPolicyConditionAmount,
+                       String pointPolicyCondition, int pointPolicyApplyAmount, LocalDate pointPolicyCreatedAt,
                        LocalDate pointPolicyUpdatedAt, boolean pointPolicyApplyType, boolean pointPolicyState) {
 
         this.pointPolicyId = pointPolicyId;
@@ -76,15 +72,15 @@ public class PointPolicy {
         this.pointPolicyName = pointPolicyName;
     }
 
-    public void updatePointPolicyConditionAmount(BigDecimal pointPolicyConditionAmount) {
+    public void updatePointPolicyConditionAmount(Integer pointPolicyConditionAmount) {
         this.pointPolicyConditionAmount = pointPolicyConditionAmount;
     }
 
-    public void updatePointPolicyApplyAmount(BigDecimal pointPolicyApplyAmount) {
+    public void updatePointPolicyApplyAmount(Integer pointPolicyApplyAmount) {
         this.pointPolicyApplyAmount = pointPolicyApplyAmount;
     }
 
-    public void updatePointPolicyRate(BigDecimal pointPolicyRate) {
+    public void updatePointPolicyRate(Integer pointPolicyRate) {
         this.pointPolicyRate = pointPolicyRate;
     }
 
