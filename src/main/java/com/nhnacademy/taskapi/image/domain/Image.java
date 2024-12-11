@@ -25,7 +25,7 @@ public class Image {
     private Book book;
 
     public BookImage(Book book, long imageId) {
-		this.book = book;
-		this.totalImage = totalImage;
-	}
+	this.book = book;
+	this.imageId = imageId;
+    }
 }
