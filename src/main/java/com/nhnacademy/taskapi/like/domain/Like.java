@@ -16,9 +16,9 @@ public class Like {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long likeId;
 
-
-    @ManyToOne(optional = false)
-    private Member member;
+//
+//    @ManyToOne(optional = false)
+//    private Member member;
 
 
     @ManyToOne(optional = false)
