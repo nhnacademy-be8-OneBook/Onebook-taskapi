@@ -1,11 +1,10 @@
-package com.nhnacademy.taskapi.publisher.domain;
+package com.nhnacademy.taskapi.Tag.domain;
 
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,12 +14,12 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class Publisher {
+public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long publisherId;
+    private long tagId;
 
-    @NotBlank
-    @Length(max = 30)
+
+    @Length(max = 50)
     private String name;
 }

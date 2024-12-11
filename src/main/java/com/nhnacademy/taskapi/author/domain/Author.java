@@ -1,10 +1,6 @@
-package com.nhnacademy.taskapi.publisher.domain;
+package com.nhnacademy.taskapi.author.domain;
 
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,12 +11,12 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class Publisher {
+public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long publisherId;
+    private long  authorId;
 
     @NotBlank
-    @Length(max = 30)
+    @Length(max=20)
     private String name;
 }
