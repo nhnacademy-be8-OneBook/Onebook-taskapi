@@ -4,6 +4,7 @@ import com.nhnacademy.taskapi.book.domain.Book;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
@@ -19,8 +20,12 @@ public class Image {
     @Length(max = 255)
     private String imageUrl;
 
-
-
+    @Setter
     @ManyToOne(optional = false)
     private Book book;
+
+    public BookImage(Book book, long imageId) {
+		this.book = book;
+		this.totalImage = totalImage;
+	}
 }
