@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.point;
+package com.nhnacademy.taskapi.point.domain;
 
 import com.nhnacademy.taskapi.Member;
 import jakarta.persistence.*;
@@ -29,7 +29,6 @@ public class Point {
 
     @Builder
     public Point(BigDecimal pointCurrent, Member member) {
-        //jkkj
         this.pointCurrent = pointCurrent;
         this.member = member;
     }

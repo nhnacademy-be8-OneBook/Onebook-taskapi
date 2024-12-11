@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.point;
+package com.nhnacademy.taskapi.point.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
