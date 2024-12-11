@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.Length;
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long  authorId;
+    private int  authorId;
 
     @NotBlank
     @Length(max=20)
