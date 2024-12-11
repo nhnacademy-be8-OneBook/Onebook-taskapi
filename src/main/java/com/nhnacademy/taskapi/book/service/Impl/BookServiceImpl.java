@@ -27,6 +27,17 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public void saveBookFromAladin() {
         List<Book> bookList = new ArrayList<>();
+        String title;
+        String author;
+        String pubdate;
+        String description;
+        String isbn13;
+        String priceSales;
+        String price;
+        String categoryName;
+        String publisher;
+
+
         String url = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbtjswns12211534001&QueryType=ItemNewAll&MaxResults=50&start=1&SearchTarget=Book&output=js&Version=20131101";
         RestTemplate restTemplate = new RestTemplate();
 
@@ -39,7 +50,7 @@ public class BookServiceImpl implements BookService {
 
             for(JsonNode item : itemNode) {
                 item.path("title").asText();
-                item.
+                
             }
 
 
