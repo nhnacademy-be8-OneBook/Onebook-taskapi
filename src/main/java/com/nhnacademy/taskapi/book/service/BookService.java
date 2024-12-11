@@ -5,8 +5,12 @@ import com.nhnacademy.taskapi.dto.BookSaveDTO;
 
 public interface BookService {
 
+    //알라딘api - 책 등록
+    void saveBookFromAladin();
+
+
     //책 등록
-    Book SaveBook(BookSaveDTO bookSaveDTO);
+    Book saveBook(BookSaveDTO bookSaveDTO);
 
 
 

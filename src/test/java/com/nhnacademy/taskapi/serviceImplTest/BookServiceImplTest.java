@@ -57,7 +57,7 @@ class BookServiceImplTest {
         when(bookRepository.save(any(Book.class))).thenReturn(savedBook);
 
         // When
-        Book result = bookService.SaveBook(bookSaveDTO);
+        Book result = bookService.saveBook(bookSaveDTO);
 
         // Then
         assertThat(result).isNotNull();
