@@ -17,8 +17,9 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int categoryId;
 
-    @ManyToOne(optional = false)
-    private BookCategory bookCategory;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_parent_id")
+    private Category parentCategory;
 
 
     @NotBlank
