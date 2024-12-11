@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.service.Impl.book;
+package com.nhnacademy.taskapi.serviceImplTest;
 
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
