@@ -7,10 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface PointPolicyService {
-
-    // 포인트 정책 작성 (적립 금액)
-    PointPolicyResponse createPointPolicy(CreatePointPolicyRequest policyRequest);
-
     // 포인트 정책 단건 조회
     PointPolicyResponse findPointPolicyById(Long pointPolicyId);
 
