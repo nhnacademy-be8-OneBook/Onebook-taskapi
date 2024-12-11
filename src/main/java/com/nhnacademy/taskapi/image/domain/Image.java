@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,12 +21,5 @@ public class Image {
     @Length(max = 255)
     private String imageUrl;
 
-    @Setter
-    @ManyToOne(optional = false)
-    private Book book;
-
-    public BookImage(Book book, long imageId) {
-	this.book = book;
-	this.imageId = imageId;
-    }
+    private String BookImageName;
 }
