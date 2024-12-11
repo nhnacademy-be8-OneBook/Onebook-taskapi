@@ -50,7 +50,7 @@ public class BookServiceImpl implements BookService {
 
             for(JsonNode item : itemNode) {
                 item.path("title").asText();
-                
+
             }
 
 
