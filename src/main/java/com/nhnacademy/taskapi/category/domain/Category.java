@@ -1,10 +1,12 @@
 package com.nhnacademy.taskapi.category.domain;
 
+import com.nhnacademy.taskapi.book.domain.BookCategory;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @AllArgsConstructor
@@ -20,5 +22,6 @@ public class Category {
 
 
     @NotBlank
+    @Length(max = 20)
     private String name;
 }

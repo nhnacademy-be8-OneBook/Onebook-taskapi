@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,7 +19,6 @@ import java.time.LocalDate;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "book_id")
     private long  bookId;
 
 
@@ -27,15 +27,18 @@ public class Book {
     private Publisher publisher;
 
     @NotBlank
+    @Length(max = 100)
     private String title;
 
     @NotBlank
+    @Length(max = 100)
     private String content;
 
     @NotBlank
     private String description;
 
     @NotBlank
+    @Length(max = 20)
     private String isbn13;
 
     @NotNull

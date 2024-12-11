@@ -1,7 +1,7 @@
-package com.nhnacademy.taskapi.category.domain;
+package com.nhnacademy.taskapi.book.domain;
 
 
-import com.nhnacademy.taskapi.book.domain.Book;
+import com.nhnacademy.taskapi.category.domain.Category;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
