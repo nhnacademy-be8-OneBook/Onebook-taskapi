@@ -6,14 +6,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PointPolicy {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pointPolicyId;
@@ -23,19 +21,13 @@ public class PointPolicy {
     private String pointPolicyName;
 
     private int pointPolicyConditionAmount;
-
-    // 적립률
     private int pointPolicyRate;
-
-    // 적립 금액
     private int pointPolicyApplyAmount;
 
-    // 적립 조건
     @NotNull(message = "포인트 적립 조건은 필수입니다.")
     @Column(nullable = false, length = 200)
     private String pointPolicyCondition;
 
-    // 적립 유형
     // 적립 금액 = 1(true), 적립률 = 0(false)
     @NotNull(message = "포인트 적립 유형은 필수입니다.")
     @Column(nullable = false)
@@ -55,7 +47,6 @@ public class PointPolicy {
     public PointPolicy(Long pointPolicyId, String pointPolicyName, int pointPolicyRate, int pointPolicyConditionAmount,
                        String pointPolicyCondition, int pointPolicyApplyAmount, LocalDate pointPolicyCreatedAt,
                        LocalDate pointPolicyUpdatedAt, boolean pointPolicyApplyType, boolean pointPolicyState) {
-
         this.pointPolicyId = pointPolicyId;
         this.pointPolicyName = pointPolicyName;
         this.pointPolicyConditionAmount = pointPolicyConditionAmount;
