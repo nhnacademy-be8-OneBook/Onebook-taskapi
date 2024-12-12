@@ -29,6 +29,10 @@ public class Member {
         ACTIVE, INACTIVE, DELETED, SUSPENDED
     }
 
+    public enum Gender {
+        M, F
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="member_id")
@@ -49,10 +53,13 @@ public class Member {
     private String password;
 
     @NotBlank
-    private String phoneNumber;
+    private LocalDate dateOfBirth;
 
     @NotBlank
-    private LocalDate dateOfBirth;
+    private Gender gender;
+
+    @NotBlank
+    private String phoneNumber;
 
     private LocalDateTime lastLoginAt;
 
@@ -61,25 +68,27 @@ public class Member {
     private Status status; // default: ACTIVE
 
     // 로그인 기록이 없는 회원.
-    public Member(Customer customerId, Grade gradeId, String loginId, String password, String phoneNumber, LocalDate dateOfBirth) {
+    public Member(Customer customerId, Grade gradeId, String loginId, String password, LocalDate dateOfBirth, Gender gender, String phoneNumber) {
         this.customerId = customerId;
         this.gradeId = gradeId;
         this.loginId = loginId;
         this.password = password;
-        this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
         this.lastLoginAt = null;
         this.status = Status.ACTIVE;
     }
 
     // 로그인 기록이 있는 회원.
-    public Member(Customer customerId, Grade gradeId, String loginId, String password, String phoneNumber, LocalDate dateOfBirth, LocalDateTime lastLoginAt) {
+    public Member(Customer customerId, Grade gradeId, String loginId, String password, LocalDate dateOfBirth, Gender gender, String phoneNumber, LocalDateTime lastLoginAt) {
         this.customerId = customerId;
         this.gradeId = gradeId;
         this.loginId = loginId;
         this.password = password;
-        this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
         this.lastLoginAt = lastLoginAt;
         this.status = Status.ACTIVE;
     }

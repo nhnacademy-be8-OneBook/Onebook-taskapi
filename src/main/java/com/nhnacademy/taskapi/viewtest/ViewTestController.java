@@ -83,7 +83,7 @@ public class ViewTestController {
 
     @GetMapping("/test/register")
     public String getRegister(){
-        return "register";
+        return "member/register";
     }
 
     @GetMapping("/test/shop-grid")
