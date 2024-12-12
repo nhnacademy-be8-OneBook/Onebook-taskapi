@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import java.time.LocalDateTime;
 
-
 @Builder
 public record ErrorStatus(String message, int status,
                           @JsonSerialize(using = LocalDateTimeSerializer.class)

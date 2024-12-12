@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @Tag(name = "포인트 API", description = "포인트 관련 API 입니다.")
 @RestController
 @RequiredArgsConstructor

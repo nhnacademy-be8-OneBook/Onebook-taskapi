@@ -21,9 +21,7 @@ public class PointPolicy {
     private String pointPolicyName;
 
     private int pointPolicyConditionAmount;
-
     private int pointPolicyRate;
-
     private int pointPolicyApplyAmount;
 
     @NotNull(message = "포인트 적립 조건은 필수입니다.")
