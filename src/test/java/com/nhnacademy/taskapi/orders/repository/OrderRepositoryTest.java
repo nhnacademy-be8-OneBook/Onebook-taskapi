@@ -74,4 +74,15 @@ class OrderRepositoryTest {
         Assertions.assertThat(orders1.getPhoneNumber()).isEqualTo("010-1234-1234");
         Assertions.assertThat(orders1.getTotalPrice()).isEqualTo(5000);
     }
+
+    // delete
+    @Sql("/repository/order-test.sql")
+    @Test
+    void deleteOrders() {
+        Long id = 1L;
+        orderRepository.deleteById(id);
+
+        Orders orders = orderRepository.findById(id).orElse(null);
+        Assertions.assertThat(orders).isNull();
+    }
 }
