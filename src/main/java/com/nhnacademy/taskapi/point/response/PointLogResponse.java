@@ -12,4 +12,6 @@ public record PointLogResponse (
         String pointLogUpdatedType,  // 포인트 업데이트 타입 (ex. 증가, 감소 등)
         int pointLogAmount,  // 포인트 변화량
         LocalDateTime pointLogUpdatedAt  // 포인트 변경 시각
-        ) { }
+        ) {
+
+}

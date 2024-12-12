@@ -6,14 +6,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class PointLog {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pointLogId;

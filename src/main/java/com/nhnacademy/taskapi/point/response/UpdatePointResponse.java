@@ -5,4 +5,6 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public record UpdatePointResponse(int point) { }
+public record UpdatePointResponse(int point) {
+
+}

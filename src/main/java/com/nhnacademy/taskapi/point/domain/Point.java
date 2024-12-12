@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Point {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pointId;

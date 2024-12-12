@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.point.controller;
 
+import com.nhnacademy.taskapi.point.request.CreatePointPolicyRequest;
 import com.nhnacademy.taskapi.point.request.PointPolicyRequest;
 import com.nhnacademy.taskapi.point.response.PointPolicyResponse;
 import com.nhnacademy.taskapi.point.service.PointPolicyService;
@@ -20,6 +21,12 @@ import org.springframework.web.bind.annotation.*;
 public class PointPolicyController {
 
     private final PointPolicyService pointPolicyService;
+
+    @Operation(summary = "포인트 정책 생성", description = "포인트 정책을 생성합니다.")
+    @PostMapping("/point-policies")
+    public ResponseEntity<PointPolicyResponse> createPointPolicy(@RequestBody CreatePointPolicyRequest policyRequest) {
+        return new ResponseEntity<>(pointPolicyService.createPointPolicy(policyRequest), HttpStatus.CREATED);
+    }
 
     @Operation(summary = "포인트 정책 조회", description = "특정 포인트 정책을 조회합니다.")
     @GetMapping("/point-policies/{pointPolicyId}")
