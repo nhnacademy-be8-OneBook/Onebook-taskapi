@@ -22,5 +22,9 @@ public class Grade {
     private String name;
 
     @NotBlank
-    private String accumulationRate;
+    private int accumulationRate;
+
+    @NotBlank
+    private String description;
+
 }
