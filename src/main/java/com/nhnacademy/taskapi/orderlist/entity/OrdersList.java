@@ -1,11 +1,11 @@
 package com.nhnacademy.taskapi.orderlist.entity;
 
-import com.nhnacademy.taskapi.order.entity.Order;
-import com.nhnacademy.taskapi.orderlist.entity.domain.OrderListStatus;
+import com.nhnacademy.taskapi.orderlist.domain.OrdersListStatus;
+import com.nhnacademy.taskapi.orders.entity.Orders;
 import jakarta.persistence.*;
 
 @Entity
-public class OrderList {
+public class OrdersList {
     @Id
     @Column(name = "orderlist_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,7 +13,7 @@ public class OrderList {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    Order order;
+    Orders orders;
 
     /*
     Packaging packaging
@@ -26,5 +26,5 @@ public class OrderList {
     @Column(name = "packaging_price")
     int packagingPrice;
     @Enumerated(EnumType.STRING)
-    OrderListStatus status;
+    OrdersListStatus status;
 }
