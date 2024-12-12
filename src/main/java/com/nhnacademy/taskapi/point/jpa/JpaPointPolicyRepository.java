@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JpaPointPolicyRepository extends JpaRepository<PointPolicy, Long> {
     PointPolicy findByPointPolicyName(String pointPolicyName);
-
     Page<PointPolicy> findAllBy(Pageable pageable);
-
     Page<PointPolicy> findAllByOrderByPointPolicyCreatedAtAscPointPolicyStateDesc(Pageable pageable);
 }

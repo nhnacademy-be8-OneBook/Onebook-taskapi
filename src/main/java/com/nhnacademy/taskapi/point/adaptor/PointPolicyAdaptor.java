@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "pointPolicyAdaptor", url = "${eureka.gateway}/users")
+@FeignClient(name = "pointPolicyAdaptor", url = "${eureka.gateway}/member")
 public interface PointPolicyAdaptor {
 
     @GetMapping("/admin/point-policies/{pointPolicyId}")
