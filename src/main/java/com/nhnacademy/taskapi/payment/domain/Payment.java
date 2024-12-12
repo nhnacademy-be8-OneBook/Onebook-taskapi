@@ -1,7 +1,7 @@
 package com.nhnacademy.taskapi.payment.domain;
 
-import com.nhnacademy.taskapi.order.domain.Order;
 
+import com.nhnacademy.taskapi.order.entity.Order;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
