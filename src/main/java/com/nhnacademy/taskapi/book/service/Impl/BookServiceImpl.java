@@ -108,7 +108,7 @@ public class BookServiceImpl implements BookService {
                     //조회수 초기값 0 설정
                     book.setViews(0);
 
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     LocalDate pubdate = LocalDate.parse(stringPubdate, formatter);
                     book.setPubdate(pubdate);
 
@@ -121,18 +121,19 @@ public class BookServiceImpl implements BookService {
 
                 //작가 등록
                 Author author = null;
-                if(Objects.isNull(authorRepository.findbyName(authorName))) {
+                if(Objects.isNull(authorRepository.findByName(authorName))) {
                     author = new Author();
                     author.setName(authorName);
                     authorRepository.save(author);
                 }else{
-                    author = authorRepository.findbyName(authorName);
+                    author = authorRepository.findByName(authorName);
                 }
 
 
                 //책-작가 등록
                 BookAuthor bookAuthor = null;
                 if(Objects.isNull(bookAuthorRepository.findByBook_bookIdAndAuthor_authorId(book.getBookId(), author.getAuthorId()))){
+                    bookAuthor = new BookAuthor();
                     bookAuthor.setAuthor(author);
                     bookAuthor.setBook(book);
                     bookAuthorRepository.save(bookAuthor);
