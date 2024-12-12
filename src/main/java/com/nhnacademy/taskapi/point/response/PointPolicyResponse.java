@@ -4,7 +4,6 @@ import com.nhnacademy.taskapi.point.domain.PointPolicy;
 import com.nhnacademy.taskapi.point.request.CreatePointPolicyRequest;
 import com.nhnacademy.taskapi.point.request.PointPolicyRequest;
 import lombok.Builder;
-
 import java.time.LocalDate;
 
 @Builder

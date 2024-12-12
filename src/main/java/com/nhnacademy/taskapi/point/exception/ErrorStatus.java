@@ -7,7 +7,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Builder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
-
 import java.time.LocalDateTime;
 
 @Builder

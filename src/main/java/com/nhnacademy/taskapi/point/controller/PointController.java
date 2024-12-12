@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "포인트 API", description = "포인트 관련 API 입니다.")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/member")
 public class PointController {
     private final PointService pointService;
 
