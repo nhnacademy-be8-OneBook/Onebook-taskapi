@@ -1,29 +1,15 @@
 package com.nhnacademy.taskapi.point.response;
 
 import com.nhnacademy.taskapi.point.domain.PointPolicy;
-import com.nhnacademy.taskapi.point.request.CreatePointPolicyRequest;
 import com.nhnacademy.taskapi.point.request.PointPolicyRequest;
 import lombok.Builder;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Builder
-public record PointPolicyResponse(Long pointPolicyId, String pointPolicyName, BigDecimal pointPolicyApply, String pointPolicyCondition,
+public record PointPolicyResponse(Long pointPolicyId, String pointPolicyName, int pointPolicyApply, String pointPolicyCondition,
                                   boolean pointPolicyApplyType, LocalDate pointPolicyCreatedAt, String pointPolicyUpdatedAt,
-                                  BigDecimal pointPolicyConditionAmount, boolean pointPolicyState) {
-
-    public static PointPolicyResponse create(PointPolicy pointPolicy, CreatePointPolicyRequest policyRequest) {
-        return PointPolicyResponse.builder()
-                .pointPolicyId(pointPolicy.getPointPolicyId())
-                .pointPolicyName(policyRequest.pointPolicyName())
-                .pointPolicyApply(policyRequest.pointPolicyApply())
-                .pointPolicyCondition(policyRequest.pointPolicyCondition())
-                .pointPolicyApplyType(policyRequest.pointPolicyApplyType())
-                .pointPolicyConditionAmount(policyRequest.pointPolicyConditionAmount())
-                .pointPolicyState(true)
-                .build();
-    }
+                                  int pointPolicyConditionAmount, boolean pointPolicyState) {
 
     public static PointPolicyResponse update(PointPolicy pointPolicy, PointPolicyRequest policyRequest) {
         return PointPolicyResponse.builder()

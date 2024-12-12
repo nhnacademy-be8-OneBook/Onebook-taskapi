@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -29,14 +28,14 @@ public class PointLog {
 
     @NotNull(message = "포인트 갱신액은 필수입니다.")
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal pointLogAmount;
+    private int pointLogAmount;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "point_id")
     private Point point;
 
     @Builder
-    public PointLog(Long pointLogId, LocalDateTime pointLogUpdatedAt, String pointLogUpdatedType, BigDecimal pointLogAmount, Point point) {
+    public PointLog(Long pointLogId, LocalDateTime pointLogUpdatedAt, String pointLogUpdatedType, int pointLogAmount, Point point) {
         this.pointLogId = pointLogId;
         this.pointLogUpdatedAt = pointLogUpdatedAt;
         this.pointLogUpdatedType = pointLogUpdatedType;
