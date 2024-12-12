@@ -5,13 +5,12 @@ import com.nhnacademy.taskapi.point.request.CreatePointPolicyRequest;
 import com.nhnacademy.taskapi.point.request.PointPolicyRequest;
 import lombok.Builder;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Builder
-public record PointPolicyResponse(Long pointPolicyId, String pointPolicyName, BigDecimal pointPolicyApply, String pointPolicyCondition,
+public record PointPolicyResponse(Long pointPolicyId, String pointPolicyName, int pointPolicyApply, String pointPolicyCondition,
                                   boolean pointPolicyApplyType, LocalDate pointPolicyCreatedAt, String pointPolicyUpdatedAt,
-                                  BigDecimal pointPolicyConditionAmount, boolean pointPolicyState) {
+                                  int pointPolicyConditionAmount, boolean pointPolicyState) {
 
     public static PointPolicyResponse create(PointPolicy pointPolicy, CreatePointPolicyRequest policyRequest) {
         return PointPolicyResponse.builder()

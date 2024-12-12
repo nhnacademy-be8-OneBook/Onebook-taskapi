@@ -1,0 +1,23 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: task-service-dev  # 개발 환경에 맞는 애플리케이션 이름
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://admin:1234@localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+  messages:
+    basename: messages/messages
+    encoding: UTF-8
+    use-code-as-default-message: false
+    fallback-to-system-locale: false
+    cache-duration: 3600
+    always-use-message-format: true
