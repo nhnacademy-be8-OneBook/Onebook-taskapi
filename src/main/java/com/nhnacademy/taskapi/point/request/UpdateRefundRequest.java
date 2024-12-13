@@ -11,6 +11,6 @@ public record UpdateRefundRequest(int refundAmount) {
     }
 
     public int getRefundAmount() {
-        return 0;
+        return refundAmount;
     }
 }

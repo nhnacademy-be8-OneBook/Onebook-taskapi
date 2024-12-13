@@ -1,29 +1,67 @@
 package com.nhnacademy.taskapi.serviceImplTest;
-
 import com.nhnacademy.taskapi.book.domain.Book;
-import com.nhnacademy.taskapi.book.repository.BookRepository;
+import com.nhnacademy.taskapi.book.repository.*;
 import com.nhnacademy.taskapi.book.service.Impl.BookServiceImpl;
 import com.nhnacademy.taskapi.dto.BookSaveDTO;
+import com.nhnacademy.taskapi.adapter.AladinApiAdapter;
+import com.nhnacademy.taskapi.publisher.domain.Publisher;
+import com.nhnacademy.taskapi.publisher.repository.PublisherRepository;
+import com.nhnacademy.taskapi.author.domain.Author;
+import com.nhnacademy.taskapi.author.repository.AuthorRepository;
+import com.nhnacademy.taskapi.category.domain.Category;
+import com.nhnacademy.taskapi.category.repository.CategoryRepository;
+import com.nhnacademy.taskapi.image.domain.Image;
+import com.nhnacademy.taskapi.image.repository.ImageRepository;
+import com.nhnacademy.taskapi.stock.domain.Stock;
+import com.nhnacademy.taskapi.stock.repository.StockRepository;
+import com.nhnacademy.taskapi.Tag.domain.Tag;
+import com.nhnacademy.taskapi.Tag.repository.TagRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
-@SpringBootTest
 class BookServiceImplTest {
-    @Mock
-    private BookRepository bookRepository;
 
     @InjectMocks
     private BookServiceImpl bookService;
+
+    @Mock
+    private BookRepository bookRepository;
+
+    @Mock
+    private AuthorRepository authorRepository;
+
+    @Mock
+    private PublisherRepository publisherRepository;
+
+    @Mock
+    private CategoryRepository categoryRepository;
+
+    @Mock
+    private StockRepository stockRepository;
+
+    @Mock
+    private TagRepository tagRepository;
+
+    @Mock
+    private ImageRepository imageRepository;
+
+    @Mock
+    private BookCategoryRepository bookCategoryRepository;
+
+    @Mock
+    private BookAuthorRepository bookAuthorRepository;
+
+    @Mock
+    private BookTagRepository bookTagRepository;
+
+    @Mock
+    private AladinApiAdapter aladinApiAdapter;
 
     @BeforeEach
     void setUp() {
@@ -31,44 +69,72 @@ class BookServiceImplTest {
     }
 
     @Test
-    void saveBookTest() {
+    void testSaveBookFromAladin() {
         // Given
-        BookSaveDTO bookSaveDTO = new BookSaveDTO();
-        bookSaveDTO.setTitle("Test Title");
-        bookSaveDTO.setContent("Test Content");
-        bookSaveDTO.setDescription("Test Description");
-        bookSaveDTO.setIsbn13("1234567890123");
-        bookSaveDTO.setPrice(10000);
-        bookSaveDTO.setSalePrice(8000);
-        bookSaveDTO.setAmount(10);
-        bookSaveDTO.setPubDate(LocalDate.now());
+        BookSaveDTO dto = new BookSaveDTO();
+        dto.setTitle("Sample Book");
+        dto.setAuthorName("Sample Author");
+        dto.setPubdate("2023-12-01");
+        dto.setDescription("Sample Description");
+        dto.setIsbn13("1234567890123");
+        dto.setPriceSales(1000);
+        dto.setPrice(1500);
+        dto.setCategoryNames("Fiction>Fantasy");
+        dto.setPublisherName("Sample Publisher");
+        dto.setSalesPoint(200L);
 
-        Book savedBook = new Book();
-        savedBook.setBookId(1L);
-        savedBook.setTitle("Test Title");
-        savedBook.setContent("Test Content");
-        savedBook.setDescription("Test Description");
-        savedBook.setIsbn13("1234567890123");
-        savedBook.setPrice(10000);
-        savedBook.setSalePrice(8000);
-        savedBook.setAmount(10);
-        savedBook.setPubdate(LocalDate.now());
-
-        when(bookRepository.save(any(Book.class))).thenReturn(savedBook);
-
+        when(aladinApiAdapter.fetchAladinData(anyString()))
+                .thenReturn("{\"item\":[{" +
+                        "\"title\":\"Sample Book\"," +
+                        "\"author\":\"Sample Author\"," +
+                        "\"pubDate\":\"2023-12-01\"," +
+                        "\"description\":\"Sample Description\"," +
+                        "\"isbn13\":\"1234567890123\"," +
+                        "\"priceSales\":1000," +
+                        "\"priceStandard\":1500," +
+                        "\"categoryName\":\"Fiction>Fantasy\"," +
+                        "\"publisher\":\"Sample Publisher\"," +
+                        "\"salesPoint\":200" +
+                        "}]}");
+        when(bookRepository.findByIsbn13("1234567890123")).thenReturn(null);
+        when(publisherRepository.findByName("Sample Publisher")).thenReturn(new Publisher());
+        when(authorRepository.findByName("Sample Author")).thenReturn(new Author());
+        when(categoryRepository.findByName("Fiction")).thenReturn(new Category());
+        when(bookRepository.save(any(Book.class))).thenReturn(new Book());
         // When
-        Book result = bookService.saveBook(bookSaveDTO);
+        assertDoesNotThrow(() -> bookService.saveBookFromAladin());  // DTO 전달
 
         // Then
-        assertThat(result).isNotNull();
-        assertThat(result.getBookId()).isEqualTo(1L);
-        assertThat(result.getTitle()).isEqualTo("Test Title");
-        assertThat(result.getContent()).isEqualTo("Test Content");
-        assertThat(result.getDescription()).isEqualTo("Test Description");
-        assertThat(result.getIsbn13()).isEqualTo("1234567890123");
-        assertThat(result.getPrice()).isEqualTo(10000);
-        assertThat(result.getSalePrice()).isEqualTo(8000);
-        assertThat(result.getAmount()).isEqualTo(10);
-        assertThat(result.getPubdate()).isEqualTo("2024-01-01");
+        verify(aladinApiAdapter, times(1)).fetchAladinData(anyString());
+        verify(bookRepository, atLeastOnce()).save(any(Book.class));
+    }
+
+
+    @Test
+    void testSaveBook() {
+        // Given
+        BookSaveDTO dto = new BookSaveDTO();
+        dto.setTitle("Sample Book");
+        dto.setAuthorName("Sample Author");
+        dto.setPubdate("2023-12-01");
+        dto.setDescription("Sample Description");
+        dto.setIsbn13("1234567890123");
+        dto.setPriceSales(1000);
+        dto.setPrice(1500);
+        dto.setCategoryNames("Fiction>Fantasy");
+        dto.setPublisherName("Sample Publisher");
+        dto.setSalesPoint(200L);
+
+        when(publisherRepository.findByName("Sample Publisher")).thenReturn(new Publisher());
+        when(authorRepository.findByName("Sample Author")).thenReturn(new Author());
+        when(categoryRepository.findByName("Fiction")).thenReturn(new Category());
+        when(bookRepository.findByIsbn13("1234567890123")).thenReturn(null);
+
+        // When
+        Book result = bookService.saveBook(dto);
+
+        // Then
+        assertNotNull(result);
+        verify(bookRepository, times(1)).save(any(Book.class));
     }
 }

@@ -21,5 +21,6 @@ public class Image {
     @Length(max = 255)
     private String imageUrl;
 
-    private String BookImageName;
+    @ManyToOne(optional = false)
+    private Book book;
 }
