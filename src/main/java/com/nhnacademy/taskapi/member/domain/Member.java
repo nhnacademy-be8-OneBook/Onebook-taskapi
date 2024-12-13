@@ -1,6 +1,6 @@
 package com.nhnacademy.taskapi.member.domain;
 
-import com.nhnacademy.taskapi.grade.domain.Grades;
+import com.nhnacademy.taskapi.grade.domain.Grade;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
                 columnNames = {"login_id", "email", "phone_number"}
         )
 })
-public class Members {
+public class Member {
 
     // 회원 상태 - 활성화, 비활성화(휴면), 삭제, 정지 / default: INACTIVE
     public enum Status {
@@ -42,7 +42,7 @@ public class Members {
     @JoinColumn(name="grade_id")
     @Setter
     @ManyToOne
-    private Grades gradeId;
+    private Grade gradeId;
 
     @NotBlank
     private String name;
@@ -72,7 +72,7 @@ public class Members {
     private Status status; // default: INACTIVE
 
     // 로그인 기록, 회원 상태가 없는 회원 -> 회원 가입
-    public Members(Grades gradeId, String name, String loginId, String password, LocalDate dateOfBirth, Gender gender,String email, String phoneNumber) {
+    public Member(Grade gradeId, String name, String loginId, String password, LocalDate dateOfBirth, Gender gender,String email, String phoneNumber) {
         this.gradeId = gradeId;
         this.name = name;
         this.loginId = loginId;
@@ -86,7 +86,7 @@ public class Members {
     }
 
     // 로그인 기록이 있는 회원.
-    public Members(Grades gradeId, String name, String loginId, String password, LocalDate dateOfBirth, Gender gender,String email, String phoneNumber, LocalDateTime lastLoginAt, Status status) {
+    public Member(Grade gradeId, String name, String loginId, String password, LocalDate dateOfBirth, Gender gender,String email, String phoneNumber, LocalDateTime lastLoginAt, Status status) {
         this.gradeId = gradeId;
         this.name = name;
         this.loginId = loginId;
