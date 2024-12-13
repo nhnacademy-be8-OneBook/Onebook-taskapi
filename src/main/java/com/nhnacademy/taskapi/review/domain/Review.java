@@ -18,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "reviews")
 public class Review {
 
     @Id
