@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface BookService {
 
-    public List<BookAladinDTO> saveAladin();
+    public List<BookSaveDTO> saveAladin();
 
 
     //알라딘api - 책 등록
