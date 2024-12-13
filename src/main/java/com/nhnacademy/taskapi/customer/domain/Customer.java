@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -22,12 +24,17 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "customer_id")
-    private String id;
+    private UUID id;
 
     @NotBlank
     private String name;
 
     @NotBlank
     private String email;
+
+    public Customer(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
 
 }
