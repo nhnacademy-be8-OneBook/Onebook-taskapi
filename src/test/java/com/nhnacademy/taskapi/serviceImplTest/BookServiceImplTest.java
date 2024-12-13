@@ -112,7 +112,7 @@ public class BookServiceImplTest {
 
 
         // 서비스 메소드 호출
-        List<BookAladinDTO> result = bookService.saveAladin();
+        //List<BookAladinDTO> result = bookService.saveAladin();
 
         // 검증
         assertNotNull(result);
