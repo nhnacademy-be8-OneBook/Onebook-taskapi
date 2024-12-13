@@ -1,6 +1,6 @@
 package com.nhnacademy.taskapi.grade.service.impl;
 
-import com.nhnacademy.taskapi.grade.domain.Grades;
+import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.grade.exception.GradeNotFoundException;
 import com.nhnacademy.taskapi.grade.repository.GradeRepository;
 import com.nhnacademy.taskapi.grade.service.GradeService;
@@ -18,14 +18,14 @@ public class GradeServiceImpl implements GradeService {
 
     // 모든 등급 가져오기
     @Override
-    public List<Grades> getAllGrades() {
+    public List<Grade> getAllGrades() {
         return gradeRepository.findAll();
     }
 
     // default 등급 (INACTIVE) 가져오기
     @Override
-    public Grades getDefaultGrade() {
-        Grades grade = gradeRepository.findByName("INACTIVE").orElse(null);
+    public Grade getDefaultGrade() {
+        Grade grade = gradeRepository.findByName("INACTIVE").orElse(null);
         if (Objects.isNull(grade)) {
             throw new GradeNotFoundException("Not Found Grade INACTIVE");
         }
@@ -34,8 +34,8 @@ public class GradeServiceImpl implements GradeService {
 
     // 인조키(id)로 등급 가져오기
     @Override
-    public Grades getGradeById(Long id) {
-        Grades grade = gradeRepository.findById(id).orElse(null);
+    public Grade getGradeById(Long id) {
+        Grade grade = gradeRepository.findById(id).orElse(null);
         if (Objects.isNull(grade)) {
             throw new GradeNotFoundException("Not Found Grade " + id);
         }
@@ -44,8 +44,8 @@ public class GradeServiceImpl implements GradeService {
 
     // 이름(name)으로 등급 가져오기
     @Override
-    public Grades getGradeByName(String name) {
-        Grades grade = gradeRepository.findByName(name).orElse(null);
+    public Grade getGradeByName(String name) {
+        Grade grade = gradeRepository.findByName(name).orElse(null);
         if (Objects.isNull(grade)) {
             throw new GradeNotFoundException("Not Found Grade " + name);
         }
