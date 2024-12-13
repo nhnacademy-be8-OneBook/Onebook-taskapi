@@ -19,7 +19,6 @@ public record UpdatePointRequest(
         ADD,
         USE
     }
-
     public boolean isValidOperationType() {
         return operationType != null && (operationType == OperationType.ADD || operationType == OperationType.USE);
     }
