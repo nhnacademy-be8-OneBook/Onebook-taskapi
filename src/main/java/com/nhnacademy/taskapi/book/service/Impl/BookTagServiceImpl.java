@@ -12,8 +12,6 @@ import com.nhnacademy.taskapi.book.service.BookTagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 
 @Service
 @RequiredArgsConstructor
@@ -27,19 +25,10 @@ public class BookTagServiceImpl implements BookTagService {
     //관리자가 책-태그 등록
     @Override
     public BookTag addBookTag(long bookId, long tagId) {
-        Book book = null;
-        if(bookRepository.findById(bookId).isEmpty()){
-            throw new BookNotFoundException("Book not found !");
-        }else{
-            book = bookRepository.findById(bookId).get();
-        }
+        Book book = bookRepository.findById(bookId).orElseThrow( () -> new BookNotFoundException("Book not found !"));
 
-        Tag tag = null;
-        if(tagRepository.findById(tagId).isEmpty()){
-            throw new TagNotFoundException("Tag not found !");
-        }else{
-            tag = tagRepository.findById(tagId).get();
-        }
+        Tag tag = tagRepository.findById(tagId).orElseThrow( () -> new TagNotFoundException("Tag not found !"));
+
 
         BookTag bookTag = new BookTag();
 
