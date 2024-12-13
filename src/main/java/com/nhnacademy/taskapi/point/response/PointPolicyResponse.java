@@ -22,7 +22,6 @@ public record PointPolicyResponse(Long pointPolicyId, String pointPolicyName, in
                 .pointPolicyState(true)
                 .build();
     }
-
     public static PointPolicyResponse update(PointPolicy pointPolicy, PointPolicyRequest policyRequest) {
         return PointPolicyResponse.builder()
                 .pointPolicyId(pointPolicy.getPointPolicyId())
@@ -33,7 +32,6 @@ public record PointPolicyResponse(Long pointPolicyId, String pointPolicyName, in
                 .pointPolicyConditionAmount(policyRequest.pointPolicyConditionAmount())
                 .build();
     }
-
     public static PointPolicyResponse find(PointPolicy pointPolicy) {
         return PointPolicyResponse.builder()
                 .pointPolicyId(pointPolicy.getPointPolicyId())

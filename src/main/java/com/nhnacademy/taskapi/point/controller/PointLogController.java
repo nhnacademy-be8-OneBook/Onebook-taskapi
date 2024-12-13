@@ -22,13 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/member")
 public class PointLogController {
 
-    private final PointLogService pointLogService;
+    private PointLogService pointLogService;
 
     @Operation(summary = "포인트 내역 조회", description = "특정 회원의 포인트 내역을 조회합니다.")
     @GetMapping("/point-logs")
     public ResponseEntity<Page<PointLogResponse>> getPointLogs(Pageable pageable, Member member) {
         Long member_id = member.getId();
 
-        return new ResponseEntity<>(pointLogService.findAllPointLogsByUserId(member_id, pageable), HttpStatus.OK);
+        return new ResponseEntity<>(pointLogService.findAllPointLogsByMemberId(member_id, pageable), HttpStatus.OK);
     }
 }

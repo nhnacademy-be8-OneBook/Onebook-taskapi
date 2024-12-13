@@ -83,6 +83,5 @@ public class BookServiceImplTest {
         // 검증
         assertNotNull(result);
         assertEquals(7, result.size());  // 리스트에 하나의 책 정보가 있어야 합니다.
-
     }
 }

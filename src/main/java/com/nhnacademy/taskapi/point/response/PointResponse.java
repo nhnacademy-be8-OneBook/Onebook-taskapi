@@ -1,12 +1,9 @@
 package com.nhnacademy.taskapi.point.response;
 
 import lombok.Builder;
-import lombok.Getter;
 
-@Getter
 @Builder
 public record PointResponse(int point) {
-
     // 포인트가 양수인지 확인
     public boolean isValidPoint() {
         return point >= 0; // 포인트는 음수일 수 없음
