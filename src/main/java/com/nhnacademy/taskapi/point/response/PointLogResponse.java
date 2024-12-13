@@ -12,7 +12,6 @@ public record PointLogResponse(
         int pointLogAmount,  // 포인트 변화량
         LocalDateTime pointLogUpdatedAt  // 포인트 변경 시각
 ) {
-
         // 포인트 업데이트 시각을 지정된 포맷으로 문자열로 반환하는 메서드
         public String getFormattedUpdatedAt() {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

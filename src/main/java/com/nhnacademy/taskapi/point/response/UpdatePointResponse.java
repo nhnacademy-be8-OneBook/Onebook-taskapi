@@ -7,7 +7,6 @@ public record UpdatePointResponse(
         int point,
         String message
 ) {
-
     // 포인트 상태 메시지 설정
     public static UpdatePointResponse withMessage(int point, String message) {
         return UpdatePointResponse.builder()

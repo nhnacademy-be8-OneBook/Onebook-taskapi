@@ -95,7 +95,7 @@ class BookServiceImplTest {
 
         // 5. 검증
         verify(publisherRepository, times(50)).save(any(Publisher.class));
-        verify(publisherRepository), ti.save(any(Publisher.class));
+        verify(publisherRepository).save(any(Publisher.class));
         verify(bookRepository).save(any(Book.class));
         verify(authorRepository).save(any(Author.class));
         verify(bookAuthorRepository).save(any(BookAuthor.class));
