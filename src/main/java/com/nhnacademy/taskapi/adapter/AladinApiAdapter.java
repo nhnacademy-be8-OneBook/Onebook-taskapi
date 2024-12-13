@@ -12,7 +12,7 @@ public class AladinApiAdapter {
         this.restTemplate = restTemplate;
     }
 
-    public String fecthAladinData(String url){
+    public String fetchAladinData(String url){
         return restTemplate.getForObject(url, String.class);
     }
 }

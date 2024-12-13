@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.taskapi.Tag.domain.Tag;
 import com.nhnacademy.taskapi.Tag.repository.TagRepository;
+import com.nhnacademy.taskapi.adapter.AladinApiAdapter;
 import com.nhnacademy.taskapi.author.domain.Author;
 
 import com.nhnacademy.taskapi.author.repository.AuthorRepository;
@@ -30,6 +31,7 @@ import com.nhnacademy.taskapi.publisher.repository.PublisherRepository;
 import com.nhnacademy.taskapi.stock.domain.Stock;
 import com.nhnacademy.taskapi.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -42,6 +44,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
@@ -53,19 +56,18 @@ public class BookServiceImpl implements BookService {
     private final TagRepository tagRepository;
     private final ImageRepository imageRepository;
     private final BookTagRepository bookTagRepository;
-
+    private final AladinApiAdapter aladinApiAdapter;
 
     //알라딘 api 데이터 파싱
     @Override
     @Transactional
     public List<BookSaveDTO> saveAladin(){
-        BookSaveDTO dto = new BookSaveDTO();
+
         List<BookSaveDTO> dtoList = new ArrayList<>();
 
         String url = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbtjswns12211534001&QueryType=Bestseller&MaxResults=50&start=1&SearchTarget=Book&output=js&Version=20131101";
-        RestTemplate restTemplate = new RestTemplate();
 
-        String response = restTemplate.getForObject(url, String.class);
+        String response = aladinApiAdapter.fetchAladinData(url);
 
         try{
             ObjectMapper objectMapper = new ObjectMapper();
@@ -73,7 +75,7 @@ public class BookServiceImpl implements BookService {
             JsonNode itemNode = rootNode.path("item");
 
             for(JsonNode item : itemNode) {
-
+                BookSaveDTO dto = new BookSaveDTO();
                 dto.setTitle(item.path("title").asText());
                 dto.setAuthorName(item.path("author").asText());
                 dto.setPubdate(item.path("pubDate").asText());
@@ -82,6 +84,7 @@ public class BookServiceImpl implements BookService {
                 dto.setPriceSales(item.path("priceSales").asInt());
                 dto.setPrice(item.path("priceStandard").asInt());
                 dto.setCategoryNames(item.path("categoryName").asText());
+                log.info("categoryName: {}", dto.getCategoryNames());
                 dto.setPublisherName(item.path("publisher").asText());
                 dto.setSalesPoint(item.path("salesPoint").asLong());
                 dtoList.add(dto);
@@ -107,6 +110,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public Book saveBook(BookSaveDTO bookSaveDTO) {
 
         //출판사 등록

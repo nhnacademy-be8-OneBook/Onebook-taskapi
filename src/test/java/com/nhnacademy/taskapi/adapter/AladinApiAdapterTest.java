@@ -23,7 +23,7 @@ class AladinApiAdapterTest {
         AladinApiAdapter aladinApiAdapter = new AladinApiAdapter(restTemplate);
 
         // When
-        String actualResponse = aladinApiAdapter.fecthAladinData(url);
+        String actualResponse = aladinApiAdapter.fetchAladinData(url);
 
         // Then
         assertEquals(mockResponse, actualResponse, "The response should match the mocked data.");
