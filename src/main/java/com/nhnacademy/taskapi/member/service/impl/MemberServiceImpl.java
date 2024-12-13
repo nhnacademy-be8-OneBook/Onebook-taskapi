@@ -1,7 +1,7 @@
 package com.nhnacademy.taskapi.member.service.impl;
 
 import com.nhnacademy.taskapi.grade.service.GradeService;
-import com.nhnacademy.taskapi.member.domain.Member;
+import com.nhnacademy.taskapi.member.domain.Members;
 import com.nhnacademy.taskapi.member.dto.MemberLoginDto;
 import com.nhnacademy.taskapi.member.dto.MemberRegisterDto;
 import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
@@ -24,14 +24,14 @@ public class MemberServiceImpl implements MemberService {
 
     // 전체 멤버 조회
     @Override
-    public List<Member> getAllMembers() {
+    public List<Members> getAllMembers() {
         return memberRepository.findAll();
     }
 
     // 인조키(id)로 멤버 조회
     @Override
-    public Member getMemberById(String id) {
-        Member member = memberRepository.findById(id).orElse(null);
+    public Members getMemberById(String id) {
+        Members member = memberRepository.findById(id).orElse(null);
         if(Objects.isNull(member)) {
             throw new MemberNotFoundException("Member not found by id");
         }
@@ -40,8 +40,8 @@ public class MemberServiceImpl implements MemberService {
 
     // 로그인 ID(loginId)로 멤버 조회
     @Override
-    public Member getMemberByLoginId(String loginId) {
-        Member member = memberRepository.findByLoginId(loginId).orElse(null);
+    public Members getMemberByLoginId(String loginId) {
+        Members member = memberRepository.findByLoginId(loginId).orElse(null);
         if(Objects.isNull(member)) {
             throw new MemberNotFoundException("Member not found by loginId");
         }
@@ -63,7 +63,7 @@ public class MemberServiceImpl implements MemberService {
     // 로그인 - 회원인지 확인
     @Override
     public boolean checkMember(MemberLoginDto memberLoginDto) {
-        Member member = memberRepository.findByLoginId(memberLoginDto.loginId()).orElse(null);
+        Members member = memberRepository.findByLoginId(memberLoginDto.loginId()).orElse(null);
         if(Objects.isNull(member)) {
             throw new MemberNotFoundException("Member not found by loginId");
         }
@@ -72,11 +72,11 @@ public class MemberServiceImpl implements MemberService {
 
     // 회원 정보 저장 - 회원 가입
     @Override
-    public Member registerMember(MemberRegisterDto memberRegisterDto) {
+    public Members registerMember(MemberRegisterDto memberRegisterDto) {
         if(Objects.isNull(memberRegisterDto)) {
             throw new MemberIllegalArgumentException("MemberRegisterDto is null");
         }
-            Member member = new Member(
+            Members member = new Members(
                     gradeService.getDefaultGrade(),
                     memberRegisterDto.name(),
                     memberRegisterDto.loginId(),
