@@ -1,12 +1,10 @@
 package com.nhnacademy.taskapi.point.response;
 
 import lombok.Builder;
-import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Getter
 @Builder
 public record PointLogResponse(
         int pointCurrent,  // 현재 포인트

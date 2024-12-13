@@ -1,11 +1,19 @@
 package com.nhnacademy.taskapi.point.service;
 
 import com.nhnacademy.taskapi.point.request.UpdatePointRequest;
+import com.nhnacademy.taskapi.point.request.UpdateRefundRequest;
+import com.nhnacademy.taskapi.point.response.PointLogResponse;
 import com.nhnacademy.taskapi.point.response.PointResponse;
 import com.nhnacademy.taskapi.point.response.UpdatePointResponse;
 
+import java.util.List;
+
 public interface PointService {
-    // 구매시 포인트 업데이트 후, 현재 포인트 반환
-    UpdatePointResponse updatePointByUserId(Long member_id, UpdatePointRequest pointRequest);
-    PointResponse findPointByUserId(Long member_id);
+
+    PointResponse findPointByMemberId(Long member_id);
+
+    // 구매시 포인트 업데이트하고 현재 포인트 반환
+    UpdatePointResponse updatePointByMemberId(Long member_id, UpdatePointRequest pointRequest);
+
+    void updatePointByRefund(Long member_id, UpdateRefundRequest updateRefundRequest);
 }
