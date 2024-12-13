@@ -18,7 +18,6 @@ class PointPolicyExceptionTest {
 
         // 예외 메시지 확인
         assertEquals(errorMessage, exception.getMessage());
-
         // 상태 코드 확인
         assertEquals(status, exception.getStatus());
     }
@@ -48,7 +47,6 @@ class PointPolicyExceptionTest {
 
         // 예외 메시지 확인
         assertEquals(errorMessage, exception.getMessage());
-
         // 상태 코드 확인
         assertEquals(status, exception.getStatus());
     }

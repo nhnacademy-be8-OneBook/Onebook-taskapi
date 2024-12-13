@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public interface PointPolicyAdaptor {
 
     @GetMapping("/admin/point-policies/{pointPolicyId}")
-    ResponseEntity<PointPolicyResponse> getPointPolicy(@PathVariable Long pointPolicyId);
+    ResponseEntity<PointPolicyResponse> getPointPolicy(@PathVariable String pointPolicyId);
 
     @GetMapping("/admin/point-policies")
     ResponseEntity<Page<PointPolicyResponse>> getPointPolicies(Pageable pageable);
@@ -21,11 +21,11 @@ public interface PointPolicyAdaptor {
     ResponseEntity<PointPolicyResponse> createPointPolicy(@RequestBody PointPolicyRequest pointPolicyRequest);
 
     @PutMapping("/admin/point-policies/{pointPolicyId}")
-    ResponseEntity<PointPolicyResponse> updatePointPolicy(@PathVariable Long pointPolicyId, @RequestBody PointPolicyRequest pointPolicyRequest);
+    ResponseEntity<PointPolicyResponse> updatePointPolicy(@PathVariable String pointPolicyId, @RequestBody PointPolicyRequest pointPolicyRequest);
 
     @DeleteMapping("/admin/point-policies/{pointPolicyId}")
-    void deletePointPolicy(@PathVariable Long pointPolicyId);
+    void deletePointPolicy(@PathVariable String pointPolicyId);
 
     @GetMapping("/admin/point-policies/{pointPolicyId}")
-    ResponseEntity<PointPolicyResponse> findPointPolicyById(@PathVariable Long pointPolicyId);
+    ResponseEntity<PointPolicyResponse> findPointPolicyById(@PathVariable String pointPolicyId);
 }
