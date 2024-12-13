@@ -1,6 +1,5 @@
 package com.nhnacademy.taskapi.member.domain;
 
-import com.nhnacademy.taskapi.customer.domain.Customer;
 import com.nhnacademy.taskapi.grade.domain.Grades;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -17,13 +16,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name="member", uniqueConstraints = {
+@Table(name="members", uniqueConstraints = {
         @UniqueConstraint(
                 name="UNIQUE_loginId_email_phoneNumber",
                 columnNames = {"login_id", "email", "phone_number"}
         )
 })
-public class Member {
+public class Members {
 
     // 회원 상태 - 활성화, 비활성화(휴면), 삭제, 정지 / default: INACTIVE
     public enum Status {
@@ -73,7 +72,7 @@ public class Member {
     private Status status; // default: INACTIVE
 
     // 로그인 기록, 회원 상태가 없는 회원 -> 회원 가입
-    public Member(Grades gradeId, String name, String loginId, String password, LocalDate dateOfBirth, Gender gender,String email, String phoneNumber) {
+    public Members(Grades gradeId, String name, String loginId, String password, LocalDate dateOfBirth, Gender gender,String email, String phoneNumber) {
         this.gradeId = gradeId;
         this.name = name;
         this.loginId = loginId;
@@ -87,7 +86,7 @@ public class Member {
     }
 
     // 로그인 기록이 있는 회원.
-    public Member(Grades gradeId, String name, String loginId, String password, LocalDate dateOfBirth, Gender gender,String email, String phoneNumber, LocalDateTime lastLoginAt, Status status) {
+    public Members(Grades gradeId, String name, String loginId, String password, LocalDate dateOfBirth, Gender gender,String email, String phoneNumber, LocalDateTime lastLoginAt, Status status) {
         this.gradeId = gradeId;
         this.name = name;
         this.loginId = loginId;
