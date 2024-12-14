@@ -5,5 +5,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface PointLogService {
-    Page<PointLogResponse> findAllPointLogsByUserId(Long member_id, Pageable pageable);
+    Page<PointLogResponse> findAllPointLogsByMemberId(Long member_id, Pageable pageable);
 }

@@ -4,7 +4,6 @@ import com.nhnacademy.taskapi.point.domain.PointPolicy;
 import com.nhnacademy.taskapi.point.request.CreatePointPolicyRequest;
 import com.nhnacademy.taskapi.point.request.PointPolicyRequest;
 import lombok.Builder;
-
 import java.time.LocalDate;
 
 @Builder
@@ -23,7 +22,6 @@ public record PointPolicyResponse(Long pointPolicyId, String pointPolicyName, in
                 .pointPolicyState(true)
                 .build();
     }
-
     public static PointPolicyResponse update(PointPolicy pointPolicy, PointPolicyRequest policyRequest) {
         return PointPolicyResponse.builder()
                 .pointPolicyId(pointPolicy.getPointPolicyId())
@@ -34,7 +32,6 @@ public record PointPolicyResponse(Long pointPolicyId, String pointPolicyName, in
                 .pointPolicyConditionAmount(policyRequest.pointPolicyConditionAmount())
                 .build();
     }
-
     public static PointPolicyResponse find(PointPolicy pointPolicy) {
         return PointPolicyResponse.builder()
                 .pointPolicyId(pointPolicy.getPointPolicyId())

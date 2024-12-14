@@ -6,14 +6,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PointPolicy {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pointPolicyId;
@@ -23,20 +21,13 @@ public class PointPolicy {
     private String pointPolicyName;
 
     private int pointPolicyConditionAmount;
-
-    // 적립률
     private int pointPolicyRate;
-
-    // 적립 금액
     private int pointPolicyApplyAmount;
 
-    // 적립 조건
     @NotNull(message = "포인트 적립 조건은 필수입니다.")
     @Column(nullable = false, length = 200)
     private String pointPolicyCondition;
 
-    // 적립 유형
-    // 적립 금액 = 1(true), 적립률 = 0(false)
     @NotNull(message = "포인트 적립 유형은 필수입니다.")
     @Column(nullable = false)
     private boolean pointPolicyApplyType;
@@ -51,11 +42,14 @@ public class PointPolicy {
     @Column(nullable = false)
     private boolean pointPolicyState;
 
+    @NotNull(message = "회원 ID는 필수입니다.")
+    @Column(nullable = false)
+    private Long memberId;  // Add memberId field
+
     @Builder
     public PointPolicy(Long pointPolicyId, String pointPolicyName, int pointPolicyRate, int pointPolicyConditionAmount,
                        String pointPolicyCondition, int pointPolicyApplyAmount, LocalDate pointPolicyCreatedAt,
-                       LocalDate pointPolicyUpdatedAt, boolean pointPolicyApplyType, boolean pointPolicyState) {
-
+                       LocalDate pointPolicyUpdatedAt, boolean pointPolicyApplyType, boolean pointPolicyState, Long memberId) {
         this.pointPolicyId = pointPolicyId;
         this.pointPolicyName = pointPolicyName;
         this.pointPolicyConditionAmount = pointPolicyConditionAmount;
@@ -66,6 +60,11 @@ public class PointPolicy {
         this.pointPolicyCreatedAt = pointPolicyCreatedAt;
         this.pointPolicyUpdatedAt = pointPolicyUpdatedAt;
         this.pointPolicyState = pointPolicyState;
+        this.memberId = memberId; // Set memberId
+    }
+
+    public void updateMemberId(Long memberId) {
+        this.memberId = memberId;
     }
 
     public void updatePointPolicyName(String pointPolicyName) {
