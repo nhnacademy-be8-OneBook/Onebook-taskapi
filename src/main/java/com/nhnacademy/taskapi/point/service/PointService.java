@@ -15,5 +15,5 @@ public interface PointService {
     void updatePointByRefund(String member_id, UpdateRefundRequest updateRefundRequest);
 
     // 포인트 결제 로직
-    void usePointsForPayment(String memberId, int paymentAmount);
+    void usePointsForPayment(String member_id, int paymentAmount);
 }

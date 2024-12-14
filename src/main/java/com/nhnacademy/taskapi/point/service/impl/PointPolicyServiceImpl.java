@@ -53,7 +53,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     // 포인트 정책 단건 조회
     @Transactional(readOnly = true)
     @Override
-    public PointPolicyResponse findPointPolicyById(Long pointPolicyId) {
+    public PointPolicyResponse findPointPolicyById(String pointPolicyId) {
         PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId)
                 .orElseThrow(() -> new PointPolicyException("포인트 정책을 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
@@ -71,7 +71,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
 
     // 포인트 정책 수정
     @Override
-    public PointPolicyResponse updatePointPolicyById(Long pointPolicyId, PointPolicyRequest policyRequest) {
+    public PointPolicyResponse updatePointPolicyById(String pointPolicyId, PointPolicyRequest policyRequest) {
         PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId)
                 .orElseThrow(() -> new PointPolicyException("포인트 정책을 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
@@ -112,7 +112,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
 
     // 포인트 정책 삭제
     @Override
-    public void deletePointPolicyById(Long pointPolicyId) {
+    public void deletePointPolicyById(String pointPolicyId) {
         PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId)
                 .orElseThrow(() -> new PointPolicyException("포인트 정책을 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 

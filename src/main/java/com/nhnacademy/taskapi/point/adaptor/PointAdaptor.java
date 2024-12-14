@@ -9,5 +9,5 @@ import java.util.List;
 @FeignClient(name = "pointAdaptor", url = "http://localhost:8085/point")
 public interface PointAdaptor {
     @GetMapping("/points/logs/{member_id}")
-    List<PointLogResponse> getPointLogsByUserId(@PathVariable("member_id") Long member_id);
+    List<PointLogResponse> getPointLogsByUserId(@PathVariable("member_id") String member_id);
 }
