@@ -2,7 +2,6 @@ package com.nhnacademy.taskapi.pointTest;
 
 import com.nhnacademy.taskapi.point.domain.Point;
 import com.nhnacademy.taskapi.member.domain.Member;
-import com.nhnacademy.taskapi.customer.domain.Customer;
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,22 +14,29 @@ class PointTest {
 
     private Point point;
     private Member member;
-    private Customer customer;
     private Grade grade;
 
     @BeforeEach
     void setUp() {
-        customer = new Customer();
-        customer.setName("John Doe");
-        customer.setEmail("john.doe@example.com");
-
+        // Grade 객체 생성
         grade = new Grade();
         grade.setName("Gold");
         grade.setAccumulationRate(10);
         grade.setDescription("Gold Level");
 
-        member = new Member(customer, grade, "testUser", "password123", LocalDate.of(1990, 1, 1), Member.Gender.M, "123-456-7890");
+        // Member 객체 생성 (Customer 관련 필드 제거)
+        member = new Member(
+                grade,
+                "testUser",
+                "testUserLogin",
+                "password123",
+                LocalDate.of(1990, 1, 1),
+                Member.Gender.M,
+                "testuser@example.com",
+                "123-456-7890"
+        );
 
+        // Point 객체 생성
         point = Point.builder()
                 .pointCurrent(1000)  // 초기 포인트
                 .member(member)

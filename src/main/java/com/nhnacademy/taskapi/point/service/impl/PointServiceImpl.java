@@ -30,7 +30,7 @@ public class PointServiceImpl implements PointService {
 
     // 포인트 조회
     @Override
-    public PointResponse findPointByMemberId(Long memberId) {
+    public PointResponse findPointByMemberId(String memberId) {
         // 포인트 조회
         Point point = pointRepository.findByMember_MemberId(memberId)
                 .orElseThrow(() -> new PointPolicyException("사용자 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
@@ -40,7 +40,7 @@ public class PointServiceImpl implements PointService {
     }
 
     @Override
-    public UpdatePointResponse updatePointByMemberId(Long memberId, UpdatePointRequest pointRequest) {
+    public UpdatePointResponse updatePointByMemberId(String memberId, UpdatePointRequest pointRequest) {
         // 1. 포인트 조회
         Point point = pointRepository.findByMember_MemberId(memberId)
                 .orElseThrow(() -> new PointPolicyException("사용자 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
@@ -68,7 +68,7 @@ public class PointServiceImpl implements PointService {
 
     // 포인트 결제
     @Override
-    public void usePointsForPayment(Long memberId, int paymentAmount) {
+    public void usePointsForPayment(String memberId, int paymentAmount) {
         // 포인트 조회
         Point point = pointRepository.findByMember_MemberId(memberId)
                 .orElseThrow(() -> new PointPolicyException("사용자 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
@@ -93,7 +93,7 @@ public class PointServiceImpl implements PointService {
 
     // 포인트 환불 처리
     @Override
-    public void updatePointByRefund(Long memberId, UpdateRefundRequest refundRequest) {
+    public void updatePointByRefund(String memberId, UpdateRefundRequest refundRequest) {
         // 포인트 조회
         Point point = pointRepository.findByMember_MemberId(memberId)
                 .orElseThrow(() -> new PointPolicyException("사용자 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));

@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class PointPolicy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pointPolicyId;
+    private String pointPolicyId;
 
     @NotNull(message = "포인트 정책명은 필수입니다.")
     @Column(nullable = false, length = 50)
@@ -44,12 +44,12 @@ public class PointPolicy {
 
     @NotNull(message = "회원 ID는 필수입니다.")
     @Column(nullable = false)
-    private Long memberId;  // Add memberId field
+    private String memberId;  // Add memberId field
 
     @Builder
-    public PointPolicy(Long pointPolicyId, String pointPolicyName, int pointPolicyRate, int pointPolicyConditionAmount,
+    public PointPolicy(String pointPolicyId, String pointPolicyName, int pointPolicyRate, int pointPolicyConditionAmount,
                        String pointPolicyCondition, int pointPolicyApplyAmount, LocalDate pointPolicyCreatedAt,
-                       LocalDate pointPolicyUpdatedAt, boolean pointPolicyApplyType, boolean pointPolicyState, Long memberId) {
+                       LocalDate pointPolicyUpdatedAt, boolean pointPolicyApplyType, boolean pointPolicyState, String memberId) {
         this.pointPolicyId = pointPolicyId;
         this.pointPolicyName = pointPolicyName;
         this.pointPolicyConditionAmount = pointPolicyConditionAmount;
@@ -63,7 +63,7 @@ public class PointPolicy {
         this.memberId = memberId; // Set memberId
     }
 
-    public void updateMemberId(Long memberId) {
+    public void updateMemberId(String memberId) {
         this.memberId = memberId;
     }
 

@@ -29,7 +29,7 @@ public class PointController {
         // Authentication 객체에서 회원 정보 추출
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = (Member) authentication.getPrincipal(); // Member 객체를 가져오기
-        Long memberId = member.getId();
+        String memberId = member.getId();
         return new ResponseEntity<>(pointService.findPointByMemberId(memberId), HttpStatus.OK);
     }
 
@@ -40,7 +40,7 @@ public class PointController {
         // Authentication 객체에서 회원 정보 추출
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = (Member) authentication.getPrincipal(); // Member 객체를 가져오기
-        Long memberId = member.getId();
+        String memberId = member.getId();
         return new ResponseEntity<>(pointService.updatePointByMemberId(memberId, pointRequest), HttpStatus.OK);
     }
 
@@ -51,7 +51,7 @@ public class PointController {
         // Authentication 객체에서 회원 정보 추출
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = (Member) authentication.getPrincipal(); // Member 객체를 가져오기
-        Long memberId = member.getId();
+        String memberId = member.getId();
         pointService.updatePointByRefund(memberId, refundRequest);
         return ResponseEntity.ok().build();
     }
