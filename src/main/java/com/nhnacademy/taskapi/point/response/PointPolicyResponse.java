@@ -7,7 +7,7 @@ import lombok.Builder;
 import java.time.LocalDate;
 
 @Builder
-public record PointPolicyResponse(Long pointPolicyId, String pointPolicyName, int pointPolicyApply, String pointPolicyCondition,
+public record PointPolicyResponse(String pointPolicyId, String pointPolicyName, int pointPolicyApply, String pointPolicyCondition,
                                   boolean pointPolicyApplyType, LocalDate pointPolicyCreatedAt, String pointPolicyUpdatedAt,
                                   int pointPolicyConditionAmount, boolean pointPolicyState) {
 
