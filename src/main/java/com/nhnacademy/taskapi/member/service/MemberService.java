@@ -9,9 +9,10 @@ import java.util.List;
 public interface MemberService {
     List<Member> getAllMembers();
     Member getMemberById(String id);
-    Member getMemberByLoginId(String loginId);
+//    Member getMemberByLoginId(String loginId);
     boolean existsById(String id);
     boolean existsByLoginId(String loginId);
-    boolean checkMember(MemberLoginDto memberLoginDto);
+    MemberLoginDto checkMemberLogin(MemberLoginDto memberLoginDto);
     Member registerMember(MemberRegisterDto memberRegisterDto);
+
 }

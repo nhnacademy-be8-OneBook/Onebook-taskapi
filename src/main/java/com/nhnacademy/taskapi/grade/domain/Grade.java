@@ -1,29 +1,43 @@
 package com.nhnacademy.taskapi.grade.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Entity
+@Table(name = "grades")
 public class Grade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name="grade_id")
+    private Integer id;
 
     @NotBlank
+    @Column(name="name", unique=true)
     private String name;
 
-    @NotBlank
+    @NotNull
     private int accumulationRate;
 
     @NotBlank
     private String description;
+
+    public Grade(String name, int accumulationRate, String description) {
+        this.name = name;
+        this.accumulationRate = accumulationRate;
+        this.description = description;
+    }
+
+    public void updateGrade(int accumulationRate, String description) {
+        this.accumulationRate = accumulationRate;
+        this.description = description;
+    }
 
 }
