@@ -4,6 +4,7 @@ import com.nhnacademy.taskapi.grade.domain.Grade;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,12 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name="members", uniqueConstraints = {
-        @UniqueConstraint(
-                name="UNIQUE_loginId_email_phoneNumber",
-                columnNames = {"login_id", "email", "phone_number"}
-        )
-})
+@Table(name="members")
 public class Member {
 
     // 회원 상태 - 활성화, 비활성화(휴면), 삭제, 정지 / default: INACTIVE
@@ -35,45 +31,51 @@ public class Member {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID) // UUID v4
     @Column(name="member_id")
     private String id;
 
-    @JoinColumn(name="grade_id")
-    @Setter
     @ManyToOne
-    private Grade gradeId;
+    @JoinColumn(name="grade_id", nullable=false)
+    @Setter
+    private Grade grade;
 
     @NotBlank
     private String name;
 
     @NotBlank
+    @Column(name="login_id", unique=true)
     private String loginId;
 
     @NotBlank
     private String password;
 
-    @NotBlank
+    @NotNull
     private LocalDate dateOfBirth;
 
     @NotBlank
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Email
+    @NotBlank
+    @Column(name="email", unique=true)
     private String email;
 
     @NotBlank
+    @Column(name="phone_number", unique = true)
     private String phoneNumber;
 
     private LocalDateTime lastLoginAt;
 
     @Setter
-    @NotBlank
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status; // default: INACTIVE
 
     // 로그인 기록, 회원 상태가 없는 회원 -> 회원 가입
-    public Member(Grade gradeId, String name, String loginId, String password, LocalDate dateOfBirth, Gender gender,String email, String phoneNumber) {
-        this.gradeId = gradeId;
+    public Member(Grade grade, String name, String loginId, String password, LocalDate dateOfBirth, Gender gender, String email, String phoneNumber) {
+        this.grade = grade;
         this.name = name;
         this.loginId = loginId;
         this.password = password;
@@ -86,8 +88,8 @@ public class Member {
     }
 
     // 로그인 기록이 있는 회원.
-    public Member(Grade gradeId, String name, String loginId, String password, LocalDate dateOfBirth, Gender gender,String email, String phoneNumber, LocalDateTime lastLoginAt, Status status) {
-        this.gradeId = gradeId;
+    public Member(Grade grade, String name, String loginId, String password, LocalDate dateOfBirth, Gender gender,String email, String phoneNumber, LocalDateTime lastLoginAt, Status status) {
+        this.grade = grade;
         this.name = name;
         this.loginId = loginId;
         this.password = password;
