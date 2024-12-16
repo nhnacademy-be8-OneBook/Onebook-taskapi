@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import com.nhnacademy.taskapi.book.domain.Book;
+
 
 @Entity
 @AllArgsConstructor
@@ -23,4 +25,7 @@ public class Publisher {
     @NotBlank
     @Length(max = 30)
     private String name;
+
+    @OneToMany(mappedBy = "publisher", fetch = FetchType.LAZY)
+    private List<Book> books;
 }
