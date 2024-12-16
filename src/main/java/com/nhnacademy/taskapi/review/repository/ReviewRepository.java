@@ -13,13 +13,11 @@ import java.util.Optional;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query("SELECT AVG(r.grade) FROM Review r WHERE r.book.bookId = :bookId")
+
     Optional<Double> findAverageGradeByBookId(long bookId);
 
     Optional<Review> findByMemberAndBook(Member member, Book book); // 중복 리뷰 방지 체크
+
     Page<Review> findByBookBookId(long bookId, Pageable pageable);
-
-    @Query("SELECT AVG(r.grade) FROM Review r WHERE r.member.id = :memberId")
-    Optional<Double> findAverageGradeByMemberId(String memberId);
-
 
 }
