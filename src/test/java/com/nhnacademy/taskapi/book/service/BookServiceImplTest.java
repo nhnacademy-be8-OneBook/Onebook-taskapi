@@ -26,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+// TODO null pointer exception 해결해야합니다
 @ExtendWith(MockitoExtension.class)
 public class BookServiceImplTest {
 
