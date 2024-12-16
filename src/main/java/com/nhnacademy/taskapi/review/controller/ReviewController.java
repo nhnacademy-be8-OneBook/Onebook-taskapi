@@ -11,7 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping("/books/{bookId}/reviews")
 @RequiredArgsConstructor
 public class ReviewController {
 
@@ -19,42 +19,44 @@ public class ReviewController {
 
     // 리뷰 등록
     @PostMapping
-    public ResponseEntity<ReviewResponse> registerReview(@Validated @RequestBody ReviewRequest reviewRequest) {
-        ReviewResponse response = reviewService.registerReview(reviewRequest);
+    public ResponseEntity<ReviewResponse> registerReview(
+            @PathVariable long bookId,
+            @Validated @RequestBody ReviewRequest reviewRequest) {
+        ReviewResponse response = reviewService.registerReview(bookId, reviewRequest);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    // 책에 대한 평점 평균
+    // 도서의 리뷰 평점 평균
     @GetMapping("/average")
-    public ResponseEntity<Double> getReviewGradeAverage(@RequestParam long bookId) {
+    public ResponseEntity<Double> getReviewGradeAverage(@PathVariable long bookId) {
         double average = reviewService.getReviewGradeAverage(bookId);
         return ResponseEntity.ok(average);
     }
 
-    // 리뷰 보여줌, pagination
-    @GetMapping("/book/{bookId}")
+    // 도서의 리뷰 목록 조회, 페이징 처리
+    @GetMapping
     public ResponseEntity<Page<ReviewResponse>> getReviewsByBook(
             @PathVariable long bookId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<ReviewResponse> reviews = reviewService.getReviewsByBook(bookId, page, size);
+        Page<ReviewResponse> reviews = reviewService.getReviewByBook(bookId, page, size);
         return ResponseEntity.ok(reviews);
     }
 
     // 리뷰 수정
     @PutMapping("/{reviewId}")
     public ResponseEntity<ReviewResponse> updateReview(
+            @PathVariable long bookId,
             @PathVariable long reviewId,
             @Validated @RequestBody ReviewRequest reviewRequest) {
-        ReviewResponse response = reviewService.updateReview(reviewId, reviewRequest);
+        ReviewResponse response = reviewService.updateReview(bookId, reviewId, reviewRequest);
         return ResponseEntity.ok(response);
     }
 
-    // 사용자가 준 평점의 평균 (필요없으면 삭제해도 상관없을듯 함.)
-    @GetMapping("/member/{memberId}/grade")
+    // 사용자가 준 평점의 평균 (별도 경로)
+    @GetMapping("/members/{memberId}/average-grade")
     public ResponseEntity<Double> getMemberAverageGrade(@PathVariable String memberId) {
         double average = reviewService.getMemberAverageGrade(memberId);
         return ResponseEntity.ok(average);
     }
-
 }
