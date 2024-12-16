@@ -1,6 +1,5 @@
 package com.nhnacademy.taskapi.publisher.domain;
 
-import com.nhnacademy.taskapi.book.domain.Book;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import com.nhnacademy.taskapi.book.domain.Book;
+
 
 import java.util.List;
 

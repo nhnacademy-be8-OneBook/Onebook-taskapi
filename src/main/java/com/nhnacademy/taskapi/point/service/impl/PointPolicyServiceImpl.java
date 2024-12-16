@@ -35,7 +35,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
         PointPolicy pointPolicy = pointPolicyRepository.save(policyRequest.toEntity());
 
         // 포인트 로그 기록 (정책 생성 시에는 금액 변경 없음, "POLICY_CREATE"로 기록)
-        Point point = pointRepository.findByMember_MemberId(policyRequest.memberId())
+        Point point = pointRepository.findByMember_Id(policyRequest.memberId())
                 .orElseThrow(() -> new PointPolicyException("사용자 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
         PointLog pointLog = PointLog.builder()
@@ -95,7 +95,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
         pointPolicyRepository.save(pointPolicy);
 
         // 포인트 로그 기록 (정책 수정 시)
-        Point point = pointRepository.findByMember_MemberId(pointPolicy.getMemberId())
+        Point point = pointRepository.findByMember_Id(pointPolicy.getMemberId())
                 .orElseThrow(() -> new PointPolicyException("사용자 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
         PointLog pointLog = PointLog.builder()
@@ -122,7 +122,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
         pointPolicyRepository.save(pointPolicy);
 
         // 포인트 로그 기록 (정책 삭제 시)
-        Point point = pointRepository.findByMember_MemberId(pointPolicy.getMemberId())
+        Point point = pointRepository.findByMember_Id(pointPolicy.getMemberId())
                 .orElseThrow(() -> new PointPolicyException("사용자 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
         PointLog pointLog = PointLog.builder()

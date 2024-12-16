@@ -52,6 +52,7 @@ public class PointController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = (Member) authentication.getPrincipal(); // Member 객체를 가져오기
         String memberId = member.getId();
+
         pointService.updatePointByRefund(memberId, refundRequest);
         return ResponseEntity.ok().build();
     }

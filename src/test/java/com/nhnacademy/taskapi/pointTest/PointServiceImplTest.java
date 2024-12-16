@@ -73,7 +73,7 @@ class PointServiceImplTest {
         int paymentAmount = 1500; // 현재 포인트 1000보다 많은 금액
 
         // findByMember_MemberId가 포인트 정보를 반환
-        when(pointRepository.findByMember_MemberId(anyString())).thenReturn(Optional.of(point));
+        when(pointRepository.findByMember_Id(anyString())).thenReturn(Optional.of(point));
 
         // 예외 발생 검증
         PointPolicyException exception = assertThrows(PointPolicyException.class, () -> {
@@ -85,7 +85,7 @@ class PointServiceImplTest {
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
 
         // 포인트 저장이 호출되지 않음을 검증
-        verify(pointRepository, times(1)).findByMember_MemberId("1");
+        verify(pointRepository, times(1)).findByMember_Id("1");
         verify(pointRepository, times(0)).save(any(Point.class));
     }
 
@@ -95,7 +95,7 @@ class PointServiceImplTest {
         int refundAmount = 1500; // 현재 포인트 1000보다 많은 금액
 
         // findByMember_MemberId가 포인트 정보를 반환
-        when(pointRepository.findByMember_MemberId(anyString())).thenReturn(Optional.of(point));
+        when(pointRepository.findByMember_Id(anyString())).thenReturn(Optional.of(point));
 
         // 예외 발생 검증
         PointPolicyException exception = assertThrows(PointPolicyException.class, () -> {
@@ -107,7 +107,7 @@ class PointServiceImplTest {
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
 
         // 포인트 저장이 호출되지 않음을 검증
-        verify(pointRepository, times(1)).findByMember_MemberId("1");
+        verify(pointRepository, times(1)).findByMember_Id("1");
         verify(pointRepository, times(0)).save(any(Point.class));
     }
 
@@ -115,7 +115,7 @@ class PointServiceImplTest {
     @Test
     void testUsePointsForPayment_Success() {
         int paymentAmount = 500;  // 결제 금액이 500일 때
-        when(pointRepository.findByMember_MemberId(anyString())).thenReturn(Optional.of(point));
+        when(pointRepository.findByMember_Id(anyString())).thenReturn(Optional.of(point));
         when(pointRepository.save(any(Point.class))).thenReturn(point);
 
         // 포인트 결제
@@ -123,7 +123,7 @@ class PointServiceImplTest {
 
         // 포인트가 차감되었는지 검증
         assertEquals(500, point.getAmount()); // 포인트가 500으로 차감되었어야 함
-        verify(pointRepository, times(1)).findByMember_MemberId("1");
+        verify(pointRepository, times(1)).findByMember_Id("1");
         verify(pointRepository, times(1)).save(any(Point.class));
         verify(pointLogRepository, times(1)).save(any(PointLog.class)); // 포인트 로그도 저장되었는지 확인
     }

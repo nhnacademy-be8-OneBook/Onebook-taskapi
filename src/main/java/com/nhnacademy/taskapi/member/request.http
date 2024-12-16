@@ -1,0 +1,77 @@
+### Regular 회원 등급 등록
+POST http://localhost:8080/grades
+Content-type: application/json
+
+{
+  "name": "REGULAR",
+  "accumulationRate": 10,
+  "description": "일반 등급"
+}
+
+### 전체 회원 등급 조회
+GET http://localhost:8080/grades
+
+### 단일 회원 등급 조회 by name
+GET http://localhost:8080/grades/REGULAR
+
+### 회원 등급 중복 등록 테스트
+POST http://localhost:8080/grades
+Content-type: application/json
+
+{
+  "name": "REGULAR",
+  "accumulationRate": 10,
+  "description": "일반 등급"
+}
+
+### DTO Validate 검증: 마이너스 적립률 등록
+POST http://localhost:8080/grades
+Content-type: application/json
+
+{
+  "name": "ROYAL",
+  "accumulationRate": -1,
+  "description": "로얄 등급"
+}
+
+### 등급 수정
+PUT http://localhost:8080/grades
+Content-type: application/json
+
+{
+  "name": "REGULAR",
+  "accumulationRate": 100,
+  "description": "일반 등급"
+}
+
+### 등급 삭제
+DELETE http://localhost:8080/grades/REGULAR
+Content-type: application/json
+
+
+### 회원 가입
+POST http://localhost:8080/members
+Content-type: application/json
+
+{
+  "name": "Joo",
+  "loginId": "joo",
+  "password": "joo",
+  "dateOfBirth": "1998-12-18",
+  "gender": "M",
+  "email" : "helloworld@gmail.com",
+  "phoneNumber": "010-3082-2878"
+}
+
+### 전체 멤버 조회
+GET http://localhost:8080/members
+
+
+### 회원 정보 수정
+
+
+### 회원 삭제
+
+
+### 로그인
+
