@@ -19,7 +19,7 @@ public class OrderList {
     Long orderlistId;
 
     @ManyToOne
-    @JoinColumn(name = "orders_id")
+    @JoinColumn(name = "order_id")
     Order order;
 
     /*
