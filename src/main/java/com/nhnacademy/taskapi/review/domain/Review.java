@@ -32,10 +32,8 @@ public class Review {
     private String description;
 
     @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt;
 
     @ManyToOne
