@@ -1,34 +1,31 @@
-package com.nhnacademy.taskapi.orders.entity;
+package com.nhnacademy.taskapi.order.entity;
 
-import com.nhnacademy.taskapi.customer.domain.Customer;
-import com.nhnacademy.taskapi.orderlist.entity.OrdersList;
+import com.nhnacademy.taskapi.member.domain.Member;
+import com.nhnacademy.taskapi.orderlist.entity.OrderList;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@ToString
 @NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "orders")
 @Entity
-public class Orders {
+public class Order {
     @Id
     @Column(name = "orders_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long ordersId;
+    Long orderId;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
-    Customer customer;
+    @JoinColumn(name = "member_id")
+    Member member;
 
     @Column(name = "phone_number")
-
     String phoneNumber;
     @Column(name = "date_time")
     LocalDateTime dateTime;
@@ -41,13 +38,25 @@ public class Orders {
 //    @OneToMany
 //    @JoinColumn(name = "orderlist_id")
 
-    @OneToMany(mappedBy = "orders")
-    List<OrdersList> ordersListList;
+    @OneToMany(mappedBy = "order")
+    List<OrderList> orderListList;
 
-    public Orders(String phoneNumber, LocalDateTime dateTime, int deliveryPrice, int totalPrice) {
+    public Order(String phoneNumber, LocalDateTime dateTime, int deliveryPrice, int totalPrice) {
         this.phoneNumber = phoneNumber;
         this.dateTime = dateTime;
         this.deliveryPrice = deliveryPrice;
         this.totalPrice = totalPrice;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "ordersId=" + orderId +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", dateTime=" + dateTime +
+                ", deliveryPrice=" + deliveryPrice +
+                ", totalPrice=" + totalPrice +
+                '}';
     }
 }
