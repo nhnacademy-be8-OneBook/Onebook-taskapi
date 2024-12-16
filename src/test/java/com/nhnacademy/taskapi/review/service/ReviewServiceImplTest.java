@@ -27,6 +27,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 
+
+/*
+ ************ 필요시 수정하셔도 됩니다. **************
+ */
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceImplTest {
 
@@ -54,9 +58,7 @@ class ReviewServiceImplTest {
         // Grade 객체 생성
         Grade grade = new Grade();
 
-        // Member 엔티티 생성자를 통해 대부분의 필드 초기화
-        // Member(Grade grade, String name, String loginId, String password,
-        // LocalDate dateOfBirth, Gender gender, String email, String phoneNumber)
+        // 테스트 Member 생성
         member = new Member(
                 grade,
                 "집가고싶다",
