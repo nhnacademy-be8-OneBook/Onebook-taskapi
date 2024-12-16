@@ -8,7 +8,6 @@ import com.nhnacademy.taskapi.Tag.domain.Tag;
 import com.nhnacademy.taskapi.Tag.repository.TagRepository;
 import com.nhnacademy.taskapi.adapter.AladinApiAdapter;
 import com.nhnacademy.taskapi.author.domain.Author;
-
 import com.nhnacademy.taskapi.author.repository.AuthorRepository;
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.domain.BookAuthor;
@@ -32,10 +31,10 @@ import com.nhnacademy.taskapi.stock.domain.Stock;
 import com.nhnacademy.taskapi.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -240,9 +239,12 @@ public class BookServiceImpl implements BookService {
         } else {
             throw new BookTagDuplicateException("already exists Book_tag !");
         }
-
-
         return book;
+    }
 
+    //베스트셀러 목록 조
+    @Override
+    public Page<Book> bestSellerBooks(Pageable pageable) {
+        return bookRepository.findTop50ByAmount(pageable);
     }
 }
