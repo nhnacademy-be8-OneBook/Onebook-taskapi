@@ -1,17 +1,16 @@
-package com.nhnacademy.taskapi.member.dto;
+package com.nhnacademy.taskapi.dto;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginDto {
-
-    private String loginId;
-    private String password;
-
+@Getter
+@Setter
+public class BookCategorySaveDTO {
+    private int categoryId;
+    private long bookId;
 }

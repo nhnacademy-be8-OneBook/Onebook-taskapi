@@ -10,7 +10,8 @@ spring:
       on-profile: dev  # dev 프로파일 활성화 시 적용
 
   server:
-    port: 8082
+    port: 8110  # dev 환경의 포트 번호
+    address: 0.0.0.0  # 모든 IP에서 접근 가능 (필요 시 수정 가능)
 
   application:
     name: task-service
@@ -51,7 +52,8 @@ spring:
       on-profile: prod  # prod 프로파일 활성화 시 적용
 
   server:
-    port: 8082
+    port: 8110  # prod 환경의 포트 번호
+    address: 0.0.0.0  # 모든 IP에서 접근 가능 (필요 시 수정 가능)
 
   application:
     name: task-service

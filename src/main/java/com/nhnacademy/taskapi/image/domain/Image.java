@@ -13,6 +13,7 @@ import org.hibernate.validator.constraints.Length;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "images")
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,5 +22,6 @@ public class Image {
     @Length(max = 255)
     private String imageUrl;
 
-    private String BookImageName;
+    @ManyToOne(optional = false)
+    private Book book;
 }
