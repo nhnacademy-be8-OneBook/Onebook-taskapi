@@ -169,9 +169,4 @@ public class ReviewServiceImpl implements ReviewService {
                 .build();
     }
 
-    @Override
-    public double getMemberAverageGrade(String memberId) {
-        return reviewRepository.findAverageGradeByMemberId(memberId)
-                .orElse(0.0);
-    }
 }

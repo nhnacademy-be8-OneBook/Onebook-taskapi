@@ -53,10 +53,4 @@ public class ReviewController {
         return ResponseEntity.ok(response);
     }
 
-    // 사용자가 준 평점의 평균 (별도 경로)
-    @GetMapping("/members/{memberId}/average-grade")
-    public ResponseEntity<Double> getMemberAverageGrade(@PathVariable String memberId) {
-        double average = reviewService.getMemberAverageGrade(memberId);
-        return ResponseEntity.ok(average);
-    }
 }
