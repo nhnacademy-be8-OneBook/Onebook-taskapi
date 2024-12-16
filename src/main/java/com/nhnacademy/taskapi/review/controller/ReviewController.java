@@ -17,18 +17,21 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
+    // 리뷰 등록
     @PostMapping
     public ResponseEntity<ReviewResponse> registerReview(@Validated @RequestBody ReviewRequest reviewRequest) {
         ReviewResponse response = reviewService.registerReview(reviewRequest);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    // 책에 대한 평점 평균
     @GetMapping("/average")
     public ResponseEntity<Double> getReviewGradeAverage(@RequestParam long bookId) {
         double average = reviewService.getReviewGradeAverage(bookId);
         return ResponseEntity.ok(average);
     }
 
+    // 리뷰 보여줌, pagination
     @GetMapping("/book/{bookId}")
     public ResponseEntity<Page<ReviewResponse>> getReviewsByBook(
             @PathVariable long bookId,
@@ -38,6 +41,7 @@ public class ReviewController {
         return ResponseEntity.ok(reviews);
     }
 
+    // 리뷰 수정
     @PutMapping("/{reviewId}")
     public ResponseEntity<ReviewResponse> updateReview(
             @PathVariable long reviewId,
@@ -46,11 +50,11 @@ public class ReviewController {
         return ResponseEntity.ok(response);
     }
 
+    // 사용자가 준 평점의 평균 (필요없으면 삭제해도 상관없을듯 함.)
     @GetMapping("/member/{memberId}/grade")
     public ResponseEntity<Double> getMemberAverageGrade(@PathVariable String memberId) {
         double average = reviewService.getMemberAverageGrade(memberId);
         return ResponseEntity.ok(average);
     }
-
 
 }

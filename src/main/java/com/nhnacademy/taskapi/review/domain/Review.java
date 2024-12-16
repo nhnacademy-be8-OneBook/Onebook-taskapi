@@ -25,15 +25,17 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long reviewId;
 
-    @NotNull
+    @Column(nullable = false)
     private int grade = 5; // default
 
     @Column(nullable = false, length = 255)
     private String description;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt;
 
     @ManyToOne
