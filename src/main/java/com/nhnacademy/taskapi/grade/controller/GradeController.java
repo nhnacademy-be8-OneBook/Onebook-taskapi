@@ -16,7 +16,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/grades")
+@RequestMapping("/task/grades")
 public class GradeController {
 
     private final GradeService gradeService;

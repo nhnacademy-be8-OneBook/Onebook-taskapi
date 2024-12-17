@@ -1,11 +1,10 @@
 package com.nhnacademy.taskapi.book.service;
 
 import com.nhnacademy.taskapi.book.domain.Book;
-import com.nhnacademy.taskapi.dto.BookAladinDTO;
-import com.nhnacademy.taskapi.dto.BookSaveDTO;
+import com.nhnacademy.taskapi.book.dto.BookSaveDTO;
+import com.nhnacademy.taskapi.book.dto.BookUpdateDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,11 +18,8 @@ public interface BookService {
     Book saveBook(BookSaveDTO bookSaveDTO);
 
     // 책 수정
-    Book updateBook(Long bookId, BookSaveDTO bookSaveDTO);
+    Book updateBook(Long bookId, BookUpdateDTO bookUpdateDTO);
 
-    // 책 등록 및 수정 (등록/수정 통합 메서드)
-    @Transactional
-    Book saveOrUpdateBook(Long bookId, BookSaveDTO bookSaveDTO);
 
     // 책 삭제
     void deleteBook(Long bookId);

@@ -51,6 +51,13 @@ public class MemberServiceImpl implements MemberService {
         return member;
     }
 
+    // 로그인 아이디로 멤버 조회
+    @Override
+    public Member getMemberByLoginId(String loginId) {
+        return memberRepository.findByLoginId(loginId).orElseThrow(() -> new MemberNotFoundException("Member not found by loginId"));
+    }
+
+
     // 중복 확인 - 회원 인조키(id)가 존재하는지 확인
     @Override
     public boolean existsById(Long id) {
@@ -137,6 +144,10 @@ public class MemberServiceImpl implements MemberService {
     // 로그인
     @Override
     public MemberLoginDto validateLogin(MemberLoginDto memberLoginDto) {
+
+        // TODO 테스트용 삭제 수정자 문영호
+//        return new MemberLoginDto("hihi", "hoho");
+
         if(!existsByLoginId(memberLoginDto.loginId())) {
             throw new MemberIllegalArgumentException("Member id does not exist");
         }

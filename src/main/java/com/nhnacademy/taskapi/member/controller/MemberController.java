@@ -15,13 +15,13 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/members")
+@RequestMapping("/task/members")
 public class MemberController {
 
     private final MemberService memberService;
 
     // 전체 멤버 조회
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<MemberResponseDto>> getMembers() {
         List<Member> members = memberService.getAllMembers();
         List<MemberResponseDto> memberResponseDtoList = new ArrayList<>();
@@ -33,8 +33,8 @@ public class MemberController {
     }
 
     // 인조키(id)로 멤버 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<MemberResponseDto> getMemberById(@PathVariable("id") Long memberId) {
+    @GetMapping
+    public ResponseEntity<MemberResponseDto> getMemberById(@RequestHeader("X-MEMBER-ID") Long memberId) {
        Member member = memberService.getMemberById(memberId);
        MemberResponseDto memberResponseDto = MemberResponseDto.from(member);
 
@@ -51,8 +51,8 @@ public class MemberController {
     }
 
     // 멤버 정보 수정
-    @PutMapping("/{id}")
-    public ResponseEntity<MemberResponseDto> updateMember(@PathVariable("id") Long memberId, @RequestBody @Valid MemberModifyDto memberModifyDto) {
+    @PutMapping
+    public ResponseEntity<MemberResponseDto> updateMember(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestBody @Valid MemberModifyDto memberModifyDto) {
         Member member = memberService.modifyMember(memberId, memberModifyDto);
         MemberResponseDto memberResponseDto = MemberResponseDto.from(member);
 
@@ -61,10 +61,18 @@ public class MemberController {
 
 
     // 회원 탈퇴 - 상태만 'DELETED' 로 변경.
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteMember(@PathVariable("id") Long memberId) {
+    @DeleteMapping
+    public ResponseEntity<String> deleteMember(@RequestHeader("X-MEMBER-ID") Long memberId) {
         memberService.removeMember(memberId);
         return ResponseEntity.noContent().build();
     }
 
+    // 멤버 정보 리턴 for JWT
+    @GetMapping("/jwt/{loginId}")
+    public ResponseEntity<Member> getMemberForJWT(@PathVariable("loginId") String loginId) {
+        Member member = memberService.getMemberByLoginId(loginId);
+        return ResponseEntity.ok().body(member);
+    }
+
 }
+
