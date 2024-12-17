@@ -3,7 +3,6 @@ package com.nhnacademy.taskapi.point.request;
 import lombok.Builder;
 import lombok.Getter;
 
-@Getter
 @Builder
 public record UpdateRefundRequest(int refundAmount) {
     public boolean isRefundAmountValid() {
@@ -11,6 +10,6 @@ public record UpdateRefundRequest(int refundAmount) {
     }
 
     public int getRefundAmount() {
-        return 0;
+        return refundAmount;
     }
 }
