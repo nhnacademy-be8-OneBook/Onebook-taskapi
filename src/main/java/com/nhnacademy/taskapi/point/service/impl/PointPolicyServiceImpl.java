@@ -11,6 +11,7 @@ import com.nhnacademy.taskapi.point.request.CreatePointPolicyRequest;
 import com.nhnacademy.taskapi.point.request.PointPolicyRequest;
 import com.nhnacademy.taskapi.point.response.PointPolicyResponse;
 import com.nhnacademy.taskapi.point.service.PointPolicyService;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +36,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
         PointPolicy pointPolicy = pointPolicyRepository.save(policyRequest.toEntity());
 
         // 포인트 로그 기록 (정책 생성 시에는 금액 변경 없음, "POLICY_CREATE"로 기록)
-        Point point = pointRepository.findByMember_MemberId(policyRequest.memberId())
+        Point point = pointRepository.findByMember_Id(policyRequest.memberId())
                 .orElseThrow(() -> new PointPolicyException("사용자 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
         PointLog pointLog = PointLog.builder()
@@ -53,7 +54,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     // 포인트 정책 단건 조회
     @Transactional(readOnly = true)
     @Override
-    public PointPolicyResponse findPointPolicyById(Long pointPolicyId) {
+    public PointPolicyResponse findPointPolicyById(String pointPolicyId) {
         PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId)
                 .orElseThrow(() -> new PointPolicyException("포인트 정책을 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
@@ -71,7 +72,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
 
     // 포인트 정책 수정
     @Override
-    public PointPolicyResponse updatePointPolicyById(Long pointPolicyId, PointPolicyRequest policyRequest) {
+    public PointPolicyResponse updatePointPolicyById(String pointPolicyId, PointPolicyRequest policyRequest) {
         PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId)
                 .orElseThrow(() -> new PointPolicyException("포인트 정책을 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
@@ -95,7 +96,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
         pointPolicyRepository.save(pointPolicy);
 
         // 포인트 로그 기록 (정책 수정 시)
-        Point point = pointRepository.findByMember_MemberId(pointPolicy.getMemberId())
+        Point point = pointRepository.findByMember_Id(pointPolicy.getMemberId())
                 .orElseThrow(() -> new PointPolicyException("사용자 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
         PointLog pointLog = PointLog.builder()
@@ -112,7 +113,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
 
     // 포인트 정책 삭제
     @Override
-    public void deletePointPolicyById(Long pointPolicyId) {
+    public void deletePointPolicyById(String pointPolicyId) {
         PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId)
                 .orElseThrow(() -> new PointPolicyException("포인트 정책을 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
@@ -122,7 +123,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
         pointPolicyRepository.save(pointPolicy);
 
         // 포인트 로그 기록 (정책 삭제 시)
-        Point point = pointRepository.findByMember_MemberId(pointPolicy.getMemberId())
+        Point point = pointRepository.findByMember_Id(pointPolicy.getMemberId())
                 .orElseThrow(() -> new PointPolicyException("사용자 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
         PointLog pointLog = PointLog.builder()

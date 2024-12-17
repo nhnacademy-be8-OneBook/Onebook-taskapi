@@ -44,7 +44,7 @@ public class PointPolicy {
 
     @NotNull(message = "회원 ID는 필수입니다.")
     @Column(nullable = false)
-    private String memberId;  // Add memberId field
+    private Long memberId;  // Add memberId field
 
     @Builder
     public PointPolicy(String pointPolicyId, String pointPolicyName, int pointPolicyRate, int pointPolicyConditionAmount,
@@ -60,10 +60,10 @@ public class PointPolicy {
         this.pointPolicyCreatedAt = pointPolicyCreatedAt;
         this.pointPolicyUpdatedAt = pointPolicyUpdatedAt;
         this.pointPolicyState = pointPolicyState;
-        this.memberId = memberId; // Set memberId
+        this.memberId = Long.valueOf(memberId); // Set memberId
     }
 
-    public void updateMemberId(String memberId) {
+    public void updateMemberId(Long memberId) {
         this.memberId = memberId;
     }
 
