@@ -175,7 +175,7 @@ Content-type: application/json
   "phoneNumber": "010-3082-2878"
 }
 
-### 회원 가입
+### 삭제 테스트용 회원 가입
 POST http://localhost:8080/members
 Content-type: application/json
 
