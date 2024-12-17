@@ -1,10 +1,6 @@
-// ReviewRequest.java
 package com.nhnacademy.taskapi.review.dto;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.util.List;
@@ -12,7 +8,7 @@ import java.util.List;
 @Data
 public class ReviewRequest {
     @NotNull
-    private long memberId;
+    private String memberId;
 
     @NotNull
     private long bookId;
@@ -24,6 +20,21 @@ public class ReviewRequest {
     @NotBlank
     private String description;
 
-    @Max(3)
+    @Size(max = 3)
     private List<String> imageUrl; // 최대 3장
+
+    public ReviewRequest(String memberId, long bookId, int grade, String description, List<String> imageUrl) {
+        this.memberId = memberId;
+        this.bookId = bookId;
+        this.grade = grade;
+        this.description = description;
+        this.imageUrl = imageUrl;
+    }
+
+    public ReviewRequest(String memberId, long bookId, int grade, String description) {
+        this.memberId = memberId;
+        this.bookId = bookId;
+        this.grade = grade;
+        this.description = description;
+    }
 }

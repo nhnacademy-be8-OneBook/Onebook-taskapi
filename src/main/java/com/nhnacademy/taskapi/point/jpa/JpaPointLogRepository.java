@@ -5,6 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface JpaPointLogRepository extends JpaRepository<PointLog, Long> {
-    Page<PointLog> findByPoint_Member_MemberIdOrderByPointLogUpdatedAtDesc(Long member_id, Pageable pageable);
+public interface JpaPointLogRepository extends JpaRepository<PointLog, String> {
+    Page<PointLog> findByPoint_Member_IdOrderByPointLogUpdatedAtDesc(String member_id, Pageable pageable);
 }

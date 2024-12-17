@@ -11,6 +11,7 @@ import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -123,7 +124,7 @@ public class MemberServiceImpl implements MemberService {
         String encodedCredentials = authorizationHeader.substring(6);
         String decodedCredentials = new String(java.util.Base64.getDecoder().decode(encodedCredentials));
         String[] credentials = decodedCredentials.split(":");
-
+      
         if (credentials.length != 2) {
             throw new MemberIllegalArgumentException("Invalid Authorization header format");
         }
@@ -138,9 +139,9 @@ public class MemberServiceImpl implements MemberService {
         if (!member.getPassword().equals(password)) {
             throw new MemberIllegalArgumentException("Incorrect password");
         }
-
         return member;
     }
 
+  
     // 회원 정보 수정
 }

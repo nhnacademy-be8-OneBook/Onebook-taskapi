@@ -18,13 +18,14 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "reviews")
 public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long reviewId;
 
-    @NotNull
+    @Column(nullable = false)
     private int grade = 5; // default
 
     @Column(nullable = false, length = 255)

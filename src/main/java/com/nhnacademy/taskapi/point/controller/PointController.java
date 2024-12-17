@@ -27,9 +27,10 @@ public class PointController {
     // 현재 포인트 조회
     @Operation(summary = "현재 포인트 조회", description = "특정 회원의 현재 포인트를 조회합니다.")
     @GetMapping("/points")
+
     public ResponseEntity<PointResponse> getPoints(HttpServletRequest request) {
         // HttpServletRequest에서 인증된 회원 정보 추출
-        Member member = memberService.getAuthenticatedMember(request); // Authorization 헤더에서 로그인 정보를 가져와 인증
+        Member member = memberService.getAuthenticatedMember(request);
         String memberId = member.getId();
         return new ResponseEntity<>(pointService.findPointByMemberId(memberId), HttpStatus.OK);
     }

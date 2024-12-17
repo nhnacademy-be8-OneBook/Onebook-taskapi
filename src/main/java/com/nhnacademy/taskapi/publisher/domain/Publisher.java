@@ -1,22 +1,23 @@
 package com.nhnacademy.taskapi.publisher.domain;
 
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import com.nhnacademy.taskapi.book.domain.Book;
+
+
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "publishers")
 public class Publisher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +26,7 @@ public class Publisher {
     @NotBlank
     @Length(max = 30)
     private String name;
+
+    @OneToMany(mappedBy = "publisher", fetch = FetchType.LAZY)
+    private List<Book> books;
 }

@@ -14,7 +14,7 @@ public class ReviewResponse {
     private String description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private long memberId;
+    private String memberId;
     private long bookId;
     private List<String> imageUrl;
 }

@@ -1,61 +1,43 @@
 package com.nhnacademy.taskapi.serviceImplTest;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.LongNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.nhnacademy.taskapi.author.domain.Author;
-import com.nhnacademy.taskapi.author.repository.AuthorRepository;
 import com.nhnacademy.taskapi.book.domain.Book;
-import com.nhnacademy.taskapi.book.domain.BookAuthor;
-import com.nhnacademy.taskapi.book.domain.BookCategory;
-import com.nhnacademy.taskapi.book.repository.BookAuthorRepository;
-import com.nhnacademy.taskapi.book.repository.BookCategoryRepository;
-import com.nhnacademy.taskapi.book.repository.BookRepository;
-import com.nhnacademy.taskapi.book.service.BookService;
+import com.nhnacademy.taskapi.book.repository.*;
 import com.nhnacademy.taskapi.book.service.Impl.BookServiceImpl;
-import com.nhnacademy.taskapi.category.domain.Category;
-import com.nhnacademy.taskapi.category.repository.CategoryRepository;
-import com.nhnacademy.taskapi.dto.BookAladinDTO;
+import com.nhnacademy.taskapi.dto.BookSaveDTO;
+import com.nhnacademy.taskapi.adapter.AladinApiAdapter;
 import com.nhnacademy.taskapi.publisher.domain.Publisher;
 import com.nhnacademy.taskapi.publisher.repository.PublisherRepository;
+import com.nhnacademy.taskapi.author.domain.Author;
+import com.nhnacademy.taskapi.author.repository.AuthorRepository;
+import com.nhnacademy.taskapi.category.domain.Category;
+import com.nhnacademy.taskapi.category.repository.CategoryRepository;
+import com.nhnacademy.taskapi.image.domain.Image;
+import com.nhnacademy.taskapi.image.repository.ImageRepository;
 import com.nhnacademy.taskapi.stock.domain.Stock;
 import com.nhnacademy.taskapi.stock.repository.StockRepository;
+import com.nhnacademy.taskapi.Tag.domain.Tag;
+import com.nhnacademy.taskapi.Tag.repository.TagRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class BookServiceImplTest {
+
+class BookServiceImplTest {
 
     @InjectMocks
     private BookServiceImpl bookService;
-
-    @Mock
-    private RestTemplate restTemplate;
-
-    @Mock
-    private ObjectMapper objectMapper;
-
-    @Mock
-    private JsonNode rootNode;
-
-    @Mock
-    private JsonNode itemNode;
-
-
-    @Mock
-    private PublisherRepository publisherRepository;
 
     @Mock
     private BookRepository bookRepository;
@@ -64,105 +46,154 @@ public class BookServiceImplTest {
     private AuthorRepository authorRepository;
 
     @Mock
-    private BookAuthorRepository bookAuthorRepository;
-
-    @Mock
-    private StockRepository stockRepository;
+    private PublisherRepository publisherRepository;
 
     @Mock
     private CategoryRepository categoryRepository;
 
     @Mock
+    private StockRepository stockRepository;
+
+    @Mock
+    private TagRepository tagRepository;
+
+    @Mock
+    private ImageRepository imageRepository;
+
+    @Mock
     private BookCategoryRepository bookCategoryRepository;
 
+    @Mock
+    private BookAuthorRepository bookAuthorRepository;
+
+    @Mock
+    private BookTagRepository bookTagRepository;
+
+    @Mock
+    private AladinApiAdapter aladinApiAdapter;
+
+    private Pageable pageable;
+
     @BeforeEach
-    public void setup() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
+        pageable = PageRequest.of(0, 50);
     }
 
     @Test
-    public void testSaveAladin() throws Exception {
-        // JSON 응답 시뮬레이션
-        String jsonResponse = "{"
-                + "\"item\": ["
-                + "{"
-                + "\"title\": \"Book Title\","
-                + "\"author\": \"Author Name\","
-                + "\"pubDate\": \"2023-12-12\","
-                + "\"description\": \"Book Description\","
-                + "\"isbn13\": \"1234567890123\","
-                + "\"priceSales\": 15000,"
-                + "\"priceStandard\": 20000,"
-                + "\"categoryName\": \"Category Name\","
-                + "\"publisher\": \"Publisher Name\","
-                + "\"salesPoint\": 1000"
-                + "}]"
-                + "}";
-
-        // Mocking RestTemplate의 동작
-        when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(jsonResponse);
-
-        // Mocking ObjectMapper의 동작
-        when(objectMapper.readTree(jsonResponse)).thenReturn(rootNode);
-        when(rootNode.path("item")).thenReturn(itemNode);
-
-        // Mocking itemNode의 동작
-        JsonNode bookItem = mock(JsonNode.class);
-        when(itemNode.iterator()).thenReturn(Collections.singletonList(bookItem).iterator());
-
-
-        // 서비스 메소드 호출
-        List<BookAladinDTO> result = bookService.saveAladin();
-
-        // 검증
-        assertNotNull(result);
-        assertEquals(7, result.size());  // 리스트에 하나의 책 정보가 있어야 합니다.
-    }
-
-
-    @Test
-    @Transactional
-    public void testSaveBookFromAladin() {
-        // Given: Sample BookAladinDTO list
-        BookAladinDTO dto = new BookAladinDTO();
-        dto.setPublisherName("Publisher Name");
-        dto.setTitle("Book Title");
-        dto.setDescription("Book Description");
+    void testSaveBookFromAladin() {
+        // Given
+        BookSaveDTO dto = new BookSaveDTO();
+        dto.setTitle("Sample Book");
+        dto.setAuthorName("Sample Author");
+        dto.setPubdate("2023-12-01");
+        dto.setDescription("Sample Description");
         dto.setIsbn13("1234567890123");
-        dto.setPrice(20000);
-        dto.setPriceSales(15000);
-        dto.setSalesPoint(1000);
-        dto.setCategoryNames("Category1\\u003ECategory2");
-        dto.setAuthorName("Author Name");
-        dto.setPubdate(LocalDate.now());
+        dto.setPriceSales(1000);
+        dto.setPrice(1500);
+        dto.setCategoryNames("Fiction>Fantasy");
+        dto.setPublisherName("Sample Publisher");
+        dto.setSalesPoint(200L);
 
-        List<BookAladinDTO> dtoList = List.of(dto);
+        when(aladinApiAdapter.fetchAladinData(anyString()))
+                .thenReturn("{\"item\":[{" +
+                        "\"title\":\"Sample Book\"," +
+                        "\"author\":\"Sample Author\"," +
+                        "\"pubDate\":\"2023-12-01\"," +
+                        "\"description\":\"Sample Description\"," +
+                        "\"isbn13\":\"1234567890123\"," +
+                        "\"priceSales\":1000," +
+                        "\"priceStandard\":1500," +
+                        "\"categoryName\":\"Fiction>Fantasy\"," +
+                        "\"publisher\":\"Sample Publisher\"," +
+                        "\"salesPoint\":200" +
+                        "}]}");
+        when(bookRepository.findByIsbn13("1234567890123")).thenReturn(null);
+        when(publisherRepository.findByName("Sample Publisher")).thenReturn(new Publisher());
+        when(authorRepository.findByName("Sample Author")).thenReturn(new Author());
+        when(categoryRepository.findByName("Fiction")).thenReturn(new Category());
+        when(bookRepository.save(any(Book.class))).thenReturn(new Book());
+        // When
+        assertDoesNotThrow(() -> bookService.saveBookFromAladin());  // DTO 전달
 
-        // Mocking behavior
-        Publisher publisher = new Publisher();
-        publisher.setName("Publisher Name");
-        when(publisherRepository.findByName(dto.getPublisherName())).thenReturn(null); // No existing publisher
+        // Then
+        verify(aladinApiAdapter, times(1)).fetchAladinData(anyString());
+        verify(bookRepository, atLeastOnce()).save(any(Book.class));
+    }
 
-        Book book = new Book();
-        when(bookRepository.findByIsbn13(dto.getIsbn13())).thenReturn(null); // No existing book
 
-        Author author = new Author();
-        author.setName(dto.getAuthorName());
-        when(authorRepository.findByName(dto.getAuthorName())).thenReturn(null); // No existing author
+    @Test
+    void testSaveBook() {
+        // Given
+        BookSaveDTO dto = new BookSaveDTO();
+        dto.setTitle("Sample Book");
+        dto.setAuthorName("Sample Author");
+        dto.setPubdate("2023-12-01");
+        dto.setDescription("Sample Description");
+        dto.setIsbn13("1234567890123");
+        dto.setPriceSales(1000);
+        dto.setPrice(1500);
+        dto.setCategoryNames("Fiction>Fantasy");
+        dto.setPublisherName("Sample Publisher");
+        dto.setSalesPoint(200L);
 
-        Category category = new Category();
-        when(categoryRepository.findByName("Category1")).thenReturn(null); // No existing category
+        when(publisherRepository.findByName("Sample Publisher")).thenReturn(new Publisher());
+        when(authorRepository.findByName("Sample Author")).thenReturn(new Author());
+        when(categoryRepository.findByName("Fiction")).thenReturn(new Category());
+        when(bookRepository.findByIsbn13("1234567890123")).thenReturn(null);
 
-        // When: saveBookFromAladin() method is called
-        bookService.saveBookFromAladin();
+        // When
+        Book result = bookService.saveBook(dto);
 
-        // Then: Verify interactions
-        verify(publisherRepository, times(7)).save(any(Publisher.class));
-        verify(bookRepository, times(7)).save(any(Book.class));
-        verify(authorRepository, times(7)).save(any(Author.class));
-        verify(bookAuthorRepository, times(7)).save(any(BookAuthor.class));
-        verify(stockRepository, times(7)).save(any(Stock.class));
-        verify(categoryRepository, times(7)).save(any(Category.class));
-        verify(bookCategoryRepository, times(7)).save(any(BookCategory.class));
+        // Then
+        assertNotNull(result);
+        verify(bookRepository, times(1)).save(any(Book.class));
+    }
+
+    @Test
+    void testBestSellerBooks() {
+        // 데이터 준비 (세터를 통해 값 설정)
+        Book book1 = new Book();
+        book1.setBookId(1L);
+        book1.setTitle("Book 1");
+        book1.setDescription("Description of Book 1");
+        book1.setIsbn13("1234567890123");
+        book1.setPrice(500);
+        book1.setSalePrice(450);
+        book1.setAmount(1000);
+        book1.setViews(200);
+        book1.setPubdate(LocalDate.of(2023, 1, 1));
+
+        Book book2 = new Book();
+        book2.setBookId(2L);
+        book2.setTitle("Book 2");
+        book2.setDescription("Description of Book 2");
+        book2.setIsbn13("1234567890456");
+        book2.setPrice(600);
+        book2.setSalePrice(550);
+        book2.setAmount(800);
+        book2.setViews(150);
+        book2.setPubdate(LocalDate.of(2023, 1, 2));
+
+        List<Book> books = Arrays.asList(book1, book2);
+
+        // Page<Book> 객체 생성
+        Page<Book> bookPage = new PageImpl<>(books, pageable, books.size());
+
+        // Mocking bookRepository.findTop50ByAmount() 메서드
+        when(bookRepository.findTop50ByAmount(pageable)).thenReturn(bookPage);
+
+        // 메서드 호출
+        Page<Book> result = bookService.bestSellerBooks(pageable);
+
+        // 결과 검증
+        assertNotNull(result); // 결과가 null이 아니어야 합니다
+        assertEquals(2, result.getTotalElements()); // 책 2개
+        assertEquals(1, result.getTotalPages()); // 총 페이지 수는 1페이지
+        assertEquals("Book 1", result.getContent().get(0).getTitle()); // 첫 번째 책 제목 확인
+        assertEquals(1000, result.getContent().get(0).getAmount()); // 첫 번째 책의 판매량 확인
+
+        // 메서드 호출 검증
+        verify(bookRepository, times(1)).findTop50ByAmount(pageable);
     }
 }
