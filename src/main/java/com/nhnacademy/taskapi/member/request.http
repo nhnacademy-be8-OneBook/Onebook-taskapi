@@ -1,5 +1,5 @@
 ### Regular 회원 등급 등록
-POST http://localhost:8080/grades
+POST http://localhost:8080/task/grades
 Content-type: application/json
 
 {
@@ -9,13 +9,13 @@ Content-type: application/json
 }
 
 ### 전체 회원 등급 조회
-GET http://localhost:8080/grades
+GET http://localhost:8080/task/grades
 
 ### 단일 회원 등급 조회 by id
-GET http://localhost:8080/grades/1
+GET http://localhost:8080/task/grades/1
 
 ### 회원 등급 등록 중복 등록 테스트
-POST http://localhost:8080/grades
+POST http://localhost:8080/task/grades
 Content-type: application/json
 
 {
@@ -25,7 +25,7 @@ Content-type: application/json
 }
 
 ### DTO Validate 검증: 마이너스 적립률 등록
-POST http://localhost:8080/grades
+POST http://localhost:8080/task/grades
 Content-type: application/json
 
 {
@@ -35,7 +35,7 @@ Content-type: application/json
 }
 
 ### 등급 수정
-PUT http://localhost:8080/grades/1
+PUT http://localhost:8080/task/grades/1
 Content-type: application/json
 
 {
@@ -45,7 +45,7 @@ Content-type: application/json
 }
 
 ### 삭제용 Regular 회원 등급 등록
-POST http://localhost:8080/grades
+POST http://localhost:8080/task/grades
 Content-type: application/json
 
 {
@@ -55,13 +55,13 @@ Content-type: application/json
 }
 
 ### 등급 삭제
-DELETE http://localhost:8080/grades/2
+DELETE http://localhost:8080/task/grades/2
 Content-type: application/json
 
 ########################################################################################################################
 
 ### Role 등록
-POST http://localhost:8080/roles
+POST http://localhost:8080/task/roles
 Content-Type: application/json
 
 {
@@ -70,13 +70,13 @@ Content-Type: application/json
 }
 
 ### 전체 Role 조회
-GET http://localhost:8080/roles
+GET http://localhost:8080/task/roles
 
 ### 단일 Role 조회
-GET http://localhost:8080/roles/1
+GET http://localhost:8080/task/roles/1
 
 ### role 등록 중복 테스트
-POST http://localhost:8080/roles
+POST http://localhost:8080/task/roles
 Content-Type: application/json
 
 {
@@ -85,7 +85,7 @@ Content-Type: application/json
 }
 
 ### role Validation 검증
-POST http://localhost:8080/roles
+POST http://localhost:8080/task/roles
 Content-type: application/json
 
 {
@@ -94,7 +94,7 @@ Content-type: application/json
 }
 
 ### Test Role 등록
-POST http://localhost:8080/roles
+POST http://localhost:8080/task/roles
 Content-Type: application/json
 
 {
@@ -103,7 +103,7 @@ Content-Type: application/json
 }
 
 ### Test Role 수정
-PUT http://localhost:8080/roles/2
+PUT http://localhost:8080/task/roles/2
 Content-type: application/json
 
 {
@@ -112,12 +112,12 @@ Content-type: application/json
 }
 
 ### role 삭제
-DELETE http://localhost:8080/roles/2
+DELETE http://localhost:8080/task/roles/2
 
 ############################################################################################################
 
 ### 회원 가입
-POST http://localhost:8080/members
+POST http://localhost:8080/task/members
 Content-type: application/json
 
 {
@@ -131,10 +131,10 @@ Content-type: application/json
 }
 
 ### 전체 멤버 조회
-GET http://localhost:8080/members
+GET http://localhost:8080/task/members
 
 ### 중복 회원 가입 검증
-POST http://localhost:8080/members
+POST http://localhost:8080/task/members
 Content-type: application/json
 
 {
@@ -148,7 +148,7 @@ Content-type: application/json
 }
 
 ### DTO validation 검증
-POST http://localhost:8080/members
+POST http://localhost:8080/task/members
 Content-type: application/json
 
 {
@@ -162,7 +162,7 @@ Content-type: application/json
 }
 
 ### 회원 정보 수정
-PUT http://localhost:8080/members/cd0d2af5-c05b-46a8-a2ab-945f4f7f7927
+PUT http://localhost:8080/task/members/cd0d2af5-c05b-46a8-a2ab-945f4f7f7927
 Content-type: application/json
 
 {
@@ -176,7 +176,7 @@ Content-type: application/json
 }
 
 ### 삭제 테스트용 회원 가입
-POST http://localhost:8080/members
+POST http://localhost:8080/task/members
 Content-type: application/json
 
 {
@@ -190,12 +190,12 @@ Content-type: application/json
 }
 
 ### 회원 삭제
-DELETE http://localhost:8080/members/cd0d2af5-c05b-46a8-a2ab-945f4f7f7927
+DELETE http://localhost:8080/task/members/cd0d2af5-c05b-46a8-a2ab-945f4f7f7927
 
 ########################################################################################################################
 
 ### 로그인
-POST http://localhost:8080/login
+POST http://localhost:8080/task/auth/login
 Content-type: application/json
 
 {
@@ -204,7 +204,7 @@ Content-type: application/json
 }
 
 ### 로그인 실패 1 - id
-POST http://localhost:8080/login
+POST http://localhost:8080/task/auth/login
 Content-type: application/json
 
 {
@@ -213,7 +213,7 @@ Content-type: application/json
 }
 
 ### 로그인 실패 1 - pw
-POST http://localhost:8080/login
+POST http://localhost:8080/task/auth/login
 Content-type: application/json
 
 {
@@ -222,7 +222,7 @@ Content-type: application/json
 }
 
 ### 로그인 실패 3 - 삭제된 회원 조회
-POST http://localhost:8080/login
+POST http://localhost:8080/task/auth/login
 Content-type: application/json
 
 {
