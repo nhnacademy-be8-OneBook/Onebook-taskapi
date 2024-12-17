@@ -15,7 +15,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/members")
+@RequestMapping("/task/members")
 public class MemberController {
 
     private final MemberService memberService;
@@ -65,6 +65,13 @@ public class MemberController {
     public ResponseEntity<String> deleteMember(@PathVariable("id") Long memberId) {
         memberService.removeMember(memberId);
         return ResponseEntity.noContent().build();
+    }
+
+    // JWT 정보 반환용
+    @GetMapping("/{loginId}")
+    public ResponseEntity<Member> getMemberForJWT(@PathVariable("loginId") String loginId) {
+        Member member = memberService.getMemberByLoginId(loginId);
+        return ResponseEntity.ok().body(member);
     }
 
 }

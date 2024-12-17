@@ -11,6 +11,7 @@ import java.util.List;
 public interface MemberService {
     List<Member> getAllMembers();
     Member getMemberById(Long id);
+    Member getMemberByLoginId(String loginId);
     boolean existsById(Long id);
     boolean existsByLoginId(String loginId);
     Member registerMember(MemberRegisterDto memberRegisterDto);
