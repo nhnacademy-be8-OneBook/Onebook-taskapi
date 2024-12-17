@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.point;
+package com.nhnacademy.taskapi.point.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -6,41 +6,28 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PointPolicy {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pointPolicyId;
+    private Long pointPolicyId;  // pointPolicyId를 Long으로 변경
 
     @NotNull(message = "포인트 정책명은 필수입니다.")
     @Column(nullable = false, length = 50)
     private String pointPolicyName;
 
-    // 조건 금액 (ex : if 00금액, 00금액 이상으로 적용)
-    @Column(precision = 10, scale = 2)
-    private BigDecimal pointPolicyConditionAmount;
+    private int pointPolicyConditionAmount;
+    private int pointPolicyRate;
+    private int pointPolicyApplyAmount;
 
-    // 적립률
-    private BigDecimal pointPolicyRate;
-
-    // 적립 금액
-    @Column(precision = 10, scale = 2)
-    private BigDecimal pointPolicyApplyAmount;
-
-    // 적립 조건
     @NotNull(message = "포인트 적립 조건은 필수입니다.")
     @Column(nullable = false, length = 200)
     private String pointPolicyCondition;
 
-    // 적립 유형
-    // 적립 금액 = 1(true), 적립률 = 0(false)
     @NotNull(message = "포인트 적립 유형은 필수입니다.")
     @Column(nullable = false)
     private boolean pointPolicyApplyType;
@@ -48,18 +35,20 @@ public class PointPolicy {
     @NotNull(message = "포인트 생성일은 필수입니다.")
     @Column(nullable = false)
     private LocalDate pointPolicyCreatedAt;
-
     private LocalDate pointPolicyUpdatedAt;
 
     @NotNull(message = "포인트 상태는 필수입니다.")
     @Column(nullable = false)
     private boolean pointPolicyState;
 
-    @Builder
-    public PointPolicy(Long pointPolicyId, String pointPolicyName, BigDecimal pointPolicyRate, BigDecimal pointPolicyConditionAmount,
-                       String pointPolicyCondition, BigDecimal pointPolicyApplyAmount, LocalDate pointPolicyCreatedAt,
-                       LocalDate pointPolicyUpdatedAt, boolean pointPolicyApplyType, boolean pointPolicyState) {
+    @NotNull(message = "회원 ID는 필수입니다.")
+    @Column(nullable = false)
+    private Long memberId;  // memberId 타입을 Long으로 변경
 
+    @Builder
+    public PointPolicy(Long pointPolicyId, String pointPolicyName, int pointPolicyRate, int pointPolicyConditionAmount,
+                       String pointPolicyCondition, int pointPolicyApplyAmount, LocalDate pointPolicyCreatedAt,
+                       LocalDate pointPolicyUpdatedAt, boolean pointPolicyApplyType, boolean pointPolicyState, Long memberId) {
         this.pointPolicyId = pointPolicyId;
         this.pointPolicyName = pointPolicyName;
         this.pointPolicyConditionAmount = pointPolicyConditionAmount;
@@ -70,21 +59,26 @@ public class PointPolicy {
         this.pointPolicyCreatedAt = pointPolicyCreatedAt;
         this.pointPolicyUpdatedAt = pointPolicyUpdatedAt;
         this.pointPolicyState = pointPolicyState;
+        this.memberId = memberId;  // memberId를 Long으로 처리
+    }
+
+    public void updateMemberId(Long memberId) {
+        this.memberId = memberId;
     }
 
     public void updatePointPolicyName(String pointPolicyName) {
         this.pointPolicyName = pointPolicyName;
     }
 
-    public void updatePointPolicyConditionAmount(BigDecimal pointPolicyConditionAmount) {
+    public void updatePointPolicyConditionAmount(Integer pointPolicyConditionAmount) {
         this.pointPolicyConditionAmount = pointPolicyConditionAmount;
     }
 
-    public void updatePointPolicyApplyAmount(BigDecimal pointPolicyApplyAmount) {
+    public void updatePointPolicyApplyAmount(Integer pointPolicyApplyAmount) {
         this.pointPolicyApplyAmount = pointPolicyApplyAmount;
     }
 
-    public void updatePointPolicyRate(BigDecimal pointPolicyRate) {
+    public void updatePointPolicyRate(Integer pointPolicyRate) {
         this.pointPolicyRate = pointPolicyRate;
     }
 
