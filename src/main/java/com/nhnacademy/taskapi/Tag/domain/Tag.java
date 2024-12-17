@@ -1,10 +1,7 @@
 package com.nhnacademy.taskapi.Tag.domain;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +13,7 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "Tags")
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

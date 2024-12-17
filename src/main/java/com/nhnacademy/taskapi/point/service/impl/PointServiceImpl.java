@@ -32,7 +32,7 @@ public class PointServiceImpl implements PointService {
     @Override
     public PointResponse findPointByMemberId(String memberId) {
         // 포인트 조회
-        Point point = pointRepository.findByMember_MemberId(memberId)
+        Point point = pointRepository.findByMember_Id(memberId)
                 .orElseThrow(() -> new PointPolicyException("사용자 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
         // PointResponse로 포인트 정보 반환
@@ -41,9 +41,8 @@ public class PointServiceImpl implements PointService {
 
     @Override
     public UpdatePointResponse updatePointByMemberId(String memberId, UpdatePointRequest pointRequest) {
-
         // 1. 포인트 조회
-        Point point = pointRepository.findByMember_MemberId(memberId)
+        Point point = pointRepository.findByMember_Id(memberId)
                 .orElseThrow(() -> new PointPolicyException("사용자 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
         // 2. 포인트 갱신: 요청된 포인트 금액을 더하거나 빼기
@@ -71,7 +70,7 @@ public class PointServiceImpl implements PointService {
     @Override
     public void usePointsForPayment(String memberId, int paymentAmount) {
         // 포인트 조회
-        Point point = pointRepository.findByMember_MemberId(memberId)
+        Point point = pointRepository.findByMember_Id(memberId)
                 .orElseThrow(() -> new PointPolicyException("사용자 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
         if (point.getAmount() < paymentAmount) {
@@ -96,7 +95,7 @@ public class PointServiceImpl implements PointService {
     @Override
     public void updatePointByRefund(String memberId, UpdateRefundRequest refundRequest) {
         // 포인트 조회
-        Point point = pointRepository.findByMember_MemberId(memberId)
+        Point point = pointRepository.findByMember_Id(memberId)
                 .orElseThrow(() -> new PointPolicyException("사용자 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
         // 환불된 포인트 갱신

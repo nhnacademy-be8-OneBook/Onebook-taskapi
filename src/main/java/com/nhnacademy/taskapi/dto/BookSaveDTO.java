@@ -15,18 +15,18 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookSaveDTO {
-    String title;
-    String authorName;
-    String pubdate;
-    String description;
-    String isbn13;
-    int priceSales;
-    int price;
-    String categoryNames;
-    String publisherName;
-    long salesPoint;
+    private String title;
+    private String authorName;
+    private String pubdate;
+    private String description;
+    private String isbn13;
+    private Integer priceSales;
+    private Integer price;
+    private String categoryNames;
+    private String publisherName;
+    private Long salesPoint;
 
-    String tagName;
+    private String tagName;
 
     String imageUrl;
 }

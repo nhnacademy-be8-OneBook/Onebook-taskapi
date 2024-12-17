@@ -1,4 +1,3 @@
-// ReviewRequest.java
 package com.nhnacademy.taskapi.review.dto;
 
 import jakarta.validation.constraints.*;

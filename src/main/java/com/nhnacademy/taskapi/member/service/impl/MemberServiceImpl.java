@@ -11,7 +11,9 @@ import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.member.service.MemberService;
+
 import com.nhnacademy.taskapi.roles.service.RoleService;
+
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -82,6 +84,7 @@ public class MemberServiceImpl implements MemberService {
                 memberRegisterDto.phoneNumber(),
                 roleService.getRoleById(1) // Role Id: 1은 무조건 MEMBER
         );
+
 
         try {
 
@@ -166,3 +169,4 @@ public class MemberServiceImpl implements MemberService {
     }
 
 }
+

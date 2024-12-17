@@ -1,11 +1,11 @@
-package com.nhnacademy.taskapi.orders.dto;
+package com.nhnacademy.taskapi.order.dto;
 
 import lombok.AllArgsConstructor;
 
 import java.util.Date;
 
 @AllArgsConstructor
-public class SaveOrders {
+public class SaveOrder {
     Long orderId;
     String customerId;
     String phoneNumber;
