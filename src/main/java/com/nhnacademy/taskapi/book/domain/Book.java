@@ -33,9 +33,9 @@ public class Book {
     @Length(max = 100)
     private String title;
 
-//    @NotBlank
-//    @Length(max = 100)
-//    private String content;
+    @NotBlank
+    @Length(max = 100)
+    private String content;
 
     @NotBlank
     private String description;

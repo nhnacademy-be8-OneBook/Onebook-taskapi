@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.dto;
+package com.nhnacademy.taskapi.book.dto;
 
 
 import jakarta.persistence.GeneratedValue;
