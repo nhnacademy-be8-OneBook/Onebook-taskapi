@@ -1,7 +1,9 @@
 package com.nhnacademy.taskapi.grade.controller;
 
 import com.nhnacademy.taskapi.grade.domain.Grade;
+import com.nhnacademy.taskapi.grade.dto.GradeModifyDto;
 import com.nhnacademy.taskapi.grade.dto.GradeRegisterDto;
+import com.nhnacademy.taskapi.grade.dto.GradeResponseDto;
 import com.nhnacademy.taskapi.grade.service.GradeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,53 +11,58 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
+@RequestMapping("/task/grades")
 public class GradeController {
 
     private final GradeService gradeService;
 
     // 전체 등급 조회
-    @GetMapping("/grades")
-    public ResponseEntity<List<Grade>> findAllGrades() {
+    @GetMapping
+    public ResponseEntity<List<GradeResponseDto>> getGrades() {
         List<Grade> grades = gradeService.getAllGrades();
-        return ResponseEntity.ok().body(grades);
+        List<GradeResponseDto> gradeResponseDtoList = new ArrayList<>();
+        for (Grade grade : grades) {
+            gradeResponseDtoList.add(GradeResponseDto.from(grade));
+        }
+        return ResponseEntity.ok().body(gradeResponseDtoList);
     }
 
-    // 인조키(id)로 등급 조회
-//    @GetMapping("/grades/{id}")
-//    public ResponseEntity<Grade> findOneGradeById(@PathVariable Long id) {
-//        Grade grade = gradeService.getGradeById(id);
-//        return ResponseEntity.ok().body(grade);
-//    }
+    // 인조키(id)로 단일 등급 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<GradeResponseDto> getGradeById(@PathVariable Integer id) {
+        Grade grade = gradeService.getGradeById(id);
+        GradeResponseDto gradeResponseDto = GradeResponseDto.from(grade);
 
-    // 이름(name)으로 등급 조회
-    @GetMapping("/grades/{name}")
-    public ResponseEntity<Grade> findOneGradeByName(@PathVariable String name) {
-        Grade grade = gradeService.getGradeByName(name);
-        return ResponseEntity.ok().body(grade);
+        return ResponseEntity.ok().body(gradeResponseDto);
     }
 
     // 등급 등록
-    @PostMapping("/grades")
-    public ResponseEntity<Grade> registerGrade(@RequestBody @Valid GradeRegisterDto gradeRegisterDto) {
+    @PostMapping
+    public ResponseEntity<GradeResponseDto> createGrade(@RequestBody @Valid GradeRegisterDto gradeRegisterDto) {
         Grade grade = gradeService.registerGrade(gradeRegisterDto);
-        return ResponseEntity.ok().body(grade);
+        GradeResponseDto gradeResponseDto = GradeResponseDto.from(grade);
+
+        return ResponseEntity.ok().body(gradeResponseDto);
     }
 
     // 등급 수정
-    @PutMapping("/grades")
-    public ResponseEntity<Grade> modifyGrade(@RequestBody @Valid GradeRegisterDto gradeRegisterDto) {
-        Grade grade = gradeService.modifyGrade(gradeRegisterDto);
-        return ResponseEntity.ok().body(grade);
+    @PutMapping("/{id}")
+    public ResponseEntity<GradeResponseDto> updateGrade(@PathVariable Integer id, @RequestBody @Valid GradeModifyDto gradeModifyDto) {
+        Grade grade = gradeService.modifyGrade(id, gradeModifyDto);
+        GradeResponseDto gradeResponseDto = GradeResponseDto.from(grade);
+
+        return ResponseEntity.ok().body(gradeResponseDto);
     }
 
-    // 등급 삭제 by name
-    @DeleteMapping("/grades/{name}")
-    public ResponseEntity<String> deleteGrade(@PathVariable String name) {
-        gradeService.deleteGrade(name);
+    // 등급 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteGrade(@PathVariable Integer id) {
+        gradeService.removeGrade(id);
         return ResponseEntity.noContent().build();
     }
 

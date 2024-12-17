@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.order.entity;
 
+import com.nhnacademy.taskapi.delivery.entity.Delivery;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.orderlist.entity.OrderList;
 import jakarta.persistence.*;
@@ -40,6 +41,9 @@ public class Order {
 
     @OneToMany(mappedBy = "order")
     List<OrderList> orderListList;
+
+    @OneToMany(mappedBy = "order")
+    List<Delivery> deliveryList;
 
     public Order(String phoneNumber, LocalDateTime dateTime, int deliveryPrice, int totalPrice) {
         this.phoneNumber = phoneNumber;
