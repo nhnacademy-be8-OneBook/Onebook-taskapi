@@ -10,7 +10,12 @@ import com.nhnacademy.taskapi.author.domain.Author;
 import com.nhnacademy.taskapi.author.repository.AuthorRepository;
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.domain.BookAuthor;
+import com.nhnacademy.taskapi.book.domain.BookCategory;
 import com.nhnacademy.taskapi.book.domain.BookTag;
+import com.nhnacademy.taskapi.book.dto.BookUpdateDTO;
+import com.nhnacademy.taskapi.book.exception.BookCategoryDuplicateException;
+import com.nhnacademy.taskapi.book.exception.BookDuplicateException;
+import com.nhnacademy.taskapi.book.exception.BookNotFoundException;
 import com.nhnacademy.taskapi.book.exception.BookTagDuplicateException;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.book.repository.BookAuthorRepository;
@@ -19,11 +24,13 @@ import com.nhnacademy.taskapi.book.repository.BookTagRepository;
 import com.nhnacademy.taskapi.book.service.BookService;
 import com.nhnacademy.taskapi.category.domain.Category;
 import com.nhnacademy.taskapi.category.repository.CategoryRepository;
-import com.nhnacademy.taskapi.dto.BookSaveDTO;
+import com.nhnacademy.taskapi.book.dto.BookSaveDTO;
 import com.nhnacademy.taskapi.image.repository.ImageRepository;
 import com.nhnacademy.taskapi.publisher.domain.Publisher;
 import com.nhnacademy.taskapi.publisher.exception.PublisherNotFoundException;
 import com.nhnacademy.taskapi.publisher.repository.PublisherRepository;
+import com.nhnacademy.taskapi.stock.domain.Stock;
+import com.nhnacademy.taskapi.stock.exception.StockDuplicateException;
 import com.nhnacademy.taskapi.stock.repository.StockRepository;
 import com.nhnacademy.taskapi.adapter.AladinApiAdapter;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +44,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -103,56 +111,74 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    @Override
-    public Book saveBook(BookSaveDTO bookSaveDTO) {
-        // 구현 필요
-        return null;
-    }
 
     @Override
-    public Book updateBook(Long bookId, BookSaveDTO bookSaveDTO) {
-        // 구현 필요
-        return null;
+    @Transactional
+    public Book updateBook(Long bookId, BookUpdateDTO bookUpdateDTO) {
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("Book not found!"));
+
+        // 책 정보 수정
+        book.setTitle(bookUpdateDTO.getTitle());
+        book.setContent(bookUpdateDTO.getContent());
+        book.setDescription(bookUpdateDTO.getDescription());
+        book.setPrice(bookUpdateDTO.getPrice());
+        book.setSalePrice(bookUpdateDTO.getSalePrice());
+
+        // 책 재고 수정
+        Stock stock = new Stock();
+        stock.setBook(book);
+        stock.setStock(bookUpdateDTO.getStock());
+        stockRepository.save(stock);
+
+
+        return bookRepository.save(book);
+
+
     }
 
     // 책 등록 및 수정 (등록/수정 통합 메서드)
     @Transactional
     @Override
-    public Book saveOrUpdateBook(Long bookId, BookSaveDTO bookSaveDTO) {
+    public Book saveBook(BookSaveDTO bookSaveDTO) {
         // 기존 책 조회
-        Book book = (bookId != null) ? bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found")) : new Book();
+        Book book = null;
+        if(Objects.nonNull(bookRepository.findByIsbn13(bookSaveDTO.getIsbn13()))) {
+            throw new BookDuplicateException("Book already exists !");
+        }else{
+            book = new Book();
+        }
 
-        // 필드 업데이트 (책 제목, 설명, 가격, 출판사, 카테고리, 작가, 태그 등)
-        if (bookSaveDTO.getTitle() != null) book.setTitle(bookSaveDTO.getTitle());
-        if (bookSaveDTO.getDescription() != null) book.setDescription(bookSaveDTO.getDescription());
-        if (bookSaveDTO.getPrice() != null) book.setPrice(bookSaveDTO.getPrice());
-        if (bookSaveDTO.getPriceSales() != null) book.setSalePrice(bookSaveDTO.getPriceSales());
-        if (bookSaveDTO.getSalesPoint() != null) book.setAmount(bookSaveDTO.getSalesPoint());
-
-        // 출판사 등록 또는 업데이트
+        // 출판사 등록
         Publisher publisher = publisherRepository.findByName(bookSaveDTO.getPublisherName());
         if (publisher == null) {
             throw new PublisherNotFoundException("Publisher not found!");
         }
         book.setPublisher(publisher);
 
-        // 카테고리 등록 또는 업데이트
+        // 카테고리 등록
         Category parentCategory = null;
-        String[] categoryNameList = bookSaveDTO.getCategoryNames().split(">");
-        for (String cate : categoryNameList) {
-            Category existCategory = categoryRepository.findByName(cate);
-            if (existCategory == null) {
-                Category newCategory = new Category();
-                newCategory.setName(cate);
-                newCategory.setParentCategory(parentCategory);
-                categoryRepository.save(newCategory);
-                parentCategory = newCategory;
-            } else {
-                parentCategory = existCategory;
+        if(Objects.nonNull(bookSaveDTO.getCategoryNames())){
+            String[] categoryNameList = bookSaveDTO.getCategoryNames().split(">");
+            for (String cate : categoryNameList) {
+                Category existCategory = categoryRepository.findByName(cate);
+                if (existCategory == null) {
+                    Category newCategory = new Category();
+                    newCategory.setName(cate);
+                    newCategory.setParentCategory(parentCategory);
+                    categoryRepository.save(newCategory);
+                    parentCategory = newCategory;
+                } else {
+                    parentCategory = existCategory;
+                }
             }
+        }else{
+            parentCategory = new Category();
+            parentCategory.setName(bookSaveDTO.getCategoryNames());
+            parentCategory.setParentCategory(null);
+            categoryRepository.save(parentCategory);
         }
 
-        // 작가 등록 또는 업데이트
+        // 작가 등록
         Author author = authorRepository.findByName(bookSaveDTO.getAuthorName());
         if (author == null) {
             author = new Author();
@@ -160,26 +186,32 @@ public class BookServiceImpl implements BookService {
             authorRepository.save(author);
         }
 
-        // 태그 등록 또는 업데이트
-        Tag tag = tagRepository.findByName(bookSaveDTO.getTagName());
-        if (tag == null) {
-            tag = new Tag();
-            tag.setName(bookSaveDTO.getTagName());
-            tagRepository.save(tag);
+        // 태그 등록
+        Tag tag = null;
+        if(bookSaveDTO.getTagName() != null){
+            tag = tagRepository.findByName(bookSaveDTO.getTagName());
+            if (tag == null) {
+                tag = new Tag();
+                tag.setName(bookSaveDTO.getTagName());
+                tagRepository.save(tag);
+            }
         }
 
-        // ISBN 중복 체크
-        if (book.getIsbn13() == null) {
-            book.setIsbn13(bookSaveDTO.getIsbn13());
-        }
 
+        // 책 등록
+
+        book.setTitle(bookSaveDTO.getTitle());
+        book.setDescription(bookSaveDTO.getDescription());
+        book.setIsbn13(bookSaveDTO.getIsbn13());
+        book.setPrice(bookSaveDTO.getPrice());
+        book.setSalePrice(bookSaveDTO.getPriceSales());
+        book.setAmount(0);
+        book.setViews(0);
         // 출판일 설정
         if (bookSaveDTO.getPubdate() != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             book.setPubdate(LocalDate.parse(bookSaveDTO.getPubdate(), formatter));
         }
-
-        // 책 저장 (등록/수정)
         bookRepository.save(book);
 
         // 책-작가 연결
@@ -192,15 +224,40 @@ public class BookServiceImpl implements BookService {
         }
 
         // 책-태그 연결
-        BookTag bookTag = bookTagRepository.findByBook_BookIdAndTag_TagId(book.getBookId(), tag.getTagId());
-        if (bookTag == null) {
-            bookTag = new BookTag();
-            bookTag.setBook(book);
-            bookTag.setTag(tag);
-            bookTagRepository.save(bookTag);
-        } else {
-            throw new BookTagDuplicateException("Book Tag already exists!");
+        if(Objects.nonNull(tag)){
+
+            BookTag bookTag = bookTagRepository.findByBook_BookIdAndTag_TagId(book.getBookId(), tag.getTagId());
+            if (bookTag == null) {
+                bookTag = new BookTag();
+                bookTag.setBook(book);
+                bookTag.setTag(tag);
+                bookTagRepository.save(bookTag);
+            } else {
+                throw new BookTagDuplicateException("Book Tag already exists!");
+            }
         }
+
+        //책 - 카테고리 등록
+        BookCategory bookCategory = null;
+        if(Objects.nonNull(bookCategoryRepository.findByBook_bookIdAndCategory_categoryId(book.getBookId(), parentCategory.getCategoryId()))){
+            throw new BookCategoryDuplicateException("Book - Category already exists!");
+        }else{
+            bookCategory = new BookCategory();
+            bookCategory.setBook(book);
+            bookCategory.setCategory(parentCategory);
+            bookCategoryRepository.save(bookCategory);
+        }
+
+        // 재고 등록
+        Stock stock = stockRepository.findByBook_bookId(book.getBookId());
+        if (stock == null) {
+            stock = new Stock();
+            stock.setBook(book);
+            stock.setStock(1000);
+        }else{
+            throw new StockDuplicateException("Stock already exists!");
+        }
+
 
         return book;
     }

@@ -6,7 +6,7 @@ import com.nhnacademy.taskapi.book.repository.BookCategoryRepository;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.book.service.BookCategoryService;
 import com.nhnacademy.taskapi.category.repository.CategoryRepository;
-import com.nhnacademy.taskapi.dto.BookCategorySaveDTO;
+import com.nhnacademy.taskapi.book.dto.BookCategorySaveDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
