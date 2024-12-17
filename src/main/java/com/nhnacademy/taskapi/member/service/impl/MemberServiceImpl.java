@@ -137,6 +137,10 @@ public class MemberServiceImpl implements MemberService {
     // 로그인
     @Override
     public MemberLoginDto validateLogin(MemberLoginDto memberLoginDto) {
+
+        // TODO 테스트용 삭제 수정자 문영호
+//        return new MemberLoginDto("hihi", "hoho");
+
         if(!existsByLoginId(memberLoginDto.loginId())) {
             throw new MemberIllegalArgumentException("Member id does not exist");
         }
