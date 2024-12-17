@@ -37,7 +37,7 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewResponse registerReview(long bookId, ReviewRequest reviewRequest) {
         // 회원 존재 확인
         Member member = memberRepository.findById(reviewRequest.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID")); //
 
         // 도서 존재 확인
         Book book = bookRepository.findById(bookId)
