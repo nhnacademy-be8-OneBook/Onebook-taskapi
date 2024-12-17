@@ -67,8 +67,8 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // JWT 정보 반환용
-    @GetMapping("/{loginId}")
+    // 멤버 정보 리턴 for JWT
+    @GetMapping("/jwt/{loginId}")
     public ResponseEntity<Member> getMemberForJWT(@PathVariable("loginId") String loginId) {
         Member member = memberService.getMemberByLoginId(loginId);
         return ResponseEntity.ok().body(member);
