@@ -41,7 +41,6 @@ public class PointServiceImpl implements PointService {
 
     @Override
     public UpdatePointResponse updatePointByMemberId(String memberId, UpdatePointRequest pointRequest) {
-
         // 1. 포인트 조회
         Point point = pointRepository.findByMember_Id(memberId)
                 .orElseThrow(() -> new PointPolicyException("사용자 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
