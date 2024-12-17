@@ -25,7 +25,7 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long reviewId;
 
-    @NotNull
+    @Column(nullable = false)
     private int grade = 5; // default
 
     @Column(nullable = false, length = 255)

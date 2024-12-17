@@ -34,13 +34,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewResponse registerReview(ReviewRequest reviewRequest) {
+    public ReviewResponse registerReview(long bookId, ReviewRequest reviewRequest) {
         // 회원 존재 확인
         Member member = memberRepository.findById(reviewRequest.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
 
         // 도서 존재 확인
-        Book book = bookRepository.findById(reviewRequest.getBookId())
+        Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid book ID"));
 
         // 동일 도서에 대한 리뷰 작성 여부 확인
@@ -48,9 +48,6 @@ public class ReviewServiceImpl implements ReviewService {
         if (existingReview.isPresent()) {
             throw new IllegalArgumentException("이미 해당 도서에 대한 리뷰를 작성하셨습니다.");
         }
-
-        // 구매 여부 확인
-        // 필요시 구현, 우선은 마이페이지에서 리뷰 작성 = 이미 구매가 됐다고 인증된 사용자니까..
 
         // 리뷰 생성
         Review review = new Review();
@@ -60,11 +57,8 @@ public class ReviewServiceImpl implements ReviewService {
         review.setDescription(reviewRequest.getDescription());
         review.setCreatedAt(LocalDateTime.now());
 
-        // 리뷰 저장
-        Review savedReview = reviewRepository.save(review);
-
-        // 이미지 저장 (최대 3장)
-        if (reviewRequest.getImageUrl() != null) {
+        // 이미지 추가
+        if (reviewRequest.getImageUrl() != null && !reviewRequest.getImageUrl().isEmpty()) {
             if (reviewRequest.getImageUrl().size() > 3) {
                 throw new IllegalArgumentException("이미지는 최대 3장까지 첨부할 수 있습니다.");
             }
@@ -72,10 +66,13 @@ public class ReviewServiceImpl implements ReviewService {
             for (String imageUrl : reviewRequest.getImageUrl()) {
                 ReviewImage reviewImage = new ReviewImage();
                 reviewImage.setImageUrl(imageUrl);
-                reviewImage.setReview(savedReview);
-                reviewImageRepository.save(reviewImage);
+                reviewImage.setReview(review);
+                review.getReviewImage().add(reviewImage);
             }
         }
+
+        // 리뷰 저장
+        Review savedReview = reviewRepository.save(review);
 
         // 응답 DTO 생성
         return ReviewResponse.builder()
@@ -101,7 +98,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Page<ReviewResponse> getReviewsByBook(long bookId, int page, int size) {
+    public Page<ReviewResponse> getReviewByBook(long bookId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Review> reviewPage = reviewRepository.findByBookBookId(bookId, pageable);
 
@@ -121,12 +118,17 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewResponse updateReview(long reviewId, ReviewRequest reviewRequest) {
+    public ReviewResponse updateReview(long bookId, long reviewId, ReviewRequest reviewRequest) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid review ID"));
 
+        // 리뷰 도서 일치 확인
+        if (review.getBook().getBookId() != bookId) {
+            throw new IllegalArgumentException("리뷰가 해당 도서에 속하지 않습니다.");
+        }
+
         // 리뷰 작성자 확인
-        if (review.getMember().getId().equals(reviewRequest.getMemberId())) {
+        if (!review.getMember().getId().equals(reviewRequest.getMemberId())) {
             throw new IllegalArgumentException("작성자만 리뷰를 수정할 수 있습니다.");
         }
 
@@ -134,9 +136,9 @@ public class ReviewServiceImpl implements ReviewService {
         review.setDescription(reviewRequest.getDescription());
         review.setUpdatedAt(LocalDateTime.now());
 
-        // 이미지 업데이트 로직
+        // 이미지 업데이트
         review.getReviewImage().clear();
-        if (reviewRequest.getImageUrl() != null) {
+        if (reviewRequest.getImageUrl() != null && !reviewRequest.getImageUrl().isEmpty()) {
             if (reviewRequest.getImageUrl().size() > 3) {
                 throw new IllegalArgumentException("이미지는 최대 3장까지 첨부할 수 있습니다.");
             }
@@ -145,30 +147,26 @@ public class ReviewServiceImpl implements ReviewService {
                 ReviewImage reviewImage = new ReviewImage();
                 reviewImage.setImageUrl(imageUrl);
                 reviewImage.setReview(review);
-                reviewImageRepository.save(reviewImage);
+                review.getReviewImage().add(reviewImage);
             }
         }
 
+        // 리뷰 저장
+        Review updatedReview = reviewRepository.save(review);
+
         // 응답 DTO 생성
         return ReviewResponse.builder()
-                .reviewId(review.getReviewId())
-                .grade(review.getGrade())
-                .description(review.getDescription())
-                .createdAt(review.getCreatedAt())
-                .updatedAt(review.getUpdatedAt())
-                .memberId(review.getMember().getId())
-                .bookId(review.getBook().getBookId())
-                .imageUrl(review.getReviewImage().stream()
+                .reviewId(updatedReview.getReviewId())
+                .grade(updatedReview.getGrade())
+                .description(updatedReview.getDescription())
+                .createdAt(updatedReview.getCreatedAt())
+                .updatedAt(updatedReview.getUpdatedAt())
+                .memberId(updatedReview.getMember().getId())
+                .bookId(updatedReview.getBook().getBookId())
+                .imageUrl(updatedReview.getReviewImage().stream()
                         .map(ReviewImage::getImageUrl)
                         .collect(Collectors.toList()))
                 .build();
     }
-
-    @Override
-    public double getMemberAverageGrade(String memberId) {
-        return reviewRepository.findAverageGradeByMemberId(memberId)
-                .orElse(0.0);
-    }
-
 
 }

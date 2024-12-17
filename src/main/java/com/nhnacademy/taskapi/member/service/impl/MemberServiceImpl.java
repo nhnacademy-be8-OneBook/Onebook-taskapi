@@ -12,6 +12,7 @@ import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.member.service.MemberService;
 import com.nhnacademy.taskapi.roles.service.RoleService;
+
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -86,6 +87,7 @@ public class MemberServiceImpl implements MemberService {
         try {
 
             return memberRepository.save(member);
+
 
         }catch(DataIntegrityViolationException e) {
             throw new MemberDataIntegrityViolationException("Failed to save member in the database");
@@ -166,3 +168,4 @@ public class MemberServiceImpl implements MemberService {
     }
 
 }
+

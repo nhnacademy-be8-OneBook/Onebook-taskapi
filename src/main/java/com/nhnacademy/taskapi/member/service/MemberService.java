@@ -4,6 +4,7 @@ import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.dto.MemberLoginDto;
 import com.nhnacademy.taskapi.member.dto.MemberModifyDto;
 import com.nhnacademy.taskapi.member.dto.MemberRegisterDto;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 

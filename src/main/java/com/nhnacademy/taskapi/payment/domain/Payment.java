@@ -1,7 +1,7 @@
 package com.nhnacademy.taskapi.payment.domain;
 
 
-import com.nhnacademy.taskapi.orders.entity.Orders;
+import com.nhnacademy.taskapi.order.entity.Order;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -45,5 +45,5 @@ public class Payment {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private Orders order;
+    private Order order;
 }
