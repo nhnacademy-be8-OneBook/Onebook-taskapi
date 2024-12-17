@@ -152,7 +152,7 @@ POST http://localhost:8080/members
 Content-type: application/json
 
 {
-  "name": "Joo**",
+  "name": "Joo***",
   "loginId": "jooasjflsajklfasjlf**",
   "password": "joo",
   "dateOfBirth": "1998-12-18",
