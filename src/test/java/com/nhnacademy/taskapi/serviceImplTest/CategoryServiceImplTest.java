@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.serviceImplTest;
 
 
 import com.nhnacademy.taskapi.category.domain.Category;
+import com.nhnacademy.taskapi.category.dto.CategoryCreateDTO;
 import com.nhnacademy.taskapi.category.exception.CategoryNameDuplicateException;
 import com.nhnacademy.taskapi.category.exception.CategoryNotFoundException;
 import com.nhnacademy.taskapi.category.repository.CategoryRepository;
@@ -43,7 +44,11 @@ class CategoryServiceImplTest {
         when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        Category result = categoryService.addCategory(categoryName, parentCategory);
+        CategoryCreateDTO dto = new CategoryCreateDTO();
+        dto.setCategory(parentCategory);
+        dto.setCategoryName(categoryName);
+
+        Category result = categoryService.addCategory(dto);
 
         // Then
         assertNotNull(result);
@@ -64,8 +69,12 @@ class CategoryServiceImplTest {
         // 부모 카테고리가 존재하지 않는 경우
         when(categoryRepository.findById(1)).thenReturn(Optional.empty());
 
+        CategoryCreateDTO dto = new CategoryCreateDTO();
+        dto.setCategory(parentCategory);
+        dto.setCategoryName(categoryName);
+
         // When & Then
-        assertThrows(CategoryNotFoundException.class, () -> categoryService.addCategory(categoryName, parentCategory));
+        assertThrows(CategoryNotFoundException.class, () -> categoryService.addCategory(dto));
         verify(categoryRepository).findById(1);
         verify(categoryRepository, never()).existsByName(anyString());
         verify(categoryRepository, never()).save(any(Category.class));
@@ -79,8 +88,12 @@ class CategoryServiceImplTest {
         // 카테고리 이름이 중복된 경우
         when(categoryRepository.existsByName(categoryName)).thenReturn(true);
 
+        CategoryCreateDTO dto = new CategoryCreateDTO();
+        dto.setCategory(null);
+        dto.setCategoryName(categoryName);
+
         // When & Then
-        assertThrows(CategoryNameDuplicateException.class, () -> categoryService.addCategory(categoryName, null));
+        assertThrows(CategoryNameDuplicateException.class, () -> categoryService.addCategory(dto));
         verify(categoryRepository, never()).findById(anyInt());
         verify(categoryRepository).existsByName(categoryName);
         verify(categoryRepository, never()).save(any(Category.class));
