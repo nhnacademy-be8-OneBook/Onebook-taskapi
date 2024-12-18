@@ -287,10 +287,7 @@ public class BookServiceImpl implements BookService {
         // 책 삭제
         bookRepository.delete(book);
 
-        // 출판사에 연결된 책이 없으면 출판사 삭제 (선택적)
-        if (book.getPublisher() != null && book.getPublisher().getBooks().isEmpty()) {
-            publisherRepository.delete(book.getPublisher());
-        }
+
     }
 
     // 베스트셀러 목록 조회
@@ -317,4 +314,6 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("Book not found"));
         return book;
     }
+
+
 }

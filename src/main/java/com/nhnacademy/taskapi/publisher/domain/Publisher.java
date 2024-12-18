@@ -27,6 +27,4 @@ public class Publisher {
     @Length(max = 30)
     private String name;
 
-    @OneToMany(mappedBy = "publisher", fetch = FetchType.LAZY)
-    private List<Book> books;
 }
