@@ -49,6 +49,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
@@ -65,7 +66,6 @@ public class BookServiceImpl implements BookService {
 
     // 알라딘 API 데이터 파싱
     @Override
-    @Transactional
     public List<BookSaveDTO> saveAladin() {
         List<BookSaveDTO> dtoList = new ArrayList<>();
         String url = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbtjswns12211534001&QueryType=Bestseller&MaxResults=50&start=1&SearchTarget=Book&output=js&Version=20131101";

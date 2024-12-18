@@ -8,16 +8,19 @@ import com.nhnacademy.taskapi.author.repository.AuthorRepository;
 import com.nhnacademy.taskapi.author.service.AuthorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
 
 
     // 작가등록
+    @Transactional
     @Override
     public Author addAuthor(String name) {
         if(Objects.isNull(name) || name.trim().isEmpty()){
@@ -30,6 +33,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     //작가 수정
     @Override
+    @Transactional
     public Author updateAuthor(AuthorUpdateDTO dto){
         Author author = authorRepository.findById(dto.getAuthorId()).orElseThrow(() -> new AuthorNotFoundException("This Author Not Exist !"));
 
@@ -43,6 +47,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     //작가 삭제
     @Override
+    @Transactional
     public void deleteAuthor(int authorId){
         Author author = authorRepository.findById(authorId).orElseThrow(() -> new AuthorNotFoundException("This Author Not Exist !"));
         authorRepository.delete(author);

@@ -19,6 +19,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class StockServiceImpl implements StockService {
     private final StockRepository stockRepository;
     private final BookRepository bookRepository;

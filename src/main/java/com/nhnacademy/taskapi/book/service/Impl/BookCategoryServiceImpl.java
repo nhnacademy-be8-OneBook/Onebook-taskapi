@@ -11,16 +11,19 @@ import com.nhnacademy.taskapi.category.repository.CategoryRepository;
 import com.nhnacademy.taskapi.book.dto.BookCategorySaveDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BookCategoryServiceImpl implements BookCategoryService {
     private final BookCategoryRepository bookCategoryRepository;
     private final BookRepository bookRepository;
     private final CategoryRepository categoryRepository;
 
+    @Transactional
     @Override
     public BookCategory save(BookCategorySaveDTO bookCategorySaveDTO) {
         BookCategory bookCategory = new BookCategory();
