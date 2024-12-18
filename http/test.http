@@ -17,7 +17,7 @@ X-MEMBER-ID: 1
 }
 
 ### MemberAddress Read (by addressId)
-GET http://localhost:8080/addresses/2
+GET http://localhost:8080/addresses/1
 Content-Type: application/json
 X-MEMBER-ID: 1
 
@@ -32,7 +32,7 @@ Content-Type: application/json
 X-MEMBER-ID: 1
 
 {
-  "id" : 52,
+  "id" : 1,
   "name" : "aaa",
   "phoneNumber" : "010-0000-0000",
   "alias" : "aaa",
@@ -52,7 +52,7 @@ Content-Type: application/json
 X-MEMBER-ID: 1
 
 {
-  "id" : 352
+  "id" : 2
 }
 
 
