@@ -10,6 +10,7 @@ import com.nhnacademy.taskapi.category.dto.CategoryCreateDTO;
 import com.nhnacademy.taskapi.category.dto.CategoryUpdateDTO;
 import com.nhnacademy.taskapi.category.exception.CategoryNameDuplicateException;
 import com.nhnacademy.taskapi.category.exception.CategoryNotFoundException;
+import com.nhnacademy.taskapi.category.exception.InvalidCategoryNameException;
 import com.nhnacademy.taskapi.category.repository.CategoryRepository;
 import com.nhnacademy.taskapi.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -55,20 +56,12 @@ public class CategoryServiceImpl implements CategoryService {
         if(categoryRepository.existsByName(updateDTO.getCategoryName())){
             throw new CategoryNameDuplicateException("Category name already Exist !");
         }
+
+        if(Objects.isNull(updateDTO.getCategoryName()) || updateDTO.getCategoryName().trim().isEmpty()){
+            throw new InvalidCategoryNameException("This CategoryName is Null OR Empty");
+        }
         category.setName(updateDTO.getCategoryName());
 
-        List<BookCategory> bookCategories = bookCategoryService.getBookByCategory(category);
-        for(BookCategory bk : bookCategories){
-            BookCategorySaveDTO dto = new BookCategorySaveDTO();
-
-            dto.setCategoryId(bk.getCategory().getCategoryId());
-            dto.setBookId(bk.getBook().getBookId());
-
-            bk.setCategory(category);
-
-            bookCategoryService.save(dto);
-
-        }
 
         return categoryRepository.save(category);
     }
