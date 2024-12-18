@@ -21,5 +21,6 @@ public class Tag {
 
 
     @Length(max = 50)
+    @Column(nullable = false)
     private String name;
 }
