@@ -12,7 +12,7 @@ public record CreatePointPolicyRequest(Long memberId, String pointPolicyName, in
 
     public PointPolicy toEntity() {
         return PointPolicy.builder()
-                .memberId(String.valueOf(memberId))  // Add memberId to PointPolicy
+                .memberId(memberId)  // Add memberId to PointPolicy
                 .pointPolicyName(pointPolicyName)
                 .pointPolicyApplyAmount(pointPolicyApplyType ? pointPolicyApply : null)
                 .pointPolicyRate(!pointPolicyApplyType ? pointPolicyApply : null)

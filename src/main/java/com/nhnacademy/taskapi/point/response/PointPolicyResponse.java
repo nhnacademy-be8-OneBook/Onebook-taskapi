@@ -13,7 +13,7 @@ public record PointPolicyResponse(String pointPolicyId, String pointPolicyName, 
 
     public static PointPolicyResponse create(PointPolicy pointPolicy, CreatePointPolicyRequest policyRequest) {
         return PointPolicyResponse.builder()
-                .pointPolicyId(pointPolicy.getPointPolicyId())
+                .pointPolicyId(String.valueOf(pointPolicy.getPointPolicyId()))
                 .pointPolicyName(policyRequest.pointPolicyName())
                 .pointPolicyApply(policyRequest.pointPolicyApply())
                 .pointPolicyCondition(policyRequest.pointPolicyCondition())
@@ -24,7 +24,7 @@ public record PointPolicyResponse(String pointPolicyId, String pointPolicyName, 
     }
     public static PointPolicyResponse update(PointPolicy pointPolicy, PointPolicyRequest policyRequest) {
         return PointPolicyResponse.builder()
-                .pointPolicyId(pointPolicy.getPointPolicyId())
+                .pointPolicyId(String.valueOf(pointPolicy.getPointPolicyId()))
                 .pointPolicyName(policyRequest.pointPolicyName())
                 .pointPolicyApply(policyRequest.pointPolicyApply())
                 .pointPolicyCondition(policyRequest.pointPolicyCondition())
@@ -34,7 +34,7 @@ public record PointPolicyResponse(String pointPolicyId, String pointPolicyName, 
     }
     public static PointPolicyResponse find(PointPolicy pointPolicy) {
         return PointPolicyResponse.builder()
-                .pointPolicyId(pointPolicy.getPointPolicyId())
+                .pointPolicyId(String.valueOf(pointPolicy.getPointPolicyId()))
                 .pointPolicyName(pointPolicy.getPointPolicyName())
                 .pointPolicyApply(pointPolicy.isPointPolicyApplyType() ? pointPolicy.getPointPolicyApplyAmount() : pointPolicy.getPointPolicyRate())
                 .pointPolicyCondition(pointPolicy.getPointPolicyCondition())
