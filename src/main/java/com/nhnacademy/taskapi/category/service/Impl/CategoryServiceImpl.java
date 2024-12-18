@@ -6,6 +6,8 @@ import com.nhnacademy.taskapi.book.dto.BookCategorySaveDTO;
 import com.nhnacademy.taskapi.book.repository.BookCategoryRepository;
 import com.nhnacademy.taskapi.book.service.BookCategoryService;
 import com.nhnacademy.taskapi.category.domain.Category;
+import com.nhnacademy.taskapi.category.dto.CategoryCreateDTO;
+import com.nhnacademy.taskapi.category.dto.CategoryUpdateDTO;
 import com.nhnacademy.taskapi.category.exception.CategoryNameDuplicateException;
 import com.nhnacademy.taskapi.category.exception.CategoryNotFoundException;
 import com.nhnacademy.taskapi.category.repository.CategoryRepository;
@@ -23,33 +25,33 @@ public class CategoryServiceImpl implements CategoryService {
     private final BookCategoryService bookCategoryService;
 
     @Override
-    public Category addCategory(String categoryName, Category parentCategory) {
+    public Category addCategory(CategoryCreateDTO dto) {
         Category categories = new Category();
 
-        if(Objects.nonNull(parentCategory)){
-            categoryRepository.findById(parentCategory.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("Category not found !"));
+        if(Objects.nonNull(dto.getCategory())){
+            categoryRepository.findById(dto.getCategory().getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("Category not found !"));
         }
 
         //카테고리 이름 중복 체크
-        if(categoryRepository.existsByName(categoryName)){
-            throw new CategoryNameDuplicateException("Category name already exists ! categoryName: " + categoryName);
+        if(categoryRepository.existsByName(dto.getCategoryName())){
+            throw new CategoryNameDuplicateException("Category name already exists ! categoryName: " + dto.getCategoryName());
         }
 
 
-        categories.setName(categoryName);
-        categories.setParentCategory(parentCategory);
+        categories.setName(dto.getCategoryName());
+        categories.setParentCategory(dto.getCategory());
 
         return categoryRepository.save(categories);
     }
 
     @Override
-    public Category updateCategory(int categoryId, String categoryName){
-        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException("this Category Not Exist !"));
+    public Category updateCategory(CategoryUpdateDTO updateDTO){
+        Category category = categoryRepository.findById(updateDTO.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("this Category Not Exist !"));
 
-        if(categoryRepository.existsByName(categoryName)){
+        if(categoryRepository.existsByName(updateDTO.getCategoryName())){
             throw new CategoryNameDuplicateException("Category name already Exist !");
         }
-        category.setName(categoryName);
+        category.setName(updateDTO.getCategoryName());
 
         List<BookCategory> bookCategories = bookCategoryService.getBookByCategory(category);
         for(BookCategory bk : bookCategories){
