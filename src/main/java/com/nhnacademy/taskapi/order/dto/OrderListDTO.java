@@ -1,15 +1,15 @@
 package com.nhnacademy.taskapi.order.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
-public class SaveOrder {
-    Long orderId;
-    String customerId;
-    String phoneNumber;
-    Date date;
+@Getter
+public class OrderListDTO {
+    String orderer;
+    LocalDateTime dateTime;
     int deliveryPrice;
     int totalPrice;
 }

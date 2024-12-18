@@ -26,6 +26,8 @@ public class Order {
     @JoinColumn(name = "member_id")
     Member member;
 
+    @Column(name = "orderer")
+    String orderer;
     @Column(name = "phone_number")
     String phoneNumber;
     @Column(name = "date_time")
@@ -45,13 +47,14 @@ public class Order {
     @OneToMany(mappedBy = "order")
     List<Delivery> deliveryList;
 
-    public Order(String phoneNumber, LocalDateTime dateTime, int deliveryPrice, int totalPrice) {
+    public Order(Member member, String orderder, String phoneNumber, LocalDateTime dateTime, int deliveryPrice, int totalPrice) {
+        this.member = member;
+        this.orderer = orderer;
         this.phoneNumber = phoneNumber;
         this.dateTime = dateTime;
         this.deliveryPrice = deliveryPrice;
         this.totalPrice = totalPrice;
     }
-
 
     @Override
     public String toString() {
