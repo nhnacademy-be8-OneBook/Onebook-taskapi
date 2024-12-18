@@ -20,8 +20,10 @@ public class BookTag {
     private long bookTagId;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "tag_id", nullable = false)
     private Tag tag;
 }
