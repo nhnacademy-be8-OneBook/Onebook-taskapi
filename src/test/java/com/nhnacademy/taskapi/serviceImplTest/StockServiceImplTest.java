@@ -4,6 +4,7 @@ import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.exception.BookNotFoundException;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.stock.domain.Stock;
+import com.nhnacademy.taskapi.stock.dto.StockCreateUpdateDTO;
 import com.nhnacademy.taskapi.stock.exception.InvalidStockAmountException;
 import com.nhnacademy.taskapi.stock.exception.StockDuplicateException;
 import com.nhnacademy.taskapi.stock.exception.StockNotFoundException;
@@ -63,8 +64,11 @@ public class StockServiceImplTest {
         stocks.setStock(amount);
         when(stockRepository.save(any(Stock.class))).thenReturn(stocks); // 원하는 반환값 설정
 
+        StockCreateUpdateDTO dto = new StockCreateUpdateDTO();
+        dto.setAmount(amount);
+        dto.setBookId(bookId);
         // Act
-        Stock addedStock = stockService.addStock(bookId, amount);
+        Stock addedStock = stockService.addStock(dto);
 
         // Assert
         assertNotNull(addedStock); // addedStock가 null이 아닌지 확인
@@ -79,9 +83,13 @@ public class StockServiceImplTest {
         long bookId = 1L;
         int invalidAmount = -5;
 
+        StockCreateUpdateDTO dto = new StockCreateUpdateDTO();
+        dto.setAmount(invalidAmount);
+        dto.setBookId(bookId);
         // Act & Assert
+
         InvalidStockAmountException exception = assertThrows(InvalidStockAmountException.class, () -> {
-            stockService.addStock(bookId, invalidAmount);
+            stockService.addStock(dto);
         });
         assertEquals("stock must be greater than 0 ", exception.getMessage());
     }
@@ -95,9 +103,14 @@ public class StockServiceImplTest {
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(stockRepository.findByBook_bookId(bookId)).thenReturn(stock); // 기존 재고가 이미 있다고 설정
 
+
+        StockCreateUpdateDTO dto = new StockCreateUpdateDTO();
+        dto.setAmount(amount);
+        dto.setBookId(bookId);
+
         // Act & Assert
         StockDuplicateException exception = assertThrows(StockDuplicateException.class, () -> {
-            stockService.addStock(bookId, amount);
+            stockService.addStock(dto);
         });
         assertEquals("The stock for the book already exists !", exception.getMessage());
     }
@@ -112,8 +125,13 @@ public class StockServiceImplTest {
         when(stockRepository.findById(bookId)).thenReturn(Optional.of(stock));
         when(stockRepository.save(any(Stock.class))).thenReturn(stock); // save 메소드가 호출될 때, stock 객체를 반환하도록 설정
 
+
+        StockCreateUpdateDTO dto = new StockCreateUpdateDTO();
+        dto.setAmount(newAmount);
+        dto.setBookId(bookId);
+
         // Act
-        Stock updatedStock = stockService.updateStock(bookId, newAmount);
+        Stock updatedStock = stockService.updateStock(dto);
 
         // Assert
         assertNotNull(updatedStock);  // updatedStock가 null이 아니어야 한다
@@ -130,9 +148,13 @@ public class StockServiceImplTest {
 
         when(stockRepository.findById(bookId)).thenReturn(Optional.empty()); // 재고가 없다고 설정
 
+        StockCreateUpdateDTO dto = new StockCreateUpdateDTO();
+        dto.setAmount(newAmount);
+        dto.setBookId(bookId);
+
         // Act & Assert
         StockNotFoundException exception = assertThrows(StockNotFoundException.class, () -> {
-            stockService.updateStock(bookId, newAmount);
+            stockService.updateStock(dto);
         });
         assertEquals("Stock not found", exception.getMessage());
     }
