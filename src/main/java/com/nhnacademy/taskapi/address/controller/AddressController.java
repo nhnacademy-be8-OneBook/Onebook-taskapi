@@ -3,7 +3,10 @@ package com.nhnacademy.taskapi.address.controller;
 import com.nhnacademy.taskapi.address.domain.dto.req.AddMemberAddressRequest;
 import com.nhnacademy.taskapi.address.domain.dto.req.DeleteMemberAddressRequest;
 import com.nhnacademy.taskapi.address.domain.dto.req.UpdateMemberAddressRequest;
+import com.nhnacademy.taskapi.address.domain.dto.resp.AddMemberAddressResponse;
+import com.nhnacademy.taskapi.address.domain.dto.resp.DeleteMemberAddressResponse;
 import com.nhnacademy.taskapi.address.domain.dto.resp.GetMemberAddressResponse;
+import com.nhnacademy.taskapi.address.domain.dto.resp.UpdateMemberAddressResponse;
 import com.nhnacademy.taskapi.address.service.AddressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,10 +22,10 @@ public class AddressController {
     private final AddressService addressService;
 
     @PostMapping("/addresses")
-    public ResponseEntity addMemberAddress(@RequestHeader("X-MEMBER-ID") Long memberId , @RequestBody AddMemberAddressRequest request){
+    public ResponseEntity<AddMemberAddressResponse> addMemberAddress(@RequestHeader("X-MEMBER-ID") Long memberId , @RequestBody AddMemberAddressRequest request){
 
-        addressService.addMemberAddress(memberId, request);
-        return ResponseEntity.ok().build();
+        AddMemberAddressResponse resp = addressService.addMemberAddress(memberId, request);
+        return new ResponseEntity<>(resp,HttpStatus.OK);
     }
 
     @GetMapping("/addresses")
@@ -40,17 +43,17 @@ public class AddressController {
     }
     
     @PutMapping("/addresses")
-    public ResponseEntity updateMemberAddress(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestBody UpdateMemberAddressRequest request){
+    public ResponseEntity<UpdateMemberAddressResponse> updateMemberAddress(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestBody UpdateMemberAddressRequest request){
 
-        addressService.updateMemberAddress(memberId, request);
-        return ResponseEntity.ok().build();
+        UpdateMemberAddressResponse resp = addressService.updateMemberAddress(memberId, request);
+        return new ResponseEntity<>(resp,HttpStatus.OK);
     }
 
     @DeleteMapping("/addresses")
-    public ResponseEntity deleteMemberAddress(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestBody DeleteMemberAddressRequest request){
+    public ResponseEntity<DeleteMemberAddressResponse> deleteMemberAddress(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestBody DeleteMemberAddressRequest request){
 
-        addressService.deleteMemberAddress(memberId,request);
-        return ResponseEntity.ok().build();
+        DeleteMemberAddressResponse resp = addressService.deleteMemberAddress(memberId,request);
+        return new ResponseEntity<>(resp,HttpStatus.OK);
     }
 
 }

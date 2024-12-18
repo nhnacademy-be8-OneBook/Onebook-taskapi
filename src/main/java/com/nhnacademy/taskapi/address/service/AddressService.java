@@ -4,7 +4,9 @@ import com.nhnacademy.taskapi.address.domain.dto.req.AddMemberAddressRequest;
 import com.nhnacademy.taskapi.address.domain.dto.req.DeleteMemberAddressRequest;
 import com.nhnacademy.taskapi.address.domain.dto.req.UpdateMemberAddressRequest;
 import com.nhnacademy.taskapi.address.domain.dto.resp.AddMemberAddressResponse;
+import com.nhnacademy.taskapi.address.domain.dto.resp.DeleteMemberAddressResponse;
 import com.nhnacademy.taskapi.address.domain.dto.resp.GetMemberAddressResponse;
+import com.nhnacademy.taskapi.address.domain.dto.resp.UpdateMemberAddressResponse;
 import com.nhnacademy.taskapi.address.domain.entity.MemberAddress;
 import com.nhnacademy.taskapi.address.exception.InvalidMemberAddressException;
 import com.nhnacademy.taskapi.address.exception.MemberAddressNotFoundException;
@@ -115,7 +117,7 @@ public class AddressService {
     }
 
     @Transactional
-    public void updateMemberAddress(Long memberId, UpdateMemberAddressRequest updateMemberAddressRequest){
+    public UpdateMemberAddressResponse updateMemberAddress(Long memberId, UpdateMemberAddressRequest updateMemberAddressRequest){
 
         MemberAddress memberAddress = addressRepository.findById(updateMemberAddressRequest.getId())
                 .orElseThrow(()-> new MemberAddressNotFoundException("해당하는 ID의 배송지가 존재하지 않습니다"));
@@ -135,10 +137,26 @@ public class AddressService {
         memberAddress.setDetailAddress(updateMemberAddressRequest.getDetailAddress());
         memberAddress.setDefaultLocation(updateMemberAddressRequest.getDefaultLocation());
 
+        UpdateMemberAddressResponse resp = new UpdateMemberAddressResponse(
+                memberAddress.getId(),
+                memberAddress.getName(),
+                memberAddress.getPhoneNumber(),
+                memberAddress.getAlias(),
+                memberAddress.getRequestedTerm(),
+                memberAddress.getZipCode(),
+                memberAddress.getRoadNameAddress(),
+                memberAddress.getNumberAddress(),
+                memberAddress.getNotes(),
+                memberAddress.getDetailAddress(),
+                memberAddress.getDefaultLocation()
+        );
+
+        return resp;
+
     }
 
 
-    public void deleteMemberAddress(Long memberId , DeleteMemberAddressRequest deleteMemberAddressRequest){
+    public DeleteMemberAddressResponse deleteMemberAddress(Long memberId , DeleteMemberAddressRequest deleteMemberAddressRequest){
 
         MemberAddress memberAddress =  addressRepository.findById(deleteMemberAddressRequest.getId())
                 .orElseThrow(()->new MemberAddressNotFoundException("해당하는 ID의 배송지가 존재하지 않습니다"));
@@ -148,6 +166,9 @@ public class AddressService {
         }
 
         addressRepository.delete(memberAddress);
+        DeleteMemberAddressResponse resp = new DeleteMemberAddressResponse(memberId);
+        return resp;
+
     }
 
 }
