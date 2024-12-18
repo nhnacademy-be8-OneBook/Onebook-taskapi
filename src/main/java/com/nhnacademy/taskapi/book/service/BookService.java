@@ -28,6 +28,8 @@ public interface BookService {
     Page<Book> bestSellerBooks(Pageable pageable);
 
 
+    Page<Book> newBooks(Pageable pageable);
+
     // 책 존재여부
     Book getBook(long bookId);
 }
