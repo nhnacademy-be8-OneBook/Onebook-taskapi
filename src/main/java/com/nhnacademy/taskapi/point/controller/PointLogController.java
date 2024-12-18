@@ -28,7 +28,6 @@ public class PointLogController {
     @GetMapping("/point-logs")
     public ResponseEntity<Page<PointLogResponse>> getPointLogs(Pageable pageable, Member member) {
         Long member_id = member.getId();
-
         return new ResponseEntity<>(pointLogService.findAllPointLogsByMemberId(member_id, pageable), HttpStatus.OK);
     }
 }

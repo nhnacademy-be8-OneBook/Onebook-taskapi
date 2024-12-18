@@ -52,7 +52,6 @@ public class PointPolicyController {
 
     public ResponseEntity<Void> deletePointPolicy(@PathVariable String pointPolicyId) {
         pointPolicyService.deletePointPolicyById(pointPolicyId);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

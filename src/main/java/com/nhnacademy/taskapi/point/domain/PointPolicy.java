@@ -35,7 +35,6 @@ public class PointPolicy {
     @NotNull(message = "포인트 생성일은 필수입니다.")
     @Column(nullable = false)
     private LocalDate pointPolicyCreatedAt;
-
     private LocalDate pointPolicyUpdatedAt;
 
     @NotNull(message = "포인트 상태는 필수입니다.")
