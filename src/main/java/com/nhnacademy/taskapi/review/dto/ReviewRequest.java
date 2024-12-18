@@ -25,6 +25,7 @@ public class ReviewRequest {
     @Size(max = 3)
     private List<String> imageUrl; // 최대 3장
 
+    // 사진첨부
     public ReviewRequest(long memberId, long bookId, int grade, String description, List<String> imageUrl) {
         this.memberId = memberId;
         this.bookId = bookId;
@@ -32,7 +33,7 @@ public class ReviewRequest {
         this.description = description;
         this.imageUrl = imageUrl;
     }
-
+    // 사진 미첨부
     public ReviewRequest(long memberId, long bookId, int grade, String description) {
         this.memberId = memberId;
         this.bookId = bookId;

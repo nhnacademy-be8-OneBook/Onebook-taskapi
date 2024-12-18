@@ -8,6 +8,9 @@ import com.nhnacademy.taskapi.review.domain.Review;
 import com.nhnacademy.taskapi.review.domain.ReviewImage;
 import com.nhnacademy.taskapi.review.dto.ReviewRequest;
 import com.nhnacademy.taskapi.review.dto.ReviewResponse;
+import com.nhnacademy.taskapi.review.exception.ImageLimitExceededException;
+import com.nhnacademy.taskapi.review.exception.InvalidReviewException;
+import com.nhnacademy.taskapi.review.exception.ReviewAlreadyExistsException;
 import com.nhnacademy.taskapi.review.repository.ReviewRepository;
 import com.nhnacademy.taskapi.review.repository.ReviewImageRepository;
 import com.nhnacademy.taskapi.review.service.ReviewService;
@@ -44,7 +47,12 @@ public class ReviewServiceImpl implements ReviewService {
         // 동일 도서에 대한 리뷰 작성 여부 확인
         Optional<Review> existingReview = reviewRepository.findByMemberAndBook(member, book);
         if (existingReview.isPresent()) {
-            throw new IllegalArgumentException("이미 해당 도서에 대한 리뷰를 작성하셨습니다.");
+            throw new ReviewAlreadyExistsException("이미 해당 도서에 대한 리뷰를 작성하셨습니다.");
+        }
+
+        // 이미지 첨부 개수 확인
+        if (reviewRequest.getImageUrl() != null && reviewRequest.getImageUrl().size() > 3) {
+            throw new ImageLimitExceededException("이미지는 최대 3장까지 첨부할 수 있습니다.");
         }
 
         // 리뷰 생성
@@ -57,10 +65,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 이미지 추가
         if (reviewRequest.getImageUrl() != null && !reviewRequest.getImageUrl().isEmpty()) {
-            if (reviewRequest.getImageUrl().size() > 3) {
-                throw new IllegalArgumentException("이미지는 최대 3장까지 첨부할 수 있습니다.");
-            }
-
             for (String imageUrl : reviewRequest.getImageUrl()) {
                 ReviewImage reviewImage = new ReviewImage();
                 reviewImage.setImageUrl(imageUrl);
@@ -118,18 +122,24 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public ReviewResponse updateReview(long bookId, long reviewId, ReviewRequest reviewRequest) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid review ID"));
+                .orElseThrow(() -> new InvalidReviewException("Invalid review ID"));
 
         // 리뷰 도서 일치 확인
         if (review.getBook().getBookId() != bookId) {
-            throw new IllegalArgumentException("리뷰가 해당 도서에 속하지 않습니다.");
+            throw new InvalidReviewException("리뷰가 해당 도서에 속하지 않습니다.");
         }
 
         // 리뷰 작성자 확인
         if (!review.getMember().getId().equals(reviewRequest.getMemberId())) {
-            throw new IllegalArgumentException("작성자만 리뷰를 수정할 수 있습니다.");
+            throw new InvalidReviewException("작성자만 리뷰를 수정할 수 있습니다.");
         }
 
+        // 이미지 첨부 개수 확인
+        if (reviewRequest.getImageUrl() != null && reviewRequest.getImageUrl().size() > 3) {
+            throw new ImageLimitExceededException("이미지는 최대 3장까지 첨부할 수 있습니다.");
+        }
+
+        // 리뷰 정보 수정
         review.setGrade(reviewRequest.getGrade());
         review.setDescription(reviewRequest.getDescription());
         review.setUpdatedAt(LocalDateTime.now());
@@ -137,10 +147,6 @@ public class ReviewServiceImpl implements ReviewService {
         // 이미지 업데이트
         review.getReviewImage().clear();
         if (reviewRequest.getImageUrl() != null && !reviewRequest.getImageUrl().isEmpty()) {
-            if (reviewRequest.getImageUrl().size() > 3) {
-                throw new IllegalArgumentException("이미지는 최대 3장까지 첨부할 수 있습니다.");
-            }
-
             for (String imageUrl : reviewRequest.getImageUrl()) {
                 ReviewImage reviewImage = new ReviewImage();
                 reviewImage.setImageUrl(imageUrl);
@@ -166,5 +172,4 @@ public class ReviewServiceImpl implements ReviewService {
                         .collect(Collectors.toList()))
                 .build();
     }
-
 }
