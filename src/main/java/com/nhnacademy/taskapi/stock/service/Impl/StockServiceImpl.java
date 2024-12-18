@@ -4,6 +4,7 @@ import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.exception.BookNotFoundException;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.stock.domain.Stock;
+import com.nhnacademy.taskapi.stock.dto.StockCreateUpdateDTO;
 import com.nhnacademy.taskapi.stock.exception.InvalidStockAmountException;
 import com.nhnacademy.taskapi.stock.exception.StockDuplicateException;
 import com.nhnacademy.taskapi.stock.exception.StockNotFoundException;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
-import java.util.Optional;
 
 
 @Service
@@ -26,14 +26,14 @@ public class StockServiceImpl implements StockService {
 
     @Override
     @Transactional
-    public Stock addStock(long bookId, int amount) {
-        if(amount < 0){
+    public Stock addStock(StockCreateUpdateDTO dto) {
+        if(dto.getAmount() < 0){
             throw new InvalidStockAmountException("stock must be greater than 0 ");
         }
 
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("Book not found"));
+        Book book = bookRepository.findById(dto.getBookId()).orElseThrow(() -> new BookNotFoundException("Book not found"));
 
-        Stock existStock = stockRepository.findByBook_bookId(bookId);
+        Stock existStock = stockRepository.findByBook_bookId(dto.getBookId());
 
         if(Objects.nonNull(existStock)){
             throw new StockDuplicateException("The stock for the book already exists !");
@@ -41,16 +41,19 @@ public class StockServiceImpl implements StockService {
 
         Stock stock = new Stock();
         stock.setBook(book);
-        stock.setStock(amount);
+        stock.setStock(dto.getAmount());
         return stockRepository.save(stock);
     }
 
     @Override
     @Transactional
-    public Stock updateStock(long bookId, int newAmount) {
-        Stock stock = stockRepository.findById(bookId).orElseThrow(() -> new StockNotFoundException("Stock not found"));
+    public Stock updateStock(StockCreateUpdateDTO dto) {
+        if(dto.getAmount() < 0){
+            throw new InvalidStockAmountException("stock must be greater than 0 ");
+        }
+        Stock stock = stockRepository.findById(dto.getBookId()).orElseThrow(() -> new StockNotFoundException("Stock not found"));
 
-        stock.setStock(newAmount);
+        stock.setStock(dto.getAmount());
         return stockRepository.save(stock);
     }
 }
