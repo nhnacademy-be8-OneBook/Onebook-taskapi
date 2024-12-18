@@ -1,6 +1,7 @@
 package com.nhnacademy.taskapi.member.controller;
 
 import com.nhnacademy.taskapi.member.domain.Member;
+import com.nhnacademy.taskapi.member.dto.JwtMemberDto;
 import com.nhnacademy.taskapi.member.dto.MemberModifyDto;
 import com.nhnacademy.taskapi.member.dto.MemberRegisterDto;
 import com.nhnacademy.taskapi.member.dto.MemberResponseDto;
@@ -67,11 +68,19 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+
     // 멤버 정보 리턴 for JWT
     @GetMapping("/jwt/{loginId}")
-    public ResponseEntity<Member> getMemberForJWT(@PathVariable("loginId") String loginId) {
-        Member member = memberService.getMemberByLoginId(loginId);
-        return ResponseEntity.ok().body(member);
+    public ResponseEntity<JwtMemberDto> getMemberForJWT(@PathVariable("loginId") String loginId) {
+//        Member member = memberService.getMemberByLoginId(loginId);
+        JwtMemberDto jwtMemberDto = new JwtMemberDto();
+        // TODO - jwt
+        // jwtMemberDto에 필요한것들 적기
+//        jwtMemberDto.setId(member.getId());
+//        jwtMemberDto.setLoginId(member.getLoginId());
+        jwtMemberDto.setLoginId("test");
+
+        return ResponseEntity.ok().body(jwtMemberDto);
     }
 
 }

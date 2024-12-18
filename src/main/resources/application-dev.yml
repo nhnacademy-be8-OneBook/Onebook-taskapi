@@ -13,3 +13,12 @@ spring:
     cache-duration: 3600
     always-use-message-format: true
 
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://admin:1234@localhost:8310/eureka
+  instance:
+    prefer-ip-address: true
+
