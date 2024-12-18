@@ -11,10 +11,12 @@ import com.nhnacademy.taskapi.book.repository.BookTagRepository;
 import com.nhnacademy.taskapi.book.service.BookTagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BookTagServiceImpl implements BookTagService {
 
     private final BookTagRepository bookTagRepository;
@@ -24,6 +26,7 @@ public class BookTagServiceImpl implements BookTagService {
 
     //관리자가 책-태그 등록
     @Override
+    @Transactional
     public BookTag addBookTag(long bookId, long tagId) {
         Book book = bookRepository.findById(bookId).orElseThrow( () -> new BookNotFoundException("Book not found !"));
 

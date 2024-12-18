@@ -14,16 +14,19 @@ import com.nhnacademy.taskapi.category.repository.CategoryRepository;
 import com.nhnacademy.taskapi.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final BookCategoryService bookCategoryService;
 
+    @Transactional
     @Override
     public Category addCategory(CategoryCreateDTO dto) {
         Category categories = new Category();
@@ -44,6 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.save(categories);
     }
 
+    @Transactional
     @Override
     public Category updateCategory(CategoryUpdateDTO updateDTO){
         Category category = categoryRepository.findById(updateDTO.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("this Category Not Exist !"));
@@ -69,6 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.save(category);
     }
 
+    @Transactional
     @Override
     public void deleteCategory(int categoryId){
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException("this Category Not Exist !"));

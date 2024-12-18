@@ -8,17 +8,20 @@ import com.nhnacademy.taskapi.Tag.repository.TagRepository;
 import com.nhnacademy.taskapi.Tag.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
 
     // 관리자가 태그 등록
     @Override
+    @Transactional
     public Tag addTag(String tagName) {
         Tag tag = new Tag();
         tag.setName(tagName);
@@ -27,6 +30,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public Tag updateTag(TagUpdateDTO dto) {
         Tag tag = tagRepository.findById(dto.getTagId()).orElseThrow(()-> new TagNotFoundException("This Tag Not Exist!"));
 
@@ -39,6 +43,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public void delete(long tagId) {
         Tag tag = tagRepository.findById(tagId).orElseThrow(()-> new TagNotFoundException("This Tag Not Exist!"));
         tagRepository.delete(tag);
