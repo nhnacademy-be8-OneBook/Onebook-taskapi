@@ -52,6 +52,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     // 로그인 아이디로 멤버 조회
+    /*
+    * jwt 용 입니다. 멤버 조회하시려면 memberId로 하세요
+    * 두레이 메시지에서 jwt에서 memberId 가져오는거 참고하세요
+    */
     @Override
     public Member getMemberByLoginId(String loginId) {
         return memberRepository.findByLoginId(loginId).orElseThrow(() -> new MemberNotFoundException("Member not found by loginId"));
