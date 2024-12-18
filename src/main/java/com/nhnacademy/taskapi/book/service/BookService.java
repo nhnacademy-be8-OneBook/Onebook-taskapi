@@ -26,4 +26,8 @@ public interface BookService {
 
     // 베스트셀러 목록 조회 (판매량 기준)
     Page<Book> bestSellerBooks(Pageable pageable);
+
+
+    // 책 존재여부
+    Book getBook(long bookId);
 }
