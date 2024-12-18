@@ -13,10 +13,7 @@ import com.nhnacademy.taskapi.book.domain.BookAuthor;
 import com.nhnacademy.taskapi.book.domain.BookCategory;
 import com.nhnacademy.taskapi.book.domain.BookTag;
 import com.nhnacademy.taskapi.book.dto.BookUpdateDTO;
-import com.nhnacademy.taskapi.book.exception.BookCategoryDuplicateException;
-import com.nhnacademy.taskapi.book.exception.BookDuplicateException;
-import com.nhnacademy.taskapi.book.exception.BookNotFoundException;
-import com.nhnacademy.taskapi.book.exception.BookTagDuplicateException;
+import com.nhnacademy.taskapi.book.exception.*;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.book.repository.BookAuthorRepository;
 import com.nhnacademy.taskapi.book.repository.BookCategoryRepository;
@@ -186,7 +183,7 @@ public class BookServiceImpl implements BookService {
             authorRepository.save(author);
         }
 
-        // 태그 등록
+        // 태그 등록 - 태그가 Null이 아닐때만 등록
         Tag tag = null;
         if(bookSaveDTO.getTagName() != null){
             tag = tagRepository.findByName(bookSaveDTO.getTagName());
@@ -199,13 +196,22 @@ public class BookServiceImpl implements BookService {
 
 
         // 책 등록
+        if(bookSaveDTO.getIsbn13().length() != 13){
+            throw new InvalidIsbnException("The provided ISBN-13 format is incorrect !");
+        }
+        // 판매량 없으면 기본값 0설정
+        if(Objects.isNull(bookSaveDTO.getSalesPoint())){
+            book.setAmount(0);
+        }else{
+            book.setAmount(bookSaveDTO.getSalesPoint());
+        }
 
         book.setTitle(bookSaveDTO.getTitle());
         book.setDescription(bookSaveDTO.getDescription());
+        //ISBN-13 유효성 검사
         book.setIsbn13(bookSaveDTO.getIsbn13());
         book.setPrice(bookSaveDTO.getPrice());
         book.setSalePrice(bookSaveDTO.getPriceSales());
-        book.setAmount(0);
         book.setViews(0);
         // 출판일 설정
         if (bookSaveDTO.getPubdate() != null) {
@@ -267,27 +273,10 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public void deleteBook(Long bookId) {
         // 책 조회
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
-
-        // 관련 이미지 삭제
-        imageRepository.findByBook(book).ifPresent(imageRepository::delete);
-
-        // 책 - 카테고리 삭제
-        bookCategoryRepository.deleteByBook(book);
-
-        // 책 - 작가 삭제
-        bookAuthorRepository.deleteByBook(book);
-
-        // 책 - 태그 삭제
-        bookTagRepository.deleteByBook(book);
-
-        // 재고 삭제
-        stockRepository.findByBook(book).ifPresent(stockRepository::delete);
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("Book not found"));
 
         // 책 삭제
         bookRepository.delete(book);
-
-
     }
 
     // 베스트셀러 목록 조회
