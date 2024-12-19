@@ -7,4 +7,5 @@ public interface TagService {
     Tag addTag(String tagName);
     Tag updateTag(TagUpdateDTO dto);
     void delete(long tagId);
+    Tag getTag(long tagId);
 }

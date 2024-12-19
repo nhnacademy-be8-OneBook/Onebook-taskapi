@@ -7,4 +7,5 @@ public interface AuthorService {
     Author addAuthor(String name);
     Author updateAuthor(AuthorUpdateDTO dto);
     void deleteAuthor(int authorId);
+    Author getAuthor(int authorId);
 }

@@ -18,4 +18,5 @@ public interface MemberService {
     Member modifyMember(Long memberId, MemberModifyDto memberModifyDto);
     void removeMember(Long memberId);
     MemberLoginDto validateLogin(MemberLoginDto memberLoginDto);
+    String getLoginIdById(Long id);
 }
