@@ -4,6 +4,8 @@ import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.service.BookService;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.service.MemberService;
+import com.nhnacademy.taskapi.point.domain.Point;
+import com.nhnacademy.taskapi.point.service.PointService;
 import com.nhnacademy.taskapi.review.domain.Review;
 import com.nhnacademy.taskapi.review.domain.ReviewImage;
 import com.nhnacademy.taskapi.review.dto.ReviewRequest;
@@ -34,6 +36,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewImageRepository reviewImageRepository;
     private final MemberService memberService;
     private final BookService bookService;
+    private final PointService pointService;
 
     @Override
     @Transactional
@@ -63,9 +66,13 @@ public class ReviewServiceImpl implements ReviewService {
         review.setDescription(reviewRequest.getDescription());
         review.setCreatedAt(LocalDateTime.now());
 
-        // 이미지 추가
+        // 사진 첨부를 체크
+        boolean isPhotoAttached = false; // default false
+
+        // 사진 추가
         if (reviewRequest.getImageUrl() != null && !reviewRequest.getImageUrl().isEmpty()) {
             for (String imageUrl : reviewRequest.getImageUrl()) {
+                isPhotoAttached = true; // 사진 첨부 = true
                 ReviewImage reviewImage = new ReviewImage();
                 reviewImage.setImageUrl(imageUrl);
                 reviewImage.setReview(review);
@@ -75,6 +82,10 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 리뷰 저장
         Review savedReview = reviewRepository.save(review);
+
+        // 리뷰 작성시 사진 첨부 유무에 따라 포인트 적립
+        // 근데 사진첨부해서 500포인트 받아놓고, 리뷰 수정해서 사진을 지우면...?
+        pointService.registerReviewPoints(member, isPhotoAttached);
 
         // 응답 DTO 생성
         return ReviewResponse.builder()
