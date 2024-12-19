@@ -8,10 +8,8 @@ import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.domain.Member.Gender;
 import com.nhnacademy.taskapi.member.domain.Member.Status;
 import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
-import com.nhnacademy.taskapi.roles.domain.Role;
-import com.nhnacademy.taskapi.member.service.MemberService;
+import com.nhnacademy.taskapi.point.service.PointService;
 import com.nhnacademy.taskapi.review.domain.Review;
-import com.nhnacademy.taskapi.review.domain.ReviewImage;
 import com.nhnacademy.taskapi.review.dto.ReviewRequest;
 import com.nhnacademy.taskapi.review.dto.ReviewResponse;
 import com.nhnacademy.taskapi.review.exception.ImageLimitExceededException;
@@ -20,16 +18,21 @@ import com.nhnacademy.taskapi.review.exception.ReviewAlreadyExistsException;
 import com.nhnacademy.taskapi.review.repository.ReviewImageRepository;
 import com.nhnacademy.taskapi.review.repository.ReviewRepository;
 import com.nhnacademy.taskapi.review.service.impl.ReviewServiceImpl;
+import com.nhnacademy.taskapi.roles.domain.Role;
+import com.nhnacademy.taskapi.member.service.MemberService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
+
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import  java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -49,6 +52,9 @@ class ReviewServiceImplTest {
 
     @Mock
     private BookService bookService;
+
+    @Mock
+    private PointService pointService; // 포인트 서비스 Mock 추가
 
     @InjectMocks
     private ReviewServiceImpl reviewService;
@@ -81,7 +87,7 @@ class ReviewServiceImplTest {
 
         // Reflection을 사용하여 private 필드 'id' 설정
         try {
-            java.lang.reflect.Field idField = Member.class.getDeclaredField("id");
+            Field idField = Member.class.getDeclaredField("id");
             idField.setAccessible(true);
             idField.set(member, 1L);
         } catch (NoSuchFieldException | IllegalAccessException e) {
@@ -133,6 +139,9 @@ class ReviewServiceImplTest {
             return saved;
         });
 
+        // 포인트 적립 mocking (이미지 2장 첨부 -> 사진첨부=true)
+        willDoNothing().given(pointService).registerReviewPoints(member, true);
+
         // When
         ReviewResponse response = reviewService.registerReview(1L, request);
 
@@ -144,6 +153,7 @@ class ReviewServiceImplTest {
         assertEquals(2, response.getImageUrl().size());
         assertTrue(response.getImageUrl().contains("img1"));
         assertTrue(response.getImageUrl().contains("img2"));
+        verify(pointService, times(1)).registerReviewPoints(member, true);
     }
 
     /**
@@ -279,8 +289,6 @@ class ReviewServiceImplTest {
     void testGetReviewByBook() {
         // Given
         Page<Review> reviewPage = new PageImpl<>(List.of(review));
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
-        // given(bookService.getBook(1L)).willReturn(book); // 불필요한 stubbing 제거
         given(reviewRepository.findByBookBookId(eq(1L), any(Pageable.class))).willReturn(reviewPage);
 
         // When
