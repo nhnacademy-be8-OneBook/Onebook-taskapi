@@ -61,6 +61,19 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findByLoginId(loginId).orElseThrow(() -> new MemberNotFoundException("Member not found by loginId"));
     }
 
+    /**
+     * memberId로 loginId 조회.
+     * @param id
+     * @return loginId
+     */
+    @Override
+    public String getLoginIdById(Long id) {
+        if(!existsById(id)) {
+            throw new MemberIllegalArgumentException("Member id does not exist");
+        }
+        return memberRepository.getLoginIdById(id).orElseThrow(() -> new MemberNotFoundException("Member not found by memberId"));
+    }
+
 
     // 중복 확인 - 회원 인조키(id)가 존재하는지 확인
     @Override
@@ -95,7 +108,6 @@ public class MemberServiceImpl implements MemberService {
                 memberRegisterDto.phoneNumber(),
                 roleService.getRoleById(1) // Role Id: 1은 무조건 MEMBER
         );
-
 
         try {
 

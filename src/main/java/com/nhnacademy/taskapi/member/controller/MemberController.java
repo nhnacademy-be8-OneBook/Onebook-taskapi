@@ -83,5 +83,14 @@ public class MemberController {
         return ResponseEntity.ok().body(jwtMemberDto);
     }
 
+    /**
+     * 회원 ID로 loginId 가져오기.
+     */
+    @GetMapping("/loginId")
+    public ResponseEntity<String> getMemberIdByLoginId(@RequestHeader("X-MEMBER-ID") Long memberId) {
+        String loginId = memberService.getLoginIdById(memberId);
+        return ResponseEntity.ok().body(loginId);
+    }
+
 }
 
