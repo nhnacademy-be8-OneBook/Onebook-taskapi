@@ -47,7 +47,6 @@ public class ReviewServiceImpl implements ReviewService {
         // 도서 존재 확인
         Book book = bookService.getBook(bookId);
 
-
         // 동일 도서에 대한 리뷰 작성 여부 확인
         Optional<Review> existingReview = reviewRepository.findByMemberAndBook(member, book);
         if (existingReview.isPresent()) {
@@ -67,12 +66,13 @@ public class ReviewServiceImpl implements ReviewService {
         review.setDescription(reviewRequest.getDescription());
         review.setCreatedAt(LocalDateTime.now());
 
-        boolean isPhotoAttached = false;
+        // 사진 첨부를 체크
+        boolean isPhotoAttached = false; // default false
 
-        // 이미지 추가
+        // 사진 추가
         if (reviewRequest.getImageUrl() != null && !reviewRequest.getImageUrl().isEmpty()) {
             for (String imageUrl : reviewRequest.getImageUrl()) {
-                isPhotoAttached = true;
+                isPhotoAttached = true; // 사진 첨부 = true
                 ReviewImage reviewImage = new ReviewImage();
                 reviewImage.setImageUrl(imageUrl);
                 reviewImage.setReview(review);
