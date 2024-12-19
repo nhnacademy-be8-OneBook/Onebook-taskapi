@@ -68,6 +68,7 @@ public class ReviewServiceImpl implements ReviewService {
         review.setCreatedAt(LocalDateTime.now());
 
         boolean isPhotoAttached = false;
+
         // 이미지 추가
         if (reviewRequest.getImageUrl() != null && !reviewRequest.getImageUrl().isEmpty()) {
             for (String imageUrl : reviewRequest.getImageUrl()) {
