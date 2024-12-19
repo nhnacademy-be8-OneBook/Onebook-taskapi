@@ -51,21 +51,24 @@ public class PointServiceImpl implements PointService {
     }
 
     /**
-     * 리뷰 작성 시 포인트 적립 (기본 500포인트)
+     * 리뷰 작성 시 포인트 적립 (기본 200포인트, 사진 첨부 시 500포인트)
      */
     @Override
-    public void registerReviewPoints(Member member) {
+    public void registerReviewPoints(Member member, boolean isPhotoAttached) {
         Optional<Point> optionalPoint = pointRepository.findByMember_Id(member.getId());
         Point point = optionalPoint.orElseThrow(() -> new PointPolicyException("회원 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
-        point.updatePointCurrent(point.getAmount() + 500);  // 리뷰 작성시 500포인트 추가
+        // 기본 200포인트 적립, 사진이 첨부되었다면 500포인트 적립
+        int pointAmount = isPhotoAttached ? 500 : 200;
+
+        point.updatePointCurrent(point.getAmount() + pointAmount);  // 리뷰 작성시 포인트 추가
         pointRepository.save(point);
 
         // 포인트 로그 기록
         PointLog pointLog = PointLog.builder()
                 .pointLogUpdatedAt(LocalDateTime.now())
                 .pointLogUpdatedType("REVIEW")  // 리뷰 작성으로 적립
-                .pointLogAmount(500)
+                .pointLogAmount(pointAmount)
                 .point(point)
                 .build();
 
