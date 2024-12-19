@@ -15,6 +15,7 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @Table(name = "images")
 public class Image {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long imageId;
@@ -22,6 +23,12 @@ public class Image {
     @Length(max = 255)
     private String imageUrl;
 
+    // 책과 이미지는 다대일 관계 (하나의 책에 여러 이미지가 가능)
     @ManyToOne(optional = false)
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
+
+    // 책 이미지 이름 추가
+    @Length(max = 255)
+    private String bookImageName; // 책 이미지 이름 필드 추가
 }
