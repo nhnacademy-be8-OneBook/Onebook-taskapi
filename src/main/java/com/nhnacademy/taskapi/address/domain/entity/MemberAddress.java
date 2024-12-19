@@ -1,17 +1,32 @@
 package com.nhnacademy.taskapi.address.domain.entity;
 
+import com.nhnacademy.taskapi.address.domain.dto.req.AddMemberAddressRequest;
+import com.nhnacademy.taskapi.address.domain.dto.req.UpdateMemberAddressRequest;
 import com.nhnacademy.taskapi.member.domain.Member;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class MemberAddress {
+
+    private MemberAddress(Member member, String name, String phoneNumber, String alias, String requestedTerm,
+                         String zipCode, String roadNameAddress, String numberAddress, String notes, String detailAddress,
+                         Integer defaultLocation) {
+
+        this.member = member;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.alias = alias;
+        this.requestedTerm = requestedTerm;
+        this.zipCode = zipCode;
+        this.roadNameAddress = roadNameAddress;
+        this.numberAddress = numberAddress;
+        this.notes = notes;
+        this.detailAddress = detailAddress;
+        this.defaultLocation = defaultLocation;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,44 +37,63 @@ public class MemberAddress {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Setter
     @Column(nullable = false ,length = 10)
     private String name;
 
-    @Setter
     @Column(nullable = false, length = 30)
     private String phoneNumber;
 
-    @Setter
     @Column(length = 20)
     private String alias;
 
-    @Setter
     @Column(length = 100)
     private String requestedTerm;
 
-    @Setter
     @Column(nullable = false,length = 10)
     private String zipCode;
 
-    @Setter
     @Column(nullable = false,length = 100)
     private String roadNameAddress;
 
-    @Setter
     @Column(nullable = false,length = 100)
     private String numberAddress;
 
-    @Setter
     @Column(length = 100)
     private String notes;
 
-    @Setter
     @Column(length = 100)
     private String detailAddress;
 
-    @Setter
     @Column(nullable = false)
     private Integer defaultLocation;
 
+    public static MemberAddress createMemberAddress(Member member, AddMemberAddressRequest addMemberAddressRequest){
+        return new MemberAddress(
+                member,
+                addMemberAddressRequest.getName(),
+                addMemberAddressRequest.getPhoneNumber(),
+                addMemberAddressRequest.getAlias(),
+                addMemberAddressRequest.getRequestedTerm(),
+                addMemberAddressRequest.getZipCode(),
+                addMemberAddressRequest.getRoadNameAddress(),
+                addMemberAddressRequest.getNumberAddress(),
+                addMemberAddressRequest.getNotes(),
+                addMemberAddressRequest.getDetailAddress(),
+                addMemberAddressRequest.getDefaultLocation()
+        );
+    }
+
+    public void updateMemberAddress(UpdateMemberAddressRequest updateMemberAddressRequest) {
+
+        this.name = updateMemberAddressRequest.getName();
+        this.phoneNumber = updateMemberAddressRequest.getPhoneNumber();
+        this.alias = updateMemberAddressRequest.getAlias();
+        this.requestedTerm = updateMemberAddressRequest.getRequestedTerm();
+        this.zipCode = updateMemberAddressRequest.getZipCode();
+        this.roadNameAddress = updateMemberAddressRequest.getRoadNameAddress();
+        this.numberAddress = updateMemberAddressRequest.getNumberAddress();
+        this.notes = updateMemberAddressRequest.getNotes();
+        this.detailAddress = updateMemberAddressRequest.getDetailAddress();
+        this.defaultLocation = updateMemberAddressRequest.getDefaultLocation();
+    }
 }
