@@ -52,5 +52,4 @@ public class ReviewController {
         ReviewResponse response = reviewService.updateReview(bookId, reviewId, reviewRequest);
         return ResponseEntity.ok(response);
     }
-
 }
