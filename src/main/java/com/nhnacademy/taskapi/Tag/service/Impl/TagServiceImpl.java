@@ -23,10 +23,15 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public Tag addTag(String tagName) {
-        Tag tag = new Tag();
-        tag.setName(tagName);
 
-        return tagRepository.save(tag);
+        Tag tag  = tagRepository.findByName(tagName);
+
+        if(Objects.isNull(tag)){
+            tag = new Tag();
+            tag.setName(tagName);
+            return tagRepository.save(tag);
+        }
+        return tag;
     }
 
     @Override
@@ -47,5 +52,12 @@ public class TagServiceImpl implements TagService {
     public void delete(long tagId) {
         Tag tag = tagRepository.findById(tagId).orElseThrow(()-> new TagNotFoundException("This Tag Not Exist!"));
         tagRepository.delete(tag);
+    }
+
+    @Override
+    public Tag getTag(long tagId){
+        Tag tag = tagRepository.findById(tagId).orElseThrow(() -> new TagNotFoundException("This Tag Not Exist !"));
+
+        return tag;
     }
 }
