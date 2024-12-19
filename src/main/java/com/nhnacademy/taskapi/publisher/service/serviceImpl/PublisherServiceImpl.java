@@ -24,7 +24,16 @@ public class PublisherServiceImpl implements PublisherService {
     @Transactional
     @Override
     public Publisher addPublisher(String name) {
-        Publisher publisher = new Publisher();
+        if(Objects.isNull(name) || name.trim().isEmpty()){
+            throw new InvalidPublisherNameException("PublisherName is Null OR Empty !");
+        }
+        Publisher publisher = publisherRepository.findByName(name);
+
+        if(Objects.isNull(publisher)){
+            throw new PublisherNotFoundException("This Publisher Not Exist !");
+        }
+
+
         publisher.setName(name);
         return publisherRepository.save(publisher);
     }

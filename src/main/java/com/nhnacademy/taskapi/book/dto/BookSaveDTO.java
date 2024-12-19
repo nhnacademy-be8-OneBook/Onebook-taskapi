@@ -1,6 +1,7 @@
 package com.nhnacademy.taskapi.book.dto;
 
 
+import com.nhnacademy.taskapi.category.domain.Category;
 import jakarta.persistence.GeneratedValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +23,8 @@ public class BookSaveDTO {
     private String isbn13;
     private Integer priceSales;
     private Integer price;
-    private String categoryNames;
+    private String categoryName;
+    private Category category;
     private String publisherName;
     private Long salesPoint;
 

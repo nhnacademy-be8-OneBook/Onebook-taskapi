@@ -26,9 +26,13 @@ public class AuthorServiceImpl implements AuthorService {
         if(Objects.isNull(name) || name.trim().isEmpty()){
             throw new InvalidAuthorNameException("this AuthorName is Null Or Empty !");
         }
-        Author author = new Author();
-        author.setName(name);
-        return authorRepository.save(author);
+        Author author = null;
+        if(Objects.isNull(authorRepository.findByName(name))){
+            author = new Author();
+            author.setName(name);
+            return authorRepository.save(author);
+        }
+        return authorRepository.findByName(name);
     }
 
     //작가 수정
@@ -51,5 +55,13 @@ public class AuthorServiceImpl implements AuthorService {
     public void deleteAuthor(int authorId){
         Author author = authorRepository.findById(authorId).orElseThrow(() -> new AuthorNotFoundException("This Author Not Exist !"));
         authorRepository.delete(author);
+    }
+
+
+    @Override
+    public Author getAuthor(int authorId){
+
+        Author author = authorRepository.findById(authorId).orElseThrow(()-> new AuthorNotFoundException("Author Not Found !"));
+        return author;
     }
 }
