@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.book.service.Impl;
 
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.domain.BookCategory;
+import com.nhnacademy.taskapi.book.exception.BookNotFoundException;
 import com.nhnacademy.taskapi.book.repository.BookCategoryRepository;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.book.service.BookCategoryService;
@@ -24,8 +25,8 @@ import java.util.Objects;
 @Transactional(readOnly = true)
 public class BookCategoryServiceImpl implements BookCategoryService {
     private final BookCategoryRepository bookCategoryRepository;
-    private final BookService bookService;
-    private final CategoryService categoryService;
+    private final BookRepository bookRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
     @Override
@@ -33,8 +34,8 @@ public class BookCategoryServiceImpl implements BookCategoryService {
         BookCategory bookCategory = bookCategoryRepository.findByBook_bookIdAndCategory_categoryId(dto.getBookId(),dto.getCategoryId());
 
         if(Objects.isNull(bookCategory)){
-            Book book = bookService.getBook(dto.getBookId());
-            Category category = categoryService.getCategory(dto.getCategoryId());
+            Book book = bookRepository.findById(dto.getBookId()).orElseThrow(() -> new BookNotFoundException("Book Not Found !"));
+            Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("Category Not Found !"));
 
             bookCategory = new BookCategory();
             bookCategory.setBook(book);
@@ -46,7 +47,8 @@ public class BookCategoryServiceImpl implements BookCategoryService {
 
     @Override
     public List<BookCategory> getBookByCategory(Category category){
-        Category cate = categoryService.getCategory(category.getCategoryId());
+        Category cate = categoryRepository.findById(category.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("Category Not Found !"));
+
         return bookCategoryRepository.findByCategory(cate);
     }
 }

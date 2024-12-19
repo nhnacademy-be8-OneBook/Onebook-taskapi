@@ -25,17 +25,17 @@ import java.util.Objects;
 public class BookTagServiceImpl implements BookTagService {
 
     private final BookTagRepository bookTagRepository;
-    private final BookService bookService;
-    private final TagService tagService;
+    private final BookRepository bookRepository;
+    private final TagRepository tagRepository;
 
 
     //관리자가 책-태그 등록
     @Override
     @Transactional
     public BookTag addBookTag(long bookId, long tagId) {
-        Book book = bookService.getBook(bookId);
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("Book Not Found !"));
 
-        Tag tag = tagService.getTag(tagId);
+        Tag tag = tagRepository.findById(tagId).orElseThrow(() -> new TagNotFoundException("Tag Not Found !"));
 
 
         BookTag bookTag = null;
