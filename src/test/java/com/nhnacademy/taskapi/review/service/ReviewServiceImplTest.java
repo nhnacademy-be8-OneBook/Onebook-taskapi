@@ -8,6 +8,7 @@ import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.domain.Member.Gender;
 import com.nhnacademy.taskapi.member.domain.Member.Status;
 import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
+import com.nhnacademy.taskapi.member.service.MemberService;
 import com.nhnacademy.taskapi.point.service.PointService;
 import com.nhnacademy.taskapi.review.domain.Review;
 import com.nhnacademy.taskapi.review.dto.ReviewRequest;
@@ -19,20 +20,17 @@ import com.nhnacademy.taskapi.review.repository.ReviewImageRepository;
 import com.nhnacademy.taskapi.review.repository.ReviewRepository;
 import com.nhnacademy.taskapi.review.service.impl.ReviewServiceImpl;
 import com.nhnacademy.taskapi.roles.domain.Role;
-import com.nhnacademy.taskapi.member.service.MemberService;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import  java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -59,20 +57,32 @@ class ReviewServiceImplTest {
     @InjectMocks
     private ReviewServiceImpl reviewService;
 
-    private Member member;
+    private Member member;       // 일반 사용자
+    private Member adminMember;  // 관리자
     private Book book;
     private Review review;
-    private Role role;
+    private Role memberRole;
+    private Role adminRole;
+    private Grade grade;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         // Grade 객체 생성
-        Grade grade = Grade.create("Gold", 10, "Gold members receive 10% discount.");
+        grade = Grade.create("Gold", 10, "WoW, You Are BlackCow");
 
-        // Role 객체 생성
-        role = Role.createRole("MEMBER", "Regular member with standard privileges");
+        // MEMBER Role 생성
+        memberRole = Role.createRole("MEMBER", "내 돈줄");
+        Field memberRoleIdField = Role.class.getDeclaredField("id");
+        memberRoleIdField.setAccessible(true);
+        memberRoleIdField.set(memberRole, 1);
 
-        // Member 객체 생성
+        // ADMIN Role 생성
+        adminRole = Role.createRole("ADMIN", "Administrator role");
+        Field adminRoleIdField = Role.class.getDeclaredField("id");
+        adminRoleIdField.setAccessible(true);
+        adminRoleIdField.set(adminRole, 2);
+
+        // Member(일반 사용자) 객체 생성
         member = Member.createNewMember(
                 grade,
                 "집가고싶다",
@@ -82,20 +92,29 @@ class ReviewServiceImplTest {
                 Gender.M,
                 "ebul@outside.dangerous",
                 "123-456-7890",
-                role // Role
+                memberRole
         );
-
-        // Reflection을 사용하여 private 필드 'id' 설정
-        try {
-            Field idField = Member.class.getDeclaredField("id");
-            idField.setAccessible(true);
-            idField.set(member, 1L);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Member 상태 설정
+        Field memberIdField = Member.class.getDeclaredField("id");
+        memberIdField.setAccessible(true);
+        memberIdField.set(member, 1L);
         member.setStatus(Status.ACTIVE);
+
+        // Admin Member(관리자) 생성
+        adminMember = Member.createNewMember(
+                grade,
+                "관리자",
+                "adminuser",
+                "adminpass",
+                LocalDate.of(2024, 12, 19),
+                Gender.M,
+                "admin@test.com",
+                "999-999-9999",
+                adminRole
+        );
+        Field adminIdField = Member.class.getDeclaredField("id");
+        adminIdField.setAccessible(true);
+        adminIdField.set(adminMember, 2L);
+        adminMember.setStatus(Status.ACTIVE);
 
         // Book 객체 생성
         book = new Book();
@@ -125,6 +144,7 @@ class ReviewServiceImplTest {
      * - 유효한 memberId, bookId, 중복 리뷰 없음, 이미지 2장 첨부(정상 범위)
      * 결과:
      * - 리뷰가 정상 등록되고, 응답 DTO에 생성된 reviewId, 입력한 memberId, bookId, description, imageUrl이 담긴다.
+     * - 포인트 적립 함수 호출 확인(사진첨부=true -> 500포인트)
      */
     @Test
     void testRegisterReviewSuccess() {
@@ -301,7 +321,6 @@ class ReviewServiceImplTest {
         assertEquals(1L, response.getMemberId());
         assertEquals(1L, response.getBookId());
         assertEquals("오늘도 나는 로또를 산다..", response.getDescription());
-        // 초기 리뷰에 이미지가 없으므로 0
         assertEquals(0, response.getImageUrl().size());
     }
 
@@ -342,7 +361,6 @@ class ReviewServiceImplTest {
     @Test
     void testUpdateReviewWrongBook() {
         // Given
-        // 리뷰가 속한 도서의 ID를 2로 변경
         review.getBook().setBookId(2L);
         ReviewRequest request = new ReviewRequest(1L, 1L, 3, "Updated Description", null);
         given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
@@ -393,4 +411,96 @@ class ReviewServiceImplTest {
         });
         assertEquals("이미지는 최대 3장까지 첨부할 수 있습니다.", exception.getMessage());
     }
+
+    /**
+     * 테스트 시나리오: 관리자에 의한 리뷰 삭제
+     * 조건:
+     * - 관리자(role_id=2) 삭제 시도
+     * - 해당 리뷰가 존재하고 도서 일치
+     * 결과:
+     * - 리뷰가 정상 삭제되고 삭제 전 정보 반환
+     */
+    @Test
+    void testDeleteReviewByAdmin() {
+        // Given
+        ReviewRequest request = new ReviewRequest(2L, 1L, 4, "Delete this review", null);
+        given(memberService.getMemberById(2L)).willReturn(adminMember);
+        given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
+
+        // When
+        ReviewResponse response = reviewService.deleteReview(1L, 10L, request);
+
+        // Then
+        assertEquals(10L, response.getReviewId());
+        assertEquals(4, response.getGrade());
+        assertEquals("오늘도 나는 로또를 산다..", response.getDescription());
+        verify(reviewRepository, times(1)).delete(review);
+    }
+
+    /**
+     * 테스트 시나리오: 일반 회원이 리뷰 삭제 시도
+     * 조건:
+     * - member.role_id != 2 (관리자가 아님)
+     * - 리뷰를 삭제할 권한 없음
+     * 결과:
+     * - "해당 리뷰를 삭제할 권한이 없습니다." 예외 발생
+     */
+    @Test
+    void testDeleteReviewByNonAdmin() throws Exception {
+        // Given
+        // member는 이미 role_id=1(Member)로 설정됨
+        ReviewRequest request = new ReviewRequest(1L, 1L, 4, "Delete Attempt", null);
+        given(memberService.getMemberById(1L)).willReturn(member);
+        given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
+
+        // When/Then
+        InvalidReviewException exception = assertThrows(InvalidReviewException.class, () -> {
+            reviewService.deleteReview(1L, 10L, request);
+        });
+        assertEquals("해당 리뷰를 삭제할 권한이 없습니다.", exception.getMessage());
+    }
+
+    /**
+     * 테스트 시나리오: 존재하지 않는 리뷰 삭제 시도
+     * 조건:
+     * - reviewId가 존재하지 않음
+     * 결과:
+     * - "리뷰를 찾을 수 없습니다." 예외 발생
+     */
+    @Test
+    void testDeleteReviewNotFound() {
+        // Given (adminMember는 이미 존재)
+        ReviewRequest request = new ReviewRequest(2L, 1L, 4, "Delete Attempt", null);
+        given(memberService.getMemberById(2L)).willReturn(adminMember);
+        given(reviewRepository.findById(999L)).willReturn(Optional.empty());
+
+        // When/Then
+        InvalidReviewException exception = assertThrows(InvalidReviewException.class, () -> {
+            reviewService.deleteReview(1L, 999L, request);
+        });
+        assertEquals("리뷰를 찾을 수 없습니다.", exception.getMessage());
+    }
+
+    /**
+     * 테스트 시나리오: 도서 불일치 시 리뷰 삭제 시도
+     * 조건:
+     * - review.getBook().getBookId() != 요청한 bookId
+     * 결과:
+     * - "리뷰가 해당 도서에 속하지 않습니다." 예외 발생
+     */
+    @Test
+    void testDeleteReviewWrongBook() {
+        // Given
+        review.getBook().setBookId(2L); // 도서 불일치
+        ReviewRequest request = new ReviewRequest(2L, 1L, 4, "Delete Attempt", null);
+        given(memberService.getMemberById(2L)).willReturn(adminMember);
+        given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
+
+        // When/Then
+        InvalidReviewException exception = assertThrows(InvalidReviewException.class, () -> {
+            reviewService.deleteReview(1L, 10L, request);
+        });
+        assertEquals("리뷰가 해당 도서에 속하지 않습니다.", exception.getMessage());
+    }
+
 }
