@@ -8,4 +8,7 @@ public interface CategoryService {
     Category addCategory(CategoryCreateDTO dto);
     Category updateCategory(CategoryUpdateDTO updateDTO);
     void deleteCategory(int categoryId);
+
+    Category addCategoryByAladin(String categoryName);
+    Category getCategory(int categoryId);
 }
