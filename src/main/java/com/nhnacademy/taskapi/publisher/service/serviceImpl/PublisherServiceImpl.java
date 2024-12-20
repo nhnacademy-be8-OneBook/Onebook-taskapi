@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.publisher.service.serviceImpl;
 import com.nhnacademy.taskapi.publisher.domain.Publisher;
 import com.nhnacademy.taskapi.publisher.dto.PublisherUpdateDTO;
 import com.nhnacademy.taskapi.publisher.exception.InvalidPublisherNameException;
+import com.nhnacademy.taskapi.publisher.exception.PublisherAlreadyExistException;
 import com.nhnacademy.taskapi.publisher.exception.PublisherNotFoundException;
 import com.nhnacademy.taskapi.publisher.repository.PublisherRepository;
 import com.nhnacademy.taskapi.publisher.service.PublisherService;
@@ -29,11 +30,11 @@ public class PublisherServiceImpl implements PublisherService {
         }
         Publisher publisher = publisherRepository.findByName(name);
 
-        if(Objects.isNull(publisher)){
-            throw new PublisherNotFoundException("This Publisher Not Exist !");
+        if(Objects.nonNull(publisher)){
+            throw new PublisherAlreadyExistException("This Publisher Already Exist !");
         }
 
-
+        publisher = new Publisher();
         publisher.setName(name);
         return publisherRepository.save(publisher);
     }
