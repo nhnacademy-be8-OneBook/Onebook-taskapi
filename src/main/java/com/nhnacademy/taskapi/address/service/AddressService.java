@@ -28,6 +28,7 @@ public class AddressService {
     private final MemberService memberService;
 
     public AddMemberAddressResponse addMemberAddress(Long memberId, AddMemberAddressRequest memberAddressRequest){
+        // memberId null 체크, memberAddressRequest null 체크는 컨트롤러에서
 
         Member member = memberService.getMemberById(memberId);
         MemberAddress memberAddress = MemberAddress.createMemberAddress(member, memberAddressRequest);
