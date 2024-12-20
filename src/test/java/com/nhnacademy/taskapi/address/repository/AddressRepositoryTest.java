@@ -149,7 +149,7 @@ class AddressRepositoryTest {
         MemberAddress memberAddress = MemberAddress.createMemberAddress(member,addMemberAddressRequest);
         addressRepository.save(memberAddress);
 
-        addressRepository.findById(0L);
+        addressRepository.findById(memberAddress.getId());
 
     }
 
@@ -275,7 +275,7 @@ class AddressRepositoryTest {
         MemberAddress memberAddress = MemberAddress.createMemberAddress(member,addMemberAddressRequest);
         addressRepository.save(memberAddress);
 
-        MemberAddress memberAddressForUpdate = addressRepository.findById(1L).get();
+        MemberAddress memberAddressForUpdate = addressRepository.findById(memberAddress.getId()).get();
         UpdateMemberAddressRequest updateMemberAddressRequest = new UpdateMemberAddressRequest();
 
         for(Field field : updateMemberAddressRequest.getClass().getDeclaredFields()){
@@ -367,9 +367,9 @@ class AddressRepositoryTest {
         }
 
         MemberAddress memberAddress = MemberAddress.createMemberAddress(member,addMemberAddressRequest);
-        addressRepository.save(memberAddress);
+        memberAddress = addressRepository.save(memberAddress);
 
-        MemberAddress memberAddressForDelete = addressRepository.findById(1L).get();
+        MemberAddress memberAddressForDelete = addressRepository.findById(memberAddress.getId()).get();
 
         addressRepository.delete(memberAddressForDelete);
 
