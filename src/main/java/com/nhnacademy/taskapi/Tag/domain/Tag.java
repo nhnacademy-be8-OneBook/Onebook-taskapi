@@ -1,26 +1,42 @@
 package com.nhnacademy.taskapi.Tag.domain;
 
-
+import com.nhnacademy.taskapi.book.domain.Book;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "Tags")
+@Table(name = "Tag")
+@EntityListeners(AuditingEntityListener.class)
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long tagId;
+    @Column(name = "tag_id")
+    private Long tagId;
 
-
-    @Length(max = 50)
-    @Column(nullable = false)
+    @Column(name = "tag_name")
     private String name;
+
+    @Column(name = "last_modified")
+    private LocalDateTime lastModified;
+
+    @ManyToOne
+    @JoinColumn(name = "book_id")
+    private Book book;
+
+    public Tag() {}
+
+    @Builder
+    public Tag(Long tagId, Book book, String name, LocalDateTime lastModified) {
+        this.tagId = tagId;
+        this.book = book;
+        this.name = name;
+        this.lastModified = lastModified;
+    }
 }
