@@ -52,7 +52,10 @@ public class StockServiceImpl implements StockService {
         if(dto.getAmount() < 0){
             throw new InvalidStockAmountException("stock must be greater than 0 ");
         }
-        Stock stock = stockRepository.findById(dto.getBookId()).orElseThrow(() -> new StockNotFoundException("Stock not found"));
+        Stock stock = stockRepository.findByBook_bookId(dto.getBookId());
+        if(Objects.isNull(stock)){
+            throw new StockNotFoundException("Stock not found");
+        }
 
         stock.setStock(dto.getAmount());
         return stockRepository.save(stock);
