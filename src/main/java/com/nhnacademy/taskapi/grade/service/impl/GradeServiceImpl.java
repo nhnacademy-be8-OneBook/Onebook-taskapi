@@ -83,9 +83,7 @@ public class GradeServiceImpl implements GradeService {
         grade.modifyGrade(gradeModifyDto.name(), gradeModifyDto.accumulationRate(), gradeModifyDto.description());
 
         try {
-
             return gradeRepository.save(grade);
-
         }catch(DataIntegrityViolationException e) {
             throw new GradeDataIntegrityViolationException("Failed to save grade in the database");
         }

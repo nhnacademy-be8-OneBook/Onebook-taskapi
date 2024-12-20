@@ -92,6 +92,11 @@
             <version>2.13.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
         <!-- dbcp2 사용을 위한 Hikaricp 배제 의존성 추가-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
