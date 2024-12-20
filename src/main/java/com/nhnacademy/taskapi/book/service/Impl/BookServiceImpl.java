@@ -239,7 +239,7 @@ public class BookServiceImpl implements BookService {
     // 베스트셀러 목록 조회
     @Override
     public Page<Book> bestSellerBooks(Pageable pageable) {
-        return bookRepository.findTop50ByAmount(pageable);
+        return bookRepository.findAllByOrderByAmount(pageable);
     }
 
 
