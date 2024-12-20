@@ -30,9 +30,9 @@ public class AuthorServiceImpl implements AuthorService {
         if(Objects.isNull(authorRepository.findByName(name))){
             author = new Author();
             author.setName(name);
-            return authorRepository.save(author);
         }
-        return authorRepository.findByName(name);
+        return authorRepository.save(author);
+
     }
 
     //작가 수정
