@@ -19,7 +19,7 @@ public class RoleRepositoryTest {
     private RoleRepository roleRepository;
 
     @Test
-    @DisplayName("Find Role by ID Successfully")
+    @DisplayName("Find Role by ID")
     void findByIdTest() {
         Role role = Role.createRole("MEMBER", "일반 회원입니다.");
         Role savedRole = roleRepository.save(role);
@@ -33,7 +33,7 @@ public class RoleRepositoryTest {
     }
 
     @Test
-    @DisplayName("Save Role Successfully")
+    @DisplayName("Save Role")
     void saveTest() {
         Role role = Role.createRole("MEMBER", "일반 회원입니다.");
         Role savedRole = roleRepository.save(role);
@@ -44,7 +44,7 @@ public class RoleRepositoryTest {
     }
 
     @Test
-    @DisplayName("Update Role Successfully")
+    @DisplayName("Update Role")
     void updateTest() {
         Role role = Role.createRole("MEMBER", "일반 회원입니다.");
         Role savedRole = roleRepository.save(role);
@@ -57,7 +57,7 @@ public class RoleRepositoryTest {
     }
 
     @Test
-    @DisplayName("Delete Role Successfully")
+    @DisplayName("Delete Role")
     void deleteByIdTest() {
         Role role = Role.createRole("MEMBER", "일반 회원입니다.");
         Role savedRole = roleRepository.save(role);

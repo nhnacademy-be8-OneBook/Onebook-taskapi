@@ -5,11 +5,12 @@ import com.nhnacademy.taskapi.member.dto.MemberLoginDto;
 import com.nhnacademy.taskapi.member.dto.MemberModifyDto;
 import com.nhnacademy.taskapi.member.dto.MemberRegisterDto;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface MemberService {
-    List<Member> getAllMembers();
+    Page<Member> getAllMembers(int page);
     Member getMemberById(Long id);
     Member getMemberByLoginId(String loginId);
     boolean existsById(Long id);
@@ -19,4 +20,5 @@ public interface MemberService {
     void removeMember(Long memberId);
     MemberLoginDto validateLogin(MemberLoginDto memberLoginDto);
     String getLoginIdById(Long id);
+
 }

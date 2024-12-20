@@ -20,7 +20,7 @@ public class GradeRepositoryTest {
     private GradeRepository gradeRepository;
 
     @Test
-    @DisplayName("Find Grade Successfully")
+    @DisplayName("Find Grade")
     void findByIdTest() {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Grade savedGrade = gradeRepository.save(grade);
@@ -35,7 +35,7 @@ public class GradeRepositoryTest {
     }
 
     @Test
-    @DisplayName("Find All Grade Successfully")
+    @DisplayName("Find All Grade")
     void findAllTest() {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         gradeRepository.save(grade);
@@ -49,7 +49,7 @@ public class GradeRepositoryTest {
     }
 
     @Test
-    @DisplayName("Save Grade Successfully")
+    @DisplayName("Save Grade")
     void saveTest() {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
 
@@ -61,7 +61,7 @@ public class GradeRepositoryTest {
     }
 
     @Test
-    @DisplayName("Delete Grade Successfully")
+    @DisplayName("Delete Grade")
     void deleteTest() {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Grade target = gradeRepository.save(grade);
@@ -72,7 +72,7 @@ public class GradeRepositoryTest {
     }
 
     @Test
-    @DisplayName("Exists Grade Successfully")
+    @DisplayName("Exists Grade")
     void existsTest() {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Grade savedGrade = gradeRepository.save(grade);

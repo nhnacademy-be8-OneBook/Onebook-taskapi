@@ -8,11 +8,9 @@ import com.nhnacademy.taskapi.member.dto.MemberResponseDto;
 import com.nhnacademy.taskapi.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -22,18 +20,16 @@ public class MemberController {
     private final MemberService memberService;
 
     // 전체 멤버 조회
-    @GetMapping("/all")
-    public ResponseEntity<List<MemberResponseDto>> getMembers() {
-        List<Member> members = memberService.getAllMembers();
-        List<MemberResponseDto> memberResponseDtoList = new ArrayList<>();
-        for (Member member : members) {
-            memberResponseDtoList.add(MemberResponseDto.from(member));
-        }
+    @GetMapping("/list")
+    public ResponseEntity<Page<MemberResponseDto>> getMembers(@RequestParam(value="page", defaultValue = "0") int page) {
+        Page<Member> memberList = memberService.getAllMembers(page);
 
-        return ResponseEntity.ok().body(memberResponseDtoList);
+        Page<MemberResponseDto> memberResponseDtoPage = memberList.map(MemberResponseDto::from);
+
+        return ResponseEntity.ok().body(memberResponseDtoPage);
     }
 
-    // 인조키(id)로 멤버 조회
+    // request header의 인조키(id)로 멤버 조회
     @GetMapping
     public ResponseEntity<MemberResponseDto> getMemberById(@RequestHeader("X-MEMBER-ID") Long memberId) {
        Member member = memberService.getMemberById(memberId);
