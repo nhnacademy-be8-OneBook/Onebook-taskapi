@@ -23,7 +23,7 @@ public class RoleController {
 
     private final RoleService roleService;
 
-    // 전체 roles 조회
+    // 전체 role 조회
     @GetMapping
     public ResponseEntity<List<RoleResponseDto>> getRoles() {
         List<Role> roles = roleService.getAllRoles();

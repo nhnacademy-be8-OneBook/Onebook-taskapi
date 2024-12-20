@@ -4,6 +4,7 @@ import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.service.BookService;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.service.MemberService;
+import com.nhnacademy.taskapi.point.service.PointService;
 import com.nhnacademy.taskapi.review.domain.Review;
 import com.nhnacademy.taskapi.review.domain.ReviewImage;
 import com.nhnacademy.taskapi.review.dto.ReviewRequest;
@@ -34,6 +35,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewImageRepository reviewImageRepository;
     private final MemberService memberService;
     private final BookService bookService;
+    private final PointService pointService;
 
     @Override
     @Transactional
@@ -63,9 +65,13 @@ public class ReviewServiceImpl implements ReviewService {
         review.setDescription(reviewRequest.getDescription());
         review.setCreatedAt(LocalDateTime.now());
 
-        // 이미지 추가
+        // 사진 첨부를 체크
+        boolean isPhotoAttached = false; // default false
+
+        // 사진 추가
         if (reviewRequest.getImageUrl() != null && !reviewRequest.getImageUrl().isEmpty()) {
             for (String imageUrl : reviewRequest.getImageUrl()) {
+                isPhotoAttached = true; // 사진 첨부 = true
                 ReviewImage reviewImage = new ReviewImage();
                 reviewImage.setImageUrl(imageUrl);
                 reviewImage.setReview(review);
@@ -75,6 +81,10 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 리뷰 저장
         Review savedReview = reviewRepository.save(review);
+
+        // 리뷰 작성시 사진 첨부 유무에 따라 포인트 적립
+        // 근데 사진첨부해서 500포인트 받아놓고, 리뷰 수정해서 사진을 지우면...?
+        pointService.registerReviewPoints(member, isPhotoAttached);
 
         // 응답 DTO 생성
         return ReviewResponse.builder()
@@ -172,4 +182,50 @@ public class ReviewServiceImpl implements ReviewService {
                         .collect(Collectors.toList()))
                 .build();
     }
+
+    @Override
+    @Transactional
+    public ReviewResponse deleteReview(long bookId, long reviewId, ReviewRequest reviewRequest) {
+        // 회원 존재 확인
+        Member member = memberService.getMemberById(reviewRequest.getMemberId());
+
+        // 리뷰 존재 확인
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new InvalidReviewException("리뷰를 찾을 수 없습니다."));
+
+        // 도서 일치 확인
+        if (review.getBook().getBookId() != bookId) {
+            throw new InvalidReviewException("리뷰가 해당 도서에 속하지 않습니다.");
+        }
+
+        // 관리자이거나 리뷰 작성자인지 확인
+        boolean isAdmin = (member.getRole().getId() == 2);  // role_id = 2는 관리자
+
+        if (!isAdmin) {
+            throw new InvalidReviewException("해당 리뷰를 삭제할 권한이 없습니다.");
+        }
+
+        // 삭제 전 응답 DTO 생성
+        // 삭제하기 전, 삭제될 리뷰의 모든 정보를 담아두고 이를 반환하기 위함..
+        // client 가 어떤리뷰가 삭제되었는지 정보를 받을 수 있다..
+        ReviewResponse response = ReviewResponse.builder()
+                .reviewId(review.getReviewId())
+                .grade(review.getGrade())
+                .description(review.getDescription())
+                .createdAt(review.getCreatedAt())
+                .updatedAt(review.getUpdatedAt())
+                .memberId(review.getMember().getId())
+                .bookId(review.getBook().getBookId())
+                .imageUrl(review.getReviewImage().stream()
+                        .map(ReviewImage::getImageUrl)
+                        .collect(Collectors.toList()))
+                .build();
+
+        // 리뷰 삭제
+        reviewRepository.delete(review);
+
+        return response;
+    }
+
 }
+

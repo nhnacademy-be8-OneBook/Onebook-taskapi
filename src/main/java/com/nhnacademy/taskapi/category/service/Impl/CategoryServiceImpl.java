@@ -30,22 +30,51 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public Category addCategory(CategoryCreateDTO dto) {
-        Category categories = new Category();
-
-        if(Objects.nonNull(dto.getCategory())){
-            categoryRepository.findById(dto.getCategory().getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("Category not found !"));
-        }
-
-        //카테고리 이름 중복 체크
-        if(categoryRepository.existsByName(dto.getCategoryName())){
-            throw new CategoryNameDuplicateException("Category name already exists ! categoryName: " + dto.getCategoryName());
+        if(Objects.isNull(dto.getCategoryName()) || dto.getCategoryName().trim().isEmpty()){
+            throw new InvalidCategoryNameException("CategoryName is Null OR Empty !");
         }
 
 
-        categories.setName(dto.getCategoryName());
-        categories.setParentCategory(dto.getCategory());
+        Category category = new Category();
 
-        return categoryRepository.save(categories);
+        if(!categoryRepository.existsByName(dto.getCategoryName())){
+            if(Objects.isNull(dto.getCategory())){
+                // 최상위 카테고리 등록
+                category.setName(dto.getCategoryName());
+                category.setParentCategory(null);
+            }else{
+                // 하위 카테고리 등록
+                category.setName(dto.getCategoryName());
+                category.setParentCategory(dto.getCategory());
+            }
+        }else{
+            throw new CategoryNameDuplicateException("This CategoryName is Exist !");
+        }
+
+        return categoryRepository.save(category);
+    }
+
+
+    //알라딘 Api 전용 카테고리 등록
+    @Override
+    public Category addCategoryByAladin(String categoryName){
+        String[] nameList = categoryName.split(">");
+
+        Category parentCategory = null;
+        for(String name: nameList){
+            Category existCategory = categoryRepository.findByName(name);
+            if(Objects.isNull(existCategory)){
+                Category newCategory = new Category();
+                newCategory.setName(name);
+                newCategory.setParentCategory(parentCategory);
+                categoryRepository.save(newCategory);
+                parentCategory=newCategory;
+            }else{
+                parentCategory = existCategory;
+            }
+        }
+
+        return parentCategory;
     }
 
     @Transactional
@@ -72,5 +101,12 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException("this Category Not Exist !"));
 
         categoryRepository.delete(category);
+    }
+
+
+    @Override
+    public Category getCategory(int categoryId){
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException("This Category Not Found !"));
+        return category;
     }
 }
