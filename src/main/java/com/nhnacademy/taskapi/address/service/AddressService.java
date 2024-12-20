@@ -29,11 +29,38 @@ public class AddressService {
 
     public AddMemberAddressResponse addMemberAddress(Long memberId, AddMemberAddressRequest memberAddressRequest){
 
-        Member member = memberService.getMemberById(memberId);
-        MemberAddress memberAddress = MemberAddress.createMemberAddress(member, memberAddressRequest);
+        MemberAddress memberAddress = new MemberAddress(
+                null,
+                memberService.getMemberById(memberId),
+                memberAddressRequest.getName(),
+                memberAddressRequest.getPhoneNumber() ,
+                memberAddressRequest.getAlias() ,
+                memberAddressRequest.getRequestedTerm() ,
+                memberAddressRequest.getZipCode() ,
+                memberAddressRequest.getRoadNameAddress(),
+                memberAddressRequest.getNumberAddress() ,
+                memberAddressRequest.getNotes(),
+                memberAddressRequest.getDetailAddress(),
+                memberAddressRequest.getDefaultLocation()
+        );
+
         addressRepository.save(memberAddress);
 
-        return AddMemberAddressResponse.changeEntityToDto(memberAddress);
+        AddMemberAddressResponse addMemberAddressResponse = new AddMemberAddressResponse(
+                memberAddress.getName(),
+                memberAddress.getPhoneNumber(),
+                memberAddress.getAlias(),
+                memberAddress.getRequestedTerm(),
+                memberAddress.getZipCode(),
+                memberAddress.getRoadNameAddress(),
+                memberAddress.getNumberAddress(),
+                memberAddress.getNotes(),
+                memberAddress.getDetailAddress(),
+                memberAddress.getDefaultLocation()
+        );
+
+        return addMemberAddressResponse;
+
     }
     
     public GetMemberAddressResponse getMemberAddress(Long memberId,Long addressId){
@@ -45,7 +72,20 @@ public class AddressService {
             throw new InvalidMemberAddressException("해당 ID 배송지의 member ID와 요청한 member ID가 일치하지 않습니다.");
         }
         
-        return GetMemberAddressResponse.changeEntityToDto(memberAddress);
+        GetMemberAddressResponse resp = new GetMemberAddressResponse(
+                memberAddress.getName(),
+                memberAddress.getPhoneNumber(),
+                memberAddress.getAlias(),
+                memberAddress.getRequestedTerm(),
+                memberAddress.getZipCode(),
+                memberAddress.getRoadNameAddress(),
+                memberAddress.getNumberAddress(),
+                memberAddress.getNotes(),
+                memberAddress.getDetailAddress(),
+                memberAddress.getDefaultLocation()
+        );
+        
+        return resp;
     }
 
 
@@ -55,7 +95,22 @@ public class AddressService {
         List<GetMemberAddressResponse> resp = new ArrayList<>();
 
         for(MemberAddress memberAddress :  addressRepository.findMemberAddressByMember(member)){
-            resp.add(GetMemberAddressResponse.changeEntityToDto(memberAddress));
+
+        GetMemberAddressResponse GetMemberAddressResponse = new GetMemberAddressResponse(
+                memberAddress.getName(),
+                memberAddress.getPhoneNumber(),
+                memberAddress.getAlias(),
+                memberAddress.getRequestedTerm(),
+                memberAddress.getZipCode(),
+                memberAddress.getRoadNameAddress(),
+                memberAddress.getNumberAddress(),
+                memberAddress.getNotes(),
+                memberAddress.getDetailAddress(),
+                memberAddress.getDefaultLocation()
+        );
+
+        resp.add(GetMemberAddressResponse);
+
         }
 
         return resp;
@@ -71,9 +126,33 @@ public class AddressService {
             throw new InvalidMemberAddressException("해당 ID 배송지의 member ID와 요청한 member ID가 일치하지 않습니다.");
         }
 
-        memberAddress.updateMemberAddress(updateMemberAddressRequest);
+        memberAddress.setName(updateMemberAddressRequest.getName());
+        memberAddress.setPhoneNumber(updateMemberAddressRequest.getPhoneNumber());
+        memberAddress.setAlias(updateMemberAddressRequest.getAlias());
+        memberAddress.setRequestedTerm(updateMemberAddressRequest.getRequestedTerm());
+        memberAddress.setZipCode(updateMemberAddressRequest.getZipCode());
+        memberAddress.setRoadNameAddress(updateMemberAddressRequest.getRoadNameAddress());
+        memberAddress.setNumberAddress(updateMemberAddressRequest.getNumberAddress());
+        memberAddress.setNotes(updateMemberAddressRequest.getNotes());
+        memberAddress.setDetailAddress(updateMemberAddressRequest.getDetailAddress());
+        memberAddress.setDefaultLocation(updateMemberAddressRequest.getDefaultLocation());
 
-        return UpdateMemberAddressResponse.changeEntityToDto(memberAddress);
+        UpdateMemberAddressResponse resp = new UpdateMemberAddressResponse(
+                memberAddress.getId(),
+                memberAddress.getName(),
+                memberAddress.getPhoneNumber(),
+                memberAddress.getAlias(),
+                memberAddress.getRequestedTerm(),
+                memberAddress.getZipCode(),
+                memberAddress.getRoadNameAddress(),
+                memberAddress.getNumberAddress(),
+                memberAddress.getNotes(),
+                memberAddress.getDetailAddress(),
+                memberAddress.getDefaultLocation()
+        );
+
+        return resp;
+
     }
 
 
@@ -87,7 +166,8 @@ public class AddressService {
         }
 
         addressRepository.delete(memberAddress);
-        return DeleteMemberAddressResponse.changeEntityToDto(memberAddress.getId());
+        DeleteMemberAddressResponse resp = new DeleteMemberAddressResponse(memberId);
+        return resp;
 
     }
 
