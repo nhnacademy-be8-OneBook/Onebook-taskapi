@@ -7,7 +7,6 @@ import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.roles.domain.Role;
 
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.data.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
-import java.util.List;
 
 @DataJpaTest
 class AddressRepositoryTest {
