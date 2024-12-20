@@ -9,6 +9,7 @@ import com.nhnacademy.taskapi.roles.exception.RoleIllegalArgumentException;
 import com.nhnacademy.taskapi.roles.exception.RoleNotFoundException;
 import com.nhnacademy.taskapi.roles.repository.RoleRepository;
 import com.nhnacademy.taskapi.roles.service.RoleService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     // role 등록
+    @Transactional
     @Override
     public Role registerRole(RoleRegisterDto roleRegisterDto) {
 
@@ -48,7 +50,6 @@ public class RoleServiceImpl implements RoleService {
         }
 
         try {
-
             Role role = Role.createRole(roleRegisterDto.name(), roleRegisterDto.description());
             return roleRepository.save(role);
 
@@ -58,6 +59,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     // role 수정
+    @Transactional
     @Override
     public Role modifyRole(Integer id, RoleModifyDto roleModifyDto) {
 
@@ -66,7 +68,6 @@ public class RoleServiceImpl implements RoleService {
         }
 
         try {
-
             Role role = getRoleById(id);
             role.modifyRole(roleModifyDto.name(), roleModifyDto.description());
             return roleRepository.save(role);
@@ -78,6 +79,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     // role 삭제
+    @Transactional
     @Override
     public void deleteRole(Integer id) {
         if(!roleRepository.existsById(id)) {

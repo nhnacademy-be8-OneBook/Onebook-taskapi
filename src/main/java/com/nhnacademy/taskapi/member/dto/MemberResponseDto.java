@@ -6,8 +6,13 @@ import java.time.LocalDateTime;
 
 public record MemberResponseDto(
 
-        Integer gradeId, // 1: REGULAR, 2: ROYAL, 3: GOLD, 4: PLATINUM
-        Integer roleId, // 1: MEMBER, 2: ADMIN
+        /**
+         * Grade ID -> 1: REGULAR, 2: ROYAL, 3: GOLD, 4: PLATINUM
+         * Role ID -> 1: MEMBER, 2: ADMIN
+         */
+
+        Integer gradeId,
+        Integer roleId,
         String name,
         String loginId,
         LocalDate dateOfBirth,

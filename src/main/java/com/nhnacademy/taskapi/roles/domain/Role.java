@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "roles")
 public class Role {
 
-    /* 1: MEMBER, 2: ADMIN */
+    /**
+     * ID -> 1: MEMBER, 2: ADMIN
+     */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
