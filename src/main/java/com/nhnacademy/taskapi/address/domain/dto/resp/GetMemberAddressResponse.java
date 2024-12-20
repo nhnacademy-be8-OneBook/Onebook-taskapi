@@ -18,11 +18,11 @@ public class GetMemberAddressResponse {
     private String numberAddress;
     private String notes;
     private String detailAddress;
-    private Integer defaultLocation;
+    private boolean defaultLocation;
 
     private GetMemberAddressResponse(String name, String phoneNumber, String alias, String requestedTerm, String zipCode,
                                      String roadNameAddress, String numberAddress, String notes, String detailAddress,
-                                     Integer defaultLocation) {
+                                     boolean defaultLocation) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.alias = alias;
@@ -39,7 +39,7 @@ public class GetMemberAddressResponse {
         return new GetMemberAddressResponse(
                 memberAddress.getName(), memberAddress.getPhoneNumber(), memberAddress.getAlias(), memberAddress.getRequestedTerm()
                 , memberAddress.getZipCode(), memberAddress.getRoadNameAddress(), memberAddress.getNumberAddress(),
-                memberAddress.getNotes(), memberAddress.getDetailAddress(), memberAddress.getDefaultLocation());
+                memberAddress.getNotes(), memberAddress.getDetailAddress(), memberAddress.isDefaultLocation());
     }
 
 }

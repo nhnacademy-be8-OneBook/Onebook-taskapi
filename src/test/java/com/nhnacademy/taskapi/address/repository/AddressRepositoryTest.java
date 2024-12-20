@@ -76,7 +76,7 @@ class AddressRepositoryTest {
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("detailAddress"),
                     addMemberAddressRequest,"상세주소");
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("defaultLocation"),
-                    addMemberAddressRequest,0);
+                    addMemberAddressRequest,true);
 
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
@@ -139,7 +139,7 @@ class AddressRepositoryTest {
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("detailAddress"),
                     addMemberAddressRequest,"상세주소");
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("defaultLocation"),
-                    addMemberAddressRequest,0);
+                    addMemberAddressRequest,true);
 
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
@@ -201,7 +201,7 @@ class AddressRepositoryTest {
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("detailAddress"),
                     addMemberAddressRequest,"상세주소");
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("defaultLocation"),
-                    addMemberAddressRequest,0);
+                    addMemberAddressRequest,true);
 
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
@@ -266,7 +266,7 @@ class AddressRepositoryTest {
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("detailAddress"),
                     addMemberAddressRequest,"상세주소");
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("defaultLocation"),
-                    addMemberAddressRequest,0);
+                    addMemberAddressRequest,true);
 
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
@@ -304,7 +304,7 @@ class AddressRepositoryTest {
             ReflectionUtils.setField(updateMemberAddressRequest.getClass().getDeclaredField("detailAddress"),
                     updateMemberAddressRequest,"상세주소" );
             ReflectionUtils.setField(updateMemberAddressRequest.getClass().getDeclaredField("defaultLocation"),
-                    updateMemberAddressRequest,1 );
+                    updateMemberAddressRequest,true );
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
@@ -360,7 +360,7 @@ class AddressRepositoryTest {
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("detailAddress"),
                     addMemberAddressRequest,"상세주소");
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("defaultLocation"),
-                    addMemberAddressRequest,0);
+                    addMemberAddressRequest,true);
 
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);

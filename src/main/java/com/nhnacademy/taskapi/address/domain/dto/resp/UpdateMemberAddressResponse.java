@@ -18,11 +18,11 @@ public class UpdateMemberAddressResponse {
     private String numberAddress;
     private String notes;
     private String detailAddress;
-    private Integer defaultLocation;
+    private boolean defaultLocation;
 
     private UpdateMemberAddressResponse(Long id, String name, String phoneNumber, String alias, String requestedTerm,
                                        String zipCode, String roadNameAddress, String numberAddress, String notes,
-                                       String detailAddress, Integer defaultLocation) {
+                                       String detailAddress, boolean defaultLocation) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -41,6 +41,6 @@ public class UpdateMemberAddressResponse {
                 memberAddress.getId(),memberAddress.getName(), memberAddress.getPhoneNumber(), memberAddress.getAlias(),
                 memberAddress.getRequestedTerm(), memberAddress.getZipCode(), memberAddress.getRoadNameAddress(),
                 memberAddress.getNumberAddress(), memberAddress.getNotes(), memberAddress.getDetailAddress(),
-                memberAddress.getDefaultLocation());
+                memberAddress.isDefaultLocation());
     }
 }

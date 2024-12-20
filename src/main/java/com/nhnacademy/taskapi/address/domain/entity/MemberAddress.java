@@ -13,7 +13,7 @@ public class MemberAddress {
 
     private MemberAddress(Member member, String name, String phoneNumber, String alias, String requestedTerm,
                          String zipCode, String roadNameAddress, String numberAddress, String notes, String detailAddress,
-                         Integer defaultLocation) {
+                         boolean defaultLocation) {
 
         this.member = member;
         this.name = name;
@@ -65,7 +65,7 @@ public class MemberAddress {
     private String detailAddress;
 
     @Column(nullable = false)
-    private Integer defaultLocation;
+    private boolean defaultLocation;
 
     public static MemberAddress createMemberAddress(Member member, AddMemberAddressRequest addMemberAddressRequest){
         return new MemberAddress(
@@ -79,7 +79,7 @@ public class MemberAddress {
                 addMemberAddressRequest.getNumberAddress(),
                 addMemberAddressRequest.getNotes(),
                 addMemberAddressRequest.getDetailAddress(),
-                addMemberAddressRequest.getDefaultLocation()
+                addMemberAddressRequest.isDefaultLocation()
         );
     }
 
@@ -94,6 +94,6 @@ public class MemberAddress {
         this.numberAddress = updateMemberAddressRequest.getNumberAddress();
         this.notes = updateMemberAddressRequest.getNotes();
         this.detailAddress = updateMemberAddressRequest.getDetailAddress();
-        this.defaultLocation = updateMemberAddressRequest.getDefaultLocation();
+        this.defaultLocation = updateMemberAddressRequest.isDefaultLocation();
     }
 }
