@@ -35,10 +35,13 @@ public class RoleServiceTest {
 
     @Test
     @DisplayName("Get All Roles Successfully")
-    void getAllRoleSuccess() {
+    void getAllRoleTest() {
         List<Role> roleList = new ArrayList<>();
         Mockito.when(roleRepository.findAll()).thenReturn(roleList);
+
         roleService.getAllRoles();
+
+        Mockito.verify(roleRepository, Mockito.times(1)).findAll();
     }
 
     @Test

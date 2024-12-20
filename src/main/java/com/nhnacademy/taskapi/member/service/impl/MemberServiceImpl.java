@@ -17,11 +17,14 @@ import com.nhnacademy.taskapi.roles.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Transactional
@@ -32,13 +35,26 @@ public class MemberServiceImpl implements MemberService {
     private final GradeService gradeService;
     private final RoleService roleService;
 
-    // 전체 멤버 조회
+    // TODO 쿠폰, 포인트 완성 시 회원가입 수정 필요.
+
+    /**
+     * 로그인, 로그아웃 기능 보류.
+     */
+
+   // 전체 멤버 반환에 Pagenation 적용.
+    @Transactional(readOnly = true)
     @Override
-    public List<Member> getAllMembers() {
-        return memberRepository.findAll();
+    public Page<Member> getAllMembers(int page) {
+        if(page < 0) {
+            throw new MemberIllegalArgumentException("Page index must be positive number");
+        }
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Order.desc("createdAt")));
+
+        return memberRepository.findAll(pageable);
     }
 
     // 인조키(id)로 멤버 조회
+    @Transactional(readOnly = true)
     @Override
     public Member getMemberById(Long id) {
         if(!existsById(id)) {
@@ -51,21 +67,19 @@ public class MemberServiceImpl implements MemberService {
         return member;
     }
 
-    // 로그인 아이디로 멤버 조회
-    /*
+    /**
     * jwt 용 입니다. 멤버 조회하시려면 memberId로 하세요
     * 두레이 메시지에서 jwt에서 memberId 가져오는거 참고하세요
     */
+    // 로그인 아이디로 멤버 조회
+    @Transactional(readOnly = true)
     @Override
     public Member getMemberByLoginId(String loginId) {
         return memberRepository.findByLoginId(loginId).orElseThrow(() -> new MemberNotFoundException("Member not found by loginId"));
     }
 
-    /**
-     * memberId로 loginId 조회.
-     * @param id
-     * @return loginId
-     */
+    // memberId로 loginId 조회.
+    @Transactional(readOnly = true)
     @Override
     public String getLoginIdById(Long id) {
         if(!existsById(id)) {
@@ -76,12 +90,14 @@ public class MemberServiceImpl implements MemberService {
 
 
     // 중복 확인 - 회원 인조키(id)가 존재하는지 확인
+    @Transactional(readOnly = true)
     @Override
     public boolean existsById(Long id) {
         return memberRepository.existsById(id);
     }
 
     // 중복 확인 - 회원 로그인 ID(loginId)가 존재하는지 확인
+    @Transactional(readOnly = true)
     @Override
     public boolean existsByLoginId(String loginId) {
         return memberRepository.existsByLoginId(loginId);
@@ -123,7 +139,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member modifyMember(Long memberId, MemberModifyDto memberModifyDto) {
        Member member = getMemberById(memberId);
-       if(member.getPassword().equals(memberModifyDto.password())) {
+       if(BCrypt.checkpw(memberModifyDto.password() ,member.getPassword())) {
            member.modifyMember(
                    memberModifyDto.name(),
                    memberModifyDto.password(),
@@ -155,6 +171,12 @@ public class MemberServiceImpl implements MemberService {
     public void removeMember(Long memberId) {
         Member member = getMemberById(memberId);
         member.setStatus(Member.Status.DELETED);
+
+        try {
+            memberRepository.save(member);
+        }catch(DataIntegrityViolationException e) {
+            throw new MemberDataIntegrityViolationException("Failed to save member in the database");
+        }
     }
 
     // 로그인

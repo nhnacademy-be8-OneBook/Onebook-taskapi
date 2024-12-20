@@ -64,7 +64,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Status status; // default: ACTIVE
 
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @Setter

@@ -53,7 +53,7 @@ public class RoleControllerTest {
 
         Mockito.when(roleService.getRoleById(1)).thenReturn(role);
 
-        mockMvc.perform(get("/task/roles/1"))
+        mockMvc.perform(get("/task/roles/{id}",1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("MEMBER"))
                 .andExpect(jsonPath("$.description").value("일반 회원"));
@@ -81,7 +81,7 @@ public class RoleControllerTest {
 
         Mockito.when(roleService.modifyRole(1, new RoleModifyDto("ADMIN", "관리자"))).thenReturn(role);
 
-        mockMvc.perform(put("/task/roles/1")
+        mockMvc.perform(put("/task/roles/{id}",1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"ADMIN\", \"description\": \"관리자\"}"))
                 .andExpect(status().isOk())
@@ -92,7 +92,7 @@ public class RoleControllerTest {
     @Test
     @DisplayName("DELETE Role")
     void deleteTest() throws Exception {
-        mockMvc.perform(delete("/task/roles/1"))
+        mockMvc.perform(delete("/task/roles/{id}",1))
                 .andExpect(status().is2xxSuccessful());
     }
 
