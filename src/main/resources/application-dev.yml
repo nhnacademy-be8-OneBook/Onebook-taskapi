@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: task-service-dev  # 개발 환경에 맞는 애플리케이션 이름
+    name: task-service-dev
 
   messages:
     basename: messages/messages
@@ -13,6 +13,21 @@ spring:
     cache-duration: 3600
     always-use-message-format: true
 
+  datasource:
+    url: jdbc:mysql://localhost:3306/nhn_academy_9?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: dev_user
+    password: dev_password
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+# eureka 설정
 eureka:
   client:
     register-with-eureka: true
@@ -22,3 +37,19 @@ eureka:
   instance:
     prefer-ip-address: true
 
+# 이미지 파일 업로드 경로 설정 (개발 환경에서는 로컬 경로 사용)
+image:
+  upload-dir: file:/tmp/images/  # 개발 환경에서는 로컬 경로 사용
+
+# 이미지 관리 API 설정 (개발용)
+image-manager:
+  api-url: https://api-image-dev.nhncloudservice.com
+  app-key: devAppKey
+  secret-key: devSecretKey
+
+# 파일 업로드 크기 제한 설정
+servlet:
+  multipart:
+    max-file-size: 5MB  # 개발 환경에서 파일 크기 제한을 낮춤
+    max-request-size: 5MB  # 개발 환경에서 파일 크기 제한을 낮춤
+    enabled: true

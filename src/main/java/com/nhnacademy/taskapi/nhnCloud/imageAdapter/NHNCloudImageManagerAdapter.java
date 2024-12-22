@@ -1,6 +1,5 @@
-package com.nhnacademy.taskapi.adapter;
+package com.nhnacademy.taskapi.nhnCloud.imageAdapter;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
