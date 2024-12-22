@@ -14,13 +14,13 @@ public record CreatePointPolicyRequest(Long memberId, String pointPolicyName, in
         return PointPolicy.builder()
                 .memberId(memberId)  // Add memberId to PointPolicy
                 .pointPolicyName(pointPolicyName)
-                .pointPolicyApplyAmount(pointPolicyApplyType ? pointPolicyApply : null)
-                .pointPolicyRate(!pointPolicyApplyType ? pointPolicyApply : null)
+                .pointPolicyApplyAmount(pointPolicyApplyType ? pointPolicyApply : 0)  // 0으로 기본값 설정
+                .pointPolicyRate(!pointPolicyApplyType ? pointPolicyApply : 0)  // 0으로 기본값 설정
                 .pointPolicyCondition(pointPolicyCondition)
                 .pointPolicyCreatedAt(LocalDate.now())
-                .pointPolicyConditionAmount(!pointPolicyApplyType ? pointPolicyConditionAmount : null)
+                .pointPolicyConditionAmount(pointPolicyConditionAmount)  // null 대신 조건값 그대로 사용
                 .pointPolicyApplyType(pointPolicyApplyType)
-                .pointPolicyState(true)
+                .pointPolicyState(true)  // 기본값 true
                 .build();
     }
 }

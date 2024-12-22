@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.pointTest;
+package com.nhnacademy.taskapi.pointTest.exception;
 
 import com.nhnacademy.taskapi.point.exception.PointPolicyException;
 import org.junit.jupiter.api.Test;
@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PointPolicyExceptionTest {
+class PointExceptionTest {
 
     // 예외 메시지와 상태 코드 확인 (PointPolicyException 생성 시)
     @Test
