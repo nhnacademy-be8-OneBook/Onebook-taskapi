@@ -22,11 +22,9 @@ public class UpdateMemberAddressRequest
     @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$\n")
     private String phoneNumber;
 
-    @NotBlank
     @Size(max = 20)
     private String alias;
 
-    @NotBlank
     @Size(max = 100)
     private String requestedTerm;
 
