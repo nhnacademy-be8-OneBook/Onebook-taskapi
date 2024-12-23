@@ -15,10 +15,10 @@ public class CouponForIssuanceMappingMember {
     private Long couponForIssuanceMappingMemberId;
 
     @ManyToOne
-    @JoinColumn(name = "couponForIssuanceId")
+    @JoinColumn(name = "couponForIssuanceId", nullable = false)
     private CouponForIssuance couponForIssuance;
 
     @ManyToOne
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "memberId", nullable = false)
     private Member member;
 }

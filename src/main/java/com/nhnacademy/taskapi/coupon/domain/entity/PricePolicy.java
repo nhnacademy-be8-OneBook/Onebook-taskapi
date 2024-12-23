@@ -8,11 +8,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Getter
-@Table(name = "coupon_rate_policies")
-public class CouponRatePolicy {
+@Table(name = "price_policies")
+public class PricePolicy {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long couponRatePolicyId;
+    private Long pricePolicyId;
 
     @NotBlank
     @Column(nullable = false, length = 30)
@@ -24,9 +25,5 @@ public class CouponRatePolicy {
 
     @NotBlank
     @Column(nullable = false)
-    private Integer discountRate;
-
-    @NotBlank
-    @Column(nullable = false)
-    private Integer maximumDiscountAmount;
+    private Integer discountAmount;
 }

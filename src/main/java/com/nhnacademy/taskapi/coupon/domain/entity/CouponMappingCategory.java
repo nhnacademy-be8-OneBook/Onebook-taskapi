@@ -15,10 +15,10 @@ public class CouponMappingCategory {
     private Long couponMappingCategoryId;
 
     @OneToOne
-    @JoinColumn(name = "couponId")
+    @JoinColumn(name = "couponId" ,nullable = false)
     private Coupon coupon;
 
     @ManyToOne
-    @JoinColumn(name = "categoryId")
+    @JoinColumn(name = "categoryId", nullable = false)
     private Category category;
 }

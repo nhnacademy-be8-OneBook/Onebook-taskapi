@@ -15,10 +15,10 @@ public class CouponMappingBook {
     private Long couponMappingBookId;
 
     @OneToOne
-    @JoinColumn(name = "couponId")
+    @JoinColumn(name = "couponId" , nullable = false)
     private Coupon coupon;
 
     @ManyToOne
-    @JoinColumn(name = "bookId")
+    @JoinColumn(name = "bookId" , nullable = false)
     private Book book;
 }

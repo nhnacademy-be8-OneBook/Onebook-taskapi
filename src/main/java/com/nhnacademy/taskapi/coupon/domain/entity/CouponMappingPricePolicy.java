@@ -7,17 +7,18 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Getter
-@Table(name = "coupons_mapping_coupon_rate_policies")
-public class CouponMappingCouponRatePolicy {
+@Table(name = "coupons_mapping_price_policies")
+public class CouponMappingPricePolicy {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long couponMappingCouponRatePolicyId;
+    private Long couponMappingPricePolicyId;
 
     @OneToOne
-    @JoinColumn(name = "couponId")
+    @JoinColumn(name = "couponId",nullable = false)
     private Coupon coupon;
 
     @ManyToOne
-    @JoinColumn(name = "couponPricePolicyId")
-    private CouponRatePolicy couponPricePolicy;
+    @JoinColumn(name = "pricePolicyId",nullable = false)
+    private PricePolicy pricePolicy;
 }

@@ -22,7 +22,7 @@ public class Coupon {
     private String name;
 
     @NotBlank
-    @Column(nullable = false, length = 200)
+    @Column(length = 200)
     private String description;
 
     @Column(nullable = false)
