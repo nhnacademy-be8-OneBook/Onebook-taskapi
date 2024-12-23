@@ -38,6 +38,7 @@ public class BookAuthorServiceImpl implements BookAuthorService {
         if(Objects.nonNull(bookAuthor)){
             throw new BookAuthorAlreadyExistsException("BookAuthor Already Exist !");
         }
+        bookAuthor = new BookAuthor();
         bookAuthor.setBook(book);
         bookAuthor.setAuthor(author);
         return bookAuthorRepository.save(bookAuthor);
