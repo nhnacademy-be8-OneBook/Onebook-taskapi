@@ -24,18 +24,21 @@ public class GradeServiceImpl implements GradeService {
     private final GradeRepository gradeRepository;
 
     // 모든 등급 조회
+    @Transactional(readOnly = true)
     @Override
     public List<Grade> getAllGrades() {
         return gradeRepository.findAll();
     }
 
     // default 등급(REGULAR) 가져오기 - default 등급(REGULAR)의 ID는 반드시 1.
+    @Transactional(readOnly = true)
     @Override
     public Grade getDefaultGrade() {
         return getGradeById(1);
     }
 
     // 인조키(id)로 등급 조회
+    @Transactional(readOnly = true)
     @Override
     public Grade getGradeById(Integer id) {
         if(!gradeRepository.existsById(id)) {
@@ -49,6 +52,7 @@ public class GradeServiceImpl implements GradeService {
     }
 
     // 중복 확인 - 회원 등급 이름(name)이 존재하는지 확인
+    @Transactional(readOnly = true)
     @Override
     public boolean existsByName(String name) {
         return gradeRepository.existsByName(name);
@@ -82,11 +86,8 @@ public class GradeServiceImpl implements GradeService {
         Grade grade = getGradeById(id);
         grade.modifyGrade(gradeModifyDto.name(), gradeModifyDto.accumulationRate(), gradeModifyDto.description());
 
-        try {
-            return gradeRepository.save(grade);
-        }catch(DataIntegrityViolationException e) {
-            throw new GradeDataIntegrityViolationException("Failed to save grade in the database");
-        }
+       return grade;
+
     }
 
     // 회원 등급 삭제

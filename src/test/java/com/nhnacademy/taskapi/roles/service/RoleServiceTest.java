@@ -35,10 +35,13 @@ public class RoleServiceTest {
 
     @Test
     @DisplayName("Get All Roles Successfully")
-    void getAllRoleSuccess() {
+    void getAllRoleTest() {
         List<Role> roleList = new ArrayList<>();
         Mockito.when(roleRepository.findAll()).thenReturn(roleList);
+
         roleService.getAllRoles();
+
+        Mockito.verify(roleRepository, Mockito.times(1)).findAll();
     }
 
     @Test
@@ -74,11 +77,9 @@ public class RoleServiceTest {
     void modifyRoleTest() {
         Role role = Role.createRole("등급", "등급 설명");
         Mockito.when(roleRepository.findById(1)).thenReturn(Optional.of(role));
-        Mockito.when(roleRepository.save(Mockito.any(Role.class))).thenReturn(role);
 
         roleService.modifyRole(1, new RoleModifyDto("수정", "수정 설명"));
 
-        Mockito.verify(roleRepository, Mockito.times(1)).save(Mockito.any(Role.class));
         Mockito.verify(roleRepository, Mockito.times(1)).findById(1);
     }
 
@@ -92,16 +93,16 @@ public class RoleServiceTest {
         });
     }
 
-    @Test
-    @DisplayName("Modify Role Failed 2 - DB error")
-    void failedModifyRoleDBErrorTest() {
-        Mockito.when(roleRepository.findById(1)).thenReturn(Optional.of(Role.createRole("등급", "등급 설명")));
-        Mockito.when(roleRepository.save(Mockito.any(Role.class))).thenThrow(DataIntegrityViolationException.class);
-
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            roleService.modifyRole(1, new RoleModifyDto("등급", "등급 설명"));
-        });
-    }
+//    @Test
+//    @DisplayName("Modify Role Failed 2 - DB error")
+//    void failedModifyRoleDBErrorTest() {
+//        Mockito.when(roleRepository.findById(1)).thenReturn(Optional.of(Role.createRole("등급", "등급 설명")));
+//        Mockito.when(roleRepository.save(Mockito.any(Role.class))).thenThrow(DataIntegrityViolationException.class);
+//
+//        assertThrows(DataIntegrityViolationException.class, () -> {
+//            roleService.modifyRole(1, new RoleModifyDto("등급", "등급 설명"));
+//        });
+//    }
 
     @Test
     @DisplayName("Remove Role Successfully")

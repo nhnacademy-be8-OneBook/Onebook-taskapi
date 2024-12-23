@@ -2,7 +2,6 @@ package com.nhnacademy.taskapi.grade.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,7 +23,7 @@ public class Grade {
     @Column(name="accumulate_rate", nullable=false)
     private int accumulationRate;
 
-    @NotBlank
+    @Column(name="description", nullable = false)
     private String description;
 
     public static Grade create(String name, int accumulationRate, String description) {

@@ -22,7 +22,7 @@ public class GradeController {
     private final GradeService gradeService;
 
     // 전체 등급 조회
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<List<GradeResponseDto>> getGrades() {
         List<Grade> grades = gradeService.getAllGrades();
         List<GradeResponseDto> gradeResponseDtoList = new ArrayList<>();
@@ -32,7 +32,7 @@ public class GradeController {
         return ResponseEntity.ok().body(gradeResponseDtoList);
     }
 
-    // 인조키(id)로 단일 등급 조회
+    // 인조키(id)로 단일 등급 조회 - url에 id 명시. for 관리자.
     @GetMapping("/{id}")
     public ResponseEntity<GradeResponseDto> getGradeById(@PathVariable Integer id) {
         Grade grade = gradeService.getGradeById(id);
