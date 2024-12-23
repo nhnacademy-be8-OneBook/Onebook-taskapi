@@ -68,14 +68,10 @@ public class RoleServiceImpl implements RoleService {
             throw new RoleAlreadyExistsException("Role Name already exists");
         }
 
-        try {
             Role role = getRoleById(id);
             role.modifyRole(roleModifyDto.name(), roleModifyDto.description());
-            return roleRepository.save(role);
 
-        }catch(DataIntegrityViolationException e) {
-            throw new RoleDataIntegrityViolationException("Failed to save role in the database");
-        }
+            return role;
 
     }
 

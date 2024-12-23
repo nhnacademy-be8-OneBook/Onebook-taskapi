@@ -139,6 +139,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member modifyMember(Long memberId, MemberModifyDto memberModifyDto) {
        Member member = getMemberById(memberId);
+
        if(BCrypt.checkpw(memberModifyDto.password() ,member.getPassword())) {
            member.modifyMember(
                    memberModifyDto.name(),
@@ -156,13 +157,8 @@ public class MemberServiceImpl implements MemberService {
            );
        }
 
-       try {
+       return member;
 
-           return memberRepository.save(member);
-
-       }catch(DataIntegrityViolationException e) {
-           throw new MemberDataIntegrityViolationException("Failed to save member in the database");
-       }
     }
 
 
@@ -170,13 +166,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void removeMember(Long memberId) {
         Member member = getMemberById(memberId);
+
         member.setStatus(Member.Status.DELETED);
 
-        try {
-            memberRepository.save(member);
-        }catch(DataIntegrityViolationException e) {
-            throw new MemberDataIntegrityViolationException("Failed to save member in the database");
-        }
     }
 
     // 로그인

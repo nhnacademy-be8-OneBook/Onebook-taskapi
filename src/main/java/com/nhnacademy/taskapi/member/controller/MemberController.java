@@ -88,5 +88,13 @@ public class MemberController {
         return ResponseEntity.ok().body(loginId);
     }
 
+    /**
+     * 테스트용 member 다 가져오기.
+     */
+    @GetMapping("/test/{loginId}")
+    public Member getMemberForTest(@PathVariable("loginId") String loginId) {
+        return memberService.getMemberByLoginId(loginId);
+    }
+
 }
 
