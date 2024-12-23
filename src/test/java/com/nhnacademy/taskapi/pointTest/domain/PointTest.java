@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.pointTest;
+package com.nhnacademy.taskapi.pointTest.domain;
 
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.grade.domain.Grade;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PointTest {
@@ -84,5 +85,21 @@ class PointTest {
 
         // 포인트가 0으로 초기화 되었는지 확인
         assertEquals(0, point.getAmount());
+    }
+
+    @Test
+    void testUpdatePointCurrent() {
+        Point point = new Point(100, new Member());  // Create a member object or mock it
+        point.updatePointCurrent(150);
+
+        assertThat(point.getAmount()).isEqualTo(150);
+    }
+
+    @Test
+    void testSetAmount() {
+        Point point = new Point(100, new Member());
+        point.setAmount(200);
+
+        assertThat(point.getAmount()).isEqualTo(200);
     }
 }

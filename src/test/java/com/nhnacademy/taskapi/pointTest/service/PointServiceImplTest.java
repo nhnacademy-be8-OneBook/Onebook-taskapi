@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.pointTest;
+package com.nhnacademy.taskapi.pointTest.service;
 
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.member.domain.Member;
@@ -86,45 +86,6 @@ class PointServiceImplTest {
         verify(pointRepository, times(1)).findByMember_Id(1L); // memberId 1L로 찾기
         verify(pointRepository, times(0)).save(any(Point.class));
     }
-
-//
-//    // 포인트 환불 처리(성공 / 실패)
-//    @Test
-//    void testUpdatePointByRefund_Failure_NotEnoughPoints() {
-//        int refundAmount = 1500; // 현재 포인트 1000보다 많은 금액
-//
-//        // findByMember_MemberId가 포인트 정보를 반환
-//        when(pointRepository.findByMember_Id(anyLong())).thenReturn(Optional.of(point));
-//
-//        // 예외 발생 검증
-//        PointPolicyException exception = assertThrows(PointPolicyException.class, () -> {
-//            pointService.updatePointByRefund("1", refundAmount); // updatePointByRefund 호출
-//        });
-//
-//        // 예외 메시지와 상태 코드 검증
-//        assertEquals("환불 금액이 부족합니다.", exception.getMessage());
-//        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
-//
-//        // 포인트 저장이 호출되지 않음을 검증
-//        verify(pointRepository, times(1)).findByMember_Id(1L); // memberId 1L로 찾기
-//        verify(pointRepository, times(0)).save(any(Point.class));  // 포인트 저장 호출되지 않음
-//    }
-//
-//    @Test
-//    void testUpdatePointByRefund_Success() {
-//        int refundAmount = 500;  // 환불 금액 500일 때
-//        when(pointRepository.findByMember_Id(anyLong())).thenReturn(Optional.of(point));
-//        when(pointRepository.save(any(Point.class))).thenReturn(point);
-//
-//        // 포인트 환불 처리
-//        pointService.updatePointByRefund("1", refundAmount); // memberId는 String 타입, 이걸 Long으로 변환해서 사용
-//
-//        // 포인트가 복구되었는지 검증
-//        assertEquals(1500, point.getPointCurrent()); // 포인트가 1500으로 복구되었어야 함
-//        verify(pointRepository, times(1)).findByMember_Id(1L);  // memberId 1L로 찾기
-//        verify(pointRepository, times(1)).save(any(Point.class));  // 포인트 저장이 호출되었는지
-//        verify(pointLogRepository, times(1)).save(any(PointLog.class)); // 포인트 로그도 저장되었는지 확인
-//    }
 
     // 포인트 결제 테스트 (결제 가능)
     @Test
