@@ -17,12 +17,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/task")
 public class AddressController {
 
     private final AddressService addressService;
 
     @PostMapping("/addresses")
-    public ResponseEntity<AddMemberAddressResponse> addMemberAddress(@RequestHeader("X-MEMBER-ID") Long memberId , @RequestBody AddMemberAddressRequest request){
+    public ResponseEntity<AddMemberAddressResponse> addMemberAddress(@RequestHeader("X-MEMBER-ID") Long memberId ,
+                                                                     @RequestBody AddMemberAddressRequest request){
 
         AddMemberAddressResponse resp = addressService.addMemberAddress(memberId, request);
         return new ResponseEntity<>(resp,HttpStatus.OK);

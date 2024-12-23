@@ -4,8 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 
 @NoArgsConstructor
 @Getter
@@ -20,11 +22,9 @@ public class AddMemberAddressRequest{
     @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$\n")
     private String phoneNumber;
 
-    @NotBlank
     @Size(max = 20)
     private String alias;
 
-    @NotBlank
     @Size(max = 100)
     private String requestedTerm;
 
