@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface BookCategoryService {
     BookCategory save(BookCategorySaveDTO bookCategorySaveDTO);
-    List<BookCategory> getBookByCategory(Category category);
+    List<BookCategory> getBookByCategory(int categoryId);
 }

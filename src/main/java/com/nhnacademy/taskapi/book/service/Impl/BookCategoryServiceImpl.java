@@ -3,6 +3,8 @@ package com.nhnacademy.taskapi.book.service.Impl;
 
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.domain.BookCategory;
+import com.nhnacademy.taskapi.book.exception.BookCategoryDuplicateException;
+import com.nhnacademy.taskapi.book.exception.BookCategoryNotFoundException;
 import com.nhnacademy.taskapi.book.exception.BookNotFoundException;
 import com.nhnacademy.taskapi.book.repository.BookCategoryRepository;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
@@ -31,6 +33,8 @@ public class BookCategoryServiceImpl implements BookCategoryService {
     @Transactional
     @Override
     public BookCategory save(BookCategorySaveDTO dto) {
+
+
         BookCategory bookCategory = bookCategoryRepository.findByBook_bookIdAndCategory_categoryId(dto.getBookId(),dto.getCategoryId());
 
         if(Objects.isNull(bookCategory)){
@@ -40,15 +44,20 @@ public class BookCategoryServiceImpl implements BookCategoryService {
             bookCategory = new BookCategory();
             bookCategory.setBook(book);
             bookCategory.setCategory(category);
+        }else{
+            throw new BookCategoryDuplicateException("Book Category already exists !");
         }
 
         return bookCategoryRepository.save(bookCategory);
     }
 
     @Override
-    public List<BookCategory> getBookByCategory(Category category){
-        Category cate = categoryRepository.findById(category.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("Category Not Found !"));
+    public List<BookCategory> getBookByCategory(int categoryId) {
+        List<BookCategory> list = bookCategoryRepository.findAllByCategory_CategoryId(categoryId);
+        if (Objects.isNull(list)) {
+            throw new BookCategoryNotFoundException("Book Category Not Found !");
+        }
 
-        return bookCategoryRepository.findByCategory(cate);
+        return list;
     }
 }

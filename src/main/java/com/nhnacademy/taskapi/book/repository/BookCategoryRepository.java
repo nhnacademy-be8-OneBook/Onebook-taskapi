@@ -10,6 +10,5 @@ import java.util.List;
 public interface BookCategoryRepository extends JpaRepository<BookCategory, Long> {
     BookCategory findByBook_bookIdAndCategory_categoryId(Long bookId, Integer categoryId);
 
-    void deleteByBook(Book book);
-    List<BookCategory> findByCategory(Category category);
+    List<BookCategory> findAllByCategory_CategoryId(int categoryId);
 }
