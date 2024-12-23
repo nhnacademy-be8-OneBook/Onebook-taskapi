@@ -37,7 +37,7 @@ public class GradeControllerTest {
 
         Mockito.when(gradeService.getAllGrades()).thenReturn(gradeList);
 
-        mockMvc.perform(get("/task/grades"))
+        mockMvc.perform(get("/task/grades/list"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("REGULAR"))
                 .andExpect(jsonPath("$[0].accumulationRate").value(1))
