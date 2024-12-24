@@ -1,6 +1,6 @@
-package com.nhnacademy.taskapi.orderlist.entity;
+package com.nhnacademy.taskapi.orderdetail.entity;
 
-import com.nhnacademy.taskapi.orderlist.domain.OrderListStatus;
+import com.nhnacademy.taskapi.orderdetail.domain.OrderDetailStatus;
 import com.nhnacademy.taskapi.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "order_list")
-public class OrderList {
+public class OrderDetail {
     @Id
     @Column(name = "orderlist_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,9 +33,9 @@ public class OrderList {
     @Column(name = "packaging_price")
     int packagingPrice;
     @Enumerated(EnumType.STRING)
-    OrderListStatus status;
+    OrderDetailStatus status;
 
-    public OrderList(int packagingPrice, OrderListStatus status, int bookPrice) {
+    public OrderDetail(int packagingPrice, OrderDetailStatus status, int bookPrice) {
         this.order = order;
         this.packagingPrice = packagingPrice;
         this.status = status;
