@@ -39,8 +39,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final MemberRepository memberRepository;
 
     private final BookRepository bookRepository;
-    private JpaPointRepository pointRepository;
-    private PointLogRepository pointLogRepository;
+    private final JpaPointRepository pointRepository;
+    private final PointLogRepository pointLogRepository;
 
     @Override
     @Transactional
