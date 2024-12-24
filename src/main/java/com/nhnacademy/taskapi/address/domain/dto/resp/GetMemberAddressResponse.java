@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class GetMemberAddressResponse {
 
@@ -19,21 +20,6 @@ public class GetMemberAddressResponse {
     private String notes;
     private String detailAddress;
     private boolean defaultLocation;
-
-    private GetMemberAddressResponse(String name, String phoneNumber, String alias, String requestedTerm, String zipCode,
-                                     String roadNameAddress, String numberAddress, String notes, String detailAddress,
-                                     boolean defaultLocation) {
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.alias = alias;
-        this.requestedTerm = requestedTerm;
-        this.zipCode = zipCode;
-        this.roadNameAddress = roadNameAddress;
-        this.numberAddress = numberAddress;
-        this.notes = notes;
-        this.detailAddress = detailAddress;
-        this.defaultLocation = defaultLocation;
-    }
 
     public static GetMemberAddressResponse changeEntityToDto(MemberAddress memberAddress) {
         return new GetMemberAddressResponse(
