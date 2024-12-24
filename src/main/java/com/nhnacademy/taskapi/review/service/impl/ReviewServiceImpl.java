@@ -1,10 +1,13 @@
 package com.nhnacademy.taskapi.review.service.impl;
 
 import com.nhnacademy.taskapi.book.domain.Book;
-import com.nhnacademy.taskapi.book.service.BookService;
+import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.member.domain.Member;
-import com.nhnacademy.taskapi.member.service.MemberService;
-import com.nhnacademy.taskapi.point.service.PointService;
+import com.nhnacademy.taskapi.member.repository.MemberRepository;
+import com.nhnacademy.taskapi.point.domain.Point;
+import com.nhnacademy.taskapi.point.domain.PointLog;
+import com.nhnacademy.taskapi.point.jpa.JpaPointRepository;
+import com.nhnacademy.taskapi.point.repository.PointLogRepository;
 import com.nhnacademy.taskapi.review.domain.Review;
 import com.nhnacademy.taskapi.review.domain.ReviewImage;
 import com.nhnacademy.taskapi.review.dto.ReviewRequest;
@@ -33,18 +36,22 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ReviewImageRepository reviewImageRepository;
-    private final MemberService memberService;
-    private final BookService bookService;
-    private final PointService pointService;
+    private final MemberRepository memberRepository;
+
+    private final BookRepository bookRepository;
+    private JpaPointRepository pointRepository;
+    private PointLogRepository pointLogRepository;
 
     @Override
     @Transactional
     public ReviewResponse registerReview(long bookId, ReviewRequest reviewRequest) {
         // 회원 존재 확인
-        Member member = memberService.getMemberById(reviewRequest.getMemberId());
+        Member member = memberRepository.findById(reviewRequest.getMemberId())
+                .orElseThrow(() -> new InvalidReviewException("회원이 존재하지 않습니다."));
 
         // 도서 존재 확인
-        Book book = bookService.getBook(bookId);
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new InvalidReviewException("도서가 존재하지 않습니다."));
 
         // 동일 도서에 대한 리뷰 작성 여부 확인
         Optional<Review> existingReview = reviewRepository.findByMemberAndBook(member, book);
@@ -82,9 +89,7 @@ public class ReviewServiceImpl implements ReviewService {
         // 리뷰 저장
         Review savedReview = reviewRepository.save(review);
 
-        // 리뷰 작성시 사진 첨부 유무에 따라 포인트 적립
-        // 근데 사진첨부해서 500포인트 받아놓고, 리뷰 수정해서 사진을 지우면...?
-        pointService.registerReviewPoints(member, isPhotoAttached);
+        registerReviewPoints(member, isPhotoAttached); // 사진 첨부 유무에 따라 포인트 지급량이 다름
 
         // 응답 DTO 생성
         return ReviewResponse.builder()
@@ -187,7 +192,8 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public ReviewResponse deleteReview(long bookId, long reviewId, ReviewRequest reviewRequest) {
         // 회원 존재 확인
-        Member member = memberService.getMemberById(reviewRequest.getMemberId());
+        Member member = memberRepository.findById(reviewRequest.getMemberId())
+                .orElseThrow(() -> new InvalidReviewException("회원이 존재하지 않습니다."));
 
         // 리뷰 존재 확인
         Review review = reviewRepository.findById(reviewId)
@@ -198,7 +204,7 @@ public class ReviewServiceImpl implements ReviewService {
             throw new InvalidReviewException("리뷰가 해당 도서에 속하지 않습니다.");
         }
 
-        // 관리자이거나 리뷰 작성자인지 확인
+        // 관리자인지 확인
         boolean isAdmin = (member.getRole().getId() == 2);  // role_id = 2는 관리자
 
         if (!isAdmin) {
@@ -225,6 +231,27 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.delete(review);
 
         return response;
+    }
+
+    // 리뷰 작성 포인트를 지급
+    private void registerReviewPoints(Member member, boolean isPhotoAttached) {
+        Point point = pointRepository.findByMember_Id(member.getId())
+                .orElseThrow(() -> new InvalidReviewException("회원 포인트를 찾을 수 없습니다,"));
+
+        int pointAmount = isPhotoAttached ? 500 : 200; // 사진 첨부하면 500p, 안하면 200p
+
+        point.setAmount(point.getAmount() + pointAmount);
+        pointRepository.save(point);
+
+
+        // 포인트 로그 기록
+        PointLog pointLog = PointLog.builder()
+                .pointLogUpdatedAt(LocalDateTime.now())
+                .pointLogUpdatedType("REVIEW") // 리뷰 작성으로 적립
+                .pointLogAmount(pointAmount)
+                .point(point)
+                .build();
+        pointLogRepository.save(pointLog);
     }
 
 }
