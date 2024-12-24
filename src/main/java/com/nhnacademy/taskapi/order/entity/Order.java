@@ -2,7 +2,7 @@ package com.nhnacademy.taskapi.order.entity;
 
 import com.nhnacademy.taskapi.delivery.entity.Delivery;
 import com.nhnacademy.taskapi.member.domain.Member;
-import com.nhnacademy.taskapi.orderlist.entity.OrderList;
+import com.nhnacademy.taskapi.orderdetail.entity.OrderDetail;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,7 +42,7 @@ public class Order {
 //    @JoinColumn(name = "orderlist_id")
 
     @OneToMany(mappedBy = "order")
-    List<OrderList> orderListList;
+    List<OrderDetail> orderListDetail;
 
     @OneToMany(mappedBy = "order")
     List<Delivery> deliveryList;
