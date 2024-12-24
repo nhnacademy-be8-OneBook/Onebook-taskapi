@@ -2,14 +2,17 @@ package com.nhnacademy.taskapi.review.service;
 
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.exception.BookNotFoundException;
-import com.nhnacademy.taskapi.book.service.BookService;
+import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.domain.Member.Gender;
 import com.nhnacademy.taskapi.member.domain.Member.Status;
 import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
-import com.nhnacademy.taskapi.member.service.MemberService;
-import com.nhnacademy.taskapi.point.service.PointService;
+import com.nhnacademy.taskapi.member.repository.MemberRepository;
+import com.nhnacademy.taskapi.point.domain.Point;
+import com.nhnacademy.taskapi.point.domain.PointLog;
+import com.nhnacademy.taskapi.point.jpa.JpaPointRepository;
+import com.nhnacademy.taskapi.point.repository.PointLogRepository;
 import com.nhnacademy.taskapi.review.domain.Review;
 import com.nhnacademy.taskapi.review.dto.ReviewRequest;
 import com.nhnacademy.taskapi.review.dto.ReviewResponse;
@@ -46,13 +49,16 @@ class ReviewServiceImplTest {
     private ReviewImageRepository reviewImageRepository;
 
     @Mock
-    private MemberService memberService;
+    private MemberRepository memberRepository;
 
     @Mock
-    private BookService bookService;
+    private BookRepository bookRepository;
 
     @Mock
-    private PointService pointService; // 포인트 서비스 Mock 추가
+    private JpaPointRepository pointRepository;
+
+    @Mock
+    private PointLogRepository pointLogRepository;
 
     @InjectMocks
     private ReviewServiceImpl reviewService;
@@ -150,8 +156,8 @@ class ReviewServiceImplTest {
     void testRegisterReviewSuccess() {
         // Given
         ReviewRequest request = new ReviewRequest(1L, 1L, 5, "개추", List.of("img1", "img2"));
-        given(memberService.getMemberById(1L)).willReturn(member);
-        given(bookService.getBook(1L)).willReturn(book);
+        given(memberRepository.findById(1L)).willReturn(Optional.of(member));
+        given(bookRepository.findById(1L)).willReturn(Optional.of(book));
         given(reviewRepository.findByMemberAndBook(member, book)).willReturn(Optional.empty());
         given(reviewRepository.save(any(Review.class))).willAnswer(invocation -> {
             Review saved = invocation.getArgument(0);
@@ -159,8 +165,9 @@ class ReviewServiceImplTest {
             return saved;
         });
 
-        // 포인트 적립 mocking (이미지 2장 첨부 -> 사진첨부=true)
-        willDoNothing().given(pointService).registerReviewPoints(member, true);
+        // 포인트가 정상 적립 되었는가 확인하기 위해..
+        Point mockPoint = Mockito.mock(Point.class);
+        given(pointRepository.findByMember_Id(1L)).willReturn(Optional.of(mockPoint));
 
         // When
         ReviewResponse response = reviewService.registerReview(1L, request);
@@ -173,7 +180,11 @@ class ReviewServiceImplTest {
         assertEquals(2, response.getImageUrl().size());
         assertTrue(response.getImageUrl().contains("img1"));
         assertTrue(response.getImageUrl().contains("img2"));
-        verify(pointService, times(1)).registerReviewPoints(member, true);
+
+        // 포인트 관련 repository 메서드 호출 검증
+        verify(pointRepository, times(1)).findByMember_Id(1L);
+        verify(pointRepository, times(1)).save(any(Point.class));
+        verify(pointLogRepository, times(1)).save(any(PointLog.class));
     }
 
     /**
@@ -188,8 +199,8 @@ class ReviewServiceImplTest {
     void testRegisterReviewAlreadyExists() {
         // Given
         ReviewRequest request = new ReviewRequest(1L, 1L, 5, "개추", null);
-        given(memberService.getMemberById(1L)).willReturn(member);
-        given(bookService.getBook(1L)).willReturn(book);
+        given(memberRepository.findById(1L)).willReturn(Optional.of(member));
+        given(bookRepository.findById(1L)).willReturn(Optional.of(book));
         given(reviewRepository.findByMemberAndBook(member, book)).willReturn(Optional.of(review));
 
         // When/Then
@@ -210,7 +221,7 @@ class ReviewServiceImplTest {
     void testRegisterReviewInvalidMember() {
         // Given
         ReviewRequest request = new ReviewRequest(999L, 1L, 5, "Great book!", null);
-        given(memberService.getMemberById(999L)).willThrow(new MemberIllegalArgumentException("Member id does not exist"));
+        given(memberRepository.findById(999L)).willThrow(new MemberIllegalArgumentException("Member id does not exist"));
 
         // When/Then
         MemberIllegalArgumentException exception = assertThrows(MemberIllegalArgumentException.class, () -> {
@@ -230,8 +241,8 @@ class ReviewServiceImplTest {
     void testRegisterReviewInvalidBook() {
         // Given
         ReviewRequest request = new ReviewRequest(1L, 999L, 5, "Great book!", null);
-        given(memberService.getMemberById(1L)).willReturn(member);
-        given(bookService.getBook(999L)).willThrow(new BookNotFoundException("Invalid book ID"));
+        given(memberRepository.findById(1L)).willReturn(Optional.of(member));
+        given(bookRepository.findById(999L)).willThrow(new BookNotFoundException("Invalid book ID"));
 
         // When/Then
         BookNotFoundException exception = assertThrows(BookNotFoundException.class, () -> {
@@ -251,8 +262,8 @@ class ReviewServiceImplTest {
     void testRegisterReviewImageOverLimit() {
         // Given
         ReviewRequest request = new ReviewRequest(1L, 1L, 5, "Great book!", List.of("img1", "img2", "img3", "img4"));
-        given(memberService.getMemberById(1L)).willReturn(member);
-        given(bookService.getBook(1L)).willReturn(book);
+        given(memberRepository.findById(1L)).willReturn(Optional.of(member));
+        given(bookRepository.findById(1L)).willReturn(Optional.of(book));
         given(reviewRepository.findByMemberAndBook(member, book)).willReturn(Optional.empty());
 
         // When/Then
@@ -424,7 +435,7 @@ class ReviewServiceImplTest {
     void testDeleteReviewByAdmin() {
         // Given
         ReviewRequest request = new ReviewRequest(2L, 1L, 4, "Delete this review", null);
-        given(memberService.getMemberById(2L)).willReturn(adminMember);
+        given(memberRepository.findById(2L)).willReturn(Optional.of(adminMember));
         given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
 
         // When
@@ -450,7 +461,7 @@ class ReviewServiceImplTest {
         // Given
         // member는 이미 role_id=1(Member)로 설정됨
         ReviewRequest request = new ReviewRequest(1L, 1L, 4, "Delete Attempt", null);
-        given(memberService.getMemberById(1L)).willReturn(member);
+        given(memberRepository.findById(1L)).willReturn(Optional.of(member));
         given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
 
         // When/Then
@@ -471,7 +482,7 @@ class ReviewServiceImplTest {
     void testDeleteReviewNotFound() {
         // Given (adminMember는 이미 존재)
         ReviewRequest request = new ReviewRequest(2L, 1L, 4, "Delete Attempt", null);
-        given(memberService.getMemberById(2L)).willReturn(adminMember);
+        given(memberRepository.findById(2L)).willReturn(Optional.of(adminMember));
         given(reviewRepository.findById(999L)).willReturn(Optional.empty());
 
         // When/Then
@@ -493,7 +504,7 @@ class ReviewServiceImplTest {
         // Given
         review.getBook().setBookId(2L); // 도서 불일치
         ReviewRequest request = new ReviewRequest(2L, 1L, 4, "Delete Attempt", null);
-        given(memberService.getMemberById(2L)).willReturn(adminMember);
+        given(memberRepository.findById(2L)).willReturn(Optional.of(adminMember));
         given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
 
         // When/Then
