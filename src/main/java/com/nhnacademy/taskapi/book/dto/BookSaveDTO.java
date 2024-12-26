@@ -18,6 +18,7 @@ import java.time.LocalDate;
 public class BookSaveDTO {
     private String title;
     private String authorName;
+    private String content;
     private String pubdate;
     private String description;
     private String isbn13;
