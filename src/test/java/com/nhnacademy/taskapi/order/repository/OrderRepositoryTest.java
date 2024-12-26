@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.orders.repository;
+package com.nhnacademy.taskapi.order.repository;
 
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.member.domain.Member;
