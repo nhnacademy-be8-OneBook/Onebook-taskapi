@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Table(name = "Tag")
+@Table(name = "tags")
 @EntityListeners(AuditingEntityListener.class)
 public class Tag {
     @Id
