@@ -85,7 +85,7 @@ class OrderServiceImplTest {
     void getOrderList() {
         // given
         Long memberId = 1L;
-        when(orderRepository.findAllByMemberId(memberId)).then(mockOrderList());
+//        when(orderRepository.findAllByMemberId(memberId)).then(mockOrderList());
     }
 
     private List<Order> mockOrderList() {
