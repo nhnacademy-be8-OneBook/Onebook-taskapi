@@ -1,6 +1,5 @@
 package com.nhnacademy.taskapi.point.domain;
 
-import co.elastic.clients.elasticsearch.watcher.ActionType;
 import com.nhnacademy.taskapi.member.domain.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
