@@ -6,7 +6,6 @@ import com.google.gson.JsonParser;
 import com.nhnacademy.taskapi.adapter.properties.ImageProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,42 +14,28 @@ import java.io.IOException;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class NhnImageManager {
+public class NhnImageManagerAdapter {
     private final RestTemplate restTemplate;
-
     private static final String URL = "https://api-image.nhncloudservice.com/image/v2.0/appkeys/{appkey}/images";
-
     private final ImageProperties imageProperties;
-
-
-
 
     public String uploadImage(byte[] imageBytes, String fileName) throws IOException{
 
         HttpHeaders headers = new HttpHeaders();
-        log.info("appKey: {}", imageProperties.getAppkey());
-        log.info("secretKey: {}", imageProperties.getSecretkey());
         headers.set("Authorization", imageProperties.getSecretkey());
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
 
         HttpEntity<byte[]> entity = new HttpEntity<>(imageBytes, headers);
-
         String url = URL.replace("{appkey}", imageProperties.getAppkey()) + "?path=/onebook/" + fileName + "&overwrite=true";
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
 
 
         if(response.getStatusCode() == HttpStatus.OK){
-            log.info("Image upload: {}", "Image upload success");
-            log.info("Response Body: {}", response.getBody());
+            return extractUrl(response.getBody());
 
-            String imageUrl = extractUrl(response.getBody());
-            log.info("Image Url: {}", imageUrl);
-            return imageUrl;
         }else{
-            log.info("Image upload: {}", "Image upload Fail");
-            log.info("Response Body: {}", response.getBody());
             return null;
         }
     }
@@ -81,13 +66,8 @@ public class NhnImageManager {
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
             if (response.getStatusCode() == HttpStatus.OK) {
-                log.info("Folder contents: {}", response.getBody());
-                // 여기서 파일 목록을 파싱하여 fileId를 추출
-                String fileId = extractFileName(response.getBody(), fileName);
-                log.info("File ID: {}", fileId);
-                return fileId;
-            } else {
-                log.error("Failed to retrieve folder contents.");
+                return extractFileName(response.getBody(), fileName);
+
             }
         } catch (Exception e) {
             log.error("Error while listing files in folder", e);

@@ -28,8 +28,7 @@ public class BookSaveDTO {
     private Category category;
     private String publisherName;
     private Long salesPoint;
-
     private String tagName;
-
-    String imageUrl;
+    private byte[] imageBytes;
+    private String fileName;
 }

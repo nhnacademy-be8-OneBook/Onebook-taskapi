@@ -21,7 +21,7 @@ public class Image {
     private long imageId;
 
     @Length(max = 255)
-    private String imageUrl;
+    private String url;
 
     // 책과 이미지는 다대일 관계 (하나의 책에 여러 이미지가 가능)
     @ManyToOne(optional = false)
@@ -30,5 +30,5 @@ public class Image {
 
     // 책 이미지 이름 추가
     @Length(max = 255)
-    private String bookImageName; // 책 이미지 이름 필드 추가
+    private String name; // 책 이미지 이름 필드 추가
 }
