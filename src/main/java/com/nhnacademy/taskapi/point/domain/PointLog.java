@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(name = "point_logs")
 public class PointLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
