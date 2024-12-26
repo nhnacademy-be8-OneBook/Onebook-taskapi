@@ -40,7 +40,8 @@ eureka:
 # 이미지 파일 업로드 경로 설정 (prod 환경에서는 S3 등 사용)
 image:
   upload-dir: s3://your-bucket-name/images/  # prod 환경에서는 S3 버킷 경로 사용
-
+  appkey: bgi6iWmF4yYnwQoo
+  secretkey: 5eV2wK0nslCUu42AwIFNiEhKLThoDK4H
 # 파일 업로드 크기 제한 설정
 servlet:
   multipart:
