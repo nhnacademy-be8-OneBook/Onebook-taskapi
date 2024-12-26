@@ -185,6 +185,7 @@ public class BookServiceImpl implements BookService {
         }
 
         book.setTitle(bookSaveDTO.getTitle());
+        book.setContent(bookSaveDTO.getContent());
         book.setDescription(bookSaveDTO.getDescription());
         //ISBN-13 유효성 검사
         book.setIsbn13(bookSaveDTO.getIsbn13());
