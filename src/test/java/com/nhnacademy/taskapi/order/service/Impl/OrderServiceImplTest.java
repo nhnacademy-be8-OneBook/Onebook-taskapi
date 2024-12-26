@@ -44,9 +44,7 @@ class OrderServiceImplTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    private Member mockMember() {
-        return mock(Member.class);
-    }
+
 
     @Test
     @DisplayName("Member 존재하지 않는 예외 발생")
@@ -85,7 +83,20 @@ class OrderServiceImplTest {
     void getOrderList() {
         // given
         Long memberId = 1L;
-//        when(orderRepository.findAllByMemberId(memberId)).then(mockOrderList());
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO("김선준", "010-9999-9999", LocalDateTime.now(), 3000, 25000);
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(mockMember()));
+        when(orderRepository.findAllByMemberId(memberId)).thenReturn(mockOrderList());
+
+        // when
+        orderService.getOrderList(memberId);
+
+        // then
+        verify(orderRepository, times(1)).findAllByMemberId(memberId);
+
+    }
+
+    private Member mockMember() {
+        return mock(Member.class);
     }
 
     private List<Order> mockOrderList() {
