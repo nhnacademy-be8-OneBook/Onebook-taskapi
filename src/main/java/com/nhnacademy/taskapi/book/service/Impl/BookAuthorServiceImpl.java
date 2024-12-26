@@ -22,9 +22,9 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class BookAuthorServiceImpl implements BookAuthorService {
-    private BookRepository bookRepository;
-    private AuthorRepository authorRepository;
-    private BookAuthorRepository bookAuthorRepository;
+    private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
+    private final BookAuthorRepository bookAuthorRepository;
 
 
     @Override
