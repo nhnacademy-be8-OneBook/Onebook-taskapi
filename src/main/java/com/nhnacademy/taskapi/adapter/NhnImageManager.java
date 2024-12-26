@@ -3,7 +3,12 @@ package com.nhnacademy.taskapi.adapter;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -11,24 +16,30 @@ import java.io.IOException;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class NhnImageManager {
+    private final RestTemplate restTemplate;
+
     private static final String URL = "https://api-image.nhncloudservice.com/image/v2.0/appkeys/{appkey}/images";
-    private static final String APP_KEY = "bgi6iWmF4yYnwQoo";
-    private static final String SECRET_KEY = "5eV2wK0nslCUu42AwIFNiEhKLThoDK4H";
+    @Value("${image.appkey}")
+    private String appKey;
+    @Value("${image.secretkey}")
+    private String secretKey;
+
 
 
     public String uploadImage(byte[] imageBytes, String fileName) throws IOException{
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", SECRET_KEY);
+        log.info("appKey: {}", appKey);
+        log.info("secretKey: {}", secretKey);
+        headers.set("Authorization", secretKey);
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
 
         HttpEntity<byte[]> entity = new HttpEntity<>(imageBytes, headers);
 
-        String url = URL.replace("{appkey}", APP_KEY) + "?path=/onebook/" + fileName + "&overwrite=true";
-
-        RestTemplate restTemplate = new RestTemplate();
+        String url = URL.replace("{appkey}", appKey) + "?path=/onebook/" + fileName + "&overwrite=true";
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
 
@@ -61,14 +72,14 @@ public class NhnImageManager {
     //폴더 내 파일 목록 조회
     public String listFilesInFolder(String fileName) {
           // 조회하고자 하는 폴더 경로
-        String url = "https://api-image.nhncloudservice.com/image/v2.0/appkeys/" + APP_KEY + "/folders?basepath=" + "/onebook";
+        String url = "https://api-image.nhncloudservice.com/image/v2.0/appkeys/" + appKey + "/folders?basepath=" + "/onebook";
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", SECRET_KEY);
+        headers.set("Authorization", secretKey);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        RestTemplate restTemplate = new RestTemplate();
+
 
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
@@ -116,14 +127,12 @@ public class NhnImageManager {
 
     public void deleteImage(String fileName) {
         String fileId = listFilesInFolder(fileName);
-        String url = "https://api-image.nhncloudservice.com/image/v2.0/appkeys/" + APP_KEY + "/images/sync?fileId=" + fileId;
+        String url = "https://api-image.nhncloudservice.com/image/v2.0/appkeys/" + appKey + "/images/sync?fileId=" + fileId;
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", SECRET_KEY);
+        headers.set("Authorization", secretKey);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        RestTemplate restTemplate = new RestTemplate();
 
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, String.class);
