@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.adapter;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.nhnacademy.taskapi.adapter.properties.ImageProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,25 +19,24 @@ public class NhnImageManager {
     private final RestTemplate restTemplate;
 
     private static final String URL = "https://api-image.nhncloudservice.com/image/v2.0/appkeys/{appkey}/images";
-    @Value("${image.appkey}")
-    private String appKey;
-    @Value("${image.secretkey}")
-    private String secretKey;
+
+    private final ImageProperties imageProperties;
+
 
 
 
     public String uploadImage(byte[] imageBytes, String fileName) throws IOException{
 
         HttpHeaders headers = new HttpHeaders();
-        log.info("appKey: {}", appKey);
-        log.info("secretKey: {}", secretKey);
-        headers.set("Authorization", secretKey);
+        log.info("appKey: {}", imageProperties.getAppkey());
+        log.info("secretKey: {}", imageProperties.getSecretkey());
+        headers.set("Authorization", imageProperties.getSecretkey());
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
 
         HttpEntity<byte[]> entity = new HttpEntity<>(imageBytes, headers);
 
-        String url = URL.replace("{appkey}", appKey) + "?path=/onebook/" + fileName + "&overwrite=true";
+        String url = URL.replace("{appkey}", imageProperties.getAppkey()) + "?path=/onebook/" + fileName + "&overwrite=true";
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
 
@@ -69,10 +69,10 @@ public class NhnImageManager {
     //폴더 내 파일 목록 조회
     public String listFilesInFolder(String fileName) {
         // 조회하고자 하는 폴더 경로
-        String url = "https://api-image.nhncloudservice.com/image/v2.0/appkeys/" + appKey + "/folders?basepath=" + "/onebook";
+        String url = "https://api-image.nhncloudservice.com/image/v2.0/appkeys/" + imageProperties.getAppkey() + "/folders?basepath=" + "/onebook";
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", secretKey);
+        headers.set("Authorization", imageProperties.getSecretkey());
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
@@ -124,10 +124,10 @@ public class NhnImageManager {
 
     public void deleteImage(String fileName) {
         String fileId = listFilesInFolder(fileName);
-        String url = "https://api-image.nhncloudservice.com/image/v2.0/appkeys/" + appKey + "/images/sync?fileId=" + fileId;
+        String url = "https://api-image.nhncloudservice.com/image/v2.0/appkeys/" + imageProperties.getAppkey() + "/images/sync?fileId=" + fileId;
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", secretKey);
+        headers.set("Authorization", imageProperties.getSecretkey());
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
