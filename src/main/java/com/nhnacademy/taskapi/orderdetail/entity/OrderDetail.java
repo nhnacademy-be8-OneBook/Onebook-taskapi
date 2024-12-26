@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.orderdetail.entity;
 
 import com.nhnacademy.taskapi.orderdetail.domain.OrderDetailStatus;
 import com.nhnacademy.taskapi.order.entity.Order;
+import com.nhnacademy.taskapi.packaging.entity.Packaging;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +23,10 @@ public class OrderDetail {
     @JoinColumn(name = "order_id")
     Order order;
 
+    @ManyToOne
+    Packaging packaging;
+
     /*
-    Packaging packaging
     Book book;
     Coupon coupon;
     */

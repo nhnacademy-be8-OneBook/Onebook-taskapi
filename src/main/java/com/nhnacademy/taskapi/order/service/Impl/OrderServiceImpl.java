@@ -1,16 +1,13 @@
 package com.nhnacademy.taskapi.order.service.Impl;
 
 import com.nhnacademy.taskapi.member.domain.Member;
-import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.order.dto.OrderCreateDTO;
 import com.nhnacademy.taskapi.order.dto.OrderResponseDTO;
 import com.nhnacademy.taskapi.order.entity.Order;
-import com.nhnacademy.taskapi.order.exception.OrderNotFoundException;
 import com.nhnacademy.taskapi.order.repository.OrderRepository;
 import com.nhnacademy.taskapi.order.service.OrderService;
-import com.nhnacademy.taskapi.orderdetail.entity.OrderDetail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +21,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
 
+    // create
     @Override
     public void saveOrder(Long memberId, OrderCreateDTO orderCreateDTO) {
 //        if (!memberRepository.existsById(memberId)) {
@@ -44,6 +42,7 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
     }
 
+    // read
     @Transactional(readOnly = true)
     @Override
     public List<OrderResponseDTO> getOrderList(Long memberId) {
