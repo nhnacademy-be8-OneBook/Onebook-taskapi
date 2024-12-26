@@ -29,6 +29,7 @@ public class Member {
     @JoinColumn(name="grade_id", nullable=false)
     private Grade grade;
 
+    @Setter
     @ManyToOne
     @JoinColumn(name="role_id", nullable=false)
     private Role role;
