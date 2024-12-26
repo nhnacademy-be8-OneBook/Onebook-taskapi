@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
-public class OrderListDTO {
+public class OrderDetailDTO {
     String orderer;
     LocalDateTime dateTime;
     int deliveryPrice;
