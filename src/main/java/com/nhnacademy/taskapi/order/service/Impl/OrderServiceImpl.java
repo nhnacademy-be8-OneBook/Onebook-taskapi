@@ -2,12 +2,11 @@ package com.nhnacademy.taskapi.order.service.Impl;
 
 import com.nhnacademy.taskapi.member.service.MemberService;
 import com.nhnacademy.taskapi.order.dto.OrderCreateDTO;
-import com.nhnacademy.taskapi.order.dto.OrderListDTO;
+import com.nhnacademy.taskapi.order.dto.OrderDetailDTO;
 import com.nhnacademy.taskapi.order.entity.Order;
 import com.nhnacademy.taskapi.order.repository.OrderRepository;
 import com.nhnacademy.taskapi.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,9 +31,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderListDTO> getOrders(Long memberId) {
-        List<OrderListDTO> dtoList = orderRepository.findAllByMemberId(memberId).stream()
-                .map(order -> new OrderListDTO(
+    public List<OrderDetailDTO> getOrders(Long memberId) {
+        List<OrderDetailDTO> dtoList = orderRepository.findAllByMemberId(memberId).stream()
+                .map(order -> new OrderDetailDTO(
                         order.getOrderer(),
                         order.getDateTime(),
                         order.getDeliveryPrice(),
