@@ -1,5 +1,7 @@
 package com.nhnacademy.taskapi.config;
 
+import com.nhnacademy.taskapi.cart.exception.CartIllegalArgumentException;
+import com.nhnacademy.taskapi.cart.exception.CartNotFoundException;
 import com.nhnacademy.taskapi.exception.dto.ErrorResponse;
 import com.nhnacademy.taskapi.grade.exception.GradeAlreadyExistsException;
 import com.nhnacademy.taskapi.grade.exception.GradeDataIntegrityViolationException;
@@ -29,6 +31,7 @@ public class RestExceptionHandler {
             MemberNotFoundException.class,
             GradeNotFoundException.class,
             RoleNotFoundException.class,
+            CartNotFoundException.class
     })
     public ResponseEntity<ErrorResponse> handleNotFoundException(ChangeSetPersister.NotFoundException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.NOT_FOUND.value());
@@ -40,9 +43,11 @@ public class RestExceptionHandler {
             MemberIllegalArgumentException.class,
             GradeIllegalArgumentException.class,
             RoleIllegalArgumentException.class,
+            CartIllegalArgumentException.class,
             MemberAlreadyExistsException.class,
             GradeAlreadyExistsException.class,
             RoleAlreadyExistsException.class,
+
     })
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
