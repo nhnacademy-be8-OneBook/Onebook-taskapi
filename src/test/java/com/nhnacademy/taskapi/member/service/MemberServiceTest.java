@@ -54,7 +54,7 @@ public class MemberServiceTest {
     @DisplayName("Get All Members Successfully")
     void getAllMembersTest() {
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.desc("createdAt")));
-        Mockito.when(memberRepository.findAll(pageable)).thenReturn(Mockito.any());
+        Mockito.when(memberRepository.findAll(pageable)).thenReturn(Mockito.any()); // 객체형태로 응답확인
 
         memberService.getAllMembers(pageable.getPageNumber());
 
