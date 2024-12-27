@@ -28,6 +28,8 @@ import com.nhnacademy.taskapi.book.dto.BookSaveDTO;
 import com.nhnacademy.taskapi.category.exception.InvalidCategoryNameException;
 import com.nhnacademy.taskapi.category.repository.CategoryRepository;
 import com.nhnacademy.taskapi.category.service.CategoryService;
+import com.nhnacademy.taskapi.image.dto.ImageSaveDTO;
+import com.nhnacademy.taskapi.image.service.ImageService;
 import com.nhnacademy.taskapi.publisher.domain.Publisher;
 import com.nhnacademy.taskapi.publisher.repository.PublisherRepository;
 import com.nhnacademy.taskapi.publisher.service.PublisherService;
@@ -65,6 +67,7 @@ public class BookServiceImpl implements BookService {
     private final TagRepository tagRepository;
     private final BookTagService bookTagService;
     private final AladinApiAdapter aladinApiAdapter;
+    private final ImageService imageService;
 
     // 알라딘 API 데이터 파싱
     @Override
@@ -275,6 +278,16 @@ public class BookServiceImpl implements BookService {
         stockCreateUpdateDTO.setBookId(book.getBookId());
         stockCreateUpdateDTO.setAmount(100);
         stockService.addStock(stockCreateUpdateDTO);
+
+        // 이미지 등록
+        if(Objects.nonNull(bookSaveDTO.getImageBytes())){
+            ImageSaveDTO imageSaveDTO = new ImageSaveDTO();
+            imageSaveDTO.setBookId(book.getBookId());
+            imageSaveDTO.setImageBytes(bookSaveDTO.getImageBytes());
+            imageSaveDTO.setImageName(bookSaveDTO.getImageName());
+            imageService.saveImage(imageSaveDTO);
+        }
+
 
         return book;
     }
