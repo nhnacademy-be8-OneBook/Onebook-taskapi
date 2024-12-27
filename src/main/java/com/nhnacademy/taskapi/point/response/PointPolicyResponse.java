@@ -50,7 +50,7 @@ public record PointPolicyResponse(String pointPolicyId, String pointPolicyName, 
                 .build();
     }
 
-    // 공통된 부분을 처리하여 반복을 줄였음
+    // 공통된 부분을 처리하여 반복 감소
     public static PointPolicyResponse find(PointPolicy pointPolicy) {
         return PointPolicyResponse.builder()
                 .pointPolicyId(String.valueOf(pointPolicy.getPointPolicyId()))

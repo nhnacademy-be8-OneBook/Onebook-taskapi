@@ -93,6 +93,7 @@ class PointServiceImplTest {
         int paymentAmount = 500;  // 결제 금액이 500일 때
         when(pointRepository.findByMember_Id(anyLong())).thenReturn(Optional.of(point));
         when(pointRepository.save(any(Point.class))).thenReturn(point);
+
         // 포인트 결제
         pointService.usePointsForPayment("1", paymentAmount); // memberId는 String 타입, 이걸 Long으로 변환해서 사용
 

@@ -15,11 +15,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @Tag(name = "포인트 내역 API", description = "포인트 내역 관련 API 입니다.")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/member")
+@RequestMapping("/task/member")
 public class PointLogController {
 
     private PointLogService pointLogService;

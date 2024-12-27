@@ -12,7 +12,6 @@ class PointExceptionTest {
     void testPointPolicyExceptionMessage() {
         String errorMessage = "포인트가 부족합니다.";
         HttpStatus status = HttpStatus.BAD_REQUEST;
-
         PointPolicyException exception = PointPolicyException.badRequest(errorMessage);
 
         // 예외 메시지 확인

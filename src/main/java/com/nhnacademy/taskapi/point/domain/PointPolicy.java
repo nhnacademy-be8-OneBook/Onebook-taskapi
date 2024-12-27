@@ -67,7 +67,7 @@ public class PointPolicy {
                        Integer pointPolicyRate, Integer pointPolicyConditionAmount, String pointPolicyCondition,
                        Integer pointPolicyApplyAmount, LocalDate pointPolicyCreatedAt, LocalDate pointPolicyUpdatedAt,
                        boolean pointPolicyApplyType, boolean pointPolicyState, Member member) {
-        this.pointPolicyId = pointPolicyId;
+        this.pointPolicyId = pointPolicyId; // pointPolicyId is auto-generated, so it will be null initially
         this.pointPolicyName = pointPolicyName;
         this.value = value;
         this.description = description;

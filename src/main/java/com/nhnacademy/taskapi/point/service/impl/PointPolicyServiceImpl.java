@@ -137,7 +137,6 @@ public class PointPolicyServiceImpl implements PointPolicyService {
                 .pointLogAmount(0)  // 정책 삭제 시 포인트 변화 없음
                 .point(point)
                 .build();
-
         pointLogRepository.save(pointLog);
     }
 }

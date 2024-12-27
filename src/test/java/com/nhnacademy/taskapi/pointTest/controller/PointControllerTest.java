@@ -75,6 +75,7 @@ public class PointControllerTest {
                 .andExpect(jsonPath("$.pointPolicyApply").value(1000))  // pointPolicyApply로 수정
                 .andExpect(jsonPath("$.pointPolicyCondition").value("Test Condition"));
     }
+
     // PointPolicyController 테스트 - 포인트 정책 조회
     @Test
     public void testFindPointPolicyById() throws Exception {
