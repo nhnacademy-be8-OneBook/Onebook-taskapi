@@ -276,7 +276,11 @@ public class BookServiceImpl implements BookService {
         // 재고 등록
         StockCreateUpdateDTO stockCreateUpdateDTO = new StockCreateUpdateDTO();
         stockCreateUpdateDTO.setBookId(book.getBookId());
-        stockCreateUpdateDTO.setAmount(100);
+        if(Objects.isNull(bookSaveDTO.getStock())){
+            stockCreateUpdateDTO.setAmount(100);
+        }else{
+            stockCreateUpdateDTO.setAmount(bookSaveDTO.getStock());
+        }
         stockService.addStock(stockCreateUpdateDTO);
 
         // 이미지 등록

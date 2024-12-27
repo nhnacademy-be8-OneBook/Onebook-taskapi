@@ -31,4 +31,5 @@ public class BookSaveDTO {
     private String tagName;
     private byte[] imageBytes;
     private String imageName;
+    private Integer stock;
 }
