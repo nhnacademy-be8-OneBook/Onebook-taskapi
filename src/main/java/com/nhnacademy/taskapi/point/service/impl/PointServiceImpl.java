@@ -18,7 +18,6 @@ import java.util.Optional;
 @Service
 @Transactional
 public class PointServiceImpl implements PointService {
-
     private final JpaPointRepository pointRepository;
     private final JpaPointPolicyRepository pointPolicyRepository;
     private final PointLogRepository pointLogRepository;

@@ -4,7 +4,6 @@ import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.point.domain.PointPolicy;
 
 public interface PointService {
-
     // 회원가입 시 포인트 적립
     void registerMemberPoints(Member member);
 

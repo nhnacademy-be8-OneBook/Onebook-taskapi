@@ -21,7 +21,7 @@ public class Point {
 
     @NotNull
     @Column(nullable = false, precision = 10, scale = 2)
-    private int pointCurrent;  // 현재 포인트
+    private Integer pointCurrent;  // 현재 포인트
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "point_policy_id", nullable = false)
@@ -61,12 +61,12 @@ public class Point {
         this.pointCurrent = pointCurrent;
     }
 
-    // 포인트를 반환하는 메소드 (getter 역할)
+    // 포인트를 반환하는 메소드
     public int getAmount() {
         return this.pointCurrent;
     }
 
-    // 포인트를 설정하는 메소드 (setter 역할)
+    // 포인트를 설정하는 메소드
     public void setAmount(int updatedAmount) {
         this.pointCurrent = updatedAmount;
     }

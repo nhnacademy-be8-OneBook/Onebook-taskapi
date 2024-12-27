@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class PointPolicyServiceImpl implements PointPolicyService {
-
     private final JpaPointPolicyRepository pointPolicyRepository;
     private final JpaPointRepository pointRepository;
     private final PointLogRepository pointLogRepository;

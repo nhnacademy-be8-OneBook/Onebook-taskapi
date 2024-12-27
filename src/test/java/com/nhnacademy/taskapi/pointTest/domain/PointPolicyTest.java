@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PointPolicyTest {
+
     @Test
     void testCreatePointPolicyRequest() {
         // Grade 객체 생성 (예시: "Regular" 등급)

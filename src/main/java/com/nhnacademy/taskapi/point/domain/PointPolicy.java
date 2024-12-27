@@ -54,9 +54,10 @@ public class PointPolicy {
     @Column(nullable = false)
     private boolean pointPolicyState;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_id", nullable = false)
-    private Member member;  // Member와의 관계 설정
+    @NotNull(message = "Member는 필수입니다.")  // Member가 null인 경우 오류 메시지 출력
+    private Member member;
 
     @OneToMany(mappedBy = "pointPolicy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Point> points = new ArrayList<>();  // Point와의 관계 (양방향)
@@ -145,8 +146,12 @@ public class PointPolicy {
     // 엔티티가 저장되기 전에 자동으로 호출되어 날짜를 설정
     @PrePersist
     public void prePersist() {
-        this.pointPolicyCreatedAt = LocalDate.now();  // 생성일 설정
-        this.pointPolicyUpdatedAt = LocalDate.now();  // 생성일과 수정일을 동일하게 설정
+        if (this.pointPolicyCreatedAt == null) {
+            this.pointPolicyCreatedAt = LocalDate.now();  // 생성일 설정
+        }
+        if (this.pointPolicyUpdatedAt == null) {
+            this.pointPolicyUpdatedAt = LocalDate.now();  // 수정일 설정
+        }
     }
 
     // 엔티티가 업데이트되기 전에 호출되어 수정일을 자동 갱신

@@ -4,6 +4,7 @@ import com.nhnacademy.taskapi.exception.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 
 public class PointException extends ApplicationException {
+
     private final ErrorResponse errorResponse;
 
     // NOT_FOUND(404) - 포인트를 찾을 수 없는 경우

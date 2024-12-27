@@ -41,14 +41,12 @@ public class PointPolicyController {
 
     @Operation(summary = "포인트 정책 수정", description = "특정 포인트 정책을 수정합니다.")
     @PutMapping("/point-policies/{pointPolicyId}")
-
     public ResponseEntity<PointPolicyResponse> updatePointPolicy(@PathVariable String pointPolicyId, @RequestBody PointPolicyRequest policyRequest) {
         return new ResponseEntity<>(pointPolicyService.updatePointPolicyById(pointPolicyId, policyRequest), HttpStatus.OK);
     }
 
     @Operation(summary = "포인트 정책 삭제", description = "특정 포인트 정책을 삭제합니다.")
     @DeleteMapping("/point-policies/{pointPolicyId}")
-
     public ResponseEntity<Void> deletePointPolicy(@PathVariable String pointPolicyId) {
         pointPolicyService.deletePointPolicyById(pointPolicyId);
         return new ResponseEntity<>(HttpStatus.OK);

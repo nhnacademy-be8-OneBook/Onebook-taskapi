@@ -18,7 +18,6 @@ public record CreatePointPolicyRequest(
     // Member 객체를 받아 PointPolicy 엔티티로 변환하는 메서드
     public PointPolicy toEntity(Member member) {
         return PointPolicy.builder()
-
                 .member(member)  // Member 객체 전달
                 .pointPolicyName(pointPolicyName)
                 .pointPolicyApplyAmount(pointPolicyApplyType ? pointPolicyApply : 0)

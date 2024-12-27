@@ -39,7 +39,6 @@ class PointJpaTest {
 
     @InjectMocks
     private PointJpaTest testClass;
-
     private Long memberId;
     private Point point;
     private PointLog pointLog;

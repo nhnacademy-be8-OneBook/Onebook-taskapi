@@ -25,7 +25,4 @@ public interface PointPolicyAdaptor {
 
     @DeleteMapping("/admin/point-policies/{pointPolicyId}")
     void deletePointPolicy(@PathVariable String pointPolicyId);
-
-    @GetMapping("/admin/point-policies/{pointPolicyId}")
-    ResponseEntity<PointPolicyResponse> findPointPolicyById(@PathVariable String pointPolicyId);
 }

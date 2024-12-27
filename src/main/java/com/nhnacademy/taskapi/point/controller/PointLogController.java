@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "포인트 내역 API", description = "포인트 내역 관련 API 입니다.")
 @RestController
-@RequiredArgsConstructor
+@RequiredArgsConstructor  // 생성자 주입을 자동으로 처리
 @RequestMapping("/task/member")
 public class PointLogController {
-    private PointLogService pointLogService;
+    private final PointLogService pointLogService;
 
     @Operation(summary = "포인트 내역 조회", description = "특정 회원의 포인트 내역을 조회합니다.")
     @GetMapping("/point-logs")

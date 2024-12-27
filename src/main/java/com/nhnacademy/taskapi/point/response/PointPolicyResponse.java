@@ -12,7 +12,6 @@ public record PointPolicyResponse(String pointPolicyId, String pointPolicyName, 
                                   String pointPolicyCondition, boolean pointPolicyApplyType,
                                   LocalDate pointPolicyCreatedAt, String pointPolicyUpdatedAt,
                                   int pointPolicyConditionAmount, boolean pointPolicyState) {
-
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     // 공통 로직을 별도의 메소드로 처리
