@@ -15,13 +15,13 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping("/order")
+    @PostMapping("/task/order")
     public ResponseEntity<Void> createOrder(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestBody OrderCreateDTO orderCreateDTO) {
         orderService.saveOrder(memberId, orderCreateDTO);
         return ResponseEntity.created(null).build();
     }
 
-    @GetMapping("/orders")
+    @GetMapping("/task/orders")
     public ResponseEntity<List<OrderResponseDTO>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId) {
 
         // TODO null일 경우 list 반환 방법
