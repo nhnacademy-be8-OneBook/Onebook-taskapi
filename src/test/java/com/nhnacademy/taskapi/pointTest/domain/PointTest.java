@@ -48,7 +48,6 @@ class PointTest {
     void testGetAndSetPoint() {
         // 초기 포인트가 1000이어야 함
         assertEquals(1000, point.getAmount());
-
         // 포인트 설정 후 다시 확인
         point.setAmount(1500);
         assertEquals(1500, point.getAmount());

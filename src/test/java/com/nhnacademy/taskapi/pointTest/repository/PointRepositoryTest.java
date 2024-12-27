@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.pointTest.repository;
 
+import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.point.domain.PointPolicy;
 import com.nhnacademy.taskapi.point.repository.PointPolicyRepository;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ public class PointRepositoryTest {
     @Test
     void testFindByPointPolicyName() {
         // @Builder를 사용하여 객체 생성
+        Member member = new Member();
         PointPolicy pointPolicy = PointPolicy.builder()
                 .pointPolicyName("Test Policy")
                 .pointPolicyRate(10)  // 예시로 추가한 필드 값
@@ -26,7 +28,7 @@ public class PointRepositoryTest {
                 .pointPolicyApplyType(true)  // 예시로 추가한 필드 값
                 .pointPolicyCreatedAt(java.time.LocalDate.now())  // 예시로 추가한 필드 값
                 .pointPolicyState(true)  // 예시로 추가한 필드 값
-                .memberId(1L)  // 예시로 추가한 필드 값
+                .member(member)  // 예시로 추가한 필드 값
                 .build();
 
         // Save the pointPolicy to the repository

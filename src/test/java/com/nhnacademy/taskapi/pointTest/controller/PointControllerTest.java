@@ -90,7 +90,6 @@ public class PointControllerTest {
                 .pointPolicyCreatedAt(LocalDate.now())
                 .pointPolicyState(true)
                 .build();
-
         // when
         when(pointPolicyService.findPointPolicyById("1")).thenReturn(policyResponse);
 

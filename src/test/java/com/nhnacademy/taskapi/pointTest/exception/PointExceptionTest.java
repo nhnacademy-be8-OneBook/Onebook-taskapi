@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PointExceptionTest {
-
     // 예외 메시지와 상태 코드 확인 (PointPolicyException 생성 시)
     @Test
     void testPointPolicyExceptionMessage() {

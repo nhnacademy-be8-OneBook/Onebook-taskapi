@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.pointTest.response;
 
+import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.point.domain.PointPolicy;
 import com.nhnacademy.taskapi.point.request.CreatePointPolicyRequest;
 import com.nhnacademy.taskapi.point.request.PointPolicyRequest;
@@ -19,6 +20,7 @@ public class PointResponseTest {
 
     @BeforeEach
     public void setUp() {
+        Member member = new Member();
         // PointPolicy 엔티티 생성
         pointPolicy = PointPolicy.builder()
                 .pointPolicyId(1L)
@@ -31,7 +33,7 @@ public class PointResponseTest {
                 .pointPolicyCreatedAt(LocalDate.now())
                 .pointPolicyUpdatedAt(LocalDate.now())
                 .pointPolicyState(true)
-                .memberId(123L)
+                .member(member)
                 .build();
 
         // CreatePointPolicyRequest 생성

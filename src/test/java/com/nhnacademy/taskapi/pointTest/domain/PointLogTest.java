@@ -15,7 +15,6 @@ class PointLogTest {
     void testBuilder() {
         Point point = new Point(100, new Member());
         PointLog pointLog = new PointLog(1L, LocalDateTime.now(), "Added", 50, point);
-
         assertNotNull(pointLog);
         assertEquals(50, pointLog.getPointLogAmount());
     }
