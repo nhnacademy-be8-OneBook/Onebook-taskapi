@@ -26,7 +26,6 @@ class PointExceptionTest {
     void testPointPolicyExceptionInternalServerError() {
         String errorMessage = "Internal server error";
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-
         PointPolicyException exception = PointPolicyException.internalServerError();
 
         // 예외 메시지 확인

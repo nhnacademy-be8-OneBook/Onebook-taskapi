@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PointLogTest {
-
     @Test
     void testBuilder() {
         Point point = new Point(100, new Member());

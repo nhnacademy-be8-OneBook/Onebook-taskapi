@@ -93,7 +93,6 @@ class PointTest {
 
         assertThat(point.getAmount()).isEqualTo(150);
     }
-
     @Test
     void testSetAmount() {
         Point point = new Point(100, new Member());

@@ -29,7 +29,6 @@ package com.nhnacademy.taskapi.pointTest.request;//package com.nhnacademy.taskap
 //                .pointPolicyApplyType(pointPolicyApplyType)
 //                .pointPolicyConditionAmount(pointPolicyConditionAmount)
 //                .build();
-//
 //        PointPolicy pointPolicy = createRequest.toEntity();
 //
 //        // then

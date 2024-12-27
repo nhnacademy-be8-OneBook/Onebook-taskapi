@@ -56,6 +56,7 @@ public class PointResponseTest {
                 .build();
     }
 
+
     // create 메서드 테스트
     @Test
     public void testCreatePointPolicyResponse() {

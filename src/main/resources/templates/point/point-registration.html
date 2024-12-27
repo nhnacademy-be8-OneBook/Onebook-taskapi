@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>포인트 정책 등록</title>
+</head>
+<body>
+<h1>포인트 정책 등록</h1>
+
+<form action="/point-policies/register" method="POST">
+    <!-- 포인트 정책명 -->
+    <label for="pointPolicyName">포인트 정책명:</label>
+    <input type="text" name="pointPolicyName" id="pointPolicyName" required><br><br>
+
+    <!-- 포인트 정책 조건 금액 -->
+    <label for="pointPolicyConditionAmount">포인트 정책 조건 금액:</label>
+    <input type="number" name="pointPolicyConditionAmount" id="pointPolicyConditionAmount" required><br><br>
+
+    <!-- 포인트 정책 비율 -->
+    <label for="pointPolicyRate">포인트 정책 비율:</label>
+    <input type="number" name="pointPolicyRate" id="pointPolicyRate" required><br><br>
+
+    <!-- 포인트 정책 적용 금액 -->
+    <label for="pointPolicyApplyAmount">포인트 정책 적용 금액:</label>
+    <input type="number" name="pointPolicyApplyAmount" id="pointPolicyApplyAmount" required><br><br>
+
+    <!-- 포인트 정책 조건 -->
+    <label for="pointPolicyCondition">포인트 정책 조건:</label><br>
+    <textarea name="pointPolicyCondition" id="pointPolicyCondition" rows="4" cols="50" required></textarea><br><br>
+
+    <!-- 포인트 적립 유형 -->
+    <label for="pointPolicyApplyType">포인트 적립 유형 (적용):</label>
+    <input type="checkbox" name="pointPolicyApplyType" id="pointPolicyApplyType"><br><br>
+
+    <!-- 포인트 생성일 -->
+    <label for="pointPolicyCreatedAt">포인트 생성일:</label>
+    <input type="date" name="pointPolicyCreatedAt" id="pointPolicyCreatedAt" required><br><br>
+
+    <!-- 포인트 상태 -->
+    <label for="pointPolicyState">포인트 상태:</label>
+    <input type="checkbox" name="pointPolicyState" id="pointPolicyState" checked><br><br>
+
+    <!-- 회원 ID -->
+    <label for="memberId">회원 ID:</label>
+    <input type="number" name="memberId" id="memberId" required><br><br>
+
+    <!-- 등록 버튼 -->
+    <button type="submit">포인트 정책 등록</button>
+</form>
+
+</body>
+</html>
