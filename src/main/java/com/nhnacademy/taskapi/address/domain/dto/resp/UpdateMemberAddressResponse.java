@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class UpdateMemberAddressResponse {
     private Long id;
@@ -19,22 +20,6 @@ public class UpdateMemberAddressResponse {
     private String notes;
     private String detailAddress;
     private boolean defaultLocation;
-
-    private UpdateMemberAddressResponse(Long id, String name, String phoneNumber, String alias, String requestedTerm,
-                                       String zipCode, String roadNameAddress, String numberAddress, String notes,
-                                       String detailAddress, boolean defaultLocation) {
-        this.id = id;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.alias = alias;
-        this.requestedTerm = requestedTerm;
-        this.zipCode = zipCode;
-        this.roadNameAddress = roadNameAddress;
-        this.numberAddress = numberAddress;
-        this.notes = notes;
-        this.detailAddress = detailAddress;
-        this.defaultLocation = defaultLocation;
-    }
 
     public static UpdateMemberAddressResponse changeEntityToDto(MemberAddress memberAddress) {
         return new UpdateMemberAddressResponse(
