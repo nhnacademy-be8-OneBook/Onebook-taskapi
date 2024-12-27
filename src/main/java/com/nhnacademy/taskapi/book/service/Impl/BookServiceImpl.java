@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.taskapi.Tag.domain.Tag;
+import com.nhnacademy.taskapi.Tag.repository.TagRepository;
 import com.nhnacademy.taskapi.Tag.service.TagService;
 import com.nhnacademy.taskapi.author.domain.Author;
+import com.nhnacademy.taskapi.author.repository.AuthorRepository;
 import com.nhnacademy.taskapi.author.service.AuthorService;
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.domain.BookAuthor;
@@ -23,8 +25,11 @@ import com.nhnacademy.taskapi.book.service.BookTagService;
 import com.nhnacademy.taskapi.category.domain.Category;
 import com.nhnacademy.taskapi.category.dto.CategoryCreateDTO;
 import com.nhnacademy.taskapi.book.dto.BookSaveDTO;
+import com.nhnacademy.taskapi.category.exception.InvalidCategoryNameException;
+import com.nhnacademy.taskapi.category.repository.CategoryRepository;
 import com.nhnacademy.taskapi.category.service.CategoryService;
 import com.nhnacademy.taskapi.publisher.domain.Publisher;
+import com.nhnacademy.taskapi.publisher.repository.PublisherRepository;
 import com.nhnacademy.taskapi.publisher.service.PublisherService;
 import com.nhnacademy.taskapi.stock.domain.Stock;
 import com.nhnacademy.taskapi.stock.dto.StockCreateUpdateDTO;
@@ -51,13 +56,13 @@ import java.util.Objects;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
-    private final AuthorService authorService;
-    private final PublisherService publisherService;
+    private final AuthorRepository authorRepository;
+    private final PublisherRepository publisherRepository;
     private final BookCategoryService bookCategoryService;
     private final BookAuthorService bookAuthorService;
-    private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
     private final StockService stockService;
-    private final TagService tagService;
+    private final TagRepository tagRepository;
     private final BookTagService bookTagService;
     private final AladinApiAdapter aladinApiAdapter;
 
@@ -147,29 +152,77 @@ public class BookServiceImpl implements BookService {
         }
 
         // 출판사 등록
-        Publisher publisher =publisherService.addPublisher(bookSaveDTO.getPublisherName());
-        book.setPublisher(publisher);
+
+        Publisher publiser = publisherRepository.findByName(bookSaveDTO.getPublisherName());
+
+        if(Objects.isNull(publiser)){
+            publiser = new Publisher();
+            publiser.setName(bookSaveDTO.getPublisherName());
+            publisherRepository.save(publiser);
+        }else{
+            book.setPublisher(publiser);
+        }
 
 
         // 카테고리 등록
-        Category parentCategory = null;
+        Category category = null;
+
+        if(Objects.isNull(bookSaveDTO.getCategoryName()) || bookSaveDTO.getCategoryName().trim().isEmpty()){
+            throw new InvalidCategoryNameException("This Category name is incorrect !");
+        }
+        //알라딘 api
         if(bookSaveDTO.getCategoryName().contains("<")){
-            parentCategory = categoryService.addCategoryByAladin(bookSaveDTO.getCategory().getName());
+            String[] nameList = bookSaveDTO.getCategoryName().split("<");
+            for(String name : nameList){
+                Category existCategory = categoryRepository.findByName(name);
+                if(Objects.isNull(existCategory)){
+                    Category newCategory = new Category();
+                    newCategory.setName(name);
+                    categoryRepository.save(newCategory);
+                    category = newCategory;
+                }else{
+                    category = existCategory;
+                }
+            }
         }else{
-            CategoryCreateDTO dto = new CategoryCreateDTO();
-            dto.setCategoryName(bookSaveDTO.getCategory().getName());
-            dto.setCategory(bookSaveDTO.getCategory());
-            parentCategory = categoryService.addCategory(dto);
+            if(!categoryRepository.existsByName(bookSaveDTO.getCategoryName())){
+                //최상위 카테고리 등록
+                Category newCategory = null;
+                if(Objects.isNull(bookSaveDTO.getCategory())){
+                    newCategory = new Category();
+                    newCategory.setName(bookSaveDTO.getCategoryName());
+                    newCategory.setParentCategory(null);
+                    category = categoryRepository.save(newCategory);
+                }else{
+                    newCategory = new Category();
+                    newCategory.setName(bookSaveDTO.getCategoryName());
+                    newCategory.setParentCategory(bookSaveDTO.getCategory());
+                    category = categoryRepository.save(newCategory);
+                }
+            }else{
+                category = categoryRepository.findByName(bookSaveDTO.getCategoryName());
+            }
         }
 
+
         // 작가 등록
-        Author author = authorService.addAuthor(bookSaveDTO.getAuthorName());
+        Author author = authorRepository.findByName(bookSaveDTO.getAuthorName());
+
+        if(Objects.isNull(author)){
+            author = new Author();
+            author.setName(bookSaveDTO.getAuthorName());
+            author = authorRepository.save(author);
+        }
 
 
         // 태그 등록 - 태그가 Null이 아닐때만 등록
         Tag tag = null;
-        if(Objects.nonNull(bookSaveDTO.getTagName())){
-             tag = tagService.addTag(bookSaveDTO.getTagName());
+        tag = tagRepository.findByName(bookSaveDTO.getTagName());
+
+        if(Objects.isNull(tag)){
+            tag = new Tag();
+            tag.setName(bookSaveDTO.getTagName());
+            tag = tagRepository.save(tag);
         }
 
 
@@ -214,7 +267,7 @@ public class BookServiceImpl implements BookService {
         BookCategory bookCategory = null;
         BookCategorySaveDTO bookCategorySaveDTO = new BookCategorySaveDTO();
         bookCategorySaveDTO.setBookId(book.getBookId());
-        bookCategorySaveDTO.setCategoryId(parentCategory.getCategoryId());
+        bookCategorySaveDTO.setCategoryId(category.getCategoryId());
         bookCategoryService.save(bookCategorySaveDTO);
 
         // 재고 등록
