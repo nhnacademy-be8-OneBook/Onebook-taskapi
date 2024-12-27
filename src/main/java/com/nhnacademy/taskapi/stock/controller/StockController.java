@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/stock")
+@RequestMapping("/task/stock")
 public class StockController {
     private final StockService stockService;
 

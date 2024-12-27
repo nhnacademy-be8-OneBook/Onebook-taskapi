@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/publisher")
+@RequestMapping("/task/publisher")
 public class PublisherController {
     private final PublisherService publisherService;
 

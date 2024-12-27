@@ -12,7 +12,7 @@
 //
 //@RestController
 //@RequiredArgsConstructor
-//@RequestMapping("/images")
+//@RequestMapping("/task/images")
 //public class ImageController {
 //
 //    private ImageService imageService;
