@@ -3,8 +3,10 @@ package com.nhnacademy.taskapi.coupon.domain.entity.mapping;
 import com.nhnacademy.taskapi.coupon.domain.entity.coupons.RateCouponForCategory;
 import com.nhnacademy.taskapi.member.domain.Member;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class RateCouponForCategoryMappingMember {
 
     @Id

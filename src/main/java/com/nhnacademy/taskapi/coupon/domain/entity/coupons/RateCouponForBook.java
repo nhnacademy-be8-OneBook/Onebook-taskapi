@@ -25,10 +25,10 @@ public class RateCouponForBook {
     private LocalDateTime dateOfUsage;
 
     @ManyToOne
-    @JoinColumn(name = "ratePolicyForBookId", nullable = false)
+    @JoinColumn(name = "rate_policy_for_book_id", nullable = false)
     private PricePolicyForBook ratePolicyForBook;
 
     @ManyToOne
-    @JoinColumn(name = "couponStatusId", nullable = false)
+    @JoinColumn(name = "coupon_status_id", nullable = false)
     private CouponStatus couponStatus;
 }

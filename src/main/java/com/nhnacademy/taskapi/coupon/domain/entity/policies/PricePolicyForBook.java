@@ -34,10 +34,10 @@ public class PricePolicyForBook {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "bookId",nullable = false)
+    @JoinColumn(name = "book_id",nullable = false)
     private Book book;
 
     @ManyToOne
-    @JoinColumn(name = "policyStatusId",nullable = false)
+    @JoinColumn(name = "policy_status_id",nullable = false)
     private PolicyStatus policyStatus;
 }

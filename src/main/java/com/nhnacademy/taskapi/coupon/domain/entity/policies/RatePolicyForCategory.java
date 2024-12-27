@@ -35,10 +35,10 @@ public class RatePolicyForCategory {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "categoryId", nullable = false)
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "policyStatusId", nullable = false)
+    @JoinColumn(name = "policy_status_id", nullable = false)
     private PolicyStatus policyStatus;
 }
