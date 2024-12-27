@@ -171,34 +171,34 @@ public class PointServiceImpl implements PointService {
         pointLogRepository.save(pointLog);
     }
 
-//    /**
-//     * 포인트 환불 기능
-//     * @param memberId - 회원 ID
-//     * @param refundAmount - 환불 금액
-//     * @throws PointPolicyException - 포인트가 부족한 경우 예외 발생
-//     */
-//    public void updatePointByRefund(String memberId, int refundAmount) {
-//        // 회원의 포인트 정보 가져오기
-//        Optional<Point> optionalPoint = pointRepository.findByMember_Id(Long.valueOf(memberId));
-//        Point point = optionalPoint.orElseThrow(() -> new PointPolicyException("회원 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
-//
-//        // 환불 금액이 포인트보다 많은지 확인
-//        if (point.getAmount() < refundAmount) {
-//            throw new PointPolicyException("환불 금액이 부족합니다.", HttpStatus.BAD_REQUEST);
-//        }
-//
-//        // 환불 금액만큼 포인트 복구
-//        point.updatePointCurrent(point.getAmount() + refundAmount);  // 포인트 복구
-//        pointRepository.save(point);
-//
-//        // 포인트 로그 기록
-//        PointLog pointLog = PointLog.builder()
-//                .pointLogUpdatedAt(LocalDateTime.now())
-//                .pointLogUpdatedType("REFUND")  // 환불 타입
-//                .pointLogAmount(refundAmount)  // 환불된 포인트
-//                .point(point)
-//                .build();
-//
-//        pointLogRepository.save(pointLog);
-//    }
+    /**
+     * 포인트 환불 기능
+     * @param memberId - 회원 ID
+     * @param refundAmount - 환불 금액
+     * @throws PointPolicyException - 포인트가 부족한 경우 예외 발생
+     */
+    public void updatePointByRefund(String memberId, int refundAmount) {
+        // 회원의 포인트 정보 가져오기
+        Optional<Point> optionalPoint = pointRepository.findByMember_Id(Long.valueOf(memberId));
+        Point point = optionalPoint.orElseThrow(() -> new PointPolicyException("회원 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
+
+        // 환불 금액이 포인트보다 많은지 확인
+        if (point.getAmount() < refundAmount) {
+            throw new PointPolicyException("환불 금액이 부족합니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        // 환불 금액만큼 포인트 복구
+        point.updatePointCurrent(point.getAmount() + refundAmount);  // 포인트 복구
+        pointRepository.save(point);
+
+        // 포인트 로그 기록
+        PointLog pointLog = PointLog.builder()
+                .pointLogUpdatedAt(LocalDateTime.now())
+                .pointLogUpdatedType("REFUND")  // 환불 타입
+                .pointLogAmount(refundAmount)  // 환불된 포인트
+                .point(point)
+                .build();
+
+        pointLogRepository.save(pointLog);
+    }
 }

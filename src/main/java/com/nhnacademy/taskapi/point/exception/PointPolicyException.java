@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public class PointPolicyException extends ApplicationException {
+
     private final ErrorResponse errorResponse;
 
     // NOT_FOUND(404) - 포인트 정책을 찾을 수 없는 경우

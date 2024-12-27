@@ -11,7 +11,6 @@ import com.nhnacademy.taskapi.point.request.CreatePointPolicyRequest;
 import com.nhnacademy.taskapi.point.request.PointPolicyRequest;
 import com.nhnacademy.taskapi.point.response.PointPolicyResponse;
 import com.nhnacademy.taskapi.point.service.PointPolicyService;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
