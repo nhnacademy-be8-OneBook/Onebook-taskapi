@@ -31,6 +31,7 @@ public class PointRepositoryTest {
                 .member(member)  // 예시로 추가한 필드 값
                 .build();
 
+
         // Save the pointPolicy to the repository
         pointPolicyRepository.save(pointPolicy);
 

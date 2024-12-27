@@ -27,7 +27,6 @@ public class PointPolicyException extends ApplicationException {
         super(message);  // 부모 클래스(ApplicationException)에서 메시지를 처리
         this.errorResponse = new ErrorResponse(message, status.value());
     }
-
     public HttpStatus getStatus() {
         return HttpStatus.valueOf(errorResponse.getStatus());
     }

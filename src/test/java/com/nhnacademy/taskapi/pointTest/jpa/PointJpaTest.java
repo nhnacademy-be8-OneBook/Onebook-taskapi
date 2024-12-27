@@ -7,6 +7,8 @@ import com.nhnacademy.taskapi.point.domain.PointPolicy;
 import com.nhnacademy.taskapi.point.jpa.JpaPointLogRepository;
 import com.nhnacademy.taskapi.point.jpa.JpaPointPolicyRepository;
 import com.nhnacademy.taskapi.point.jpa.JpaPointRepository;
+import com.nhnacademy.taskapi.grade.domain.Grade;
+import com.nhnacademy.taskapi.roles.domain.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -43,17 +45,33 @@ class PointJpaTest {
     private PointLog pointLog;
     private PointPolicy pointPolicy;
     private Member member;  // Member 객체 추가
+    private Grade grade;  // Grade 객체 추가
+    private Role role;  // Role 객체 추가
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        // 필요한 데이터 초기화
-        memberId = 1L;
-        member = new Member();  // Member 객체 초기화
-        member.setId(Long.valueOf("member-1")); // 실제로 적절한 값 설정
+        // Grade 객체 생성 (예시: "Regular" 등급)
+        grade = Grade.create("Regular", 10, "Regular grade description");
 
-        point = new Point(1000, null); // 임시 객체
+        // Role 객체 생성 (예시: "MEMBER" 역할)
+        role = Role.createRole("MEMBER", "Standard user role");
+
+        // Member 객체 생성
+        member = Member.createNewMember(
+                grade,  // 적절한 Grade 객체
+                "John Doe",  // 이름
+                "johndoe123",  // 로그인 아이디
+                "password123",  // 비밀번호
+                LocalDate.of(1990, 1, 1),  // 생일
+                Member.Gender.M,  // 성별
+                "johndoe@example.com",  // 이메일
+                "010-1234-5678",  // 전화번호
+                role  // 적절한 Role 객체
+        );
+
+        point = new Point(1000, null);  // 임시 객체
         point.setAmount(1000);
         pointLog = new PointLog(1L, LocalDateTime.now(), "ADD", 100, point);
 
@@ -116,7 +134,6 @@ class PointJpaTest {
 
     @Test
     void testFindByMemberId() {
-        Member member = new Member();  // Member 객체를 필요에 맞게 생성
         Point point = Point.builder()
                 .pointCurrent(1000)  // 포인트 값 설정
                 .member(member)      // member 연결
@@ -134,5 +151,4 @@ class PointJpaTest {
         assertEquals(1000, result.get().getAmount(), "Expected pointCurrent to be 1000");
         verify(pointRepository, times(1)).findByMember_Id(1L);
     }
-
 }

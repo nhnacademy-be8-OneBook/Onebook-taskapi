@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PointRequestTest {
+
     Member member = new Member();
 
     // CreatePointPolicyRequest에 대한 테스트

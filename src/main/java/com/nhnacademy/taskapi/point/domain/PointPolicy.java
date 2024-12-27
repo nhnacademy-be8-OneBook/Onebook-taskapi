@@ -18,7 +18,6 @@ import java.util.List;
 @EqualsAndHashCode(of = "pointPolicyId")  // pointPolicyId 기준으로 equals, hashCode 생성
 @Table(name = "point_policies")
 public class PointPolicy {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pointPolicyId;

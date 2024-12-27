@@ -12,6 +12,7 @@ public record PointPolicyRequest(String pointPolicyName, Integer pointPolicyAppl
 
     public PointPolicy toEntity() {
         return PointPolicy.builder()
+
                 .pointPolicyName(pointPolicyName)
                 .pointPolicyApplyAmount(pointPolicyApplyType && pointPolicyApply != null ? pointPolicyApply : 0) // 기본값 0 사용
                 .pointPolicyRate(!pointPolicyApplyType && pointPolicyApply != null ? pointPolicyApply : 0) // 기본값 0 사용
