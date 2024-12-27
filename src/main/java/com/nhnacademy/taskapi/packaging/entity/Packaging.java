@@ -1,9 +1,12 @@
 package com.nhnacademy.taskapi.packaging.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @NoArgsConstructor
+@Getter
 @Entity
 public class Packaging {
     @Id
