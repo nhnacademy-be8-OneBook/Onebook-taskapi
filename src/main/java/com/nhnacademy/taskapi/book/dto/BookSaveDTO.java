@@ -30,5 +30,5 @@ public class BookSaveDTO {
     private Long salesPoint;
     private String tagName;
     private byte[] imageBytes;
-    private String fileName;
+    private String imageName;
 }

@@ -42,7 +42,7 @@ public class TagControllerTest {
 
         when(tagService.createTag(request)).thenReturn(response);
 
-        mockMvc.perform(post("/books/tags")
+        mockMvc.perform(post("/task/books/tags")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"tagName\": \"testTag\"}"))
                 .andExpect(status().isOk())
@@ -58,7 +58,7 @@ public class TagControllerTest {
 
         when(tagService.getTag(1L)).thenReturn(response);
 
-        mockMvc.perform(get("/books/tags/1"))
+        mockMvc.perform(get("/task/books/tags/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.tagName").value("testTag"))
                 .andExpect(jsonPath("$.tagId").value(1));
@@ -73,7 +73,7 @@ public class TagControllerTest {
 
         when(tagService.updateTag(request)).thenReturn(response);
 
-        mockMvc.perform(put("/books/tags")
+        mockMvc.perform(put("/task/books/tags")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"tagId\": 1, \"tagName\": \"updatedTag\"}"))
                 .andExpect(status().isOk())
@@ -87,7 +87,7 @@ public class TagControllerTest {
     void deleteTag() throws Exception {
         doNothing().when(tagService).removeTag(1L);
 
-        mockMvc.perform(delete("/books/tags/1"))
+        mockMvc.perform(delete("/task/books/tags/1"))
                 .andExpect(status().isNoContent());
 
         verify(tagService, times(1)).removeTag(1L);
