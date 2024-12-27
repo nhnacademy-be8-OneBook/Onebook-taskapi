@@ -35,7 +35,17 @@ public class PointControllerTest {
     public void setup() {
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(pointPolicyController).build();
-        mockMember = new Member();
+        mockMember = Member.createNewMember(
+                null,  // 적절한 Grade 객체를 여기에 전달
+                "John Doe",  // 이름
+                "johndoe123",  // 로그인 아이디
+                "password123",  // 비밀번호
+                LocalDate.of(1990, 1, 1),  // 생일
+                Member.Gender.M,  // 성별
+                "johndoe@example.com",  // 이메일
+                "010-1234-5678",  // 전화번호
+                null  // 적절한 Role 객체를 여기에 전달
+        );
     }
 
     // PointPolicyController 테스트 - 포인트 정책 생성
@@ -67,12 +77,12 @@ public class PointControllerTest {
         when(pointPolicyService.createPointPolicy(policyRequest)).thenReturn(policyResponse);
 
         // then
-        mockMvc.perform(post("/member/admin/point-policies")
+        mockMvc.perform(post("/task/member/admin/point-policies")  // 경로 수정
                         .contentType("application/json")
                         .content("{\"memberId\": 1, \"pointPolicyName\": \"Test Policy\", \"pointPolicyApply\": 1000, \"pointPolicyCondition\": \"Test Condition\", \"pointPolicyApplyType\": true, \"pointPolicyConditionAmount\": 500}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.pointPolicyName").value("Test Policy"))
-                .andExpect(jsonPath("$.pointPolicyApply").value(1000))  // pointPolicyApply로 수정
+                .andExpect(jsonPath("$.pointPolicyApply").value(1000))
                 .andExpect(jsonPath("$.pointPolicyCondition").value("Test Condition"));
     }
 
@@ -95,10 +105,10 @@ public class PointControllerTest {
         when(pointPolicyService.findPointPolicyById("1")).thenReturn(policyResponse);
 
         // then
-        mockMvc.perform(get("/member/admin/point-policies/1"))
+        mockMvc.perform(get("/task/member/admin/point-policies/1"))  // 경로 수정
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pointPolicyName").value("Test Policy"))
-                .andExpect(jsonPath("$.pointPolicyApply").value(1000))  // pointPolicyApply로 수정
+                .andExpect(jsonPath("$.pointPolicyApply").value(1000))
                 .andExpect(jsonPath("$.pointPolicyCondition").value("Test Condition"));
     }
 }
