@@ -10,21 +10,25 @@ import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "pointPolicyAdaptor", url = "http://localhost:8510/members")
 public interface PointPolicyAdaptor {
-    @GetMapping("/admin/point-policies/{pointPolicyId}")
-    ResponseEntity<PointPolicyResponse> getPointPolicy(@PathVariable String pointPolicyId);
 
+    // 포인트 정책 조회 (ID로 조회)
+    @GetMapping("/admin/point-policies/{pointPolicyId}")
+    ResponseEntity<PointPolicyResponse> getPointPolicyById(@PathVariable String pointPolicyId);
+
+    // 포인트 정책 목록 조회
     @GetMapping("/admin/point-policies")
     ResponseEntity<Page<PointPolicyResponse>> getPointPolicies(Pageable pageable);
 
+    // 포인트 정책 생성
     @PostMapping("/admin/point-policies")
     ResponseEntity<PointPolicyResponse> createPointPolicy(@RequestBody PointPolicyRequest pointPolicyRequest);
 
+    // 포인트 정책 수정
     @PutMapping("/admin/point-policies/{pointPolicyId}")
-    ResponseEntity<PointPolicyResponse> updatePointPolicy(@PathVariable String pointPolicyId, @RequestBody PointPolicyRequest pointPolicyRequest);
+    ResponseEntity<PointPolicyResponse> updatePointPolicy(@PathVariable String pointPolicyId,
+                                                          @RequestBody PointPolicyRequest pointPolicyRequest);
 
+    // 포인트 정책 삭제
     @DeleteMapping("/admin/point-policies/{pointPolicyId}")
     void deletePointPolicy(@PathVariable String pointPolicyId);
-
-    @GetMapping("/admin/point-policies/{pointPolicyId}")
-    ResponseEntity<PointPolicyResponse> findPointPolicyById(@PathVariable String pointPolicyId);
 }
