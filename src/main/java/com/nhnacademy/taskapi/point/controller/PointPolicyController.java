@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "포인트 정책 API", description = "포인트 정책 관련 API 입니다.")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/member/admin")
+@RequestMapping("/task/members/admin")
 public class PointPolicyController {
 
     private final PointPolicyService pointPolicyService;
