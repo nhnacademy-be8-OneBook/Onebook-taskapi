@@ -1,6 +1,7 @@
 package com.nhnacademy.taskapi.coupon.repository.policies;
 
 import com.nhnacademy.taskapi.category.domain.Category;
+import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForBook;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForCategory;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.PolicyStatus;
 import com.nhnacademy.taskapi.publisher.domain.Publisher;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 
 
 @DataJpaTest
@@ -56,6 +58,19 @@ class RatePoliciesForCategoryRepositoryTest {
         ReflectionUtils.setField(policyStatus.getClass().getDeclaredField("name"), policyStatus,"미사용" );
 
         testEntityManager.persist(policyStatus);
+
+        // 테스트용 정책 for Category
+        ratePolicyForCategory = new RatePolicyForCategory(
+                20,
+                50000,
+                20000,
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                "웰컴쿠폰",
+                "2023년 1월 신입고객에게 지급하는 웰컴쿠폰",
+                category,
+                policyStatus
+        );
 
     }
 
