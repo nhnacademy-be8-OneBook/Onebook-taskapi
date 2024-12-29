@@ -1,6 +1,7 @@
 package com.nhnacademy.taskapi.Tag.service.Impl;
 
 import com.nhnacademy.taskapi.Tag.domain.Tag;
+import com.nhnacademy.taskapi.Tag.exception.TagNotFoundException;
 import com.nhnacademy.taskapi.Tag.jpa.JpaBookTagRepository;
 import com.nhnacademy.taskapi.Tag.jpa.JpaTagRepository;
 import com.nhnacademy.taskapi.Tag.repository.TagRepository;
@@ -22,6 +23,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
     private final JpaTagRepository jpaTagRepository;
@@ -49,7 +51,6 @@ public class TagServiceImpl implements TagService {
         return TagResponse.fromEntity(jpaTagRepository.save(createTagRequest.toEntity()));
     }
 
-    @Transactional(readOnly = true)
     @Override
     public TagResponse getTag(Long tagId) {
         if (Objects.isNull(tagId)) {
@@ -62,7 +63,6 @@ public class TagServiceImpl implements TagService {
         return TagResponse.fromEntity(tag);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<TagResponse> getAllTags() {
         return jpaTagRepository.findAll().stream().map(TagResponse::fromEntity).toList();
@@ -101,5 +101,16 @@ public class TagServiceImpl implements TagService {
 
         jpaBookTagRepository.deleteAll(bookTagList);
         jpaTagRepository.deleteById(tagId);
+    }
+
+    // 태그검색
+    @Override
+    public Page<Tag> getTagByName(Pageable pageable, String name){
+        Page<Tag> tags = tagRepository.findByNameContainingIgnoreCase(name, pageable);
+
+        if(Objects.isNull(tags)){
+            throw new TagNotFoundException("Tag not found.");
+        }
+        return tags;
     }
 }

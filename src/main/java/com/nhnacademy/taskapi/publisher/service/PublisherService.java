@@ -8,4 +8,6 @@ public interface PublisherService {
     Publisher addPublisher(String name);
     Publisher updatePublisher(PublisherUpdateDTO dto);
     void deletePublisher(long publisherId);
+    Publisher getPublisher(String publisherName);
+    Publisher addPublisherByAladin(String name);
 }

@@ -17,4 +17,6 @@ public interface TagService {
     Page<TagResponse> getAllTags(Pageable pageable);
     TagResponse updateTag(UpdateTagRequest updateTagRequest);
     void removeTag(Long tagId);
+
+    Page<Tag> getTagByName(Pageable pageable, String name);
 }

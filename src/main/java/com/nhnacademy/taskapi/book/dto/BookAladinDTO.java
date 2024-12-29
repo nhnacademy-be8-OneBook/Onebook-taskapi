@@ -20,7 +20,7 @@ public class BookAladinDTO {
     String description;
     String isbn13;
     int priceSales;
-    int price;
+    int priceStandard;
     String categoryNames;
     String publisherName;
     long salesPoint;
