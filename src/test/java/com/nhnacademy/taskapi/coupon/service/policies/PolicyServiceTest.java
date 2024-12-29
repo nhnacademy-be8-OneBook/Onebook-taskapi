@@ -4,16 +4,24 @@ import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.exception.BookNotFoundException;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.category.domain.Category;
+import com.nhnacademy.taskapi.category.exception.CategoryNotFoundException;
 import com.nhnacademy.taskapi.category.repository.CategoryRepository;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddPricePolicyForBookRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddPricePolicyForCategoryRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddRatePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddRatePolicyForCategoryRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddPricePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddPricePolicyForCategoryResponse;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddRatePolicyForBookResponse;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddRatePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForBook;
+import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForCategory;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForBook;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForCategory;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.PolicyStatus;
-import com.nhnacademy.taskapi.coupon.exception.CategoryNotFoundException;
 import com.nhnacademy.taskapi.coupon.exception.PolicyStatusNotFoundException;
+import com.nhnacademy.taskapi.coupon.repository.policies.PricePoliciesForBookRepository;
+import com.nhnacademy.taskapi.coupon.repository.policies.PricePoliciesForCategoryRepository;
 import com.nhnacademy.taskapi.coupon.repository.policies.RatePoliciesForBookRepository;
 import com.nhnacademy.taskapi.coupon.repository.policies.RatePoliciesForCategoryRepository;
 import com.nhnacademy.taskapi.coupon.repository.status.PolicyStatusRepository;
@@ -46,6 +54,10 @@ class PolicyServiceTest {
     @Mock
     private RatePoliciesForCategoryRepository ratePoliciesForCategoryRepository;
     @Mock
+    private PricePoliciesForBookRepository pricePoliciesForBookRepository;
+    @Mock
+    private PricePoliciesForCategoryRepository pricePoliciesForCategoryRepository;
+    @Mock
     private  PolicyStatusRepository policyStatusRepository;
     @InjectMocks
     private PolicyService policyService;
@@ -54,8 +66,7 @@ class PolicyServiceTest {
     private Category category;
     private PolicyStatus policyStatus;
     
-    private RatePolicyForBook ratePolicyForBook;
-    private RatePolicyForCategory ratePolicyForCategory;
+
 
     @BeforeEach
     void setUp() throws NoSuchFieldException {
@@ -483,5 +494,360 @@ class PolicyServiceTest {
                 ()->{
                     policyService.addRatePolicyForCategory(addRatePolicyForCategoryRequest);
                 });
+    }
+
+    @Test
+    @DisplayName("정액 정책 for Book을 새로 추가 - 정상 동작 테스트")
+    void addPricePolicyForBookTest() throws NoSuchFieldException {
+
+        // 정책 추가 요청
+        AddPricePolicyForBookRequest addPricePolicyForBookRequest = new AddPricePolicyForBookRequest();
+        for(Field field : addPricePolicyForBookRequest.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+               addPricePolicyForBookRequest.getClass().getDeclaredField("minimumOrderAmount")
+                ,addPricePolicyForBookRequest
+                , 20000);
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("discountPrice")
+                ,addPricePolicyForBookRequest
+                , 5000);
+        ReflectionUtils.setField(
+               addPricePolicyForBookRequest.getClass().getDeclaredField("expirationPeriodStart")
+                ,addPricePolicyForBookRequest
+                , LocalDateTime.of(2024,1,1,12,0));
+        ReflectionUtils.setField(
+               addPricePolicyForBookRequest.getClass().getDeclaredField("expirationPeriodEnd")
+                ,addPricePolicyForBookRequest
+                , LocalDateTime.of(2024,1,10,12,0));
+        ReflectionUtils.setField(
+               addPricePolicyForBookRequest.getClass().getDeclaredField("name")
+                ,addPricePolicyForBookRequest
+                , "테스트용 정액정책 for Book");
+        ReflectionUtils.setField(
+               addPricePolicyForBookRequest.getClass().getDeclaredField("description")
+                ,addPricePolicyForBookRequest
+                , "테스트용 정액정책 for Book 설명");
+        ReflectionUtils.setField(
+               addPricePolicyForBookRequest.getClass().getDeclaredField("bookId")
+                ,addPricePolicyForBookRequest
+                ,1L);
+        ReflectionUtils.setField(
+               addPricePolicyForBookRequest.getClass().getDeclaredField("policyStatusId")
+                ,addPricePolicyForBookRequest
+                ,0);
+
+        Mockito.when(bookRepository.findById(addPricePolicyForBookRequest.getBookId()))
+                .thenReturn(Optional.of(book));
+        Mockito.when(policyStatusRepository.findById(addPricePolicyForBookRequest.getPolicyStatusId()))
+                .thenReturn(Optional.of(policyStatus));
+
+        // 예싱 응답
+        AddPricePolicyForBookResponse expected =
+                new AddPricePolicyForBookResponse(
+                        20000,
+                        5000,
+                        LocalDateTime.of(2024,1,1,12,0),
+                        LocalDateTime.of(2024,1,10,12,0),
+                        "테스트용 정액정책 for Book",
+                        "테스트용 정액정책 for Book 설명",
+                        1L,
+                        0
+                );
+
+        // 실제 응답
+        AddPricePolicyForBookResponse actual
+                = policyService.addPricePolicyForBook(addPricePolicyForBookRequest);
+
+        // addRatePolicyForBook() 메서드 안의 ratePoliciesForBookRepository.save()가 실행되었는지 검증
+        Mockito.verify(pricePoliciesForBookRepository,Mockito.times(1))
+                .save(Mockito.any(PricePolicyForBook.class));
+
+        // 예상응답과 실제응답이 같은지 검증
+        Assertions.assertEquals(
+                expected,actual
+        );
+    }
+
+    @Test
+    @DisplayName("정액 정책 for Book을 새로 추가 - 해당하는 ID의 도서가 없을때 - Exception이 정상적으로 발생하는지")
+    void addPricePolicyForBookWhenBookNotFoundTest() throws NoSuchFieldException {
+
+        // 정책 추가 요청
+        AddPricePolicyForBookRequest addPricePolicyForBookRequest = new AddPricePolicyForBookRequest();
+        for(Field field : addPricePolicyForBookRequest.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("minimumOrderAmount")
+                ,addPricePolicyForBookRequest
+                , 20000);
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("discountPrice")
+                ,addPricePolicyForBookRequest
+                , 5000);
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("expirationPeriodStart")
+                ,addPricePolicyForBookRequest
+                , LocalDateTime.of(2024,1,1,12,0));
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("expirationPeriodEnd")
+                ,addPricePolicyForBookRequest
+                , LocalDateTime.of(2024,1,10,12,0));
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("name")
+                ,addPricePolicyForBookRequest
+                , "테스트용 정액정책 for Book");
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("description")
+                ,addPricePolicyForBookRequest
+                , "테스트용 정액정책 for Book 설명");
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("bookId")
+                ,addPricePolicyForBookRequest
+                ,99999L); // 존재햐지 않는 도서 ID
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("policyStatusId")
+                ,addPricePolicyForBookRequest
+                ,0);
+
+        Mockito.when(bookRepository.findById(99999L))
+                .thenThrow(BookNotFoundException.class);
+
+        Assertions.assertThrows(BookNotFoundException.class,()->{
+            policyService.addPricePolicyForBook(addPricePolicyForBookRequest);
+        });
+    }
+
+    @Test
+    @DisplayName("정액 정책 for Book을 새로 추가 - 해당하는 ID의 정책상태가 없을때 - Exception이 정상적으로 발생하는지")
+    void addPricePolicyForBookWhenPolicyStatusNotFoundTest() throws NoSuchFieldException {
+
+        // 정책 추가 요청
+        AddPricePolicyForBookRequest addPricePolicyForBookRequest = new AddPricePolicyForBookRequest();
+        for(Field field : addPricePolicyForBookRequest.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("minimumOrderAmount")
+                ,addPricePolicyForBookRequest
+                , 20000);
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("discountPrice")
+                ,addPricePolicyForBookRequest
+                , 5000);
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("expirationPeriodStart")
+                ,addPricePolicyForBookRequest
+                , LocalDateTime.of(2024,1,1,12,0));
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("expirationPeriodEnd")
+                ,addPricePolicyForBookRequest
+                , LocalDateTime.of(2024,1,10,12,0));
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("name")
+                ,addPricePolicyForBookRequest
+                , "테스트용 정액정책 for Book");
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("description")
+                ,addPricePolicyForBookRequest
+                , "테스트용 정액정책 for Book 설명");
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("bookId")
+                ,addPricePolicyForBookRequest
+                ,1L);
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("policyStatusId")
+                ,addPricePolicyForBookRequest
+                ,99999); // 존재하지 않는 정책상태 ID
+
+        Mockito.when(bookRepository.findById(addPricePolicyForBookRequest.getBookId()))
+                .thenReturn(Optional.of(book));
+        Mockito.when(policyStatusRepository.findById(99999))
+                .thenThrow(PolicyStatusNotFoundException.class);
+
+        Assertions.assertThrows(PolicyStatusNotFoundException.class,()->{
+            policyService.addPricePolicyForBook(addPricePolicyForBookRequest);
+        });
+    }
+
+    @Test
+    @DisplayName("정액 정책 for Category를 새로 추가 - 정상 동작 테스트")
+    void addPricePolicyForCategoryTest() throws NoSuchFieldException {
+
+        // 정책 추가 요청
+        AddPricePolicyForCategoryRequest addPricePolicyForCategoryRequest = new AddPricePolicyForCategoryRequest();
+        for(Field field : addPricePolicyForCategoryRequest.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("minimumOrderAmount")
+                ,addPricePolicyForCategoryRequest
+                , 20000);
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("discountPrice")
+                ,addPricePolicyForCategoryRequest
+                , 5000);
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("expirationPeriodStart")
+                ,addPricePolicyForCategoryRequest
+                , LocalDateTime.of(2024,1,1,12,0));
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("expirationPeriodEnd")
+                ,addPricePolicyForCategoryRequest
+                , LocalDateTime.of(2024,1,10,12,0));
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("name")
+                ,addPricePolicyForCategoryRequest
+                , "테스트용 정액정책 for Category");
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("description")
+                ,addPricePolicyForCategoryRequest
+                , "테스트용 정액정책 for Category 설명");
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("categoryId")
+                ,addPricePolicyForCategoryRequest
+                ,0);
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("policyStatusId")
+                ,addPricePolicyForCategoryRequest
+                ,0);
+
+        Mockito.when(categoryRepository.findById(addPricePolicyForCategoryRequest.getCategoryId()))
+                .thenReturn(Optional.of(category));
+        Mockito.when(policyStatusRepository.findById(addPricePolicyForCategoryRequest.getPolicyStatusId()))
+                .thenReturn(Optional.of(policyStatus));
+
+        // 예싱 응답
+        AddPricePolicyForCategoryResponse expected =
+                new AddPricePolicyForCategoryResponse(
+                        20000,
+                        5000,
+                        LocalDateTime.of(2024,1,1,12,0),
+                        LocalDateTime.of(2024,1,10,12,0),
+                        "테스트용 정액정책 for Category",
+                        "테스트용 정액정책 for Category 설명",
+                        0,
+                        0
+                );
+
+        // 실제 응답
+        AddPricePolicyForCategoryResponse actual
+                = policyService.addPricePolicyForCategory(addPricePolicyForCategoryRequest);
+
+        // addRatePolicyForBook() 메서드 안의 ratePoliciesForBookRepository.save()가 실행되었는지 검증
+        Mockito.verify(pricePoliciesForCategoryRepository,Mockito.times(1))
+                .save(Mockito.any(PricePolicyForCategory.class));
+
+        // 예상응답과 실제응답이 같은지 검증
+        Assertions.assertEquals(
+                expected,actual
+        );
+    }
+
+    @Test
+    @DisplayName("정액 정책 for Category를 새로 추가 - 해당하는 ID의 카테고리가 없을때 - Exception이 정상적으로 발생하는지")
+    void addPricePolicyForCategoryWhenCategoryNotFoundTest() throws NoSuchFieldException {
+
+        // 정책 추가 요청
+        AddPricePolicyForCategoryRequest addPricePolicyForCategoryRequest = new AddPricePolicyForCategoryRequest();
+        for(Field field : addPricePolicyForCategoryRequest.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("minimumOrderAmount")
+                ,addPricePolicyForCategoryRequest
+                , 20000);
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("discountPrice")
+                ,addPricePolicyForCategoryRequest
+                , 5000);
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("expirationPeriodStart")
+                ,addPricePolicyForCategoryRequest
+                , LocalDateTime.of(2024,1,1,12,0));
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("expirationPeriodEnd")
+                ,addPricePolicyForCategoryRequest
+                , LocalDateTime.of(2024,1,10,12,0));
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("name")
+                ,addPricePolicyForCategoryRequest
+                , "테스트용 정액정책 for Book");
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("description")
+                ,addPricePolicyForCategoryRequest
+                , "테스트용 정액정책 for Book 설명");
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("categoryId")
+                ,addPricePolicyForCategoryRequest
+                ,99999); // 존재하지 않는 카테고리 번호
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("policyStatusId")
+                ,addPricePolicyForCategoryRequest
+                ,0);
+
+        Mockito.when(categoryRepository.findById(99999))
+                .thenThrow(CategoryNotFoundException.class);
+
+        Assertions.assertThrows(CategoryNotFoundException.class, ()->{
+           policyService.addPricePolicyForCategory(addPricePolicyForCategoryRequest);
+        });
+    }
+
+    @Test
+    @DisplayName("정액 정책 for Category를 새로 추가 - 해당하는 ID의 정책상태가 없을때 - Exception이 정상적으로 발생하는지")
+    void addPricePolicyForCategoryWhenPolicyStatusNotFound() throws NoSuchFieldException {
+
+        // 정책 추가 요청
+        AddPricePolicyForCategoryRequest addPricePolicyForCategoryRequest = new AddPricePolicyForCategoryRequest();
+        for(Field field : addPricePolicyForCategoryRequest.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("minimumOrderAmount")
+                ,addPricePolicyForCategoryRequest
+                , 20000);
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("discountPrice")
+                ,addPricePolicyForCategoryRequest
+                , 5000);
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("expirationPeriodStart")
+                ,addPricePolicyForCategoryRequest
+                , LocalDateTime.of(2024,1,1,12,0));
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("expirationPeriodEnd")
+                ,addPricePolicyForCategoryRequest
+                , LocalDateTime.of(2024,1,10,12,0));
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("name")
+                ,addPricePolicyForCategoryRequest
+                , "테스트용 정액정책 for Book");
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("description")
+                ,addPricePolicyForCategoryRequest
+                , "테스트용 정액정책 for Book 설명");
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("categoryId")
+                ,addPricePolicyForCategoryRequest
+                ,0);
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("policyStatusId")
+                ,addPricePolicyForCategoryRequest
+                ,99999); // 존재하지 않는 정책상태 ID
+
+        Mockito.when(categoryRepository.findById(addPricePolicyForCategoryRequest.getCategoryId()))
+                .thenReturn(Optional.of(category));
+        Mockito.when(policyStatusRepository.findById(99999))
+                .thenThrow(PolicyStatusNotFoundException.class);
+
+        Assertions.assertThrows(PolicyStatusNotFoundException.class, ()->{
+            policyService.addPricePolicyForCategory(addPricePolicyForCategoryRequest);
+        });
     }
 }

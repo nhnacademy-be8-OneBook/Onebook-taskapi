@@ -2,8 +2,12 @@ package com.nhnacademy.taskapi.coupon.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddPricePolicyForBookRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddPricePolicyForCategoryRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddRatePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddRatePolicyForCategoryRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddPricePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddPricePolicyForCategoryResponse;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddRatePolicyForBookResponse;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddRatePolicyForCategoryResponse;
 import com.nhnacademy.taskapi.coupon.service.policies.PolicyService;
@@ -46,10 +50,15 @@ class PolicyControllerTest {
     private static AddRatePolicyForBookResponse addRatePolicyForBookResponse;
     private static AddRatePolicyForCategoryResponse addRatePolicyForCategoryResponse;
 
+    private static AddPricePolicyForBookRequest addPricePolicyForBookRequest;
+    private static AddPricePolicyForCategoryRequest addPricePolicyForCategoryRequest;
+    private static AddPricePolicyForBookResponse addPricePolicyForBookResponse;
+    private static AddPricePolicyForCategoryResponse addPricePolicyForCategoryResponse;
+
     @BeforeAll
     static void setUp() throws NoSuchFieldException {
 
-        // 정률정책 for Book 추가 요청
+        // 정률정책 for Book 등록 요청
         addRatePolicyForBookRequest = new AddRatePolicyForBookRequest();
         for(Field field : addRatePolicyForBookRequest.getClass().getDeclaredFields()){
             field.setAccessible(true);
@@ -91,7 +100,7 @@ class PolicyControllerTest {
                 ,addRatePolicyForBookRequest
                 ,0);
 
-        // 정률정책 for Book 추가 응답
+        // 정률정책 for Book 등록 응답
         addRatePolicyForBookResponse = new AddRatePolicyForBookResponse(
                 10,
                 30000,
@@ -104,7 +113,7 @@ class PolicyControllerTest {
                 0
         );
 
-        // 정률정책 for category 추가 요청
+        // 정률정책 for category 등록 요청
         addRatePolicyForCategoryRequest = new AddRatePolicyForCategoryRequest();
         for(Field field : addRatePolicyForCategoryRequest.getClass().getDeclaredFields()){
             field.setAccessible(true);
@@ -146,7 +155,7 @@ class PolicyControllerTest {
                 ,addRatePolicyForCategoryRequest
                 ,0);
 
-        // 정률정책 for Category 추가 응답
+        // 정률정책 for Category 등록 응답
         addRatePolicyForCategoryResponse = new AddRatePolicyForCategoryResponse(
                 10,
                 30000,
@@ -158,6 +167,107 @@ class PolicyControllerTest {
                 0,
                 0
         );
+
+        // 정액정책 for Book 등록 요청
+        addPricePolicyForBookRequest = new AddPricePolicyForBookRequest();
+        for(Field field : addPricePolicyForBookRequest.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("minimumOrderAmount")
+                ,addPricePolicyForBookRequest
+                , 20000);
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("discountPrice")
+                ,addPricePolicyForBookRequest
+                , 5000);
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("expirationPeriodStart")
+                ,addPricePolicyForBookRequest
+                , LocalDateTime.of(2024,1,1,12,0));
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("expirationPeriodEnd")
+                ,addPricePolicyForBookRequest
+                , LocalDateTime.of(2024,1,10,12,0));
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("name")
+                ,addPricePolicyForBookRequest
+                , "테스트용 정액정책 for Book");
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("description")
+                ,addPricePolicyForBookRequest
+                , "테스트용 정액정책 for Book 설명");
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("bookId")
+                ,addPricePolicyForBookRequest
+                ,1L);
+        ReflectionUtils.setField(
+                addPricePolicyForBookRequest.getClass().getDeclaredField("policyStatusId")
+                ,addPricePolicyForBookRequest
+                ,0);
+
+        // 정액정책 for Book 등록 응답
+        addPricePolicyForBookResponse = new AddPricePolicyForBookResponse(
+                        20000,
+                        5000,
+                        LocalDateTime.of(2024,1,1,12,0),
+                        LocalDateTime.of(2024,1,10,12,0),
+                        "테스트용 정액정책 for Book",
+                        "테스트용 정액정책 for Book 설명",
+                        1L,
+                        0
+                );
+
+        // 정액정책 for Category 등록 요청
+        addPricePolicyForCategoryRequest = new AddPricePolicyForCategoryRequest();
+        for(Field field : addPricePolicyForCategoryRequest.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("minimumOrderAmount")
+                ,addPricePolicyForCategoryRequest
+                , 20000);
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("discountPrice")
+                ,addPricePolicyForCategoryRequest
+                , 5000);
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("expirationPeriodStart")
+                ,addPricePolicyForCategoryRequest
+                , LocalDateTime.of(2024,1,1,12,0));
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("expirationPeriodEnd")
+                ,addPricePolicyForCategoryRequest
+                , LocalDateTime.of(2024,1,10,12,0));
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("name")
+                ,addPricePolicyForCategoryRequest
+                , "테스트용 정액정책 for Category");
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("description")
+                ,addPricePolicyForCategoryRequest
+                , "테스트용 정액정책 for Category 설명");
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("categoryId")
+                ,addPricePolicyForCategoryRequest
+                ,0);
+        ReflectionUtils.setField(
+                addPricePolicyForCategoryRequest.getClass().getDeclaredField("policyStatusId")
+                ,addPricePolicyForCategoryRequest
+                ,0);
+
+        // 정액정책 for Category 등록 응답
+        addPricePolicyForCategoryResponse = new AddPricePolicyForCategoryResponse(
+                        20000,
+                        5000,
+                        LocalDateTime.of(2024,1,1,12,0),
+                        LocalDateTime.of(2024,1,10,12,0),
+                        "테스트용 정액정책 for Category",
+                        "테스트용 정액정책 for Category 설명",
+                        0,
+                        0
+                );
+
     }
 
 
@@ -211,6 +321,58 @@ class PolicyControllerTest {
                         .value("2024-01-10T12:00:00"))
                 .andExpect(jsonPath("$.name").value("테스트용 정책"))
                 .andExpect(jsonPath("$.description").value("테스트용 정책 설명"))
+                .andExpect(jsonPath("$.categoryId").value(0))
+                .andExpect(jsonPath("$.policyStatusId").value(0));
+    }
+
+    @Test
+    @DisplayName("정액정책 for Book 등록 요청시 - 200과 응답이 잘 돌아오는지 확인")
+    void addPricePolicyForBookTest() throws Exception {
+
+        Mockito.when(policyService.addPricePolicyForBook(Mockito.any(AddPricePolicyForBookRequest.class)))
+                .thenReturn(addPricePolicyForBookResponse);
+
+        String url = "http://localhost:"+port +"/task/policies/price/book";
+
+        String req = objectMapper.writeValueAsString(addPricePolicyForBookRequest);
+
+        mockMvc.perform(post(url).header("X-MEMBER-ID",1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(req))
+                .andExpect(jsonPath("$.minimumOrderAmount").value(20000))
+                .andExpect(jsonPath("$.discountPrice").value(5000))
+                .andExpect(jsonPath("$.expirationPeriodStart")
+                        .value("2024-01-01T12:00:00"))
+                .andExpect(jsonPath("$.expirationPeriodEnd")
+                        .value("2024-01-10T12:00:00"))
+                .andExpect(jsonPath("$.name").value("테스트용 정액정책 for Book"))
+                .andExpect(jsonPath("$.description").value("테스트용 정액정책 for Book 설명"))
+                .andExpect(jsonPath("$.bookId").value(1L))
+                .andExpect(jsonPath("$.policyStatusId").value(0));
+    }
+
+    @Test
+    @DisplayName("정액정책 for Category 등록 요청시 - 200과 응답이 잘 돌아오는지 확인")
+    void addPricePolicyForCategoryTest() throws Exception {
+
+        Mockito.when(policyService.addPricePolicyForCategory(Mockito.any(AddPricePolicyForCategoryRequest.class)))
+                .thenReturn(addPricePolicyForCategoryResponse);
+
+        String url = "http://localhost:"+port +"/task/policies/price/category";
+
+        String req = objectMapper.writeValueAsString(addPricePolicyForCategoryRequest);
+
+        mockMvc.perform(post(url).header("X-MEMBER-ID",1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(req))
+                .andExpect(jsonPath("$.minimumOrderAmount").value(20000))
+                .andExpect(jsonPath("$.discountPrice").value(5000))
+                .andExpect(jsonPath("$.expirationPeriodStart")
+                        .value("2024-01-01T12:00:00"))
+                .andExpect(jsonPath("$.expirationPeriodEnd")
+                        .value("2024-01-10T12:00:00"))
+                .andExpect(jsonPath("$.name").value("테스트용 정액정책 for Category"))
+                .andExpect(jsonPath("$.description").value("테스트용 정액정책 for Category 설명"))
                 .andExpect(jsonPath("$.categoryId").value(0))
                 .andExpect(jsonPath("$.policyStatusId").value(0));
     }

@@ -1,7 +1,7 @@
 package com.nhnacademy.taskapi.coupon.repository.policies;
 
 import com.nhnacademy.taskapi.category.domain.Category;
-import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForCategory;
+import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForCategory;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.PolicyStatus;
 import com.nhnacademy.taskapi.publisher.domain.Publisher;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,17 +15,16 @@ import org.springframework.data.util.ReflectionUtils;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
-
 @DataJpaTest
-class RatePoliciesForCategoryRepositoryTest {
+class PricePoliciesForCategoryRepositoryTest {
 
     @Autowired
-    private RatePoliciesForCategoryRepository ratePoliciesForCategoryRepository;
+    private PricePoliciesForCategoryRepository pricePoliciesForCategoryRepository;
 
     @Autowired
-    TestEntityManager testEntityManager;
+    private TestEntityManager testEntityManager;
 
-    private RatePolicyForCategory ratePolicyForCategory;
+    private PricePolicyForCategory pricePolicyForCategory;
 
     @BeforeEach
     void setUp() throws NoSuchFieldException {
@@ -33,53 +32,40 @@ class RatePoliciesForCategoryRepositoryTest {
         // 테스트용 출판사
         Publisher publisher = new Publisher();
         publisher.setName("파랑출판사");
-
         testEntityManager.persist(publisher);
 
         // 테스트용 카테고리
         Category category = new Category();
-
         for(Field field : category.getClass().getDeclaredFields()){
             field.setAccessible(true);
         }
-
         ReflectionUtils.setField(category.getClass().getDeclaredField("name"),category,"소설" );
-
         testEntityManager.persist(category);
 
         // 테스트용 정책상태
         PolicyStatus policyStatus = new PolicyStatus();
-
         for(Field field :policyStatus.getClass().getDeclaredFields()){
             field.setAccessible(true);
         }
-
         ReflectionUtils.setField(policyStatus.getClass().getDeclaredField("name"), policyStatus,"미사용" );
-
         testEntityManager.persist(policyStatus);
 
-        // 테스트용 정책 for Category
-        ratePolicyForCategory = new RatePolicyForCategory(
-                20,
-                50000,
+        pricePolicyForCategory = new PricePolicyForCategory(
                 20000,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                "웰컴쿠폰",
-                "2023년 1월 신입고객에게 지급하는 웰컴쿠폰",
+                5000,
+                LocalDateTime.of(2024,1,1,12,00),
+                LocalDateTime.of(2024,1,10,12,00),
+                "테스트용 정액정책 for Book",
+                "테스트용 정액정책 for Book Description",
                 category,
                 policyStatus
         );
-
     }
 
     @Test
-    @DisplayName("RatePolicyForBook - save - 동작테스트")
-    void saveRatePolicyForCategory() {
-
-        ratePoliciesForCategoryRepository.save(ratePolicyForCategory);
+    @DisplayName("PricePolicyBook - save - 동작테스트")
+    void savePricePolicyBookTest(){
+        pricePoliciesForCategoryRepository.save(pricePolicyForCategory);
     }
-
-
 
 }

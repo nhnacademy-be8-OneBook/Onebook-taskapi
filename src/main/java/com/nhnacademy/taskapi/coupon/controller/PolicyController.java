@@ -1,7 +1,11 @@
 package com.nhnacademy.taskapi.coupon.controller;
 
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddPricePolicyForBookRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddPricePolicyForCategoryRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddRatePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddRatePolicyForCategoryRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddPricePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddPricePolicyForCategoryResponse;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddRatePolicyForBookResponse;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddRatePolicyForCategoryResponse;
 import com.nhnacademy.taskapi.coupon.service.policies.PolicyService;
@@ -39,6 +43,24 @@ public class PolicyController {
 
     }
 
+    @PostMapping("/policies/price/book")
+    public ResponseEntity<AddPricePolicyForBookResponse> addPricePolicyForBook
+            (@RequestBody AddPricePolicyForBookRequest addPricePolicyForBookRequest){
 
+        AddPricePolicyForBookResponse addPricePolicyForBookResponse =
+                policyService.addPricePolicyForBook(addPricePolicyForBookRequest);
+
+        return ResponseEntity.ok(addPricePolicyForBookResponse);
+    }
+
+    @PostMapping("/policies/price/category")
+    public ResponseEntity<AddPricePolicyForCategoryResponse> addPricePolicyForCategory
+            (@RequestBody AddPricePolicyForCategoryRequest addPricePolicyForCategoryRequest){
+
+        AddPricePolicyForCategoryResponse addPricePolicyForCategoryResponse =
+                policyService.addPricePolicyForCategory(addPricePolicyForCategoryRequest);
+
+        return ResponseEntity.ok(addPricePolicyForCategoryResponse);
+    }
 
 }
