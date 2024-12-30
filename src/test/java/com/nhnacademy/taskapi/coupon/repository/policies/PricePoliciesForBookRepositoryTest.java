@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -85,5 +87,16 @@ class PricePoliciesForBookRepositoryTest {
     void savePricePolicyBookTest(){
 
         pricePoliciesForBookRepository.save(pricePolicyForBook);
+    }
+
+    @Test
+    @DisplayName("PricePolicyBook - findAll - 동작테스트")
+    void findAllTest(){
+
+        int pageNo = 1;
+        int PAGE_SIZE = 10;
+
+        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
+        pricePoliciesForBookRepository.findAll(pageable);
     }
 }

@@ -1,15 +1,18 @@
 package com.nhnacademy.taskapi.coupon.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddPricePolicyForBookRequest;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddPricePolicyForCategoryRequest;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddRatePolicyForBookRequest;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddRatePolicyForCategoryRequest;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddPricePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddPricePolicyForCategoryResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddRatePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddRatePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPricePolicyForBookRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPricePolicyForCategoryRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForBookRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForCategoryRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddPricePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddPricePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddRatePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddRatePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetPricePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetPricePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetRatePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetRatePolicyForCategoryResponse;
 import com.nhnacademy.taskapi.coupon.service.policies.PolicyService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +28,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -378,5 +384,280 @@ class PolicyControllerTest {
     }
 
 
+    @Test
+    @DisplayName("관리자가 - 등록되어있는 - 정률정책 for Book들을 - Pagenation 해서 받아오기")
+    void getRatePoliciesForBookTest() throws Exception {
+
+        List<GetRatePolicyForBookResponse> list = new ArrayList<>();
+
+        for(int i = 1; i <= 10; i++){
+            GetRatePolicyForBookResponse getRatePolicyForBookResponse = new GetRatePolicyForBookResponse();
+            for(Field field : getRatePolicyForBookResponse.getClass().getDeclaredFields()){
+                field.setAccessible(true);
+            }
+
+            ReflectionUtils.setField(
+                    getRatePolicyForBookResponse.getClass().getDeclaredField("id"),
+                    getRatePolicyForBookResponse,
+                    (long)i);
+            ReflectionUtils.setField(
+                    getRatePolicyForBookResponse.getClass().getDeclaredField("discountRate"),
+                    getRatePolicyForBookResponse,
+                    i);
+            ReflectionUtils.setField(
+                    getRatePolicyForBookResponse.getClass().getDeclaredField("minimumOrderAmount"),
+                    getRatePolicyForBookResponse,
+                    i);
+            ReflectionUtils.setField(
+                    getRatePolicyForBookResponse.getClass().getDeclaredField("maximumDiscountPrice"),
+                    getRatePolicyForBookResponse,
+                    i);
+            ReflectionUtils.setField(
+                    getRatePolicyForBookResponse.getClass().getDeclaredField("expirationPeriodStart"),
+                    getRatePolicyForBookResponse,
+                    LocalDateTime.of(2024,1,i,12,0));
+            ReflectionUtils.setField(
+                    getRatePolicyForBookResponse.getClass().getDeclaredField("expirationPeriodEnd"),
+                    getRatePolicyForBookResponse,
+                    LocalDateTime.of(2024,1,i,12,0));
+            ReflectionUtils.setField(
+                    getRatePolicyForBookResponse.getClass().getDeclaredField("name"),
+                    getRatePolicyForBookResponse,
+                    Integer.toString(i));
+            ReflectionUtils.setField(
+                    getRatePolicyForBookResponse.getClass().getDeclaredField("description"),
+                    getRatePolicyForBookResponse,
+                    Integer.toString(i));
+            ReflectionUtils.setField(
+                    getRatePolicyForBookResponse.getClass().getDeclaredField("bookName"),
+                    getRatePolicyForBookResponse,
+                    Integer.toString(i));
+            ReflectionUtils.setField(
+                    getRatePolicyForBookResponse.getClass().getDeclaredField("policyStatusName"),
+                    getRatePolicyForBookResponse,
+                    Integer.toString(i));
+
+            list.add(getRatePolicyForBookResponse);
+        }
+
+        Mockito.when(policyService.getRatePoliciesForBook(1)).thenReturn(list);
+        String url = "http://localhost:"+port +"/task/policies/rate/book";
+        mockMvc.perform(get(url).param("page","1"))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[2].id").value(3))
+                .andExpect(jsonPath("$[3].id").value(4))
+                .andExpect(jsonPath("$[4].id").value(5))
+                .andExpect(jsonPath("$[5].id").value(6))
+                .andExpect(jsonPath("$[6].id").value(7))
+                .andExpect(jsonPath("$[7].id").value(8))
+                .andExpect(jsonPath("$[8].id").value(9))
+                .andExpect(jsonPath("$[9].id").value(10));
+    }
+
+    @Test
+    @DisplayName("관리자가 - 등록되어있는 - 정률정책 for Category들을 - Pagenation 해서 받아오기")
+    void getRatePoliciesForCategoryTest() throws Exception {
+
+        List<GetRatePolicyForCategoryResponse> list = new ArrayList<>();
+
+        for(int i = 1; i <= 10; i++){
+            GetRatePolicyForCategoryResponse getRatePolicyForCategoryResponse = new GetRatePolicyForCategoryResponse();
+            for(Field field : getRatePolicyForCategoryResponse.getClass().getDeclaredFields()){
+                field.setAccessible(true);
+            }
+
+            ReflectionUtils.setField(
+                    getRatePolicyForCategoryResponse.getClass().getDeclaredField("id"),
+                    getRatePolicyForCategoryResponse,
+                    (long)i);
+            ReflectionUtils.setField(
+                    getRatePolicyForCategoryResponse.getClass().getDeclaredField("discountRate"),
+                    getRatePolicyForCategoryResponse,
+                    i);
+            ReflectionUtils.setField(
+                    getRatePolicyForCategoryResponse.getClass().getDeclaredField("minimumOrderAmount"),
+                    getRatePolicyForCategoryResponse,
+                    i);
+            ReflectionUtils.setField(
+                    getRatePolicyForCategoryResponse.getClass().getDeclaredField("maximumDiscountPrice"),
+                    getRatePolicyForCategoryResponse,
+                    i);
+            ReflectionUtils.setField(
+                    getRatePolicyForCategoryResponse.getClass().getDeclaredField("expirationPeriodStart"),
+                    getRatePolicyForCategoryResponse,
+                    LocalDateTime.of(2024,1,i,12,0));
+            ReflectionUtils.setField(
+                    getRatePolicyForCategoryResponse.getClass().getDeclaredField("expirationPeriodEnd"),
+                    getRatePolicyForCategoryResponse,
+                    LocalDateTime.of(2024,1,i,12,0));
+            ReflectionUtils.setField(
+                    getRatePolicyForCategoryResponse.getClass().getDeclaredField("name"),
+                    getRatePolicyForCategoryResponse,
+                    Integer.toString(i));
+            ReflectionUtils.setField(
+                    getRatePolicyForCategoryResponse.getClass().getDeclaredField("description"),
+                    getRatePolicyForCategoryResponse,
+                    Integer.toString(i));
+            ReflectionUtils.setField(
+                    getRatePolicyForCategoryResponse.getClass().getDeclaredField("categoryName"),
+                    getRatePolicyForCategoryResponse,
+                    Integer.toString(i));
+            ReflectionUtils.setField(
+                    getRatePolicyForCategoryResponse.getClass().getDeclaredField("policyStatusName"),
+                    getRatePolicyForCategoryResponse,
+                    Integer.toString(i));
+
+            list.add(getRatePolicyForCategoryResponse);
+        }
+
+        Mockito.when(policyService.getRatePoliciesForCategory(1)).thenReturn(list);
+        String url = "http://localhost:"+port +"/task/policies/rate/category";
+        mockMvc.perform(get(url).param("page","1"))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[2].id").value(3))
+                .andExpect(jsonPath("$[3].id").value(4))
+                .andExpect(jsonPath("$[4].id").value(5))
+                .andExpect(jsonPath("$[5].id").value(6))
+                .andExpect(jsonPath("$[6].id").value(7))
+                .andExpect(jsonPath("$[7].id").value(8))
+                .andExpect(jsonPath("$[8].id").value(9))
+                .andExpect(jsonPath("$[9].id").value(10));
+    }
+
+    @Test
+    @DisplayName("관리자가 - 등록되어있는 - 정액정책 for Book들을 - Pagenation 해서 받아오기")
+    void getPricePoliciesForBookTest() throws Exception {
+
+        List<GetPricePolicyForBookResponse> list = new ArrayList<>();
+
+        for(int i = 1; i <= 10; i++){
+            GetPricePolicyForBookResponse getPricePolicyForBookResponse = new GetPricePolicyForBookResponse();
+            for(Field field : getPricePolicyForBookResponse.getClass().getDeclaredFields()){
+                field.setAccessible(true);
+            }
+
+            ReflectionUtils.setField(
+                    getPricePolicyForBookResponse.getClass().getDeclaredField("id"),
+                    getPricePolicyForBookResponse,
+                    (long)i);
+            ReflectionUtils.setField(
+                    getPricePolicyForBookResponse.getClass().getDeclaredField("minimumOrderAmount"),
+                    getPricePolicyForBookResponse,
+                    i);
+            ReflectionUtils.setField(
+                    getPricePolicyForBookResponse.getClass().getDeclaredField("discountPrice"),
+                    getPricePolicyForBookResponse,
+                    i);
+            ReflectionUtils.setField(
+                    getPricePolicyForBookResponse.getClass().getDeclaredField("expirationPeriodStart"),
+                    getPricePolicyForBookResponse,
+                    LocalDateTime.of(2024,1,i,12,0));
+            ReflectionUtils.setField(
+                    getPricePolicyForBookResponse.getClass().getDeclaredField("expirationPeriodEnd"),
+                    getPricePolicyForBookResponse,
+                    LocalDateTime.of(2024,1,i,12,0));
+            ReflectionUtils.setField(
+                    getPricePolicyForBookResponse.getClass().getDeclaredField("name"),
+                    getPricePolicyForBookResponse,
+                    Integer.toString(i));
+            ReflectionUtils.setField(
+                    getPricePolicyForBookResponse.getClass().getDeclaredField("description"),
+                    getPricePolicyForBookResponse,
+                    Integer.toString(i));
+            ReflectionUtils.setField(
+                    getPricePolicyForBookResponse.getClass().getDeclaredField("bookName"),
+                    getPricePolicyForBookResponse,
+                    Integer.toString(i));
+            ReflectionUtils.setField(
+                    getPricePolicyForBookResponse.getClass().getDeclaredField("policyStatusName"),
+                    getPricePolicyForBookResponse,
+                    Integer.toString(i));
+
+            list.add(getPricePolicyForBookResponse);
+        }
+
+        Mockito.when(policyService.getPricePoliciesForBook(1)).thenReturn(list);
+        String url = "http://localhost:"+port +"/task/policies/price/book";
+        mockMvc.perform(get(url).param("page","1"))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[2].id").value(3))
+                .andExpect(jsonPath("$[3].id").value(4))
+                .andExpect(jsonPath("$[4].id").value(5))
+                .andExpect(jsonPath("$[5].id").value(6))
+                .andExpect(jsonPath("$[6].id").value(7))
+                .andExpect(jsonPath("$[7].id").value(8))
+                .andExpect(jsonPath("$[8].id").value(9))
+                .andExpect(jsonPath("$[9].id").value(10));
+    }
+
+    @Test
+    @DisplayName("관리자가 - 등록되어있는 - 정액정책 for Category들을 - Pagenation 해서 받아오기")
+    void getPricePoliciesForCategoryTest() throws Exception {
+
+        List<GetPricePolicyForCategoryResponse> list = new ArrayList<>();
+
+        for(int i = 1; i <= 10; i++){
+            GetPricePolicyForCategoryResponse getPricePolicyForCategoryResponse = new GetPricePolicyForCategoryResponse();
+            for(Field field : getPricePolicyForCategoryResponse.getClass().getDeclaredFields()){
+                field.setAccessible(true);
+            }
+
+            ReflectionUtils.setField(
+                    getPricePolicyForCategoryResponse.getClass().getDeclaredField("id"),
+                    getPricePolicyForCategoryResponse,
+                    (long)i);
+            ReflectionUtils.setField(
+                    getPricePolicyForCategoryResponse.getClass().getDeclaredField("minimumOrderAmount"),
+                    getPricePolicyForCategoryResponse,
+                    i);
+            ReflectionUtils.setField(
+                    getPricePolicyForCategoryResponse.getClass().getDeclaredField("discountPrice"),
+                    getPricePolicyForCategoryResponse,
+                    i);
+            ReflectionUtils.setField(
+                    getPricePolicyForCategoryResponse.getClass().getDeclaredField("expirationPeriodStart"),
+                    getPricePolicyForCategoryResponse,
+                    LocalDateTime.of(2024,1,i,12,0));
+            ReflectionUtils.setField(
+                    getPricePolicyForCategoryResponse.getClass().getDeclaredField("expirationPeriodEnd"),
+                    getPricePolicyForCategoryResponse,
+                    LocalDateTime.of(2024,1,i,12,0));
+            ReflectionUtils.setField(
+                    getPricePolicyForCategoryResponse.getClass().getDeclaredField("name"),
+                    getPricePolicyForCategoryResponse,
+                    Integer.toString(i));
+            ReflectionUtils.setField(
+                    getPricePolicyForCategoryResponse.getClass().getDeclaredField("description"),
+                    getPricePolicyForCategoryResponse,
+                    Integer.toString(i));
+            ReflectionUtils.setField(
+                    getPricePolicyForCategoryResponse.getClass().getDeclaredField("categoryName"),
+                    getPricePolicyForCategoryResponse,
+                    Integer.toString(i));
+            ReflectionUtils.setField(
+                    getPricePolicyForCategoryResponse.getClass().getDeclaredField("policyStatusName"),
+                    getPricePolicyForCategoryResponse,
+                    Integer.toString(i));
+
+            list.add(getPricePolicyForCategoryResponse);
+        }
+
+        Mockito.when(policyService.getPricePoliciesForCategory(1)).thenReturn(list);
+        String url = "http://localhost:"+port +"/task/policies/price/category";
+        mockMvc.perform(get(url).param("page","1"))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[2].id").value(3))
+                .andExpect(jsonPath("$[3].id").value(4))
+                .andExpect(jsonPath("$[4].id").value(5))
+                .andExpect(jsonPath("$[5].id").value(6))
+                .andExpect(jsonPath("$[6].id").value(7))
+                .andExpect(jsonPath("$[7].id").value(8))
+                .andExpect(jsonPath("$[8].id").value(9))
+                .andExpect(jsonPath("$[9].id").value(10));
+    }
 
 }

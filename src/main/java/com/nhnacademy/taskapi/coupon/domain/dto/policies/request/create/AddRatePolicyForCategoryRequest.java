@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.coupon.domain.dto.policies.request;
+package com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -8,12 +8,14 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
-public class AddPricePolicyForCategoryRequest {
+public class AddRatePolicyForCategoryRequest {
 
+    @NotNull
+    private Integer discountRate;
     @NotNull
     private Integer minimumOrderAmount;
     @NotNull
-    private Integer discountPrice;
+    private Integer maximumDiscountPrice;
     @NotNull
     private LocalDateTime expirationPeriodStart;
     @NotNull

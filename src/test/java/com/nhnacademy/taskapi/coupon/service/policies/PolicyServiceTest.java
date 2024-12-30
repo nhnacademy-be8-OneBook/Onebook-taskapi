@@ -6,14 +6,18 @@ import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.category.domain.Category;
 import com.nhnacademy.taskapi.category.exception.CategoryNotFoundException;
 import com.nhnacademy.taskapi.category.repository.CategoryRepository;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddPricePolicyForBookRequest;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddPricePolicyForCategoryRequest;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddRatePolicyForBookRequest;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddRatePolicyForCategoryRequest;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddPricePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddPricePolicyForCategoryResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddRatePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.AddRatePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPricePolicyForBookRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPricePolicyForCategoryRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForBookRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForCategoryRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddPricePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddPricePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddRatePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddRatePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetPricePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetPricePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetRatePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetRatePolicyForCategoryResponse;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForBook;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForCategory;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForBook;
@@ -35,11 +39,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -849,5 +858,295 @@ class PolicyServiceTest {
         Assertions.assertThrows(PolicyStatusNotFoundException.class, ()->{
             policyService.addPricePolicyForCategory(addPricePolicyForCategoryRequest);
         });
+    }
+
+    @Test
+    @DisplayName("정률정책 for Book 전체조회 - pageable 사용")
+    void getRatePoliciesForBookTest() throws NoSuchFieldException {
+
+        List<RatePolicyForBook> list = new ArrayList<>();
+
+        for(int i = 1 ; i <=10;i++){
+
+            RatePolicyForBook ratePolicyForBook = new RatePolicyForBook();
+            for(Field field : ratePolicyForBook.getClass().getDeclaredFields()){
+                field.setAccessible(true);
+                ReflectionUtils.setField(
+                        ratePolicyForBook.getClass().getDeclaredField("ratePolicyForBookId"),
+                        ratePolicyForBook,
+                        (long)i);
+                ReflectionUtils.setField(
+                        ratePolicyForBook.getClass().getDeclaredField("discountRate"),
+                        ratePolicyForBook,
+                         i);
+                ReflectionUtils.setField(
+                        ratePolicyForBook.getClass().getDeclaredField("minimumOrderAmount"),
+                        ratePolicyForBook,
+                        i);
+                ReflectionUtils.setField(
+                        ratePolicyForBook.getClass().getDeclaredField("maximumDiscountRate"),
+                        ratePolicyForBook,
+                        i);
+                ReflectionUtils.setField(
+                        ratePolicyForBook.getClass().getDeclaredField("expirationPeriodStart"),
+                        ratePolicyForBook,
+                        LocalDateTime.of(2024,1,i,12,10));
+                ReflectionUtils.setField(
+                        ratePolicyForBook.getClass().getDeclaredField("expirationPeriodEnd"),
+                        ratePolicyForBook,
+                        LocalDateTime.of(2024,1,i,12,10));
+                ReflectionUtils.setField(
+                        ratePolicyForBook.getClass().getDeclaredField("name"),
+                        ratePolicyForBook,
+                        Integer.toString(i));
+                ReflectionUtils.setField(
+                        ratePolicyForBook.getClass().getDeclaredField("description"),
+                        ratePolicyForBook,
+                        Integer.toString(i));
+                ReflectionUtils.setField(
+                        ratePolicyForBook.getClass().getDeclaredField("book"),
+                        ratePolicyForBook,
+                        book);
+                ReflectionUtils.setField(
+                        ratePolicyForBook.getClass().getDeclaredField("policyStatus"),
+                        ratePolicyForBook,
+                        policyStatus);
+
+                list.add(ratePolicyForBook);
+            }
+
+        }
+
+        Page<RatePolicyForBook> page = new PageImpl<>(list);
+        Mockito.when(ratePoliciesForBookRepository.findAll(Mockito.any(Pageable.class)))
+                .thenReturn(page);
+        List<GetRatePolicyForBookResponse> expected = new ArrayList<>();
+        for(RatePolicyForBook ratePolicyForBook : page){
+            expected.add(GetRatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook));
+        }
+
+        List<GetRatePolicyForBookResponse> actual  = policyService.getRatePoliciesForBook(1);
+
+        Mockito.verify(ratePoliciesForBookRepository,
+                Mockito.times(1))
+                .findAll(Mockito.any(Pageable.class));
+
+        Assertions.assertEquals(expected,actual);
+
+    }
+
+    @Test
+    @DisplayName("정률정책 for Category 전체조회 - pageable 사용")
+    void getRatePoliciesForCategoryTest() throws NoSuchFieldException {
+
+        List<RatePolicyForCategory> list = new ArrayList<>();
+
+        for(int i = 1 ; i <=10;i++){
+
+           RatePolicyForCategory ratePolicyForCategory = new RatePolicyForCategory();
+            for(Field field :ratePolicyForCategory.getClass().getDeclaredFields()){
+                field.setAccessible(true);
+                ReflectionUtils.setField(
+                       ratePolicyForCategory.getClass().getDeclaredField("ratePolicyForCategoryId"),
+                       ratePolicyForCategory,
+                        (long)i);
+                ReflectionUtils.setField(
+                       ratePolicyForCategory.getClass().getDeclaredField("discountRate"),
+                       ratePolicyForCategory,
+                        i);
+                ReflectionUtils.setField(
+                       ratePolicyForCategory.getClass().getDeclaredField("minimumOrderAmount"),
+                       ratePolicyForCategory,
+                        i);
+                ReflectionUtils.setField(
+                       ratePolicyForCategory.getClass().getDeclaredField("maximumDiscountRate"),
+                       ratePolicyForCategory,
+                        i);
+                ReflectionUtils.setField(
+                       ratePolicyForCategory.getClass().getDeclaredField("expirationPeriodStart"),
+                       ratePolicyForCategory,
+                        LocalDateTime.of(2024,1,i,12,10));
+                ReflectionUtils.setField(
+                       ratePolicyForCategory.getClass().getDeclaredField("expirationPeriodEnd"),
+                       ratePolicyForCategory,
+                        LocalDateTime.of(2024,1,i,12,10));
+                ReflectionUtils.setField(
+                       ratePolicyForCategory.getClass().getDeclaredField("name"),
+                       ratePolicyForCategory,
+                        Integer.toString(i));
+                ReflectionUtils.setField(
+                       ratePolicyForCategory.getClass().getDeclaredField("description"),
+                       ratePolicyForCategory,
+                        Integer.toString(i));
+                ReflectionUtils.setField(
+                       ratePolicyForCategory.getClass().getDeclaredField("category"),
+                       ratePolicyForCategory,
+                        category);
+                ReflectionUtils.setField(
+                       ratePolicyForCategory.getClass().getDeclaredField("policyStatus"),
+                       ratePolicyForCategory,
+                        policyStatus);
+
+                list.add(ratePolicyForCategory);
+            }
+
+        }
+
+        Page<RatePolicyForCategory> page = new PageImpl<>(list);
+        Mockito.when(ratePoliciesForCategoryRepository.findAll(Mockito.any(Pageable.class)))
+                .thenReturn(page);
+        List<GetRatePolicyForCategoryResponse> expected = new ArrayList<>();
+        for(RatePolicyForCategory ratePolicyForCategory : page){
+            expected.add(GetRatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory));
+        }
+
+        List<GetRatePolicyForCategoryResponse> actual  = policyService.getRatePoliciesForCategory(1);
+
+        Mockito.verify(ratePoliciesForCategoryRepository,
+                        Mockito.times(1))
+                .findAll(Mockito.any(Pageable.class));
+
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    @DisplayName("정액정책 for Book 전체조회 - pageable 사용")
+    void getPricePoliciesForBookTest() throws NoSuchFieldException {
+
+        List<PricePolicyForBook> list = new ArrayList<>();
+
+        for(int i = 1 ; i <=10;i++){
+
+            PricePolicyForBook pricePolicyForBook = new PricePolicyForBook();
+            for(Field field : pricePolicyForBook.getClass().getDeclaredFields()){
+                field.setAccessible(true);
+                ReflectionUtils.setField(
+                        pricePolicyForBook.getClass().getDeclaredField("pricePolicyForBookId"),
+                        pricePolicyForBook,
+                        (long)i);
+                ReflectionUtils.setField(
+                        pricePolicyForBook.getClass().getDeclaredField("discountPrice"),
+                        pricePolicyForBook,
+                        i);
+                ReflectionUtils.setField(
+                        pricePolicyForBook.getClass().getDeclaredField("minimumOrderAmount"),
+                        pricePolicyForBook,
+                        i);
+                ReflectionUtils.setField(
+                        pricePolicyForBook.getClass().getDeclaredField("expirationPeriodStart"),
+                        pricePolicyForBook,
+                        LocalDateTime.of(2024,1,i,12,10));
+                ReflectionUtils.setField(
+                        pricePolicyForBook.getClass().getDeclaredField("expirationPeriodEnd"),
+                        pricePolicyForBook,
+                        LocalDateTime.of(2024,1,i,12,10));
+                ReflectionUtils.setField(
+                        pricePolicyForBook.getClass().getDeclaredField("name"),
+                        pricePolicyForBook,
+                        Integer.toString(i));
+                ReflectionUtils.setField(
+                        pricePolicyForBook.getClass().getDeclaredField("description"),
+                        pricePolicyForBook,
+                        Integer.toString(i));
+                ReflectionUtils.setField(
+                        pricePolicyForBook.getClass().getDeclaredField("book"),
+                        pricePolicyForBook,
+                        book);
+                ReflectionUtils.setField(
+                        pricePolicyForBook.getClass().getDeclaredField("policyStatus"),
+                        pricePolicyForBook,
+                        policyStatus);
+
+                list.add(pricePolicyForBook);
+            }
+
+        }
+
+        Page<PricePolicyForBook> page = new PageImpl<>(list);
+        Mockito.when(pricePoliciesForBookRepository.findAll(Mockito.any(Pageable.class)))
+                .thenReturn(page);
+        List<GetPricePolicyForBookResponse> expected = new ArrayList<>();
+        for(PricePolicyForBook pricePolicyForBook : page){
+            expected.add(GetPricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook));
+        }
+
+        List<GetPricePolicyForBookResponse> actual  = policyService.getPricePoliciesForBook(1);
+
+        Mockito.verify(pricePoliciesForBookRepository,
+                        Mockito.times(1))
+                .findAll(Mockito.any(Pageable.class));
+
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    @DisplayName("정액정책 for Category 전체조회 - pageable 사용")
+    void getPricePoliciesForCategoryTest() throws NoSuchFieldException {
+
+        List<PricePolicyForCategory> list = new ArrayList<>();
+
+        for(int i = 1 ; i <=10;i++){
+
+            PricePolicyForCategory pricePolicyForCategory = new PricePolicyForCategory();
+            for(Field field : pricePolicyForCategory.getClass().getDeclaredFields()){
+                field.setAccessible(true);
+                ReflectionUtils.setField(
+                        pricePolicyForCategory.getClass().getDeclaredField("pricePolicyForCategoryId"),
+                        pricePolicyForCategory,
+                        (long)i);
+                ReflectionUtils.setField(
+                        pricePolicyForCategory.getClass().getDeclaredField("discountPrice"),
+                        pricePolicyForCategory,
+                        i);
+                ReflectionUtils.setField(
+                        pricePolicyForCategory.getClass().getDeclaredField("minimumOrderAmount"),
+                        pricePolicyForCategory,
+                        i);
+                ReflectionUtils.setField(
+                        pricePolicyForCategory.getClass().getDeclaredField("expirationPeriodStart"),
+                        pricePolicyForCategory,
+                        LocalDateTime.of(2024,1,i,12,10));
+                ReflectionUtils.setField(
+                        pricePolicyForCategory.getClass().getDeclaredField("expirationPeriodEnd"),
+                        pricePolicyForCategory,
+                        LocalDateTime.of(2024,1,i,12,10));
+                ReflectionUtils.setField(
+                        pricePolicyForCategory.getClass().getDeclaredField("name"),
+                        pricePolicyForCategory,
+                        Integer.toString(i));
+                ReflectionUtils.setField(
+                        pricePolicyForCategory.getClass().getDeclaredField("description"),
+                        pricePolicyForCategory,
+                        Integer.toString(i));
+                ReflectionUtils.setField(
+                        pricePolicyForCategory.getClass().getDeclaredField("category"),
+                        pricePolicyForCategory,
+                        category);
+                ReflectionUtils.setField(
+                        pricePolicyForCategory.getClass().getDeclaredField("policyStatus"),
+                        pricePolicyForCategory,
+                        policyStatus);
+
+                list.add(pricePolicyForCategory);
+            }
+
+        }
+
+        Page<PricePolicyForCategory> page = new PageImpl<>(list);
+        Mockito.when(pricePoliciesForCategoryRepository.findAll(Mockito.any(Pageable.class)))
+                .thenReturn(page);
+        List<GetPricePolicyForCategoryResponse> expected = new ArrayList<>();
+        for(PricePolicyForCategory pricePolicyForCategory : page){
+            expected.add(GetPricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory));
+        }
+
+        List<GetPricePolicyForCategoryResponse> actual  = policyService.getPricePoliciesForCategory(1);
+
+        Mockito.verify(pricePoliciesForCategoryRepository,
+                        Mockito.times(1))
+                .findAll(Mockito.any(Pageable.class));
+
+        Assertions.assertEquals(expected,actual);
+
     }
 }

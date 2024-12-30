@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.coupon.domain.dto.policies.request;
+package com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

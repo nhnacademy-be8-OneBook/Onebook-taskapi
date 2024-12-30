@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.coupon.domain.dto.policies.response;
+package com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create;
 
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForBook;
 import jakarta.validation.constraints.NotNull;
