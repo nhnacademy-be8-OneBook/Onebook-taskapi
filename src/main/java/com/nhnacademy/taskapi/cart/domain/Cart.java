@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.cart.domain;
 
 import com.nhnacademy.taskapi.member.domain.Member;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,12 +12,12 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "carts")
 @Entity
 public class Cart {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="cart_id")
     private String id;
 
@@ -46,4 +47,3 @@ public class Cart {
     }
 
 }
-//

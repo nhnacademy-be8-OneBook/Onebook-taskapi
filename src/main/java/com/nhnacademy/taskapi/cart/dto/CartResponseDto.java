@@ -14,6 +14,7 @@ public record CartResponseDto(
 )
 
 {
+    // Cart -> CartResponseDto
     public static CartResponseDto from(Cart cart) {
         List<CartItemResponseDto> cartItemResponseDtos = new ArrayList<>();
 
@@ -31,12 +32,13 @@ public record CartResponseDto(
         return new CartResponseDto(cart.getId(), null, cartItemResponseDtos);
     }
 
+    // List<CartItem> -> List<CartItemResponseDto>
     private static List<CartItemResponseDto> convert(List<CartItem> cartItems) {
         if(Objects.isNull(cartItems)) {
             return null;
         }
 
-        List<CartItemResponseDto> cartItemResponseDtoList = null;
+        List<CartItemResponseDto> cartItemResponseDtoList = new ArrayList<>();
         for(CartItem ci : cartItems) {
             if(Objects.nonNull(ci)) {
                 CartItemResponseDto cartItemResponseDto = new CartItemResponseDto(ci.getBook().getBookId(), ci.getQuantity());
@@ -46,4 +48,3 @@ public record CartResponseDto(
         return cartItemResponseDtoList;
     }
 }
-//

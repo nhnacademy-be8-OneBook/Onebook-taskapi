@@ -48,7 +48,7 @@ public class MemberServiceTest {
     @InjectMocks
     private MemberServiceImpl memberService;
 
-    // TODO 쿠폰, 포인트 완성 시 회원가입 수정 필요.
+    // TODO 쿠폰, 포인트 완성 시 회원가입 테스트 코드 수정 필요.
 
     @Test
     @DisplayName("Get All Members Successfully")

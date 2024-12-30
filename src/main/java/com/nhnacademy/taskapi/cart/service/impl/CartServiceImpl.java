@@ -39,9 +39,17 @@ public class CartServiceImpl implements CartService {
         return CartResponseDto.from(cart);
     }
 
+    // 장바구니 조회 by memberId
+    @Transactional(readOnly = true)
+    @Override
+    public CartResponseDto getCartByMemberId(Long memberId) {
+        Cart cart = cartRepository.findCartByMemberId(memberId).orElseThrow(()-> new CartNotFoundException("Cart Not Found by " + memberId));
+        return CartResponseDto.from(cart);
+    }
+
     // 비회원 장바구니 저장.
     @Override
-    public CartResponseDto registerCart(String cartId, CartRequestDto cartRequestDto) {
+    public CartResponseDto registerNonMemberCart(String cartId, CartRequestDto cartRequestDto) {
         // cart 생성/저장
         Cart cart = cartRepository.save(new Cart(cartId));
 
@@ -58,7 +66,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartResponseDto registerMemberCart(String cartId, Long memberId, CartRequestDto cartRequestDto) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(()-> new MemberNotFoundException("Member Not Found by "+memberId));
+                .orElseThrow(()-> new MemberNotFoundException("Member Not Found by " + memberId));
 
         Cart cart = cartRepository.save(new Cart(cartId, member));
 
@@ -104,9 +112,7 @@ public class CartServiceImpl implements CartService {
                 }
             }
         }
-
         return cartItems;
     }
 
 }
-//

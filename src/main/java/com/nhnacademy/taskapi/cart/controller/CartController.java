@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.cart.controller;
 
 import com.nhnacademy.taskapi.cart.dto.CartRequestDto;
 import com.nhnacademy.taskapi.cart.dto.CartResponseDto;
+import com.nhnacademy.taskapi.cart.exception.CartIllegalArgumentException;
 import com.nhnacademy.taskapi.cart.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +17,22 @@ public class CartController {
 
     private final CartService cartService;
 
+    // 장바구니 조회 by memberId
+    @GetMapping
+    public ResponseEntity<CartResponseDto> getCartForMember(
+            @RequestHeader(value="X-MEMBER-ID", required = false) Long memberId) {
+        if(Objects.isNull(memberId)) {
+            throw new CartIllegalArgumentException("memberId is null");
+        }
+        CartResponseDto result = cartService.getCartByMemberId(memberId);
+        return ResponseEntity.ok().body(result);
+    }
+
     // 장바구니 단일 조회.
     @GetMapping("/{id}")
-    public ResponseEntity<CartResponseDto> getCart(@PathVariable String id){
-
+    public ResponseEntity<CartResponseDto> getCart(@PathVariable String id) {
         CartResponseDto result = cartService.getCartById(id);
         return ResponseEntity.ok().body(result);
-
     }
 
     // 장바구니 저장.
@@ -30,12 +40,12 @@ public class CartController {
     public ResponseEntity<CartResponseDto> registerCart(
             @PathVariable String id,
             @RequestHeader(value = "X-MEMBER-ID", required = false) Long memberId, // 없으면 null 로 받음.
-            @RequestBody CartRequestDto cartRequestDto){
+            @RequestBody CartRequestDto cartRequestDto) {
 
         CartResponseDto result = null;
-        if(Objects.isNull(memberId)) {
+        if(memberId == null) {
             // 비회원
-            result = cartService.registerCart(id, cartRequestDto);
+            result = cartService.registerNonMemberCart(id, cartRequestDto);
         }else {
             // 회원
             result = cartService.registerMemberCart(id, memberId, cartRequestDto);
@@ -61,4 +71,3 @@ public class CartController {
     }
 
 }
-//
