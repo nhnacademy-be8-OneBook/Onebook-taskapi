@@ -4,4 +4,3 @@ public record CartItemResponseDto(
         Long bookId,
         int quantity
 ) { }
-//
