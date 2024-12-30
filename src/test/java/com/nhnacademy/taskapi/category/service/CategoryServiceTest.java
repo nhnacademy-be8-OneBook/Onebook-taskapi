@@ -5,6 +5,7 @@ import com.nhnacademy.taskapi.category.domain.Category;
 import com.nhnacademy.taskapi.category.dto.CategoryCreateDTO;
 import com.nhnacademy.taskapi.category.dto.CategoryUpdateDTO;
 import com.nhnacademy.taskapi.category.exception.CategoryNameDuplicateException;
+import com.nhnacademy.taskapi.category.exception.CategoryNotFoundException;
 import com.nhnacademy.taskapi.category.exception.InvalidCategoryNameException;
 import com.nhnacademy.taskapi.category.repository.CategoryRepository;
 import com.nhnacademy.taskapi.category.service.Impl.CategoryServiceImpl;
@@ -208,6 +209,15 @@ public class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("updateCategory_Fail_NotFound")
+    void updateCategory_Fail_NotFound() {
+
+        when(categoryRepository.findById(any(Integer.class))).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(CategoryNotFoundException.class, () -> categoryService.updateCategory(new CategoryUpdateDTO()));
+    }
+
+    @Test
     @DisplayName("updateCategory_Fail_Duplicate")
     void updateCategory_Fail_Duplicate() {
 
@@ -274,6 +284,14 @@ public class CategoryServiceTest {
 
         categoryService.deleteCategory(1);
         verify(categoryRepository).delete(any(Category.class));
+    }
+
+    @Test
+    @DisplayName("deleteCategory_Fail_NotFound")
+    void deleteCategory_Fail_NotFound() {
+        when(categoryRepository.findById(any(Integer.class))).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(CategoryNotFoundException.class, () -> categoryService.deleteCategory(1));
     }
 
     @Test
