@@ -8,6 +8,7 @@ import com.nhnacademy.taskapi.image.domain.Image;
 import com.nhnacademy.taskapi.image.dto.ImageSaveDTO;
 import com.nhnacademy.taskapi.image.exception.IllegalImageException;
 import com.nhnacademy.taskapi.image.exception.IllegalImageNameException;
+import com.nhnacademy.taskapi.image.exception.ImageNotFoundException;
 import com.nhnacademy.taskapi.image.repository.ImageRepository;
 import com.nhnacademy.taskapi.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -56,10 +57,9 @@ public class ImageServiceImpl implements ImageService {
         return imageRepository.save(image);
     }
 
-
     @Override
     public void deleteImage(long imageId) {
-        Image image = imageRepository.findById(imageId).get();
+        Image image = imageRepository.findById(imageId).orElseThrow(() -> new ImageNotFoundException("Image not found"));
         imageRepository.delete(image);
     }
 }
