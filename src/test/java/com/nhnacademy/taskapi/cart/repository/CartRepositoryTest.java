@@ -1,7 +1,6 @@
 package com.nhnacademy.taskapi.cart.repository;
 
 import com.nhnacademy.taskapi.book.domain.Book;
-import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.cart.domain.Cart;
 import com.nhnacademy.taskapi.cart.domain.CartItem;
 import com.nhnacademy.taskapi.grade.domain.Grade;
@@ -34,15 +33,15 @@ public class CartRepositoryTest {
     private MemberRepository memberRepository;
 
     @Autowired
-    private BookRepository bookRepository;
-
-    @Autowired
     private TestEntityManager entityManager;
     @Autowired
     private CartItemRepository cartItemRepository;
 
+    private Book book1;
+    private Book book2;
+
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Grade savedGrade = entityManager.persist(grade);
 
@@ -56,7 +55,7 @@ public class CartRepositoryTest {
         publisher.setName("joo");
         entityManager.persist(publisher);
 
-        Book book1 = new Book();
+        book1 = new Book();
         book1.setTitle("test");
         book1.setPrice(100);
         book1.setContent("test");
@@ -68,7 +67,7 @@ public class CartRepositoryTest {
         book1.setPublisher(publisher);
         entityManager.persist(book1);
 
-        Book book2 = new Book();
+        book2 = new Book();
         book2.setTitle("test2");
         book2.setPrice(100);
         book2.setContent("test2");
@@ -121,8 +120,7 @@ public class CartRepositoryTest {
         Cart savedNonMemberCart = cartRepository.save(nonMemberCart);
 
         // CartItem 생성.
-        Book book = bookRepository.findById(3L).get();
-        CartItem cartItem = new CartItem(savedNonMemberCart, book, 1);
+        CartItem cartItem = new CartItem(savedNonMemberCart, book1, 1);
 
         // cart에 CartItem set.
         savedNonMemberCart.setCartItems(Arrays.asList(cartItem));
@@ -130,7 +128,10 @@ public class CartRepositoryTest {
         Cart nonMemberCartTarget = cartRepository.findById(nonMemberCart.getId()).get();
         assertThat(savedNonMemberCart.getId()).isEqualTo(nonMemberCartTarget.getId()); // cart 확인
         assertThat(savedNonMemberCart.getCartItems().size()).isEqualTo(1); // cartItem 확인
-        assertThat(savedNonMemberCart.getCartItems().get(0).getBook().getBookId()).isEqualTo(3L);
+
+
+
+        assertThat(savedNonMemberCart.getCartItems().get(0).getBook().getBookId()).isEqualTo(book1.getBookId());
         assertThat(savedNonMemberCart.getCartItems().get(0).getQuantity()).isEqualTo(1);
 
         /**
@@ -143,7 +144,6 @@ public class CartRepositoryTest {
         Cart savedMemberCart = cartRepository.save(memberCart);
 
         // CartItem 생성.
-        Book book2 = bookRepository.findById(4L).get();
         CartItem cartItem2 = new CartItem(savedNonMemberCart, book2, 2);
 
         // cart에 CartItem set.
@@ -154,7 +154,7 @@ public class CartRepositoryTest {
         assertThat(savedMemberCart.getMember().getName()).isEqualTo(member.getName()); // member 확인
         assertThat(savedMemberCart.getMember().getLoginId()).isEqualTo(member.getLoginId());
         assertThat(savedMemberCart.getCartItems().size()).isEqualTo(1); // cartItem 확인
-        assertThat(savedMemberCart.getCartItems().get(0).getBook().getBookId()).isEqualTo(4L);
+        assertThat(savedMemberCart.getCartItems().get(0).getBook().getBookId()).isEqualTo(book2.getBookId());
         assertThat(savedMemberCart.getCartItems().get(0).getQuantity()).isEqualTo(2);
     }
 
@@ -186,8 +186,7 @@ public class CartRepositoryTest {
         Cart savedNonMemberCart = cartRepository.save(nonMemberCart);
 
         // CartItem 생성.
-        Book book = bookRepository.findById(7L).get();
-        CartItem cartItem = new CartItem(savedNonMemberCart, book, 1);
+        CartItem cartItem = new CartItem(savedNonMemberCart, book1, 1);
 
         // cart에 CartItem set.
         savedNonMemberCart.setCartItems(Arrays.asList(cartItem));
@@ -206,7 +205,6 @@ public class CartRepositoryTest {
         Cart savedMemberCart = cartRepository.save(memberCart);
 
         // CartItem 생성.
-        Book book2 = bookRepository.findById(8L).get();
         CartItem cartItem2 = new CartItem(savedNonMemberCart, book2, 2);
 
         // cart에 CartItem set.
