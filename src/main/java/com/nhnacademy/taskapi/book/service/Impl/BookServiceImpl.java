@@ -163,20 +163,16 @@ public class BookServiceImpl implements BookService {
     public Page<Book> bestSellerBooks(Pageable pageable) {
         return bookRepository.findAllByOrderByAmount(pageable);
     }
-
     @Override
     public Page<Book> newBooks(Pageable pageable) {
         return bookRepository.findAllByOrderByPubdate(pageable);
     }
-
     //책 조회
     @Override
     public Book getBook(long bookId){
-        if(!bookRepository.existsById(bookId)){
-            throw new BookNotFoundException("Book not exist !");
+        if(!bookRepository.existsById(bookId)){throw new BookNotFoundException("Book not exist !");
         }
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("Book not found"));
         return book;
     }
-
 }

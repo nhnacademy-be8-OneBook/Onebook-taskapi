@@ -14,14 +14,14 @@ import java.time.LocalDate;
 @Setter
 public class BookAladinDTO {
 
-    String title;
-    String authorName;
-    LocalDate pubdate;
-    String description;
-    String isbn13;
-    int priceSales;
-    int priceStandard;
-    String categoryNames;
-    String publisherName;
-    long salesPoint;
+    private String title;
+    private String authorName;
+    private LocalDate pubdate;
+    private String description;
+    private String isbn13;
+    private int priceSales;
+    private int priceStandard;
+    private String categoryNames;
+    private String publisherName;
+    private long salesPoint;
 }
