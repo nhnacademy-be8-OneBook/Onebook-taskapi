@@ -1,15 +1,18 @@
 package com.nhnacademy.taskapi.coupon.domain.entity.policies;
 
 import com.nhnacademy.taskapi.book.domain.Book;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddRatePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.PolicyStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "rate_policies_for_book")
 @Getter
+@NoArgsConstructor
 public class RatePolicyForBook {
 
     @Id
@@ -42,4 +45,32 @@ public class RatePolicyForBook {
     @ManyToOne
     @JoinColumn(name = "policy_status_id", nullable = false)
     private PolicyStatus policyStatus;
+
+    public RatePolicyForBook(Integer discountRate, Integer minimumOrderAmount, Integer maximumDiscountRate,
+                             LocalDateTime expirationPeriodStart, LocalDateTime expirationPeriodEnd, String name,
+                             String description, Book book, PolicyStatus policyStatus) {
+        this.discountRate = discountRate;
+        this.minimumOrderAmount = minimumOrderAmount;
+        this.maximumDiscountRate = maximumDiscountRate;
+        this.expirationPeriodStart = expirationPeriodStart;
+        this.expirationPeriodEnd = expirationPeriodEnd;
+        this.name = name;
+        this.description = description;
+        this.book = book;
+        this.policyStatus = policyStatus;
+    }
+
+    public static RatePolicyForBook createRatePolicyForBook(AddRatePolicyForBookRequest addRatePolicyForBookRequest,
+                                                            Book book, PolicyStatus policyStatus)
+    {
+        return new RatePolicyForBook(
+                addRatePolicyForBookRequest.getDiscountRate(),
+                addRatePolicyForBookRequest.getMinimumOrderAmount(),
+                addRatePolicyForBookRequest.getMaximumDiscountPrice(),
+                addRatePolicyForBookRequest.getExpirationPeriodStart(),
+                addRatePolicyForBookRequest.getExpirationPeriodEnd(),
+                addRatePolicyForBookRequest.getName(),
+                addRatePolicyForBookRequest.getDescription(),book,policyStatus
+        );
+    }
 }
