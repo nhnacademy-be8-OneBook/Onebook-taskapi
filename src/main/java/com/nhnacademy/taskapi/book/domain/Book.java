@@ -38,7 +38,6 @@ public class Book {
 
     @NotBlank
     @Length(max = 100)
-    @Column(nullable = false)
     private String content;
 
     @NotBlank

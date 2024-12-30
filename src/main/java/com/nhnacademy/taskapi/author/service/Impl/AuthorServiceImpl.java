@@ -7,9 +7,12 @@ import com.nhnacademy.taskapi.author.exception.InvalidAuthorNameException;
 import com.nhnacademy.taskapi.author.repository.AuthorRepository;
 import com.nhnacademy.taskapi.author.service.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -62,6 +65,39 @@ public class AuthorServiceImpl implements AuthorService {
     public Author getAuthor(int authorId){
 
         Author author = authorRepository.findById(authorId).orElseThrow(()-> new AuthorNotFoundException("Author Not Found !"));
+        return author;
+    }
+
+
+
+    @Override
+    public Page<Author> getAuthorList(Pageable pageable, String authorName){
+        if(Objects.isNull(authorName) || authorName.trim().isEmpty()){
+            throw new InvalidAuthorNameException("this AuthorName is Null Or Empty !");
+        }
+
+        Page<Author> authors = authorRepository.findAllByNameOrderByAuthorId(pageable, authorName);
+
+        if(Objects.isNull(authors)){
+            throw new AuthorNotFoundException("This Author Not Exist !");
+        }
+
+        return authors;
+    }
+
+    @Override
+    @Transactional
+    public Author addAuthorByAladin(String name){
+        if(Objects.isNull(name) || name.trim().isEmpty()){
+            throw new InvalidAuthorNameException("this AuthorName is Null Or Empty !");
+        }
+        Author author = authorRepository.findByName(name);
+
+        if(Objects.isNull(author)){
+            author = new Author();
+            author.setName(name);
+            authorRepository.save(author);
+        }
         return author;
     }
 }

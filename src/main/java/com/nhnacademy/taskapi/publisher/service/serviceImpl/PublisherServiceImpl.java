@@ -39,6 +39,21 @@ public class PublisherServiceImpl implements PublisherService {
         return publisherRepository.save(publisher);
     }
 
+    @Transactional
+    @Override
+    public Publisher addPublisherByAladin(String name){
+        if(Objects.isNull(name) || name.trim().isEmpty()){
+            throw new InvalidPublisherNameException("PublisherName is Null OR Empty !");
+        }
+        Publisher publisher = publisherRepository.findByName(name);
+        if(Objects.isNull(publisher)){
+            publisher = new Publisher();
+            publisher.setName(name);
+            return publisherRepository.save(publisher);
+        }
+        return publisher;
+    }
+
     @Override
     @Transactional
     public Publisher updatePublisher(PublisherUpdateDTO dto){
@@ -58,6 +73,16 @@ public class PublisherServiceImpl implements PublisherService {
     public void deletePublisher(long publisherId){
         Publisher publisher = publisherRepository.findById(publisherId).orElseThrow(() -> new PublisherNotFoundException("This Publisher Not Exist !"));
         publisherRepository.delete(publisher);
+    }
+
+    @Override
+    public Publisher getPublisher(String publisherName){
+        Publisher publisher = publisherRepository.findByName(publisherName);
+
+        if(Objects.isNull(publisher)){
+            throw new PublisherNotFoundException("This Publisher Not Exist !");
+        }
+        return publisher;
     }
 
 
