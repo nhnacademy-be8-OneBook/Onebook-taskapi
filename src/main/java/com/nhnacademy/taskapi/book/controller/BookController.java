@@ -37,8 +37,7 @@ public class BookController {
 
 
     @GetMapping("/bestsellers")
-    public ResponseEntity<Page<Book>> bestsellersBook(@RequestParam(defaultValue = "0") int page){
-        Pageable pageable = PageRequest.of(page, 50);
+    public ResponseEntity<Page<Book>> bestsellersBook(Pageable pageable){
         Page<Book> books = bookService.bestSellerBooks(pageable);
         return ResponseEntity.ok().body(books);
     }
