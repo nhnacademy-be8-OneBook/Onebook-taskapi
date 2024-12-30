@@ -80,7 +80,7 @@ public class AladinBookService {
     }
 
 
-
+    //알라딘 API 베스트셀러 50개 가져오기
     @Transactional
     public void saveBookFromAladin() {
         List<BookAladinDTO> dtoList = saveAladin();
