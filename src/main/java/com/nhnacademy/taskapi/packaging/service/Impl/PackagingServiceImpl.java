@@ -1,10 +1,12 @@
 package com.nhnacademy.taskapi.packaging.service.Impl;
 
 import com.nhnacademy.taskapi.packaging.dto.PackagingCreateDTO;
+import com.nhnacademy.taskapi.packaging.dto.PackagingResponseDTO;
 import com.nhnacademy.taskapi.packaging.entity.Packaging;
 import com.nhnacademy.taskapi.packaging.exception.PackagingAlreadyExistException;
 import com.nhnacademy.taskapi.packaging.exception.PackagingNotFoundException;
 import com.nhnacademy.taskapi.packaging.repository.PackagingRepository;
+import com.nhnacademy.taskapi.packaging.service.PackagingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +14,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class PackagingServiceImpl {
+public class PackagingServiceImpl implements PackagingService {
 
     private final PackagingRepository packagingRepository;
 
@@ -28,8 +30,9 @@ public class PackagingServiceImpl {
     }
 
     // read
-    public List<Packaging> getAllPackaging() {
-        return packagingRepository.findAll();
+    public List<PackagingResponseDTO> getAllPackaging() {
+        List<PackagingResponseDTO> list = packagingRepository.findAll().stream().map(PackagingResponseDTO::fromPackaging).toList();
+        return list;
     };
 
     public Packaging getPackagingById(int id) {
