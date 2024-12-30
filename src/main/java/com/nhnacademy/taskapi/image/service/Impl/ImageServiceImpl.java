@@ -13,6 +13,7 @@ import com.nhnacademy.taskapi.image.repository.ImageRepository;
 import com.nhnacademy.taskapi.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -20,13 +21,15 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ImageServiceImpl implements ImageService {
     private final NhnImageManagerAdapter nhnImageManagerAdapter;
     private final BookRepository bookRepository;
     private final ImageRepository imageRepository;
 
 
-
+    @Transactional
+    @Override
     public Image saveImage(ImageSaveDTO dto) {
         // 파일이 null이거나 비어있는지 확인
         if(dto.getImageBytes() == null || dto.getImageBytes() .length <= 0) {
@@ -57,6 +60,7 @@ public class ImageServiceImpl implements ImageService {
         return imageRepository.save(image);
     }
 
+    @Transactional
     @Override
     public void deleteImage(long imageId) {
         Image image = imageRepository.findById(imageId).orElseThrow(() -> new ImageNotFoundException("Image not found"));
