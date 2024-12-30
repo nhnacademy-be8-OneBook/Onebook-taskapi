@@ -4,7 +4,10 @@ package com.nhnacademy.taskapi.author.controller;
 import com.nhnacademy.taskapi.author.domain.Author;
 import com.nhnacademy.taskapi.author.dto.AuthorUpdateDTO;
 import com.nhnacademy.taskapi.author.service.AuthorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +24,7 @@ public class AuthorController {
     }
 
     @PutMapping
-    public ResponseEntity<Author> modifyAuthor(@RequestBody AuthorUpdateDTO dto){
+    public ResponseEntity<Author> modifyAuthor(@RequestBody @Valid AuthorUpdateDTO dto){
         Author author = authorService.updateAuthor(dto);
         return ResponseEntity.ok().body(author);
     }
@@ -30,6 +33,19 @@ public class AuthorController {
     public ResponseEntity<Void> deleteAuthor(@PathVariable int authorId){
         authorService.deleteAuthor(authorId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{authorId}")
+    public ResponseEntity<Author> getAuthor(@PathVariable int authorId){
+        Author author = authorService.getAuthor(authorId);
+        return ResponseEntity.ok().body(author);
+    }
+
+    @GetMapping("/authorList")
+    public ResponseEntity<Page<Author>> getAuthorList(Pageable pageable,
+                                                      @RequestParam String name){
+        Page<Author> authors = authorService.getAuthorList(pageable, name);
+        return ResponseEntity.ok().body(authors);
     }
 
 }

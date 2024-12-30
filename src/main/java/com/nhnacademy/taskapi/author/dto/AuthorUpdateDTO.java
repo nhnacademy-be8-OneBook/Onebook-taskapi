@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,4 +21,7 @@ public class AuthorUpdateDTO {
     @NotBlank(message = "authorName은 필수입니다 !")
     @Length(max = 20, message = "authorName은 최대 20자까지 가능합니다.")
     private String authorName;
+
+
+
 }
