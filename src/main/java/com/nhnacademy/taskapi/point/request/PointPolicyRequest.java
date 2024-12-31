@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 @Builder
 public class PointPolicyRequest {
     private String pointPolicyName;
-    private int pointPolicyRate;
-    private int pointPolicyConditionAmount;
-    private int pointPolicyApplyAmount;
+    private Integer pointPolicyRate;
+    private Integer pointPolicyConditionAmount;
+    private Integer pointPolicyApplyAmount;
     private String pointPolicyCondition;
     private boolean pointPolicyApplyType;
 

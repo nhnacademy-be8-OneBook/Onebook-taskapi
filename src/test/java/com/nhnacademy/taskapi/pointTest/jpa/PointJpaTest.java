@@ -101,7 +101,6 @@ class PointJpaTest {
                 .pointCurrent(1000)  // 포인트 값 설정
                 .member(member)      // member 연결
                 .build();
-
         point = Mockito.spy(point);
         doReturn(1L).when(point).getPointId();  // pointId를 1L로 설정
 

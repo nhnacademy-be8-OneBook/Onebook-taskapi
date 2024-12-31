@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "points")
 public class Point {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pointId;

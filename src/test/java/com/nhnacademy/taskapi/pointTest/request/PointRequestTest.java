@@ -88,9 +88,9 @@ class PointRequestTest {
         // Given: 일부 필드를 null로 설정하여 PointPolicyRequest 객체를 생성합니다.
         PointPolicyRequest request = PointPolicyRequest.builder()
                 .pointPolicyName("Default Policy")
-                .pointPolicyRate(1)
-                .pointPolicyConditionAmount(1)
-                .pointPolicyApplyAmount(1)
+                .pointPolicyRate(null)  // null로 설정
+                .pointPolicyConditionAmount(null)  // null로 설정
+                .pointPolicyApplyAmount(null)  // null로 설정
                 .pointPolicyCondition(null) // null로 설정
                 .pointPolicyApplyType(true) // 기본값을 설정
                 .build();
