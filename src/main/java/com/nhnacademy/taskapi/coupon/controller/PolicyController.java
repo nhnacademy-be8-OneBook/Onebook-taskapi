@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.coupon.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPricePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPricePolicyForCategoryRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForBookRequest;
@@ -31,9 +32,7 @@ public class PolicyController {
 
         AddRatePolicyForBookResponse  addRatePolicyForBookResponse =
                 policyService.addRatePolicyForBook(addRatePolicyForBookRequest);
-
         return ResponseEntity.ok(addRatePolicyForBookResponse);
-
     }
 
     @PostMapping("/policies/rate/category")
@@ -41,9 +40,7 @@ public class PolicyController {
 
         AddRatePolicyForCategoryResponse addRatePolicyForCategoryResponse =
                 policyService.addRatePolicyForCategory(addRatePolicyForCategoryRequest);
-
         return ResponseEntity.ok(addRatePolicyForCategoryResponse);
-
     }
 
     @PostMapping("/policies/price/book")
@@ -52,7 +49,6 @@ public class PolicyController {
 
         AddPricePolicyForBookResponse addPricePolicyForBookResponse =
                 policyService.addPricePolicyForBook(addPricePolicyForBookRequest);
-
         return ResponseEntity.ok(addPricePolicyForBookResponse);
     }
 
@@ -62,7 +58,6 @@ public class PolicyController {
 
         AddPricePolicyForCategoryResponse addPricePolicyForCategoryResponse =
                 policyService.addPricePolicyForCategory(addPricePolicyForCategoryRequest);
-
         return ResponseEntity.ok(addPricePolicyForCategoryResponse);
     }
 
@@ -97,5 +92,34 @@ public class PolicyController {
         List<GetPricePolicyForCategoryResponse> responses = policyService.getPricePoliciesForCategory(pageNo);
         return ResponseEntity.ok(responses);
     }
+
+    @GetMapping("/policies/rate/book/{id}")
+    public ResponseEntity<GetRatePolicyForBookResponse> getRatePolicyForBook(@PathVariable Long id)
+    {
+        GetRatePolicyForBookResponse response = policyService.getRatePolicyForBook(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/policies/rate/category/{id}")
+    public ResponseEntity<GetRatePolicyForCategoryResponse> getRatePolicyForCategory(@PathVariable Long id)
+    {
+        GetRatePolicyForCategoryResponse response = policyService.getRatePolicyForCategory(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/policies/price/book/{id}")
+    public ResponseEntity<GetPricePolicyForBookResponse> getPricePolicyForBook(@PathVariable Long id)
+    {
+        GetPricePolicyForBookResponse response = policyService.getPricePolicyForBook(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/policies/price/category/{id}")
+    public ResponseEntity<GetPricePolicyForCategoryResponse> getPricePolicyForCategory(@PathVariable Long id)
+    {
+        GetPricePolicyForCategoryResponse response = policyService.getPricePolicyForCategory(id);
+        return ResponseEntity.ok(response);
+    }
+
 
 }

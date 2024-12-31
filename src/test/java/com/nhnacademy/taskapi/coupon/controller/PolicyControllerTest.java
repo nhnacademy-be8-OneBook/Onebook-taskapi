@@ -660,4 +660,135 @@ class PolicyControllerTest {
                 .andExpect(jsonPath("$[9].id").value(10));
     }
 
+    @Test
+    @DisplayName("관리자가 - 등록되어있는 - 정률정책 for Book 하나를 - ID로 받아오기")
+    void getRatePolicyForBookTest() throws Exception {
+
+        GetRatePolicyForBookResponse getRatePolicyForBookResponse =
+                new GetRatePolicyForBookResponse(
+                        1L,
+                        10,
+                        10000,
+                        2000,
+                        LocalDateTime.of(2024,1,1,1,1),
+                        LocalDateTime.of(2024,1,10,1,1),
+                        "테스트용 정률정책 for Book",
+                        "테스트용 정률정책 for Book",
+                        "테스트용 도서",
+                        "테스트용 정책상태"
+                );
+        Mockito.when(policyService.getRatePolicyForBook(1L)).thenReturn(getRatePolicyForBookResponse);
+
+        mockMvc.perform(get("/task/policies/rate/book/{id}", 1))
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.discountRate").value(10))
+                .andExpect(jsonPath("$.minimumOrderAmount").value(10000))
+                .andExpect(jsonPath("$.maximumDiscountPrice").value(2000))
+                .andExpect(jsonPath("$.expirationPeriodStart")
+                        .value("2024-01-01T01:01:00"))
+                .andExpect(jsonPath("$.expirationPeriodEnd")
+                        .value("2024-01-10T01:01:00"))
+                .andExpect(jsonPath("$.name").value("테스트용 정률정책 for Book"))
+                .andExpect(jsonPath("$.description").value("테스트용 정률정책 for Book"))
+                .andExpect(jsonPath("$.bookName").value("테스트용 도서"))
+                .andExpect(jsonPath("$.policyStatusName").value("테스트용 정책상태"));
+    }
+
+    @Test
+    @DisplayName("관리자가 - 등록되어있는 - 정률정책 for Category 하나를 - ID로 받아오기")
+    void getRatePolicyForCategoryTest() throws Exception {
+
+        GetRatePolicyForCategoryResponse getRatePolicyForCategoryResponse =
+                new GetRatePolicyForCategoryResponse(
+                        1L,
+                        10,
+                        10000,
+                        2000,
+                        LocalDateTime.of(2024,1,1,1,1),
+                        LocalDateTime.of(2024,1,10,1,1),
+                        "테스트용 정률정책 for Category",
+                        "테스트용 정률정책 for Category",
+                        "테스트용 카테고리",
+                        "테스트용 정책상태"
+                );
+        Mockito.when(policyService.getRatePolicyForCategory(1L)).thenReturn(getRatePolicyForCategoryResponse);
+
+        mockMvc.perform(get("/task/policies/rate/category/{id}", 1))
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.discountRate").value(10))
+                .andExpect(jsonPath("$.minimumOrderAmount").value(10000))
+                .andExpect(jsonPath("$.maximumDiscountPrice").value(2000))
+                .andExpect(jsonPath("$.expirationPeriodStart")
+                        .value("2024-01-01T01:01:00"))
+                .andExpect(jsonPath("$.expirationPeriodEnd")
+                        .value("2024-01-10T01:01:00"))
+                .andExpect(jsonPath("$.name").value("테스트용 정률정책 for Category"))
+                .andExpect(jsonPath("$.description").value("테스트용 정률정책 for Category"))
+                .andExpect(jsonPath("$.categoryName").value("테스트용 카테고리"))
+                .andExpect(jsonPath("$.policyStatusName").value("테스트용 정책상태"));
+    }
+
+    @Test
+    @DisplayName("관리자가 - 등록되어있는 - 정액정책 for Book 하나를 - ID로 받아오기")
+    void getPricePolicyForBookTest() throws Exception {
+
+        GetPricePolicyForBookResponse getPricePolicyForBookResponse =
+                new GetPricePolicyForBookResponse(
+                        1L,
+                        10000,
+                        1000,
+                        LocalDateTime.of(2024,1,1,1,1),
+                        LocalDateTime.of(2024,1,10,1,1),
+                        "테스트용 정액정책 for Book",
+                        "테스트용 정액정책 for Book",
+                        "테스트용 도서",
+                        "테스트용 정책상태"
+                );
+        Mockito.when(policyService.getPricePolicyForBook(1L)).thenReturn(getPricePolicyForBookResponse);
+
+        mockMvc.perform(get("/task/policies/price/book/{id}", 1))
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.minimumOrderAmount").value(10000))
+                .andExpect(jsonPath("$.discountPrice").value(1000))
+                .andExpect(jsonPath("$.expirationPeriodStart")
+                        .value("2024-01-01T01:01:00"))
+                .andExpect(jsonPath("$.expirationPeriodEnd")
+                        .value("2024-01-10T01:01:00"))
+                .andExpect(jsonPath("$.name").value("테스트용 정액정책 for Book"))
+                .andExpect(jsonPath("$.description").value("테스트용 정액정책 for Book"))
+                .andExpect(jsonPath("$.bookName").value("테스트용 도서"))
+                .andExpect(jsonPath("$.policyStatusName").value("테스트용 정책상태"));
+    }
+
+    @Test
+    @DisplayName("관리자가 - 등록되어있는 - 정액정책 for Category 하나를 - ID로 받아오기")
+    void getPricePolicyForCategoryTest() throws Exception {
+
+        GetPricePolicyForCategoryResponse getPricePolicyForCategoryResponse =
+                new GetPricePolicyForCategoryResponse(
+                        1L,
+                        10000,
+                        1000,
+                        LocalDateTime.of(2024,1,1,1,1),
+                        LocalDateTime.of(2024,1,10,1,1),
+                        "테스트용 정액정책 for Category",
+                        "테스트용 정액정책 for Category",
+                        "테스트용 도서",
+                        "테스트용 정책상태"
+                );
+        Mockito.when(policyService.getPricePolicyForCategory(1L)).thenReturn(getPricePolicyForCategoryResponse);
+
+        mockMvc.perform(get("/task/policies/price/category/{id}", 1))
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.minimumOrderAmount").value(10000))
+                .andExpect(jsonPath("$.discountPrice").value(1000))
+                .andExpect(jsonPath("$.expirationPeriodStart")
+                        .value("2024-01-01T01:01:00"))
+                .andExpect(jsonPath("$.expirationPeriodEnd")
+                        .value("2024-01-10T01:01:00"))
+                .andExpect(jsonPath("$.name").value("테스트용 정액정책 for Category"))
+                .andExpect(jsonPath("$.description").value("테스트용 정액정책 for Category"))
+                .andExpect(jsonPath("$.categoryName").value("테스트용 도서"))
+                .andExpect(jsonPath("$.policyStatusName").value("테스트용 정책상태"));
+    }
 }

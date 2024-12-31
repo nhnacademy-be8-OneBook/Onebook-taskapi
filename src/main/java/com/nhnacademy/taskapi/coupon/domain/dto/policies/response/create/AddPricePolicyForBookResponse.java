@@ -15,21 +15,13 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 public class AddPricePolicyForBookResponse {
 
-    @NotNull
     private Integer minimumOrderAmount;
-    @NotNull
     private Integer discountPrice;
-    @NotNull
     private LocalDateTime expirationPeriodStart;
-    @NotNull
     private LocalDateTime expirationPeriodEnd;
-    @NotNull
     private String name;
-    @NotNull
     private String description;
-    @NotNull
     private Long bookId;
-    @NotNull
     private Integer policyStatusId;
 
     public static AddPricePolicyForBookResponse changeEntityToDto(PricePolicyForBook pricePolicyForBook){

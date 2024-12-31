@@ -23,7 +23,7 @@ public class RatePolicyForCategory {
 
     private Integer minimumOrderAmount;
 
-    private Integer maximumDiscountRate;
+    private Integer maximumDiscountPrice;
 
     @Column(nullable = false)
     private LocalDateTime expirationPeriodStart;
@@ -45,12 +45,12 @@ public class RatePolicyForCategory {
     @JoinColumn(name = "policy_status_id", nullable = false)
     private PolicyStatus policyStatus;
 
-    public RatePolicyForCategory(Integer discountRate, Integer minimumOrderAmount, Integer maximumDiscountRate,
+    public RatePolicyForCategory(Integer discountRate, Integer minimumOrderAmount, Integer maximumDiscountPrice,
                                  LocalDateTime expirationPeriodStart, LocalDateTime expirationPeriodEnd, String name,
                                  String description, Category category, PolicyStatus policyStatus) {
         this.discountRate = discountRate;
         this.minimumOrderAmount = minimumOrderAmount;
-        this.maximumDiscountRate = maximumDiscountRate;
+        this.maximumDiscountPrice = maximumDiscountPrice;
         this.expirationPeriodStart = expirationPeriodStart;
         this.expirationPeriodEnd = expirationPeriodEnd;
         this.name = name;

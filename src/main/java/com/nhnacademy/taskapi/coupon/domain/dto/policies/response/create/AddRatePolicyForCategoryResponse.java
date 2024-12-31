@@ -29,7 +29,7 @@ public class AddRatePolicyForCategoryResponse {
         return new AddRatePolicyForCategoryResponse(
                 ratePolicyForCategory.getDiscountRate(),
                 ratePolicyForCategory.getMinimumOrderAmount(),
-                ratePolicyForCategory.getMaximumDiscountRate(),
+                ratePolicyForCategory.getMaximumDiscountPrice(),
                 ratePolicyForCategory.getExpirationPeriodStart(),
                 ratePolicyForCategory.getExpirationPeriodEnd(),
                 ratePolicyForCategory.getName(),

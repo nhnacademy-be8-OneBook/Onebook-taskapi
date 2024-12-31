@@ -99,4 +99,11 @@ class PricePoliciesForBookRepositoryTest {
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
         pricePoliciesForBookRepository.findAll(pageable);
     }
+
+    @Test
+    @DisplayName("PricePolicyBook - findById - 동작테스트")
+    void findByIdTest(){
+
+        pricePoliciesForBookRepository.findById(0L);
+    }
 }

@@ -108,4 +108,11 @@ class RatePoliciesForBookRepositoryTest {
         ratePoliciesForBookRepository.findAll(pageable);
     }
 
+    @Test
+    @DisplayName("ratePolicyBook - findById - 동작테스트")
+    void findByIdTest(){
+
+        ratePoliciesForBookRepository.findById(0L);
+    }
+
 }

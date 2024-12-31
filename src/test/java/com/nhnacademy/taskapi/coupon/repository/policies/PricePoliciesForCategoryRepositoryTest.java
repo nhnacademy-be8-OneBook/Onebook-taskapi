@@ -82,4 +82,11 @@ class PricePoliciesForCategoryRepositoryTest {
         pricePoliciesForCategoryRepository.findAll(pageable);
     }
 
+    @Test
+    @DisplayName("PricePolicyCategory - findById - 동작테스트")
+    void findByIdTest(){
+
+        pricePoliciesForCategoryRepository.findById(0L);
+    }
+
 }
