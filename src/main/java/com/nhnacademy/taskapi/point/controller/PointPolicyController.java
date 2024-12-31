@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/member/admin")
 public class PointPolicyController {
+
     private final PointPolicyService pointPolicyService;
 
     @Operation(summary = "포인트 정책 생성", description = "포인트 정책을 생성합니다.")

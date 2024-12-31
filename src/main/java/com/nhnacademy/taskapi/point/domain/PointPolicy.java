@@ -22,9 +22,9 @@ public class PointPolicy {
     @Column(nullable = false, length = 50)
     private String pointPolicyName;
 
-    private int pointPolicyConditionAmount;
-    private int pointPolicyRate;
-    private int pointPolicyApplyAmount;
+    private Integer pointPolicyConditionAmount;
+    private Integer pointPolicyRate;
+    private Integer pointPolicyApplyAmount;
 
     @NotNull(message = "포인트 적립 조건은 필수입니다.")
     @Column(nullable = false, length = 200)
@@ -45,8 +45,8 @@ public class PointPolicy {
     private boolean pointPolicyState;
 
     @Builder
-    public PointPolicy(Long pointPolicyId, String pointPolicyName, int pointPolicyRate, int pointPolicyConditionAmount,
-                       String pointPolicyCondition, int pointPolicyApplyAmount, LocalDateTime pointPolicyCreatedAt,
+    public PointPolicy(Long pointPolicyId, String pointPolicyName, Integer pointPolicyRate, Integer pointPolicyConditionAmount,
+                       String pointPolicyCondition, Integer pointPolicyApplyAmount, LocalDateTime pointPolicyCreatedAt,
                        LocalDateTime pointPolicyUpdatedAt, boolean pointPolicyApplyType, boolean pointPolicyState) {
         this.pointPolicyId = pointPolicyId;
         this.pointPolicyName = pointPolicyName;

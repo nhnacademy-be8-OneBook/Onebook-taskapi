@@ -27,13 +27,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class PointJpaTest {
     @Mock
     private JpaPointLogRepository pointLogRepository;
-
     @Mock
     private JpaPointPolicyRepository pointPolicyRepository;
-
     @Mock
     private JpaPointRepository pointRepository;
-
     @InjectMocks
     private PointJpaTest testClass;
 

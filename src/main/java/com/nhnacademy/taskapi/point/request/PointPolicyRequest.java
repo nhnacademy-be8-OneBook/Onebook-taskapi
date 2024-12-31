@@ -25,6 +25,8 @@ public class PointPolicyRequest {
                 .pointPolicyApplyAmount(this.pointPolicyApplyAmount != null ? this.pointPolicyApplyAmount : 0)  // null 체크 후 0으로 대체
                 .pointPolicyCondition(this.pointPolicyCondition)  // null은 그대로 null로 처리
                 .pointPolicyApplyType(this.pointPolicyApplyType)  // 기본값 처리
+                .pointPolicyState(true)  // 기본값 활성 상태
+                .pointPolicyCreatedAt(LocalDateTime.now()) // 생성일 현재 시간
                 .build();
     }
 
