@@ -6,7 +6,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -15,15 +16,15 @@ import java.time.LocalDate;
 public class PointPolicy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pointPolicyId;  // pointPolicyId를 Long으로 변경
+    private Long pointPolicyId;
 
     @NotNull(message = "포인트 정책명은 필수입니다.")
     @Column(nullable = false, length = 50)
     private String pointPolicyName;
 
-    private int pointPolicyConditionAmount;
-    private int pointPolicyRate;
-    private int pointPolicyApplyAmount;
+    private Integer pointPolicyConditionAmount;
+    private Integer pointPolicyRate;
+    private Integer pointPolicyApplyAmount;
 
     @NotNull(message = "포인트 적립 조건은 필수입니다.")
     @Column(nullable = false, length = 200)
@@ -35,21 +36,18 @@ public class PointPolicy {
 
     @NotNull(message = "포인트 생성일은 필수입니다.")
     @Column(nullable = false)
-    private LocalDate pointPolicyCreatedAt;
-    private LocalDate pointPolicyUpdatedAt;
+    private LocalDateTime pointPolicyCreatedAt;
+
+    private LocalDateTime pointPolicyUpdatedAt;
 
     @NotNull(message = "포인트 상태는 필수입니다.")
     @Column(nullable = false)
     private boolean pointPolicyState;
 
-    @NotNull(message = "회원 ID는 필수입니다.")
-    @Column(nullable = false)
-    private Long memberId;  // memberId 타입을 Long으로 변경
-
     @Builder
-    public PointPolicy(Long pointPolicyId, String pointPolicyName, int pointPolicyRate, int pointPolicyConditionAmount,
-                       String pointPolicyCondition, int pointPolicyApplyAmount, LocalDate pointPolicyCreatedAt,
-                       LocalDate pointPolicyUpdatedAt, boolean pointPolicyApplyType, boolean pointPolicyState, Long memberId) {
+    public PointPolicy(Long pointPolicyId, String pointPolicyName, Integer pointPolicyRate, Integer pointPolicyConditionAmount,
+                       String pointPolicyCondition, Integer pointPolicyApplyAmount, LocalDateTime pointPolicyCreatedAt,
+                       LocalDateTime pointPolicyUpdatedAt, boolean pointPolicyApplyType, boolean pointPolicyState) {
         this.pointPolicyId = pointPolicyId;
         this.pointPolicyName = pointPolicyName;
         this.pointPolicyConditionAmount = pointPolicyConditionAmount;
@@ -60,13 +58,21 @@ public class PointPolicy {
         this.pointPolicyCreatedAt = pointPolicyCreatedAt;
         this.pointPolicyUpdatedAt = pointPolicyUpdatedAt;
         this.pointPolicyState = pointPolicyState;
-        this.memberId = memberId;  // memberId를 Long으로 처리
     }
 
-    public void updateMemberId(Long memberId) {
-        this.memberId = memberId;
+    // @PrePersist와 @PreUpdate를 이용하여 생성 및 수정 일자를 자동으로 처리
+    @PrePersist
+    public void prePersist() {
+        this.pointPolicyCreatedAt = LocalDateTime.now();
+        this.pointPolicyUpdatedAt = LocalDateTime.now();
     }
 
+    @PreUpdate
+    public void preUpdate() {
+        this.pointPolicyUpdatedAt = LocalDateTime.now();
+    }
+
+    // 필드를 업데이트하는 메서드
     public void updatePointPolicyName(String pointPolicyName) {
         this.pointPolicyName = pointPolicyName;
     }
@@ -91,11 +97,15 @@ public class PointPolicy {
         this.pointPolicyApplyType = pointPolicyApplyType;
     }
 
-    public void updatePointPolicyUpdatedAt() {
-        this.pointPolicyUpdatedAt = LocalDate.now();
-    }
-
     public void updatePointPolicyState(boolean pointPolicyState) {
         this.pointPolicyState = pointPolicyState;
+    }
+
+    public void updatePointPolicyCreatedAt(LocalDateTime pointPolicyCreatedAt) {
+        this.pointPolicyCreatedAt = pointPolicyCreatedAt;
+
+    }
+    public void updatePointPolicyUpdatedAt(LocalDateTime pointPolicyUpdatedAt) {
+        this.pointPolicyUpdatedAt = pointPolicyUpdatedAt;
     }
 }

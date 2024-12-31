@@ -132,7 +132,7 @@ public class PointServiceImpl implements PointService {
      */
     @Override
     public void updatePointPolicy(Long pointPolicyId, PointPolicy pointPolicy) {
-        PointPolicy existingPolicy = pointPolicyRepository.findById(String.valueOf(pointPolicyId))
+        PointPolicy existingPolicy = pointPolicyRepository.findById(pointPolicyId)
                 .orElseThrow(() -> new PointPolicyException("포인트 정책을 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
         existingPolicy.updatePointPolicyRate(pointPolicy.getPointPolicyRate());

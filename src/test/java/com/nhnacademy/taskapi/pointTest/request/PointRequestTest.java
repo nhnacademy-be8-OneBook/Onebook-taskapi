@@ -5,104 +5,111 @@ import com.nhnacademy.taskapi.point.request.CreatePointPolicyRequest;
 import com.nhnacademy.taskapi.point.request.PointPolicyRequest;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PointRequestTest {
+class PointRequestTest {
 
-    // CreatePointPolicyRequest에 대한 테스트
+    // 1. CreatePointPolicyRequest 테스트
     @Test
-    public void testCreatePointPolicyRequestToEntity() {
-        // given
-        Long memberId = 1L;
+    void testCreatePointPolicyRequest() {
+        // Given
         String pointPolicyName = "Test Policy";
-        int pointPolicyApply = 1000;
-        String pointPolicyCondition = "조건1";
-        boolean pointPolicyApplyType = true;  // Apply Amount
-        int pointPolicyConditionAmount = 500;
+        int pointPolicyRate = 10;
+        int pointPolicyConditionAmount = 100;
+        int pointPolicyApplyAmount = 50;
+        String pointPolicyCondition = "Test Condition";
+        boolean pointPolicyApplyType = true;
 
-        // when
-        CreatePointPolicyRequest createRequest = CreatePointPolicyRequest.builder()
-                .memberId(memberId)
+        CreatePointPolicyRequest request = CreatePointPolicyRequest.builder()
                 .pointPolicyName(pointPolicyName)
-                .pointPolicyApply(pointPolicyApply)
+                .pointPolicyRate(pointPolicyRate)
+                .pointPolicyConditionAmount(pointPolicyConditionAmount)
+                .pointPolicyApplyAmount(pointPolicyApplyAmount)
                 .pointPolicyCondition(pointPolicyCondition)
                 .pointPolicyApplyType(pointPolicyApplyType)
-                .pointPolicyConditionAmount(pointPolicyConditionAmount)
                 .build();
 
-        PointPolicy pointPolicy = createRequest.toEntity();
+        // When
+        PointPolicy pointPolicy = request.toEntity();
 
-        // then
-        assertNotNull(pointPolicy);
-        assertEquals(memberId, pointPolicy.getMemberId());
-        assertEquals(pointPolicyName, pointPolicy.getPointPolicyName());
-
-        // pointPolicyApplyAmount는 true일 때만 값이 있어야 함
-        if (pointPolicyApplyType) {
-            assertNotNull(pointPolicy.getPointPolicyApplyAmount());
-            assertEquals(pointPolicyApply, pointPolicy.getPointPolicyApplyAmount());
-        } else {
-            assertEquals(0, pointPolicy.getPointPolicyApplyAmount()); // 0으로 검증
-        }
-
-        // pointPolicyRate는 null이어야 함
-        if (!pointPolicyApplyType) {
-            assertNotNull(pointPolicy.getPointPolicyRate());
-            assertEquals(pointPolicyApply, pointPolicy.getPointPolicyRate());
-        } else {
-            assertEquals(0, pointPolicy.getPointPolicyRate()); // 0으로 검증
-        }
-
-        assertEquals(pointPolicyCondition, pointPolicy.getPointPolicyCondition());
-        assertEquals(pointPolicyConditionAmount, pointPolicy.getPointPolicyConditionAmount());
-        assertTrue(pointPolicy.isPointPolicyApplyType());
-        assertTrue(pointPolicy.isPointPolicyState());  // pointPolicyState는 true로 설정됨
+        // Then
+        assertNotNull(pointPolicy, "PointPolicy 객체는 null이 아니어야 합니다.");
+        assertEquals(pointPolicyName, pointPolicy.getPointPolicyName(), "PointPolicyName 값이 일치하지 않습니다.");
+        assertEquals(pointPolicyRate, pointPolicy.getPointPolicyRate(), "PointPolicyRate 값이 일치하지 않습니다.");
+        assertEquals(pointPolicyConditionAmount, pointPolicy.getPointPolicyConditionAmount(), "PointPolicyConditionAmount 값이 일치하지 않습니다.");
+        assertEquals(pointPolicyApplyAmount, pointPolicy.getPointPolicyApplyAmount(), "PointPolicyApplyAmount 값이 일치하지 않습니다.");
+        assertEquals(pointPolicyCondition, pointPolicy.getPointPolicyCondition(), "PointPolicyCondition 값이 일치하지 않습니다.");
+        assertEquals(pointPolicyApplyType, pointPolicy.isPointPolicyApplyType(), "PointPolicyApplyType 값이 일치하지 않습니다.");
+        assertTrue(pointPolicy.isPointPolicyState(), "PointPolicyState 기본값은 true여야 합니다.");
+        assertNotNull(pointPolicy.getPointPolicyCreatedAt(), "PointPolicyCreatedAt 값은 null이 아니어야 합니다.");
+        assertTrue(
+                pointPolicy.getPointPolicyCreatedAt().isBefore(LocalDateTime.now().plusSeconds(5)),
+                "PointPolicyCreatedAt 값이 현재 시간 이전이어야 합니다."
+        );
     }
 
-    // PointPolicyRequest에 대한 테스트
+    // 2. PointPolicyRequest 테스트
     @Test
-    public void testPointPolicyRequestToEntity() {
-        // given
-        String pointPolicyName = "Test Policy 2";
-        int pointPolicyApply = 2000;
-        String pointPolicyCondition = "조건2";
-        boolean pointPolicyApplyType = false;  // Apply Rate
-        int pointPolicyConditionAmount = 1000;
+    void testPointPolicyRequest() {
+        // Given
+        String name = "Updated Policy";
+        Integer rate = 15;
+        Integer conditionAmount = 2000;
+        Integer applyAmount = 200;
+        String condition = "Updated Condition";
+        boolean applyType = false;
 
-        // when
-        PointPolicyRequest pointRequest = PointPolicyRequest.builder()
-                .pointPolicyName(pointPolicyName)
-                .pointPolicyApply(pointPolicyApply)
-                .pointPolicyCondition(pointPolicyCondition)
-                .pointPolicyApplyType(pointPolicyApplyType)
-                .pointPolicyConditionAmount(pointPolicyConditionAmount)
+        PointPolicyRequest request = PointPolicyRequest.builder()
+                .pointPolicyName(name)
+                .pointPolicyRate(rate)
+                .pointPolicyConditionAmount(conditionAmount)
+                .pointPolicyApplyAmount(applyAmount)
+                .pointPolicyCondition(condition)
+                .pointPolicyApplyType(applyType)
                 .build();
 
-        PointPolicy pointPolicy = pointRequest.toEntity();
+        // When
+        PointPolicy pointPolicy = request.toEntity();
 
-        // then
-        assertNotNull(pointPolicy);
-        assertEquals(pointPolicyName, pointPolicy.getPointPolicyName());
+        // Then
+        assertNotNull(pointPolicy, "PointPolicy 객체는 null이 아니어야 합니다.");
+        assertEquals(name, pointPolicy.getPointPolicyName(), "PointPolicyName 값이 일치하지 않습니다.");
+        assertEquals(rate, pointPolicy.getPointPolicyRate(), "PointPolicyRate 값이 일치하지 않습니다.");
+        assertEquals(conditionAmount, pointPolicy.getPointPolicyConditionAmount(), "PointPolicyConditionAmount 값이 일치하지 않습니다.");
+        assertEquals(applyAmount, pointPolicy.getPointPolicyApplyAmount(), "PointPolicyApplyAmount 값이 일치하지 않습니다.");
+        assertEquals(condition, pointPolicy.getPointPolicyCondition(), "PointPolicyCondition 값이 일치하지 않습니다.");
+        assertEquals(applyType, pointPolicy.isPointPolicyApplyType(), "PointPolicyApplyType 값이 일치하지 않습니다.");
+        assertTrue(pointPolicy.isPointPolicyState(), "PointPolicyState 기본값은 true여야 합니다.");
+        assertNotNull(pointPolicy.getPointPolicyCreatedAt(), "PointPolicyCreatedAt 값은 null이 아니어야 합니다.");
+    }
 
-        // pointPolicyApplyAmount는 null이어야 함 (Apply Rate)
-        if (pointPolicyApplyType) {
-            assertNotNull(pointPolicy.getPointPolicyApplyAmount());
-            assertEquals(pointPolicyApply, pointPolicy.getPointPolicyApplyAmount());
-        } else {
-            assertEquals(0, pointPolicy.getPointPolicyApplyAmount()); // 0으로 검증
-        }
+    // 3. PointPolicyRequest 기본값 처리 테스트
+    @Test
+    void testPointPolicyRequestWithNullValues() {
+        // Given
+        PointPolicyRequest request = PointPolicyRequest.builder()
+                .pointPolicyName("Default Policy")
+                .pointPolicyRate(null)
+                .pointPolicyConditionAmount(null)
+                .pointPolicyApplyAmount(null)
+                .pointPolicyCondition(null)
+                .pointPolicyApplyType(true)
+                .build();
 
-        // pointPolicyRate는 pointPolicyApply 값이어야 함
-        if (!pointPolicyApplyType) {
-            assertNotNull(pointPolicy.getPointPolicyRate());
-            assertEquals(pointPolicyApply, pointPolicy.getPointPolicyRate());
-        } else {
-            assertEquals(0, pointPolicy.getPointPolicyRate()); // 0으로 검증
-        }
+        // When
+        PointPolicy pointPolicy = request.toEntity();
 
-        assertEquals(pointPolicyCondition, pointPolicy.getPointPolicyCondition());
-        assertEquals(pointPolicyConditionAmount, pointPolicy.getPointPolicyConditionAmount());
-        assertFalse(pointPolicy.isPointPolicyApplyType());
-        assertTrue(pointPolicy.isPointPolicyState());  // pointPolicyState는 true로 설정됨
+        // Then
+        assertNotNull(pointPolicy, "PointPolicy 객체는 null이 아니어야 합니다.");
+        assertEquals("Default Policy", pointPolicy.getPointPolicyName(), "PointPolicyName 값이 일치하지 않습니다.");
+        assertEquals(0, pointPolicy.getPointPolicyRate(), "null이 0으로 변환되지 않았습니다.");
+        assertEquals(0, pointPolicy.getPointPolicyConditionAmount(), "null이 0으로 변환되지 않았습니다.");
+        assertEquals(0, pointPolicy.getPointPolicyApplyAmount(), "null이 0으로 변환되지 않았습니다.");
+        assertNull(pointPolicy.getPointPolicyCondition(), "null은 그대로 null이어야 합니다.");
+        assertTrue(pointPolicy.isPointPolicyApplyType(), "PointPolicyApplyType 값이 일치하지 않습니다.");
+        assertTrue(pointPolicy.isPointPolicyState(), "PointPolicyState 기본값은 true여야 합니다.");
+        assertNotNull(pointPolicy.getPointPolicyCreatedAt(), "PointPolicyCreatedAt 값은 null이 아니어야 합니다.");
     }
 }

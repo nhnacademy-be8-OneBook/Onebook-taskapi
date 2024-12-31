@@ -16,7 +16,7 @@ public interface PointPolicyService {
     // 포인트 정책 목록 조회
     Page<PointPolicyResponse> findAllPointPolicies(Pageable pageable);
 
-    // 포인트 정책 수정 (적립 금액)
+    // 포인트 정책 수정
     PointPolicyResponse updatePointPolicyById(String pointPolicyId, PointPolicyRequest policyRequest);
 
     // 포인트 정책 삭제
