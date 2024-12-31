@@ -9,8 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,9 +21,10 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public ResponseEntity<Book> addBook(@RequestBody BookSaveDTO dto){
-        Book book = bookService.saveBook(dto);
-        return ResponseEntity.ok().body(book);
+    public ResponseEntity<Book> addBook(@RequestPart(value = "dto") BookSaveDTO dto,
+                                        @RequestPart(value = "image") MultipartFile image){
+        Book book = bookService.saveBook(dto, image);
+        return ResponseEntity.status(HttpStatus.CREATED).body(book);
     }
 
     @PutMapping("{bookId}")

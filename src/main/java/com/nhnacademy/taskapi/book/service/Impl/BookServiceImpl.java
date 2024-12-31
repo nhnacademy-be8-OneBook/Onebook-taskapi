@@ -18,6 +18,7 @@ import com.nhnacademy.taskapi.category.domain.Category;
 import com.nhnacademy.taskapi.category.exception.CategoryNotFoundException;
 import com.nhnacademy.taskapi.category.repository.CategoryRepository;
 import com.nhnacademy.taskapi.image.dto.ImageSaveDTO;
+import com.nhnacademy.taskapi.image.exception.ImageUploadException;
 import com.nhnacademy.taskapi.image.service.ImageService;
 import com.nhnacademy.taskapi.stock.domain.Stock;
 import com.nhnacademy.taskapi.stock.dto.StockCreateUpdateDTO;
@@ -28,6 +29,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -49,7 +53,7 @@ public class BookServiceImpl implements BookService {
     // 책 등록 및 수정 (등록/수정 통합 메서드)
     @Transactional
     @Override
-    public Book saveBook(BookSaveDTO bookSaveDTO) {
+    public Book saveBook(BookSaveDTO bookSaveDTO, MultipartFile imageFile) {
         // 기존 책 조회
         Book book = null;
         if(Objects.nonNull(bookRepository.findByIsbn13(bookSaveDTO.getIsbn13()))) {
@@ -116,12 +120,16 @@ public class BookServiceImpl implements BookService {
         stockService.addStock(stockCreateUpdateDTO);
 
         // 이미지 등록
-        if(Objects.nonNull(bookSaveDTO.getImageBytes())){
+        if(Objects.nonNull(imageFile) && !imageFile.isEmpty()){
             ImageSaveDTO imageSaveDTO = new ImageSaveDTO();
             imageSaveDTO.setBookId(book.getBookId());
-            imageSaveDTO.setImageBytes(bookSaveDTO.getImageBytes());
-            imageSaveDTO.setImageName(bookSaveDTO.getImageName());
-            imageService.saveImage(imageSaveDTO);
+            try {
+                imageSaveDTO.setImageBytes(imageFile.getBytes());
+                imageSaveDTO.setImageName(imageFile.getOriginalFilename());
+                imageService.saveImage(imageSaveDTO);
+            } catch (IOException e) {
+                throw new ImageUploadException("Image upload failed!");
+            }
         }
         return book;
     }
