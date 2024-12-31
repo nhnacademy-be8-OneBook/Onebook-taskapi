@@ -17,14 +17,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class PublisherServiceTest {
+public class
+PublisherServiceTest {
     @Mock
     private PublisherRepository publisherRepository;
 
@@ -59,7 +61,7 @@ public class PublisherServiceTest {
         String name = "";
         publisher.setName(name);
 
-        Assertions.assertThrows(InvalidPublisherNameException.class, ()-> publisherService.addPublisher(name));
+        assertThrows(InvalidPublisherNameException.class, ()-> publisherService.addPublisher(name));
         verify(publisherRepository, never()).save(any(Publisher.class));
     }
 
@@ -70,7 +72,7 @@ public class PublisherServiceTest {
         String name = null;
         publisher.setName(name);
 
-        Assertions.assertThrows(InvalidPublisherNameException.class, ()-> publisherService.addPublisher(name));
+        assertThrows(InvalidPublisherNameException.class, ()-> publisherService.addPublisher(name));
         verify(publisherRepository, never()).save(any(Publisher.class));
     }
 
@@ -82,7 +84,7 @@ public class PublisherServiceTest {
         publisherService.addPublisher("test");
         when(publisherRepository.findByName(any(String.class))).thenReturn(publisher);
 
-        Assertions.assertThrows(PublisherAlreadyExistException.class, ()-> publisherService.addPublisher("test"));
+        assertThrows(PublisherAlreadyExistException.class, ()-> publisherService.addPublisher("test"));
     }
 
     @Test
@@ -116,7 +118,7 @@ public class PublisherServiceTest {
         PublisherUpdateDTO dto = new PublisherUpdateDTO();
         dto.setPublisherId(1L);
         dto.setPublisherName("updateTest");
-        Assertions.assertThrows(PublisherNotFoundException.class, () -> publisherService.updatePublisher(dto));
+        assertThrows(PublisherNotFoundException.class, () -> publisherService.updatePublisher(dto));
     }
 
     @Test
@@ -136,7 +138,7 @@ public class PublisherServiceTest {
 
         when(publisherRepository.findById(any(Long.class))).thenReturn(java.util.Optional.of(publisher));
 
-        Assertions.assertThrows(InvalidPublisherNameException.class, () -> publisherService.updatePublisher(dto));
+        assertThrows(InvalidPublisherNameException.class, () -> publisherService.updatePublisher(dto));
     }
 
     @Test
@@ -156,7 +158,7 @@ public class PublisherServiceTest {
 
         when(publisherRepository.findById(any(Long.class))).thenReturn(java.util.Optional.of(publisher));
 
-        Assertions.assertThrows(InvalidPublisherNameException.class, () -> publisherService.updatePublisher(dto));
+        assertThrows(InvalidPublisherNameException.class, () -> publisherService.updatePublisher(dto));
     }
 
 
@@ -174,4 +176,126 @@ public class PublisherServiceTest {
         publisherService.deletePublisher(publisherId);
         verify(publisherRepository).delete(publisher);
     }
+
+
+    @Test
+    @DisplayName("getPublisher_Success")
+    void getPublisher_Success() {
+        Publisher publisher = new Publisher();
+        publisher.setPublisherId(1L);
+        publisher.setName("existTest");
+
+        when(publisherRepository.findByName(any(String.class))).thenReturn(publisher);
+
+        Publisher result = publisherService.getPublisher(publisher.getName());
+
+        assertNotNull(result);
+        verify(publisherRepository).findByName(any(String.class));
+    }
+
+    @Test
+    @DisplayName("getPublisher_Fail_Null")
+    void getPublisher_Fail_Null() {
+        Publisher publisher = new Publisher();
+        publisher.setPublisherId(1L);
+        publisher.setName("existTest");
+
+        when(publisherRepository.findByName(any(String.class))).thenReturn(null);
+
+        assertThrows(PublisherNotFoundException.class, () -> publisherService.getPublisher(publisher.getName()));
+    }
+
+    @Test
+    @DisplayName("getPublisherList_Success")
+    void getPublisherList_Success() {
+        Publisher publisher = new Publisher();
+        publisher.setPublisherId(1L);
+        publisher.setName("existTest");
+
+        when(publisherRepository.findAllByName(any(String.class))).thenReturn(java.util.Arrays.asList(publisher));
+
+        List<Publisher> result = publisherService.getPublisherList("existTest");
+        assertNotNull(result);
+        verify(publisherRepository).findAllByName(any(String.class));
+    }
+
+    @Test
+    @DisplayName("getPublisherList_Fail_Null")
+    void getPublisherList_Fail_Null() {
+        String name = null;
+
+        assertThrows(InvalidPublisherNameException.class, () -> publisherService.getPublisherList(name));
+    }
+
+    @Test
+    @DisplayName("getPublisherList_Fail_Empty")
+    void getPublisherList_Fail_EmptyName() {
+        String name = "";
+
+        assertThrows(InvalidPublisherNameException.class, () -> publisherService.getPublisherList(name));
+    }
+
+    @Test
+    @DisplayName("Publisher가 없으면 새로 생성하여 반환")
+    void testAddPublisherByAladin_whenPublisherNotExists() {
+        // Arrange
+        String publisherName = "Aladin Publisher";
+        Publisher mockPublisher = new Publisher();
+        mockPublisher.setName(publisherName);
+
+        // Mocking
+        when(publisherRepository.findByName(publisherName)).thenReturn(null);  // 없으면 null 반환
+        when(publisherRepository.save(any(Publisher.class))).thenReturn(mockPublisher);  // 저장 후 mockPublisher 반환
+
+        // Act
+        Publisher result = publisherService.addPublisherByAladin(publisherName);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(publisherName, result.getName());
+        verify(publisherRepository, times(1)).findByName(publisherName);  // findByName 호출 확인
+        verify(publisherRepository, times(1)).save(any(Publisher.class));  // save 호출 확인
+    }
+
+    @Test
+    @DisplayName("Publisher가 이미 존재하면 기존 Publisher 반환")
+    void testAddPublisherByAladin_whenPublisherExists() {
+        // Arrange
+        String publisherName = "Existing Publisher";
+        Publisher existingPublisher = new Publisher();
+        existingPublisher.setName(publisherName);
+
+        // Mocking
+        when(publisherRepository.findByName(publisherName)).thenReturn(existingPublisher);  // 이미 존재하는 publisher 반환
+
+        // Act
+        Publisher result = publisherService.addPublisherByAladin(publisherName);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(publisherName, result.getName());
+        verify(publisherRepository, times(1)).findByName(publisherName);  // findByName 호출 확인
+        verify(publisherRepository, times(0)).save(any(Publisher.class));  // save 호출 안됨 확인
+    }
+
+    @Test
+    @DisplayName("PublisherName이 빈 문자열이면 예외 발생")
+    void testAddPublisherByAladin_whenPublisherNameIsNullOrEmpty() {
+        // Arrange
+        String invalidName = "";
+
+        // Act & Assert
+        assertThrows(InvalidPublisherNameException.class, () -> publisherService.addPublisherByAladin(invalidName));
+    }
+
+    @Test
+    @DisplayName("PublisherName이 Null 문자열이면 예외 발생")
+    void testAddPublisherByAladin_whenPublisherNameIsNull() {
+        // Arrange
+        String invalidName = null;
+
+        // Act & Assert
+        assertThrows(InvalidPublisherNameException.class, () -> publisherService.addPublisherByAladin(invalidName));
+    }
+
 }
