@@ -6,12 +6,13 @@ import com.nhnacademy.taskapi.book.dto.BookSaveDTO;
 import com.nhnacademy.taskapi.book.dto.BookUpdateDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface BookService {
     //책 등록
-    Book saveBook(BookSaveDTO bookSaveDTO);
+    Book saveBook(BookSaveDTO bookSaveDTO, MultipartFile imageFile);
 
     // 책 수정
     Book updateBook(Long bookId, BookUpdateDTO bookUpdateDTO);

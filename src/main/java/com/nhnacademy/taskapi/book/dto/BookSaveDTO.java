@@ -50,10 +50,6 @@ public class BookSaveDTO {
     private Publisher publisher;
     @Valid
     private Tag tag;
-    @NotBlank
-    private byte[] imageBytes;
-    @NotBlank
-    private String imageName;
     @NotNull
     @Positive
     private Integer stock;

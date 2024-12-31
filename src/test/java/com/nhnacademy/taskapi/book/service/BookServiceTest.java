@@ -17,10 +17,12 @@ import com.nhnacademy.taskapi.book.service.Impl.BookServiceImpl;
 import com.nhnacademy.taskapi.category.domain.Category;
 import com.nhnacademy.taskapi.category.repository.CategoryRepository;
 import com.nhnacademy.taskapi.image.domain.Image;
+import com.nhnacademy.taskapi.image.dto.ImageSaveDTO;
 import com.nhnacademy.taskapi.image.service.ImageService;
 import com.nhnacademy.taskapi.image.service.Impl.ImageServiceImpl;
 import com.nhnacademy.taskapi.publisher.domain.Publisher;
 import com.nhnacademy.taskapi.stock.domain.Stock;
+import com.nhnacademy.taskapi.stock.dto.StockCreateUpdateDTO;
 import com.nhnacademy.taskapi.stock.service.Impl.StockServiceImpl;
 import com.nhnacademy.taskapi.stock.service.StockService;
 import org.junit.jupiter.api.Assertions;
@@ -33,6 +35,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -68,6 +71,9 @@ public class BookServiceTest {
     @Test
     @DisplayName("saveBook_Success")
     public void saveBook_Success() {
+
+
+
         Publisher publisher = new Publisher();
         publisher.setPublisherId(1L);
         publisher.setName("publisher");
@@ -88,68 +94,60 @@ public class BookServiceTest {
         when(categoryRepository.findById(any())).thenReturn(Optional.of(category));
 
         BookSaveDTO bookSaveDTO = new BookSaveDTO();
-        bookSaveDTO.setTitle("Title");
+        bookSaveDTO.setTitle("Test Book");
         bookSaveDTO.setAuthor(author);
-        bookSaveDTO.setContent("Content");
-        bookSaveDTO.setPubdate(String.valueOf(LocalDate.now()));
-        bookSaveDTO.setDescription("Description");
-        bookSaveDTO.setIsbn13("1111111111111");
-        bookSaveDTO.setPriceSales(10000);
-        bookSaveDTO.setPrice(20000);
-        bookSaveDTO.setCategoryId(category.getCategoryId());
-        bookSaveDTO.setPublisher(publisher);
+        bookSaveDTO.setContent("This is a test book.");
+        bookSaveDTO.setPubdate("2024-01-01");
+        bookSaveDTO.setDescription("Test Description");
+        bookSaveDTO.setIsbn13("1234567890123");
+        bookSaveDTO.setPriceSales(1500);
+        bookSaveDTO.setPrice(2000);
+        bookSaveDTO.setCategoryId(1);
+        bookSaveDTO.setPublisher(new Publisher(1L, "Test Publisher"));
+
+
         bookSaveDTO.setTag(tag);
-        bookSaveDTO.setStock(100);
-        bookSaveDTO.setImageName("image");
-        bookSaveDTO.setImageBytes(new byte[10]);
+        bookSaveDTO.setStock(10);
+
+        // MockMultipartFile 생성 (이미지 파일 시뮬레이션)
+        MockMultipartFile imageFile = new MockMultipartFile("image", "test_image.jpg", "image/jpeg", "dummy image content".getBytes());
+
+
 
         Book book = new Book();
         book.setBookId(1L);
-        book.setTitle("Title");
-        book.setPrice(20000);
-        book.setContent("Content");
-        book.setAmount(10);
-        book.setDescription("Description");
-        book.setPubdate(java.time.LocalDate.now());
-        book.setIsbn13("1111111111111");
-        book.setSalePrice(10000);
-        book.setPublisher(publisher);
+        book.setTitle(bookSaveDTO.getTitle());
 
+       Stock stock = new Stock();
+       stock.setStockId(1L);
+       stock.setBook(book);
+       stock.setStock(1000);
 
-        when(bookRepository.save(any())).thenReturn(book);
+       Image image = new Image();
+       image.setBook(book);
+       image.setImageId(1L);
+       image.setName(imageFile.getOriginalFilename());
+       image.setUrl("imageUrl");
 
-        BookAuthor bookAuthor = new BookAuthor();
-        bookAuthor.setBook(book);
-        bookAuthor.setAuthor(author);
-        when(bookAuthorRepository.save(any())).thenReturn(bookAuthor);
+        // Mocking repository 및 서비스
+        when(bookRepository.findByIsbn13(anyString())).thenReturn(null); // 책이 이미 존재하지 않음을 가정
+        when(bookRepository.save(any(Book.class))).thenReturn(book);
+        when(bookAuthorRepository.findByBook_bookIdAndAuthor_authorId(anyLong(), any(Integer.class))).thenReturn(null); // 이미 연결된 작가가 없음
+        when(bookAuthorRepository.save(any(BookAuthor.class))).thenReturn(new BookAuthor());
+        when(bookTagRepository.save(any(BookTag.class))).thenReturn(new BookTag());
+        when(categoryRepository.findById(any(Integer.class))).thenReturn(Optional.of(new Category()));
+        when(bookCategoryRepository.save(any(BookCategory.class))).thenReturn(new BookCategory());
+        when(stockService.addStock(any(StockCreateUpdateDTO.class))).thenReturn(stock);
+        when(imageService.saveImage(any(ImageSaveDTO.class))).thenReturn(image);
 
-        BookTag bookTag = new BookTag();
-        bookTag.setBook(book);
-        bookTag.setTag(tag);
-        when(bookTagRepository.save(any())).thenReturn(bookTag);
+        // saveBook 메서드 호출
+        Book result = bookService.saveBook(bookSaveDTO, imageFile);
 
-
-        BookCategory bookCategory = new BookCategory();
-        bookCategory.setBook(book);
-        bookCategory.setCategory(category);
-        when(bookCategoryRepository.save(any())).thenReturn(bookCategory);
-
-        Stock stock = new Stock();
-        stock.setStockId(1L);
-        stock.setBook(book);
-        stock.setStock(1000);
-        when(stockService.addStock(any())).thenReturn(stock);
-
-
-        Image image = new Image();
-        image.setBook(book);
-        image.setUrl("test");
-        image.setName("image");
-        when(imageService.saveImage(any())).thenReturn(image);
-
-        Book result = bookService.saveBook(bookSaveDTO);
-
+        // 결과 검증
         assertNotNull(result);
+        assertEquals("Test Book", result.getTitle());
+        assertEquals(1L, result.getBookId());
+        verify(bookRepository).save(any(Book.class));
     }
 
     @Test
@@ -160,7 +158,7 @@ public class BookServiceTest {
         BookSaveDTO bookSaveDTO = new BookSaveDTO();
         bookSaveDTO.setIsbn13("1234567890123");
 
-        assertThrows(BookDuplicateException.class, () -> bookService.saveBook(bookSaveDTO));
+        assertThrows(BookDuplicateException.class, () -> bookService.saveBook(bookSaveDTO, null));
     }
 
     @Test
@@ -171,7 +169,7 @@ public class BookServiceTest {
 
         BookSaveDTO bookSaveDTO = new BookSaveDTO();
         bookSaveDTO.setIsbn13("1234567890");
-        assertThrows(InvalidIsbnException.class, () -> bookService.saveBook(bookSaveDTO));
+        assertThrows(InvalidIsbnException.class, () -> bookService.saveBook(bookSaveDTO, null));
     }
 
     @Test
@@ -189,7 +187,7 @@ public class BookServiceTest {
         when(bookRepository.save(any())).thenReturn(new Book());
         when(bookAuthorRepository.findByBook_bookIdAndAuthor_authorId(any(Long.class), any(Integer.class))).thenReturn(new BookAuthor());
 
-        assertThrows(BookAuthorAlreadyExistsException.class, () -> bookService.saveBook(bookSaveDTO));
+        assertThrows(BookAuthorAlreadyExistsException.class, () -> bookService.saveBook(bookSaveDTO, null));
     }
 
     @Test
@@ -216,7 +214,7 @@ public class BookServiceTest {
                 .thenReturn(new BookTag());  // 이미 BookTag가 존재한다고 가정
 
         // when & then: 예외가 발생하는지 검증
-        assertThrows(BookTagAlreadyExistException.class, () -> bookService.saveBook(bookSaveDTO));
+        assertThrows(BookTagAlreadyExistException.class, () -> bookService.saveBook(bookSaveDTO, null));
 
         // 추가: 실제로 bookTagRepository.findByBook_BookIdAndTag_TagId가 호출되었는지 검증
         verify(bookTagRepository, times(1)).findByBook_BookIdAndTag_TagId(any(Long.class), any(Long.class));
