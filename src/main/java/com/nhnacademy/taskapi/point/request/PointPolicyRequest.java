@@ -20,13 +20,11 @@ public class PointPolicyRequest {
     public PointPolicy toEntity() {
         return PointPolicy.builder()
                 .pointPolicyName(this.pointPolicyName)
-                .pointPolicyConditionAmount(this.pointPolicyConditionAmount)
-                .pointPolicyRate(this.pointPolicyRate)
-                .pointPolicyApplyAmount(this.pointPolicyApplyAmount)
-                .pointPolicyCondition(this.pointPolicyCondition)
-                .pointPolicyApplyType(this.pointPolicyApplyType)
-                .pointPolicyCreatedAt(LocalDateTime.now()) // 생성일 현재 시간
-                .pointPolicyState(true) // 기본적으로 활성 상태
+                .pointPolicyRate(this.pointPolicyRate != null ? this.pointPolicyRate : 0)  // null 체크 후 0으로 대체
+                .pointPolicyConditionAmount(this.pointPolicyConditionAmount != null ? this.pointPolicyConditionAmount : 0)  // null 체크 후 0으로 대체
+                .pointPolicyApplyAmount(this.pointPolicyApplyAmount != null ? this.pointPolicyApplyAmount : 0)  // null 체크 후 0으로 대체
+                .pointPolicyCondition(this.pointPolicyCondition)  // null은 그대로 null로 처리
+                .pointPolicyApplyType(this.pointPolicyApplyType)  // 기본값 처리
                 .build();
     }
 

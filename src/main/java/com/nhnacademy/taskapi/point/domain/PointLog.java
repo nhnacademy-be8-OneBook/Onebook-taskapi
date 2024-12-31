@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "point_logs")
 public class PointLog {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pointLogId;

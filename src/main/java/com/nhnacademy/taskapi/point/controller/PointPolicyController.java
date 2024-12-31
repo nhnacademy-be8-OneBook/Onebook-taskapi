@@ -51,5 +51,4 @@ public class PointPolicyController {
         pointPolicyService.deletePointPolicyById(String.valueOf(pointPolicyId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

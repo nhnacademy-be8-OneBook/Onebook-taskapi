@@ -110,7 +110,6 @@ public class PointPolicyServiceImpl implements PointPolicyService {
                 .pointPolicyState(pointPolicy.isPointPolicyState())
                 .build();  // Response로 변환하여 반환
     }
-
     @Override
     public void deletePointPolicyById(String pointPolicyId) {
         pointPolicyRepository.deleteById(pointPolicyId);

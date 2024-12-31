@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "point_policies")
 public class PointPolicy {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pointPolicyId;
