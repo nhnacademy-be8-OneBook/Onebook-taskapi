@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.coupon.domain.dto.policies.response;
+package com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read;
 
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForCategory;
 import lombok.AllArgsConstructor;
@@ -12,8 +12,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
-public class AddRatePolicyForCategoryResponse {
+public class GetRatePolicyForCategoryResponse {
 
+    private Long id;
     private Integer discountRate;
     private Integer minimumOrderAmount;
     private Integer maximumDiscountPrice;
@@ -21,12 +22,12 @@ public class AddRatePolicyForCategoryResponse {
     private LocalDateTime expirationPeriodEnd;
     private String name;
     private String description;
-    private Integer categoryId;
-    private Integer policyStatusId;
+    private String categoryName;
+    private String policyStatusName;
 
-    public static AddRatePolicyForCategoryResponse changeEntityToDto(RatePolicyForCategory ratePolicyForCategory) {
-
-        return new AddRatePolicyForCategoryResponse(
+    public static GetRatePolicyForCategoryResponse changeEntityToDto(RatePolicyForCategory ratePolicyForCategory){
+        return new GetRatePolicyForCategoryResponse(
+                ratePolicyForCategory.getRatePolicyForCategoryId(),
                 ratePolicyForCategory.getDiscountRate(),
                 ratePolicyForCategory.getMinimumOrderAmount(),
                 ratePolicyForCategory.getMaximumDiscountRate(),
@@ -34,8 +35,8 @@ public class AddRatePolicyForCategoryResponse {
                 ratePolicyForCategory.getExpirationPeriodEnd(),
                 ratePolicyForCategory.getName(),
                 ratePolicyForCategory.getDescription(),
-                ratePolicyForCategory.getCategory().getCategoryId(),
-                ratePolicyForCategory.getPolicyStatus().getPolicyStatusId()
+                ratePolicyForCategory.getCategory().getName(),
+                ratePolicyForCategory.getPolicyStatus().getName()
         );
     }
 }

@@ -1,7 +1,6 @@
-package com.nhnacademy.taskapi.coupon.domain.dto.policies.response;
+package com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read;
 
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForCategory;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,35 +12,29 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
-public class AddPricePolicyForCategoryResponse {
+public class GetPricePolicyForCategoryResponse {
 
-    @NotNull
+    private Long id;
     private Integer minimumOrderAmount;
-    @NotNull
     private Integer discountPrice;
-    @NotNull
     private LocalDateTime expirationPeriodStart;
-    @NotNull
     private LocalDateTime expirationPeriodEnd;
-    @NotNull
     private String name;
-    @NotNull
     private String description;
-    @NotNull
-    private Integer categoryId;
-    @NotNull
-    private Integer policyStatusId;
+    private String categoryName;
+    private String policyStatusName;
 
-    public static AddPricePolicyForCategoryResponse changeEntityToDto(PricePolicyForCategory pricePolicyForCategory){
-        return new AddPricePolicyForCategoryResponse(
+    public static GetPricePolicyForCategoryResponse changeEntityToDto(PricePolicyForCategory pricePolicyForCategory){
+        return new GetPricePolicyForCategoryResponse(
+                pricePolicyForCategory.getPricePolicyForCategoryId(),
                 pricePolicyForCategory.getMinimumOrderAmount(),
                 pricePolicyForCategory.getDiscountPrice(),
                 pricePolicyForCategory.getExpirationPeriodStart(),
                 pricePolicyForCategory.getExpirationPeriodEnd(),
                 pricePolicyForCategory.getName(),
                 pricePolicyForCategory.getDescription(),
-                pricePolicyForCategory.getCategory().getCategoryId(),
-                pricePolicyForCategory.getPolicyStatus().getPolicyStatusId()
+                pricePolicyForCategory.getCategory().getName(),
+                pricePolicyForCategory.getPolicyStatus().getName()
         );
     }
 }

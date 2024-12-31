@@ -1,10 +1,9 @@
 package com.nhnacademy.taskapi.coupon.domain.entity.policies;
 
 import com.nhnacademy.taskapi.book.domain.Book;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.AddPricePolicyForBookRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPricePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.PolicyStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
