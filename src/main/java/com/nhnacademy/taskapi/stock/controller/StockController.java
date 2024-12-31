@@ -5,6 +5,7 @@ import com.nhnacademy.taskapi.stock.domain.Stock;
 import com.nhnacademy.taskapi.stock.dto.StockCreateUpdateDTO;
 import com.nhnacademy.taskapi.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,14 +19,14 @@ public class StockController {
     @PostMapping
     public ResponseEntity<Stock> createStock(@RequestBody StockCreateUpdateDTO dto){
         Stock stock = stockService.addStock(dto);
-        return ResponseEntity.ok().body(stock);
+        return ResponseEntity.status(HttpStatus.CREATED).body(stock);
     }
 
 
     @PutMapping
     public ResponseEntity<Stock> modifyStock(@RequestBody StockCreateUpdateDTO dto){
         Stock stock = stockService.updateStock(dto);
-        return ResponseEntity.ok().body(stock);
+        return ResponseEntity.status(HttpStatus.OK).body(stock);
     }
 
 }

@@ -4,8 +4,11 @@ import com.nhnacademy.taskapi.publisher.domain.Publisher;
 import com.nhnacademy.taskapi.publisher.dto.PublisherUpdateDTO;
 import com.nhnacademy.taskapi.publisher.service.PublisherService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,10 +31,28 @@ public class PublisherController {
 
 
     @DeleteMapping("/{publisherId}")
-    public ResponseEntity<Void> deletePublisher(long publisherId){
+    public ResponseEntity<Void> deletePublisher(@PathVariable("publisherId") long publisherId){
         publisherService.deletePublisher(publisherId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @GetMapping("/{publisherName}")
+    public ResponseEntity<Publisher> getPublisher(@PathVariable("publisherName") String publisherName){
+        Publisher publisher = publisherService.getPublisher(publisherName);
+        return ResponseEntity.status(HttpStatus.OK).body(publisher);
+    }
+
+
+    @GetMapping("/list/{publisherName}")
+    public ResponseEntity<List<Publisher>> getPublisherList(@PathVariable("publisherName") String name) {
+
+        List<Publisher> publisherList = publisherService.getPublisherList(name);
+        return ResponseEntity.status(HttpStatus.OK).body(publisherList); // 성공 시 200 OK와 함께 목록 반환
+
+
+    }
+
+
 
 
 }

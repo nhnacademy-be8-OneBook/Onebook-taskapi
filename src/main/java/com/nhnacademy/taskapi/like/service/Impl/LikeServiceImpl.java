@@ -13,11 +13,13 @@ import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.member.service.MemberService;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
 @Transactional(readOnly = true)
+@Service
 public class LikeServiceImpl implements LikeService {
     private LikeRepository likeRepository;
     /**
