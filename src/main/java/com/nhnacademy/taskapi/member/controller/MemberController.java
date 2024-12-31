@@ -72,13 +72,11 @@ public class MemberController {
     // 멤버 정보 리턴 for JWT
     @GetMapping("/jwt/{loginId}")
     public ResponseEntity<JwtMemberDto> getMemberForJWT(@PathVariable("loginId") String loginId) {
-//        Member member = memberService.getMemberByLoginId(loginId);
+        Member member = memberService.getMemberByLoginId(loginId);
         JwtMemberDto jwtMemberDto = new JwtMemberDto();
-        // TODO - jwt
-        // jwtMemberDto에 필요한것들 적기
-//        jwtMemberDto.setId(member.getId());
-//        jwtMemberDto.setLoginId(member.getLoginId());
-        jwtMemberDto.setLoginId("test");
+
+        jwtMemberDto.setId(member.getId());
+        jwtMemberDto.setLoginId(member.getLoginId());
 
         return ResponseEntity.ok().body(jwtMemberDto);
     }
