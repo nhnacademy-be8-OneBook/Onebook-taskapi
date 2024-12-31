@@ -1,7 +1,7 @@
 package com.nhnacademy.taskapi.order.controller;
 
 import com.nhnacademy.taskapi.order.dto.OrderCreateDTO;
-import com.nhnacademy.taskapi.order.dto.OrderDetailDTO;
+import com.nhnacademy.taskapi.order.dto.OrderResponseDTO;
 import com.nhnacademy.taskapi.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +15,17 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping("/orders")
+    @PostMapping("/task/order")
     public ResponseEntity<Void> createOrder(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestBody OrderCreateDTO orderCreateDTO) {
         orderService.saveOrder(memberId, orderCreateDTO);
         return ResponseEntity.created(null).build();
     }
 
-    @GetMapping("/orders")
-    public ResponseEntity<List<OrderDetailDTO>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId) {
+    @GetMapping("/task/orders")
+    public ResponseEntity<List<OrderResponseDTO>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId) {
 
-        List<OrderDetailDTO> orderList = orderService.getOrders(memberId);
+        // TODO null일 경우 list 반환 방법
+        List<OrderResponseDTO> orderList = orderService.getOrderList(memberId);
         return ResponseEntity.ok().body(orderList);
     }
 }
