@@ -19,6 +19,7 @@ import com.nhnacademy.taskapi.review.repository.ReviewRepository;
 import com.nhnacademy.taskapi.review.repository.ReviewImageRepository;
 import com.nhnacademy.taskapi.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
@@ -44,25 +46,32 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewResponse registerReview(long bookId, ReviewRequest reviewRequest) {
+    public ReviewResponse registerReview(long bookId, Long memberId, ReviewRequest reviewRequest) {
+        log.debug("Registering review for bookId: {}, memberId: {}", bookId, memberId);
+        System.out.println("member ID : " + memberId);
+
         // 회원 존재 확인
-        Member member = memberRepository.findById(reviewRequest.getMemberId())
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new InvalidReviewException("회원이 존재하지 않습니다."));
+        log.debug("Member found: {}", member.getId());
 
         // 도서 존재 확인
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new InvalidReviewException("도서가 존재하지 않습니다."));
+        log.debug("Book found: {}", book.getBookId());
 
         // 동일 도서에 대한 리뷰 작성 여부 확인
         Optional<Review> existingReview = reviewRepository.findByMemberAndBook(member, book);
         if (existingReview.isPresent()) {
             throw new ReviewAlreadyExistsException("이미 해당 도서에 대한 리뷰를 작성하셨습니다.");
         }
+        log.debug("No existing review found for this member and book.");
 
         // 이미지 첨부 개수 확인
         if (reviewRequest.getImageUrl() != null && reviewRequest.getImageUrl().size() > 3) {
             throw new ImageLimitExceededException("이미지는 최대 3장까지 첨부할 수 있습니다.");
         }
+        log.debug("Image URL count: {}", reviewRequest.getImageUrl() != null ? reviewRequest.getImageUrl().size() : 0);
 
         // 리뷰 생성
         Review review = new Review();
@@ -71,28 +80,27 @@ public class ReviewServiceImpl implements ReviewService {
         review.setGrade(reviewRequest.getGrade());
         review.setDescription(reviewRequest.getDescription());
         review.setCreatedAt(LocalDateTime.now());
-
-        // 사진 첨부를 체크
-        boolean isPhotoAttached = false; // default false
+        log.debug("Review created with grade: {}, description: {}", review.getGrade(), review.getDescription());
 
         // 사진 추가
         if (reviewRequest.getImageUrl() != null && !reviewRequest.getImageUrl().isEmpty()) {
             for (String imageUrl : reviewRequest.getImageUrl()) {
-                isPhotoAttached = true; // 사진 첨부 = true
                 ReviewImage reviewImage = new ReviewImage();
                 reviewImage.setImageUrl(imageUrl);
                 reviewImage.setReview(review);
                 review.getReviewImage().add(reviewImage);
+                log.debug("Added ReviewImage: {}", imageUrl);
             }
         }
 
         // 리뷰 저장
         Review savedReview = reviewRepository.save(review);
+        log.debug("Review saved with reviewId: {}", savedReview.getReviewId());
 
-        registerReviewPoints(member, isPhotoAttached); // 사진 첨부 유무에 따라 포인트 지급량이 다름
+        registerReviewPoints(member, reviewRequest.getImageUrl() != null && !reviewRequest.getImageUrl().isEmpty());
 
         // 응답 DTO 생성
-        return ReviewResponse.builder()
+        ReviewResponse response = ReviewResponse.builder()
                 .reviewId(savedReview.getReviewId())
                 .grade(savedReview.getGrade())
                 .description(savedReview.getDescription())
@@ -106,6 +114,9 @@ public class ReviewServiceImpl implements ReviewService {
                                 .collect(Collectors.toList())
                 )
                 .build();
+        log.debug("ReviewResponse created: {}", response);
+
+        return response;
     }
 
     @Override
@@ -135,7 +146,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewResponse updateReview(long bookId, long reviewId, ReviewRequest reviewRequest) {
+    public ReviewResponse updateReview(long bookId, long reviewId, Long memberId, ReviewRequest reviewRequest) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new InvalidReviewException("Invalid review ID"));
 
@@ -145,7 +156,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         // 리뷰 작성자 확인
-        if (!review.getMember().getId().equals(reviewRequest.getMemberId())) {
+        if (!review.getMember().getId().equals(memberId)) {
             throw new InvalidReviewException("작성자만 리뷰를 수정할 수 있습니다.");
         }
 
@@ -190,9 +201,9 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewResponse deleteReview(long bookId, long reviewId, ReviewRequest reviewRequest) {
+    public ReviewResponse deleteReview(long bookId, long reviewId, Long memberId) {
         // 회원 존재 확인
-        Member member = memberRepository.findById(reviewRequest.getMemberId())
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new InvalidReviewException("회원이 존재하지 않습니다."));
 
         // 리뷰 존재 확인

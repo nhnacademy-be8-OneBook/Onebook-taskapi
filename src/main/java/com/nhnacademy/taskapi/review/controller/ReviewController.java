@@ -21,8 +21,9 @@ public class ReviewController {
     @PostMapping
     public ResponseEntity<ReviewResponse> registerReview(
             @PathVariable long bookId,
+            @RequestHeader("X-MEMBER-ID") Long memberId,
             @Validated @RequestBody ReviewRequest reviewRequest) {
-        ReviewResponse response = reviewService.registerReview(bookId, reviewRequest);
+        ReviewResponse response = reviewService.registerReview(bookId, memberId, reviewRequest);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -48,8 +49,20 @@ public class ReviewController {
     public ResponseEntity<ReviewResponse> updateReview(
             @PathVariable long bookId,
             @PathVariable long reviewId,
+            @RequestHeader("X-MEMBER-ID") Long memberId,
             @Validated @RequestBody ReviewRequest reviewRequest) {
-        ReviewResponse response = reviewService.updateReview(bookId, reviewId, reviewRequest);
+        ReviewResponse response = reviewService.updateReview(bookId, reviewId, memberId, reviewRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    // 리뷰 삭제
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<ReviewResponse> deleteReview(
+            @PathVariable long bookId,
+            @PathVariable long reviewId,
+            @RequestHeader("X-MEMBER-ID") Long memberId) {
+        // 삭제 요청 시 별도의 ReviewRequest가 필요 없으므로, memberId만 전달
+        ReviewResponse response = reviewService.deleteReview(bookId, reviewId, memberId);
         return ResponseEntity.ok(response);
     }
 }
