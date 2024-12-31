@@ -3,7 +3,7 @@ package com.nhnacademy.taskapi.roles.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record RoleModifyDto(
+public record RoleModifyRequestDto(
 
         @NotBlank(message = "역할 이름은 필수 입력 항목입니다.")
         @Size(max=10, message = "역할 이름은 10자 이하로 입력 가능합니다.")

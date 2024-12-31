@@ -91,7 +91,7 @@ public class Member {
         return new Member(grade, name, loginId, password, dateOfBirth, gender, email, phoneNumber, role, status, createdAt, lastLoginAt);
     }
 
-    // 멤버 수정 - MemberModifyDto 참고.
+    // 멤버 수정 - MemberModifyRequestDto 참고.
     public void modifyMember(String name, String password, String email, String phoneNumber) {
         this.name = name;
         this.password = password;

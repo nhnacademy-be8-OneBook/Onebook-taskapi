@@ -2,13 +2,14 @@ package com.nhnacademy.taskapi.member.controller;
 
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.dto.JwtMemberDto;
-import com.nhnacademy.taskapi.member.dto.MemberModifyDto;
-import com.nhnacademy.taskapi.member.dto.MemberRegisterDto;
+import com.nhnacademy.taskapi.member.dto.MemberModifyRequestDto;
+import com.nhnacademy.taskapi.member.dto.MemberRegisterRequestDto;
 import com.nhnacademy.taskapi.member.dto.MemberResponseDto;
 import com.nhnacademy.taskapi.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,38 +22,29 @@ public class MemberController {
 
     // 전체 멤버 조회
     @GetMapping("/list")
-    public ResponseEntity<Page<MemberResponseDto>> getMembers(@RequestParam(value="page", defaultValue = "0") int page) {
-        Page<Member> memberList = memberService.getAllMembers(page);
-
-        Page<MemberResponseDto> memberResponseDtoPage = memberList.map(MemberResponseDto::from);
-
+    public ResponseEntity<Page<MemberResponseDto>> getMembers(Pageable pageable) {
+        Page<MemberResponseDto> memberResponseDtoPage = memberService.getAllMembers(pageable);
         return ResponseEntity.ok().body(memberResponseDtoPage);
     }
 
     // request header의 인조키(id)로 멤버 조회
     @GetMapping
     public ResponseEntity<MemberResponseDto> getMemberById(@RequestHeader("X-MEMBER-ID") Long memberId) {
-       Member member = memberService.getMemberById(memberId);
-       MemberResponseDto memberResponseDto = MemberResponseDto.from(member);
-
+        MemberResponseDto memberResponseDto = memberService.getMemberById(memberId);
        return ResponseEntity.ok().body(memberResponseDto);
     }
 
     // 회원가입
     @PostMapping
-    public ResponseEntity<MemberResponseDto> createMember(@RequestBody @Valid MemberRegisterDto memberRegisterDto) {
-        Member member = memberService.registerMember(memberRegisterDto);
-        MemberResponseDto memberResponseDto = MemberResponseDto.from(member);
-
+    public ResponseEntity<MemberResponseDto> createMember(@RequestBody @Valid MemberRegisterRequestDto memberRegisterRequestDto) {
+        MemberResponseDto memberResponseDto = memberService.registerMember(memberRegisterRequestDto);
         return ResponseEntity.ok().body(memberResponseDto);
     }
 
     // 멤버 정보 수정
     @PutMapping
-    public ResponseEntity<MemberResponseDto> updateMember(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestBody @Valid MemberModifyDto memberModifyDto) {
-        Member member = memberService.modifyMember(memberId, memberModifyDto);
-        MemberResponseDto memberResponseDto = MemberResponseDto.from(member);
-
+    public ResponseEntity<MemberResponseDto> updateMember(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestBody @Valid MemberModifyRequestDto memberModifyRequestDto) {
+        MemberResponseDto memberResponseDto = memberService.modifyMember(memberId, memberModifyRequestDto);
         return ResponseEntity.ok().body(memberResponseDto);
     }
 
@@ -64,6 +56,12 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    // 회원 상태 변경 -  'ACTIVE', 'SUSPENDED'.
+    @GetMapping("/status/{status}")
+    public ResponseEntity<String> modifyMemberStatus(@RequestHeader("X-MEMBER-ID") Long memberId, @PathVariable("status") String status) {
+        memberService.changeStatusToActivation(memberId, status);
+        return ResponseEntity.noContent().build();
+    }
 
     // 멤버 정보 리턴 for JWT
     @GetMapping("/jwt/{loginId}")

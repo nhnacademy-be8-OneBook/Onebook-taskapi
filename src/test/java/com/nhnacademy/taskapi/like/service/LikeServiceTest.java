@@ -12,6 +12,7 @@ import com.nhnacademy.taskapi.like.repository.LikeRepository;
 import com.nhnacademy.taskapi.like.service.Impl.LikeServiceImpl;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
+import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.member.service.impl.MemberServiceImpl;
 import com.nhnacademy.taskapi.roles.domain.Role;
 import org.junit.jupiter.api.Assertions;
@@ -23,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -34,9 +36,16 @@ public class LikeServiceTest {
     @Mock
     private LikeRepository likeRepository;
 
-
     @Mock
     private MemberServiceImpl memberService;
+
+    /**
+     * 수정일: 2024/12/31
+     * 수정자: 김주혁
+     * 수정 내용: memberRepository 추가.
+     */
+    @Mock
+    private MemberRepository memberRepository;
 
     @Mock
     private BookServiceImpl bookService;
@@ -55,7 +64,13 @@ public class LikeServiceTest {
         Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
 
         when(bookService.getBook(any(Long.class))).thenReturn(book);
-        when(memberService.getMemberById(any(Long.class))).thenReturn(member);
+        /**
+         * 수정일: 2024/12/31
+         * 수정자: 김주혁
+         * 수정 내용: 기존 내용 주석처리, memberRepository로 member return.
+         */
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
+//        when(memberService.getMemberById(any(Long.class))).thenReturn(member);
 
         Like likes = new Like();
         likes.setBook(book);
@@ -87,7 +102,13 @@ public class LikeServiceTest {
         book.setBookId(1L);
 
         when(bookService.getBook(any(Long.class))).thenReturn(book);
-        when(memberService.getMemberById(any(Long.class))).thenReturn(null);
+        /**
+         * 수정일: 2024/12/31
+         * 수정자: 김주혁
+         * 수정 내용: 기존 내용 주석 처리, memberService.getMemberById() -> memberRepository.findById()
+         */
+//        when(memberService.getMemberById(any(Long.class))).thenReturn(null);
+        when(memberRepository.findById(any(Long.class))).thenThrow(MemberNotFoundException.class);
 
         Assertions.assertThrows(MemberNotFoundException.class, () -> likeService.plusLike(new LikePlusMinusDTO()) );
     }

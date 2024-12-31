@@ -1,15 +1,26 @@
 package com.nhnacademy.taskapi.grade.domain;
 
+import com.nhnacademy.taskapi.grade.dto.GradeResponseDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Entity
 @Table(name = "grades")
 public class Grade {
+
+    /**
+     * 등급 ID
+     * 1: REGULAR
+     * 2: ROYAL
+     * 3: GOLD
+     * 4: PLATINUM
+     */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +39,15 @@ public class Grade {
 
     public static Grade create(String name, int accumulationRate, String description) {
         return new Grade(name, accumulationRate, description);
+    }
+
+    public static Grade from(GradeResponseDto gradeResponseDto) {
+        return new Grade(
+                gradeResponseDto.id(),
+                gradeResponseDto.name(),
+                gradeResponseDto.accumulationRate(),
+                gradeResponseDto.description()
+        );
     }
 
     public void modifyGrade(String name, int accumulationRate, String description) {

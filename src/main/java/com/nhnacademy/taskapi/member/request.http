@@ -131,11 +131,7 @@ Content-type: application/json
 }
 
 ### 테스트용 전체 멤버 조회
-GET http://localhost:8080/task/members/test/joo
-
-### 테스트용 전체 멤버 조회
-GET http://localhost:8080/task/members
-X-MEMBER-ID:
+GET http://localhost:8080/task/members/list?page=0&size=10
 
 ### 중복 회원 가입 검증
 POST http://localhost:8080/task/members

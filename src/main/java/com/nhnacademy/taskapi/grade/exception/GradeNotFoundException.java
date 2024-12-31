@@ -3,7 +3,9 @@ package com.nhnacademy.taskapi.grade.exception;
 
 import jakarta.ws.rs.NotFoundException;
 
-public class GradeNotFoundException extends RuntimeException {
+import java.util.NoSuchElementException;
+
+public class GradeNotFoundException extends NoSuchElementException {
     public GradeNotFoundException(String message) {
         super(message);
     }

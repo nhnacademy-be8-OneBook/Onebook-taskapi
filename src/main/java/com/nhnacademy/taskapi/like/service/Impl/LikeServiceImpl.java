@@ -20,6 +20,12 @@ import java.util.Objects;
 @Transactional(readOnly = true)
 public class LikeServiceImpl implements LikeService {
     private LikeRepository likeRepository;
+    /**
+     * 수정일: 2024/12/31
+     * 수정자: 김주혁
+     * 수정 내용: memberRepository 추가.
+     */
+    private MemberRepository memberRepository;
     private MemberService memberService;
     private BookService bookService;
 
@@ -31,10 +37,21 @@ public class LikeServiceImpl implements LikeService {
         if(Objects.isNull(book)){
             throw new BookNotFoundException("Book Not Found");
         }
-        Member member = memberService.getMemberById(dto.getMemberId());
-        if(Objects.isNull(member)){
-            throw new MemberNotFoundException("Member Not Found");
-        }
+        /**
+         * 수정일: 2024/12/31
+         * 수정자: 김주혁
+         * 수정 내용
+         *  1. 기존 내용 주석 처리
+         *  2. memberService.getMemberById() -> memberRepository.findById()
+         *  3. MemberNotFoundException 를 repo에서 가져오지 못하면 바로 던지게 바꿈.
+         */
+//        Member member = memberService.getMemberById(dto.getMemberId());
+//        if(Objects.isNull(member)){
+//            throw new MemberNotFoundException("Member Not Found");
+//        }
+        Member member = memberRepository.findById(dto.getMemberId()).orElseThrow(
+                ()-> new MemberNotFoundException("Member Not Found by " + dto.getMemberId())
+        );
 
         Like likes = new Like();
         likes.setBook(book);

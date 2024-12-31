@@ -1,7 +1,8 @@
 package com.nhnacademy.taskapi.grade.controller;
 
 import com.nhnacademy.taskapi.grade.domain.Grade;
-import com.nhnacademy.taskapi.grade.dto.GradeModifyDto;
+import com.nhnacademy.taskapi.grade.dto.GradeModifyRequestDto;
+import com.nhnacademy.taskapi.grade.dto.GradeResponseDto;
 import com.nhnacademy.taskapi.grade.service.GradeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,9 +34,9 @@ public class GradeControllerTest {
     @Test
     @DisplayName("GET All Grades")
     void getAllTest() throws Exception {
-        List<Grade> gradeList = Arrays.asList(Grade.create("REGULAR", 1, "test"));
+        List<GradeResponseDto> gradeResponseDtoList = Arrays.asList(new GradeResponseDto(1, "REGULAR", 1, "test"));
 
-        Mockito.when(gradeService.getAllGrades()).thenReturn(gradeList);
+        Mockito.when(gradeService.getAllGrades()).thenReturn(gradeResponseDtoList);
 
         mockMvc.perform(get("/task/grades/list"))
                 .andExpect(status().isOk())
@@ -47,9 +48,9 @@ public class GradeControllerTest {
     @Test
     @DisplayName("GET One Grade")
     void getOneTest() throws Exception {
-        Grade grade = Grade.create("REGULAR", 1, "test");
+        GradeResponseDto gradeResponseDto = new GradeResponseDto(1, "REGULAR", 1, "test");
 
-        Mockito.when(gradeService.getGradeById(Mockito.anyInt())).thenReturn(grade);
+        Mockito.when(gradeService.getGradeById(Mockito.anyInt())).thenReturn(gradeResponseDto);
 
         mockMvc.perform(get("/task/grades/{id}", 1))
                 .andExpect(status().isOk())
@@ -61,9 +62,9 @@ public class GradeControllerTest {
     @Test
     @DisplayName("POST Grade")
     void postTest() throws Exception {
-        Grade grade = Grade.create("REGULAR", 1, "test");
+        GradeResponseDto gradeResponseDto = new GradeResponseDto(1, "REGULAR", 1, "test");
 
-        Mockito.when(gradeService.registerGrade(Mockito.any())).thenReturn(grade);
+        Mockito.when(gradeService.registerGrade(Mockito.any())).thenReturn(gradeResponseDto);
 
         mockMvc.perform(post("/task/grades")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -77,9 +78,9 @@ public class GradeControllerTest {
     @Test
     @DisplayName("PUT Grade")
     void putTest() throws Exception {
-        Grade grade = Grade.create("TEST", 2, "TEST");
+        GradeResponseDto gradeResponseDto = new GradeResponseDto(1, "TEST", 2, "TEST");
 
-        Mockito.when(gradeService.modifyGrade(1, new GradeModifyDto("TEST", 2, "TEST"))).thenReturn(grade);
+        Mockito.when(gradeService.modifyGrade(1, new GradeModifyRequestDto("TEST", 2, "TEST"))).thenReturn(gradeResponseDto);
 
         mockMvc.perform(put("/task/grades/{id}",1)
                         .contentType(MediaType.APPLICATION_JSON)

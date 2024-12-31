@@ -1,26 +1,25 @@
 package com.nhnacademy.taskapi.member.service.impl;
 
+import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.grade.service.GradeService;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.dto.MemberLoginDto;
-import com.nhnacademy.taskapi.member.dto.MemberModifyDto;
-import com.nhnacademy.taskapi.member.dto.MemberRegisterDto;
-import com.nhnacademy.taskapi.member.exception.MemberAlreadyExistsException;
-import com.nhnacademy.taskapi.member.exception.MemberDataIntegrityViolationException;
+import com.nhnacademy.taskapi.member.dto.MemberModifyRequestDto;
+import com.nhnacademy.taskapi.member.dto.MemberRegisterRequestDto;
+import com.nhnacademy.taskapi.member.dto.MemberResponseDto;
 import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.member.service.MemberService;
 
+import com.nhnacademy.taskapi.point.service.PointService;
+import com.nhnacademy.taskapi.roles.domain.Role;
 import com.nhnacademy.taskapi.roles.service.RoleService;
 
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +33,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final GradeService gradeService;
     private final RoleService roleService;
+    private final PointService pointService;
 
     // TODO 쿠폰, 포인트 완성 시 회원가입 수정 필요.
 
@@ -44,27 +44,21 @@ public class MemberServiceImpl implements MemberService {
    // 전체 멤버 반환에 Pagenation 적용.
     @Transactional(readOnly = true)
     @Override
-    public Page<Member> getAllMembers(int page) {
-        if(page < 0) {
-            throw new MemberIllegalArgumentException("Page index must be positive number");
-        }
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Order.desc("createdAt")));
+    public Page<MemberResponseDto> getAllMembers(Pageable pageable) {
+        Page<Member> memberPage = memberRepository.findAll(pageable);
+        Page<MemberResponseDto> result = memberPage.map(MemberResponseDto::from);
 
-        return memberRepository.findAll(pageable);
+        return result;
     }
 
     // 인조키(id)로 멤버 조회
     @Transactional(readOnly = true)
     @Override
-    public Member getMemberById(Long id) {
-        if(!existsById(id)) {
-            throw new MemberIllegalArgumentException("Member id does not exist");
-        }
-
+    public MemberResponseDto getMemberById(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundException("Member not found by id"));
+                .orElseThrow(() -> new MemberNotFoundException("Member not found by " + id));
 
-        return member;
+        return MemberResponseDto.from(member);
     }
 
     /**
@@ -75,16 +69,14 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     @Override
     public Member getMemberByLoginId(String loginId) {
-        return memberRepository.findByLoginId(loginId).orElseThrow(() -> new MemberNotFoundException("Member not found by loginId"));
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new MemberNotFoundException("Member not found by " + loginId));
+        return member;
     }
 
     // memberId로 loginId 조회.
     @Transactional(readOnly = true)
     @Override
     public String getLoginIdById(Long id) {
-        if(!existsById(id)) {
-            throw new MemberIllegalArgumentException("Member id does not exist");
-        }
         return memberRepository.getLoginIdById(id).orElseThrow(() -> new MemberNotFoundException("Member not found by memberId"));
     }
 
@@ -105,70 +97,86 @@ public class MemberServiceImpl implements MemberService {
 
     // 회원 정보 저장 - 회원 가입
     @Override
-    public Member registerMember(MemberRegisterDto memberRegisterDto) {
-        if(existsByLoginId(memberRegisterDto.loginId())) {
-            throw new MemberAlreadyExistsException("Already exists loginID");
+    public MemberResponseDto registerMember(MemberRegisterRequestDto memberRegisterRequestDto) {
+        if(memberRepository.existsByLoginId(memberRegisterRequestDto.loginId())) {
+            throw new MemberIllegalArgumentException("Already exists loginID");
         }
 
         // password 해시 암호화
-        String HashedPassword = BCrypt.hashpw(memberRegisterDto.password(), BCrypt.gensalt());
+        String HashedPassword = BCrypt.hashpw(memberRegisterRequestDto.password(), BCrypt.gensalt());
 
         Member member = Member.createNewMember(
-                gradeService.getDefaultGrade(),
-                memberRegisterDto.name(),
-                memberRegisterDto.loginId(),
+                Grade.from(gradeService.getDefaultGrade()),
+                memberRegisterRequestDto.name(),
+                memberRegisterRequestDto.loginId(),
                 HashedPassword,
-                memberRegisterDto.dateOfBirth(),
-                memberRegisterDto.gender(),
-                memberRegisterDto.email(),
-                memberRegisterDto.phoneNumber(),
-                roleService.getRoleById(1) // Role Id: 1은 무조건 MEMBER
+                memberRegisterRequestDto.dateOfBirth(),
+                memberRegisterRequestDto.gender(),
+                memberRegisterRequestDto.email(),
+                memberRegisterRequestDto.phoneNumber(),
+                Role.from(roleService.getDefaultRole())
         );
 
         try {
 
-            return memberRepository.save(member);
+            Member result = memberRepository.save(member);
+            pointService.registerMemberPoints(result);
+            // TODO 회원가입시 Welcome 쿠폰 제공.
+            return MemberResponseDto.from(result);
 
         }catch(DataIntegrityViolationException e) {
-            throw new MemberDataIntegrityViolationException("Failed to save member in the database");
+            throw new MemberIllegalArgumentException("Failed to save member in the database: Invalid format");
         }
 
     }
 
     // 회원 정보 수정
     @Override
-    public Member modifyMember(Long memberId, MemberModifyDto memberModifyDto) {
-       Member member = getMemberById(memberId);
+    public MemberResponseDto modifyMember(Long memberId, MemberModifyRequestDto memberModifyRequestDto) {
+       Member member = memberRepository.findById(memberId).orElseThrow(()-> new MemberNotFoundException("Not Found Member by " + memberId));
 
-       if(BCrypt.checkpw(memberModifyDto.password() ,member.getPassword())) {
+       // 비밀번호 암호화
+       if(BCrypt.checkpw(memberModifyRequestDto.password() ,member.getPassword())) {
            member.modifyMember(
-                   memberModifyDto.name(),
-                   memberModifyDto.password(),
-                   memberModifyDto.email(),
-                   memberModifyDto.phoneNumber()
+                   memberModifyRequestDto.name(),
+                   memberModifyRequestDto.password(),
+                   memberModifyRequestDto.email(),
+                   memberModifyRequestDto.phoneNumber()
            );
        } else {
-           String HashedPassword = BCrypt.hashpw(memberModifyDto.password(), BCrypt.gensalt());
+           String HashedPassword = BCrypt.hashpw(memberModifyRequestDto.password(), BCrypt.gensalt());
            member.modifyMember(
-                   memberModifyDto.name(),
+                   memberModifyRequestDto.name(),
                    HashedPassword,
-                   memberModifyDto.email(),
-                   memberModifyDto.phoneNumber()
+                   memberModifyRequestDto.email(),
+                   memberModifyRequestDto.phoneNumber()
            );
        }
 
-       return member;
-
+       return MemberResponseDto.from(member);
     }
 
 
     // 회원 탈퇴 - 상태만 'DELETED' 로 변경.
     @Override
     public void removeMember(Long memberId) {
-        Member member = getMemberById(memberId);
-
+        Member member = memberRepository.findById(memberId).orElseThrow(()-> new MemberIllegalArgumentException("Member Not Found by " + memberId));
         member.setStatus(Member.Status.DELETED);
+    }
 
+    // 회원 상태 변경
+    @Override
+    public void changeStatusToActivation(Long memberId, String status) {
+        Member member = memberRepository.findById(memberId).orElseThrow(()-> new MemberNotFoundException("Member Not Found by " + memberId));
+
+        switch(status) {
+            case "ACTIVE":
+                member.setStatus(Member.Status.ACTIVE);
+                break;
+            case "SUSPENDED":
+                member.setStatus(Member.Status.SUSPENDED);
+                break;
+        }
     }
 
     // 로그인
@@ -195,6 +203,7 @@ public class MemberServiceImpl implements MemberService {
             throw new MemberIllegalArgumentException("Member status is SUSPENDED");
         }
 
+        // 휴면일 경우 인증해야 하므로 인증 후 front에서 다시 상태 변경 요청을 하도록 함.
 //        if(member.getStatus().equals(Member.Status.INACTIVE)) {
 //            member.setStatus(Member.Status.ACTIVE);
 //        }
