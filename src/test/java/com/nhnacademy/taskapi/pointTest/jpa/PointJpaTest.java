@@ -114,5 +114,4 @@ class PointJpaTest {
         assertEquals(1000, result.get().getAmount(), "Expected pointCurrent to be 1000");
         verify(pointRepository, times(1)).findByMember_Id(1L);
     }
-
 }

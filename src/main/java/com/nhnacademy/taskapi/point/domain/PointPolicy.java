@@ -106,7 +106,6 @@ public class PointPolicy {
         this.pointPolicyCreatedAt = pointPolicyCreatedAt;
 
     }
-
     public void updatePointPolicyUpdatedAt(LocalDateTime pointPolicyUpdatedAt) {
         this.pointPolicyUpdatedAt = pointPolicyUpdatedAt;
     }

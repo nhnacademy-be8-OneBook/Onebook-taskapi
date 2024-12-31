@@ -109,4 +109,5 @@ class PointRequestTest {
         assertTrue(pointPolicy.isPointPolicyState()); // 기본값 true 확인
         assertNotNull(pointPolicy.getPointPolicyCreatedAt()); // 현재 시간인지 확인 (null이 아니어야 함)
     }
+
 }

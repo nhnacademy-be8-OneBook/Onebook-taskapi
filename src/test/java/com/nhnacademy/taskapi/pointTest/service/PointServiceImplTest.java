@@ -102,4 +102,5 @@ class PointServiceImplTest {
         verify(pointRepository, times(1)).save(any(Point.class)); // 포인트 저장이 호출되었는지
         verify(pointLogRepository, times(1)).save(any(PointLog.class)); // 포인트 로그도 저장되었는지 확인
     }
+
 }
