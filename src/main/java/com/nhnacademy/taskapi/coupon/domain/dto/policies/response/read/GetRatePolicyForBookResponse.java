@@ -30,7 +30,7 @@ public class GetRatePolicyForBookResponse {
                 ratePolicyForBook.getRatePolicyForBookId(),
                 ratePolicyForBook.getDiscountRate(),
                 ratePolicyForBook.getMinimumOrderAmount(),
-                ratePolicyForBook.getMaximumDiscountRate(),
+                ratePolicyForBook.getMaximumDiscountPrice(),
                 ratePolicyForBook.getExpirationPeriodStart(),
                 ratePolicyForBook.getExpirationPeriodEnd(),
                 ratePolicyForBook.getName(),

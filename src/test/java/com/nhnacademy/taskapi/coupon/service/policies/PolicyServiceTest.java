@@ -23,6 +23,7 @@ import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForCatego
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForBook;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForCategory;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.PolicyStatus;
+import com.nhnacademy.taskapi.coupon.exception.PolicyNotFoundException;
 import com.nhnacademy.taskapi.coupon.exception.PolicyStatusNotFoundException;
 import com.nhnacademy.taskapi.coupon.repository.policies.PricePoliciesForBookRepository;
 import com.nhnacademy.taskapi.coupon.repository.policies.PricePoliciesForCategoryRepository;
@@ -884,7 +885,7 @@ class PolicyServiceTest {
                         ratePolicyForBook,
                         i);
                 ReflectionUtils.setField(
-                        ratePolicyForBook.getClass().getDeclaredField("maximumDiscountRate"),
+                        ratePolicyForBook.getClass().getDeclaredField("maximumDiscountPrice"),
                         ratePolicyForBook,
                         i);
                 ReflectionUtils.setField(
@@ -959,7 +960,7 @@ class PolicyServiceTest {
                        ratePolicyForCategory,
                         i);
                 ReflectionUtils.setField(
-                       ratePolicyForCategory.getClass().getDeclaredField("maximumDiscountRate"),
+                       ratePolicyForCategory.getClass().getDeclaredField("maximumDiscountPrice"),
                        ratePolicyForCategory,
                         i);
                 ReflectionUtils.setField(
@@ -1147,6 +1148,278 @@ class PolicyServiceTest {
                 .findAll(Mockito.any(Pageable.class));
 
         Assertions.assertEquals(expected,actual);
-
     }
+
+    @Test
+    @DisplayName("정률정책 for Book 개별조회 - 정상동작")
+    void getRatePolicyForBookTest() throws NoSuchFieldException {
+
+        RatePolicyForBook ratePolicyForBook = new RatePolicyForBook();
+        for(Field field : ratePolicyForBook.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("ratePolicyForBookId"),
+                ratePolicyForBook,
+                0L);
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("discountRate"),
+                ratePolicyForBook,
+                0);
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("minimumOrderAmount"),
+                ratePolicyForBook,
+                10000);
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("maximumDiscountPrice"),
+                ratePolicyForBook,
+                10);
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("expirationPeriodStart"),
+                ratePolicyForBook,
+                LocalDateTime.of(2024,1,1,1,1));
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("expirationPeriodEnd"),
+                ratePolicyForBook,
+                LocalDateTime.of(2024,1,10,1,1));
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("name"),
+                ratePolicyForBook,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("description"),
+                ratePolicyForBook,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("book"),
+                ratePolicyForBook,
+                book);
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("policyStatus"),
+                ratePolicyForBook,
+                policyStatus);
+
+        Mockito.when(ratePoliciesForBookRepository.findById(0L)).thenReturn(Optional.of(ratePolicyForBook));
+        GetRatePolicyForBookResponse expected = GetRatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook);
+        GetRatePolicyForBookResponse actual = policyService.getRatePolicyForBook(0L);
+
+        Mockito.verify(ratePoliciesForBookRepository, Mockito.times(1) ).findById(0L);
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    @DisplayName("정률정책 for Book 개별조회 - 정책 ID가 존재하지 않을때")
+    void getRatePolicyForBookWhenPolicyNotFoundTest() throws NoSuchFieldException {
+
+        Mockito.when(ratePoliciesForBookRepository.findById(0L)).thenThrow(PolicyNotFoundException.class);
+
+        Assertions.assertThrows(PolicyNotFoundException.class, ()->{
+            policyService.getRatePolicyForBook(0L);
+        });
+
+        Mockito.verify(ratePoliciesForBookRepository, Mockito.times(1) ).findById(0L);
+    }
+
+    @Test
+    @DisplayName("정률정책 for Category 개별조회 - 정상동작")
+    void getRatePolicyForCategoryTest() throws NoSuchFieldException {
+
+        RatePolicyForCategory ratePolicyForCategory = new RatePolicyForCategory();
+        for(Field field : ratePolicyForCategory.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("ratePolicyForCategoryId"),
+                ratePolicyForCategory,
+                0L);
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("discountRate"),
+                ratePolicyForCategory,
+                0);
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("minimumOrderAmount"),
+                ratePolicyForCategory,
+                10000);
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("maximumDiscountPrice"),
+                ratePolicyForCategory,
+                10);
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("expirationPeriodStart"),
+                ratePolicyForCategory,
+                LocalDateTime.of(2024,1,1,1,1));
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("expirationPeriodEnd"),
+                ratePolicyForCategory,
+                LocalDateTime.of(2024,1,10,1,1));
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("name"),
+                ratePolicyForCategory,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("description"),
+                ratePolicyForCategory,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("category"),
+                ratePolicyForCategory,
+                category);
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("policyStatus"),
+                ratePolicyForCategory,
+                policyStatus);
+
+        Mockito.when(ratePoliciesForCategoryRepository.findById(0L)).thenReturn(Optional.of(ratePolicyForCategory));
+        GetRatePolicyForCategoryResponse expected = GetRatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory);
+        GetRatePolicyForCategoryResponse actual = policyService.getRatePolicyForCategory(0L);
+
+        Mockito.verify(ratePoliciesForCategoryRepository, Mockito.times(1) ).findById(0L);
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    @DisplayName("정률정책 for Category 개별조회 - 정책 ID가 존재하지 않을때")
+    void getRatePolicyForCategoryWhenPolicyNotFoundTest() throws NoSuchFieldException {
+
+        Mockito.when(ratePoliciesForCategoryRepository.findById(0L)).thenThrow(PolicyNotFoundException.class);
+
+        Assertions.assertThrows(PolicyNotFoundException.class, ()->{
+            policyService.getRatePolicyForCategory(0L);
+        });
+
+        Mockito.verify(ratePoliciesForCategoryRepository, Mockito.times(1) ).findById(0L);
+    }
+
+    @Test
+    @DisplayName("정액정책 for Book 개별조회 - 정상동작")
+    void getPricePolicyForBookTest() throws NoSuchFieldException {
+
+        PricePolicyForBook pricePolicyForBook = new PricePolicyForBook();
+        for(Field field : pricePolicyForBook.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("pricePolicyForBookId"),
+                pricePolicyForBook,
+                0L);
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("minimumOrderAmount"),
+                pricePolicyForBook,
+                10000);
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("discountPrice"),
+                pricePolicyForBook,
+                1000);
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("expirationPeriodStart"),
+                pricePolicyForBook,
+                LocalDateTime.of(2024,1,1,1,1));
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("expirationPeriodEnd"),
+                pricePolicyForBook,
+                LocalDateTime.of(2024,1,10,1,1));
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("name"),
+                pricePolicyForBook,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("description"),
+                pricePolicyForBook,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("book"),
+                pricePolicyForBook,
+                book);
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("policyStatus"),
+                pricePolicyForBook,
+                policyStatus);
+
+        Mockito.when(pricePoliciesForBookRepository.findById(0L)).thenReturn(Optional.of(pricePolicyForBook));
+        GetPricePolicyForBookResponse expected = GetPricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook);
+        GetPricePolicyForBookResponse actual = policyService.getPricePolicyForBook(0L);
+
+        Mockito.verify(pricePoliciesForBookRepository, Mockito.times(1) ).findById(0L);
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    @DisplayName("정액정책 for Book 개별조회 - 정책 ID가 존재하지 않을때")
+    void getPricePolicyForBookWhenPolicyNotFoundTest() throws NoSuchFieldException {
+
+        Mockito.when(pricePoliciesForBookRepository.findById(0L)).thenThrow(PolicyNotFoundException.class);
+
+        Assertions.assertThrows(PolicyNotFoundException.class, ()->{
+            policyService.getPricePolicyForBook(0L);
+        });
+
+        Mockito.verify(pricePoliciesForBookRepository, Mockito.times(1) ).findById(0L);
+    }
+
+    @Test
+    @DisplayName("정액정책 for Category 개별조회 - 정상동작")
+    void getPricePolicyForCategoryTest() throws NoSuchFieldException {
+
+        PricePolicyForCategory pricePolicyForCategory = new PricePolicyForCategory();
+        for(Field field : pricePolicyForCategory.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("pricePolicyForCategoryId"),
+                pricePolicyForCategory,
+                0L);
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("minimumOrderAmount"),
+                pricePolicyForCategory,
+                10000);
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("discountPrice"),
+                pricePolicyForCategory,
+                1000);
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("expirationPeriodStart"),
+                pricePolicyForCategory,
+                LocalDateTime.of(2024,1,1,1,1));
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("expirationPeriodEnd"),
+                pricePolicyForCategory,
+                LocalDateTime.of(2024,1,10,1,1));
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("name"),
+                pricePolicyForCategory,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("description"),
+                pricePolicyForCategory,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("category"),
+                pricePolicyForCategory,
+                category);
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("policyStatus"),
+                pricePolicyForCategory,
+                policyStatus);
+
+        Mockito.when(pricePoliciesForCategoryRepository.findById(0L)).thenReturn(Optional.of(pricePolicyForCategory));
+        GetPricePolicyForCategoryResponse expected = GetPricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory);
+        GetPricePolicyForCategoryResponse actual = policyService.getPricePolicyForCategory(0L);
+
+        Mockito.verify(pricePoliciesForCategoryRepository, Mockito.times(1) ).findById(0L);
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    @DisplayName("정액정책 for Category 개별조회 - 정책 ID가 존재하지 않을때")
+    void getPricePolicyForCategoryWhenPolicyNotFoundTest() throws NoSuchFieldException {
+
+        Mockito.when(pricePoliciesForCategoryRepository.findById(0L)).thenThrow(PolicyNotFoundException.class);
+
+        Assertions.assertThrows(PolicyNotFoundException.class, ()->{
+            policyService.getPricePolicyForCategory(0L);
+        });
+
+        Mockito.verify(pricePoliciesForCategoryRepository, Mockito.times(1) ).findById(0L);
+    }
+
 }

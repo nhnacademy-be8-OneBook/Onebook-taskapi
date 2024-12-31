@@ -15,21 +15,13 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 public class AddPricePolicyForCategoryResponse {
 
-    @NotNull
     private Integer minimumOrderAmount;
-    @NotNull
     private Integer discountPrice;
-    @NotNull
     private LocalDateTime expirationPeriodStart;
-    @NotNull
     private LocalDateTime expirationPeriodEnd;
-    @NotNull
     private String name;
-    @NotNull
     private String description;
-    @NotNull
     private Integer categoryId;
-    @NotNull
     private Integer policyStatusId;
 
     public static AddPricePolicyForCategoryResponse changeEntityToDto(PricePolicyForCategory pricePolicyForCategory){

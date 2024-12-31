@@ -20,6 +20,7 @@ import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddRate
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForBook;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForBook;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForCategory;
+import com.nhnacademy.taskapi.coupon.exception.PolicyNotFoundException;
 import com.nhnacademy.taskapi.coupon.exception.PolicyStatusNotFoundException;
 import com.nhnacademy.taskapi.coupon.repository.policies.PricePoliciesForBookRepository;
 import com.nhnacademy.taskapi.coupon.repository.policies.PricePoliciesForCategoryRepository;
@@ -168,6 +169,38 @@ public class PolicyService {
         }
 
         return result;
+    }
+
+    // 정률정책 for Book read (one)
+    public GetRatePolicyForBookResponse getRatePolicyForBook(Long id){
+
+        RatePolicyForBook ratePolicyForBook = ratePoliciesForBookRepository.findById(id)
+                .orElseThrow(() ->new PolicyNotFoundException("해당하는 ID의 정책이 존재하지 않습니다"));
+        return GetRatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook);
+    }
+
+    // 정률정책 for Category read (one)
+    public GetRatePolicyForCategoryResponse getRatePolicyForCategory(Long id){
+
+        RatePolicyForCategory ratePolicyForCategory = ratePoliciesForCategoryRepository.findById(id)
+                .orElseThrow(()->new PolicyNotFoundException("해당하는 ID의 정책이 존재하지 않습니다"));
+        return GetRatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory);
+    }
+
+    // 정액정책 for Book read (one)
+    public GetPricePolicyForBookResponse getPricePolicyForBook(Long id){
+
+        PricePolicyForBook pricePolicyForBook = pricePoliciesForBookRepository.findById(id)
+                .orElseThrow(()->new PolicyNotFoundException("해당하는 ID의 정책이 존재하지 않습니다"));
+        return GetPricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook);
+    }
+
+    // 정액정책 for Category read (one)
+    public GetPricePolicyForCategoryResponse getPricePolicyForCategory(Long id){
+
+        PricePolicyForCategory pricePolicyForCategory = pricePoliciesForCategoryRepository.findById(id)
+                .orElseThrow(()->new PolicyNotFoundException("해당하는 ID의 정책이 존재하지 않습니다"));
+        return GetPricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory);
     }
 
 }

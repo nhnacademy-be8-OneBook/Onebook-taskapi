@@ -93,4 +93,11 @@ class RatePoliciesForCategoryRepositoryTest {
         ratePoliciesForCategoryRepository.findAll(pageable);
     }
 
+    @Test
+    @DisplayName("ratePolicyCategory - findById - 동작테스트")
+    void findByIdTest(){
+
+        ratePoliciesForCategoryRepository.findById(0L);
+    }
+
 }
