@@ -2,7 +2,9 @@ package com.nhnacademy.taskapi.roles.exception;
 
 import jakarta.ws.rs.NotFoundException;
 
-public class RoleNotFoundException extends RuntimeException {
+import java.util.NoSuchElementException;
+
+public class RoleNotFoundException extends NoSuchElementException {
   public RoleNotFoundException(String message) {
     super(message);
   }

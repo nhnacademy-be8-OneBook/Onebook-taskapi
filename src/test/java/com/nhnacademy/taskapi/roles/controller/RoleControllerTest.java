@@ -1,8 +1,9 @@
 package com.nhnacademy.taskapi.roles.controller;
 
 import com.nhnacademy.taskapi.roles.domain.Role;
-import com.nhnacademy.taskapi.roles.dto.RoleModifyDto;
-import com.nhnacademy.taskapi.roles.dto.RoleRegisterDto;
+import com.nhnacademy.taskapi.roles.dto.RoleModifyRequestDto;
+import com.nhnacademy.taskapi.roles.dto.RoleRegisterRequestDto;
+import com.nhnacademy.taskapi.roles.dto.RoleResponseDto;
 import com.nhnacademy.taskapi.roles.service.RoleService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -36,9 +37,11 @@ public class RoleControllerTest {
     @Test
     @DisplayName("GET All Roles")
     void getAllTest() throws Exception {
-        List<Role> roleList = Arrays.asList(Role.createRole("MEMBER", "일반 회원"));
+        List<RoleResponseDto> roleResponseDtoList = new ArrayList<>();
+        RoleResponseDto roleResponseDto = new RoleResponseDto(1, "MEMBER", "일반 회원");
+        roleResponseDtoList.add(roleResponseDto);
 
-        Mockito.when(roleService.getAllRoles()).thenReturn(roleList);
+        Mockito.when(roleService.getAllRoles()).thenReturn(roleResponseDtoList);
 
         mockMvc.perform(get("/task/roles"))
                 .andExpect(status().isOk())
@@ -49,9 +52,9 @@ public class RoleControllerTest {
     @Test
     @DisplayName("GET One Role")
     void getOneTest() throws Exception {
-        Role role = Role.createRole("MEMBER", "일반 회원");
+        RoleResponseDto roleResponseDto = new RoleResponseDto(1, "MEMBER", "일반 회원");
 
-        Mockito.when(roleService.getRoleById(1)).thenReturn(role);
+        Mockito.when(roleService.getRoleById(1)).thenReturn(roleResponseDto);
 
         mockMvc.perform(get("/task/roles/{id}",1))
                 .andExpect(status().isOk())
@@ -62,9 +65,9 @@ public class RoleControllerTest {
     @Test
     @DisplayName("POST Role")
     void createTest() throws Exception {
-        Role role = Role.createRole("MEMBER", "일반 회원");
+        RoleResponseDto roleResponseDto = new RoleResponseDto(1, "MEMBER", "일반 회원");
 
-        Mockito.when(roleService.registerRole(new RoleRegisterDto("MEMBER", "일반 회원"))).thenReturn(role);
+        Mockito.when(roleService.registerRole(new RoleRegisterRequestDto("MEMBER", "일반 회원"))).thenReturn(roleResponseDto);
 
         mockMvc.perform(post("/task/roles")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -77,9 +80,9 @@ public class RoleControllerTest {
     @Test
     @DisplayName("PUT Role")
     void updateTest() throws Exception {
-        Role role = Role.createRole("ADMIN", "관리자");
+        RoleResponseDto roleResponseDto = new RoleResponseDto(2, "ADMIN", "관리자");
 
-        Mockito.when(roleService.modifyRole(1, new RoleModifyDto("ADMIN", "관리자"))).thenReturn(role);
+        Mockito.when(roleService.modifyRole(1, new RoleModifyRequestDto("ADMIN", "관리자"))).thenReturn(roleResponseDto);
 
         mockMvc.perform(put("/task/roles/{id}",1)
                         .contentType(MediaType.APPLICATION_JSON)

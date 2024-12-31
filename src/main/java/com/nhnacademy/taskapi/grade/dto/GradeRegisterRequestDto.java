@@ -3,7 +3,7 @@ package com.nhnacademy.taskapi.grade.dto;
 
 import jakarta.validation.constraints.*;
 
-public record GradeRegisterDto(
+public record GradeRegisterRequestDto(
 
         @NotBlank(message="등급 이름은 필수 입력 항목입니다.")
         @Size(max=10, message = "등급 이름은 10자 이하로 입력 가능합니다.")

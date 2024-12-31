@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.member.controller;
 
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.member.domain.Member;
+import com.nhnacademy.taskapi.member.dto.MemberResponseDto;
 import com.nhnacademy.taskapi.member.service.MemberService;
 import com.nhnacademy.taskapi.roles.domain.Role;
 import org.junit.jupiter.api.DisplayName;
@@ -44,10 +45,11 @@ public class MemberControllerTest {
         List<Member> memberList = List.of(member);
         Pageable pageable = PageRequest.of(0, 10);
         Page<Member> memberPage = new PageImpl<>(memberList, pageable, memberList.size());
+        Page<MemberResponseDto> result = memberPage.map(MemberResponseDto::from);
 
-        Mockito.when(memberService.getAllMembers(0)).thenReturn(memberPage);
+        Mockito.when(memberService.getAllMembers(pageable)).thenReturn(result);
 
-        mockMvc.perform(get("/task/members/list"))
+        mockMvc.perform(get("/task/members/list?page=0&size=10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalPages").value(1))
                 .andExpect(jsonPath("$.size").value(10))
@@ -65,8 +67,9 @@ public class MemberControllerTest {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
         Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        MemberResponseDto result = MemberResponseDto.from(member);
 
-        Mockito.when(memberService.getMemberById(Mockito.anyLong())).thenReturn(member);
+        Mockito.when(memberService.getMemberById(Mockito.anyLong())).thenReturn(result);
 
         mockMvc.perform(get("/task/members")
                         .header("X-MEMBER-ID", "1"))
@@ -85,8 +88,9 @@ public class MemberControllerTest {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
         Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        MemberResponseDto result = MemberResponseDto.from(member);
 
-        Mockito.when(memberService.registerMember(Mockito.any())).thenReturn(member);
+        Mockito.when(memberService.registerMember(Mockito.any())).thenReturn(result);
 
         mockMvc.perform(post("/task/members")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -114,8 +118,9 @@ public class MemberControllerTest {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
         Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        MemberResponseDto result = MemberResponseDto.from(member);
 
-        Mockito.when(memberService.modifyMember(Mockito.any(), Mockito.any())).thenReturn(member);
+        Mockito.when(memberService.modifyMember(Mockito.any(), Mockito.any())).thenReturn(result);
 
         mockMvc.perform(put("/task/members")
                         .header("X-MEMBER-ID", 1L)

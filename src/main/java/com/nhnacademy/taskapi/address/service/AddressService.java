@@ -12,6 +12,8 @@ import com.nhnacademy.taskapi.address.exception.InvalidMemberAddressException;
 import com.nhnacademy.taskapi.address.exception.MemberAddressNotFoundException;
 import com.nhnacademy.taskapi.address.repository.AddressRepository;
 import com.nhnacademy.taskapi.member.domain.Member;
+import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
+import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.member.service.MemberService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +28,23 @@ public class AddressService {
 
     private final AddressRepository addressRepository;
     private final MemberService memberService;
+    /**
+     * 수정일: 2024/12/31
+     * 수정자: 김주혁
+     * 수정 내용: memberRepository 추가.
+     */
+    private final MemberRepository memberRepository;
 
     public AddMemberAddressResponse addMemberAddress(Long memberId, AddMemberAddressRequest memberAddressRequest){
         // memberId null 체크, memberAddressRequest null 체크는 컨트롤러에서
 
-        Member member = memberService.getMemberById(memberId);
+        /**
+         * 수정일: 2024/12/31
+         * 수정자: 김주혁
+         * 수정 내용: 기존 내용 주석처리, memberService.getMemberById() -> memberRepository.findById()
+         */
+        Member member = memberRepository.findById(memberId).orElseThrow(()-> new MemberNotFoundException("Member Not Found by " + memberId));
+//        Member member = memberService.getMemberById(memberId);
         MemberAddress memberAddress = MemberAddress.createMemberAddress(member, memberAddressRequest);
         addressRepository.save(memberAddress);
 
@@ -52,7 +66,13 @@ public class AddressService {
 
     public List<GetMemberAddressResponse> getMemberAddresses(Long memberId){
 
-        Member member = memberService.getMemberById(memberId);
+        /**
+         * 수정일: 2024/12/31
+         * 수정자: 김주혁
+         * 수정 내용: 기존 내용 주석 처리, memberService.getMemberById() -> memberRepository.findById()
+         */
+        Member member = memberRepository.findById(memberId).orElseThrow(()-> new MemberNotFoundException("Member Not Found by " + memberId));
+//        Member member = memberService.getMemberById(memberId);
         List<GetMemberAddressResponse> resp = new ArrayList<>();
 
         for(MemberAddress memberAddress :  addressRepository.findMemberAddressByMember(member)){

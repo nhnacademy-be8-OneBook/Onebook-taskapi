@@ -9,6 +9,7 @@ import com.nhnacademy.taskapi.address.exception.MemberAddressNotFoundException;
 import com.nhnacademy.taskapi.address.repository.AddressRepository;
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.member.domain.Member;
+import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.member.service.MemberService;
 import com.nhnacademy.taskapi.roles.domain.Role;
 import org.junit.jupiter.api.*;
@@ -29,6 +30,14 @@ class AddressServiceTest {
 
     @Mock
     private MemberService memberService;
+
+    /**
+     * 수정일: 2024/12/31
+     * 수정자: 김주혁
+     * 수정 내용: memberRepository 추가.
+     */
+    @Mock
+    private MemberRepository memberRepository;
 
     @Mock
     private AddressRepository addressRepository;
@@ -161,9 +170,19 @@ class AddressServiceTest {
     @DisplayName("addMemberAddress 메서드 동작 테스트")
     @Order(1)
     void addMemberAddressTest(){
-        Mockito.when(memberService.getMemberById(member.getId())).thenReturn(member);
+        /**
+         * 수정일: 2024/12/31
+         * 수정자: 김주혁
+         * 수정 내용
+         *  1. 기존 내용 주석처리
+         *  2. memberRepository로 member return.
+         *  3. Mockito.verify를 memberService -> memberRepository로 변경.
+         */
+        Mockito.when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
+//        Mockito.when(memberService.getMemberById(member.getId())).thenReturn(member);
         addressService.addMemberAddress(1L, addMemberAddressRequest);
-        Mockito.verify(memberService, Mockito.times(1)).getMemberById(member.getId());
+//        Mockito.verify(memberService, Mockito.times(1)).getMemberById(member.getId());
+        Mockito.verify(memberRepository, Mockito.times(1)).findById(member.getId());
 
     }
 
@@ -211,7 +230,13 @@ class AddressServiceTest {
     @Order(5)
     void getMemberAddressesTest() {
 
-        Mockito.when(memberService.getMemberById(member.getId())).thenReturn(member);
+        /**
+         * 수정일: 2024/12/31
+         * 수정자: 김주혁
+         * 수정 내용: 기존 내용 주석처리, memberRepository로 member return.
+         */
+        Mockito.when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
+//        Mockito.when(memberService.getMemberById(member.getId())).thenReturn(member);
         Mockito.when(addressRepository.findMemberAddressByMember(member)).thenReturn(List.of(memberAddress));
 
         addressService.getMemberAddresses(member.getId());
