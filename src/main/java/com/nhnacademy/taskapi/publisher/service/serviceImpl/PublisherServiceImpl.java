@@ -12,6 +12,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -83,6 +84,17 @@ public class PublisherServiceImpl implements PublisherService {
             throw new PublisherNotFoundException("This Publisher Not Exist !");
         }
         return publisher;
+    }
+
+    @Override
+    public List<Publisher> getPublisherList(String name){
+        if(Objects.isNull(name) || name.trim().isEmpty()){
+            throw new InvalidPublisherNameException("PublisherName is Null OR Empty !");
+        }
+
+        List<Publisher> publisherList = publisherRepository.findAllByName(name);
+        return publisherList;
+
     }
 
 
