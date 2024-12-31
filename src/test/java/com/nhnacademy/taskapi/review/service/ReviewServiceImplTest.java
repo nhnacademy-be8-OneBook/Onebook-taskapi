@@ -1,13 +1,12 @@
 package com.nhnacademy.taskapi.review.service;
 
 import com.nhnacademy.taskapi.book.domain.Book;
-import com.nhnacademy.taskapi.book.exception.BookNotFoundException;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.domain.Member.Gender;
 import com.nhnacademy.taskapi.member.domain.Member.Status;
-import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
+import com.nhnacademy.taskapi.review.exception.InvalidReviewException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.point.domain.Point;
 import com.nhnacademy.taskapi.point.domain.PointLog;
@@ -17,7 +16,6 @@ import com.nhnacademy.taskapi.review.domain.Review;
 import com.nhnacademy.taskapi.review.dto.ReviewRequest;
 import com.nhnacademy.taskapi.review.dto.ReviewResponse;
 import com.nhnacademy.taskapi.review.exception.ImageLimitExceededException;
-import com.nhnacademy.taskapi.review.exception.InvalidReviewException;
 import com.nhnacademy.taskapi.review.exception.ReviewAlreadyExistsException;
 import com.nhnacademy.taskapi.review.repository.ReviewImageRepository;
 import com.nhnacademy.taskapi.review.repository.ReviewRepository;
@@ -80,13 +78,13 @@ class ReviewServiceImplTest {
         memberRole = Role.createRole("MEMBER", "내 돈줄");
         Field memberRoleIdField = Role.class.getDeclaredField("id");
         memberRoleIdField.setAccessible(true);
-        memberRoleIdField.set(memberRole, 1);
+        memberRoleIdField.set(memberRole, 1); // ID를 Long 타입으로 설정
 
         // ADMIN Role 생성
         adminRole = Role.createRole("ADMIN", "Administrator role");
         Field adminRoleIdField = Role.class.getDeclaredField("id");
         adminRoleIdField.setAccessible(true);
-        adminRoleIdField.set(adminRole, 2);
+        adminRoleIdField.set(adminRole, 2); // ID를 Long 타입으로 설정
 
         // Member(일반 사용자) 객체 생성
         member = Member.createNewMember(
@@ -155,7 +153,7 @@ class ReviewServiceImplTest {
     @Test
     void testRegisterReviewSuccess() {
         // Given
-        ReviewRequest request = new ReviewRequest(1L, 1L, 5, "개추", List.of("img1", "img2"));
+        ReviewRequest request = new ReviewRequest(5, "개추", List.of("img1", "img2")); // memberId 제거
         given(memberRepository.findById(1L)).willReturn(Optional.of(member));
         given(bookRepository.findById(1L)).willReturn(Optional.of(book));
         given(reviewRepository.findByMemberAndBook(member, book)).willReturn(Optional.empty());
@@ -169,8 +167,9 @@ class ReviewServiceImplTest {
         Point mockPoint = Mockito.mock(Point.class);
         given(pointRepository.findByMember_Id(1L)).willReturn(Optional.of(mockPoint));
 
+
         // When
-        ReviewResponse response = reviewService.registerReview(1L, request);
+        ReviewResponse response = reviewService.registerReview(1L, 1L, request); // memberId 별도 전달
 
         // Then
         assertEquals(100L, response.getReviewId());
@@ -185,6 +184,7 @@ class ReviewServiceImplTest {
         verify(pointRepository, times(1)).findByMember_Id(1L);
         verify(pointRepository, times(1)).save(any(Point.class));
         verify(pointLogRepository, times(1)).save(any(PointLog.class));
+
     }
 
     /**
@@ -198,14 +198,14 @@ class ReviewServiceImplTest {
     @Test
     void testRegisterReviewAlreadyExists() {
         // Given
-        ReviewRequest request = new ReviewRequest(1L, 1L, 5, "개추", null);
+        ReviewRequest request = new ReviewRequest(5, "개추", null); // memberId 제거
         given(memberRepository.findById(1L)).willReturn(Optional.of(member));
         given(bookRepository.findById(1L)).willReturn(Optional.of(book));
         given(reviewRepository.findByMemberAndBook(member, book)).willReturn(Optional.of(review));
 
         // When/Then
         ReviewAlreadyExistsException exception = assertThrows(ReviewAlreadyExistsException.class, () -> {
-            reviewService.registerReview(1L, request);
+            reviewService.registerReview(1L, 1L, request); // memberId 별도 전달
         });
         assertEquals("이미 해당 도서에 대한 리뷰를 작성하셨습니다.", exception.getMessage());
     }
@@ -215,19 +215,19 @@ class ReviewServiceImplTest {
      * 조건:
      * - memberId가 DB에 없음
      * 결과:
-     * - "Member id does not exist" 예외 발생
+     * - "회원이 존재하지 않습니다." 예외 발생
      */
     @Test
     void testRegisterReviewInvalidMember() {
         // Given
-        ReviewRequest request = new ReviewRequest(999L, 1L, 5, "Great book!", null);
-        given(memberRepository.findById(999L)).willThrow(new MemberIllegalArgumentException("Member id does not exist"));
+        ReviewRequest request = new ReviewRequest(5, "Great book!", null); // memberId 제거
+        given(memberRepository.findById(999L)).willReturn(Optional.empty());
 
         // When/Then
-        MemberIllegalArgumentException exception = assertThrows(MemberIllegalArgumentException.class, () -> {
-            reviewService.registerReview(1L, request);
+        InvalidReviewException exception = assertThrows(InvalidReviewException.class, () -> {
+            reviewService.registerReview(1L, 999L, request); // memberId 별도 전달
         });
-        assertEquals("Member id does not exist", exception.getMessage());
+        assertEquals("회원이 존재하지 않습니다.", exception.getMessage());
     }
 
     /**
@@ -235,20 +235,20 @@ class ReviewServiceImplTest {
      * 조건:
      * - bookId가 DB에 없음
      * 결과:
-     * - "Invalid book ID" 예외 발생
+     * - "도서가 존재하지 않습니다." 예외 발생
      */
     @Test
     void testRegisterReviewInvalidBook() {
         // Given
-        ReviewRequest request = new ReviewRequest(1L, 999L, 5, "Great book!", null);
+        ReviewRequest request = new ReviewRequest(5, "Great book!", null); // memberId 제거
         given(memberRepository.findById(1L)).willReturn(Optional.of(member));
-        given(bookRepository.findById(999L)).willThrow(new BookNotFoundException("Invalid book ID"));
+        given(bookRepository.findById(999L)).willReturn(Optional.empty());
 
         // When/Then
-        BookNotFoundException exception = assertThrows(BookNotFoundException.class, () -> {
-            reviewService.registerReview(999L, request);
+        InvalidReviewException exception = assertThrows(InvalidReviewException.class, () -> {
+            reviewService.registerReview(999L, 1L, request); // memberId 별도 전달
         });
-        assertEquals("Invalid book ID", exception.getMessage());
+        assertEquals("도서가 존재하지 않습니다.", exception.getMessage());
     }
 
     /**
@@ -261,14 +261,14 @@ class ReviewServiceImplTest {
     @Test
     void testRegisterReviewImageOverLimit() {
         // Given
-        ReviewRequest request = new ReviewRequest(1L, 1L, 5, "Great book!", List.of("img1", "img2", "img3", "img4"));
+        ReviewRequest request = new ReviewRequest(5, "Great book!", List.of("img1", "img2", "img3", "img4")); // memberId 제거
         given(memberRepository.findById(1L)).willReturn(Optional.of(member));
         given(bookRepository.findById(1L)).willReturn(Optional.of(book));
         given(reviewRepository.findByMemberAndBook(member, book)).willReturn(Optional.empty());
 
         // When/Then
         ImageLimitExceededException exception = assertThrows(ImageLimitExceededException.class, () -> {
-            reviewService.registerReview(1L, request);
+            reviewService.registerReview(1L, 1L, request); // memberId 별도 전달
         });
         assertEquals("이미지는 최대 3장까지 첨부할 수 있습니다.", exception.getMessage());
     }
@@ -346,12 +346,12 @@ class ReviewServiceImplTest {
     @Test
     void testUpdateReviewSuccess() {
         // Given
-        ReviewRequest request = new ReviewRequest(1L, 1L, 3, "Updated Description", List.of("img1"));
+        ReviewRequest request = new ReviewRequest(3, "Updated Description", List.of("img1")); // memberId 제거
         given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
         given(reviewRepository.save(any(Review.class))).willAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        ReviewResponse response = reviewService.updateReview(1L, 10L, request);
+        ReviewResponse response = reviewService.updateReview(1L, 10L, 1L, request); // memberId 별도 전달
 
         // Then
         assertEquals(10L, response.getReviewId());
@@ -373,12 +373,12 @@ class ReviewServiceImplTest {
     void testUpdateReviewWrongBook() {
         // Given
         review.getBook().setBookId(2L);
-        ReviewRequest request = new ReviewRequest(1L, 1L, 3, "Updated Description", null);
+        ReviewRequest request = new ReviewRequest(3, "Updated Description", null); // memberId 제거
         given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
 
         // When/Then
         InvalidReviewException exception = assertThrows(InvalidReviewException.class, () -> {
-            reviewService.updateReview(1L, 10L, request);
+            reviewService.updateReview(1L, 10L, 1L, request); // memberId 별도 전달
         });
         assertEquals("리뷰가 해당 도서에 속하지 않습니다.", exception.getMessage());
     }
@@ -393,12 +393,12 @@ class ReviewServiceImplTest {
     @Test
     void testUpdateReviewNotAuthor() {
         // Given
-        ReviewRequest request = new ReviewRequest(2L, 1L, 3, "Updated Description", null);
+        ReviewRequest request = new ReviewRequest(3, "Updated Description", null); // memberId 제거
         given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
 
         // When/Then
         InvalidReviewException exception = assertThrows(InvalidReviewException.class, () -> {
-            reviewService.updateReview(1L, 10L, request);
+            reviewService.updateReview(1L, 10L, 2L, request); // memberId=2L (다른 사용자) 전달
         });
         assertEquals("작성자만 리뷰를 수정할 수 있습니다.", exception.getMessage());
     }
@@ -413,12 +413,12 @@ class ReviewServiceImplTest {
     @Test
     void testUpdateReviewImageOverLimit() {
         // Given
-        ReviewRequest request = new ReviewRequest(1L, 1L, 3, "Updated Description", List.of("img1", "img2", "img3", "img4"));
+        ReviewRequest request = new ReviewRequest(3, "Updated Description", List.of("img1", "img2", "img3", "img4")); // memberId 제거
         given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
 
         // When/Then
         ImageLimitExceededException exception = assertThrows(ImageLimitExceededException.class, () -> {
-            reviewService.updateReview(1L, 10L, request);
+            reviewService.updateReview(1L, 10L, 1L, request); // memberId 별도 전달
         });
         assertEquals("이미지는 최대 3장까지 첨부할 수 있습니다.", exception.getMessage());
     }
@@ -434,12 +434,11 @@ class ReviewServiceImplTest {
     @Test
     void testDeleteReviewByAdmin() {
         // Given
-        ReviewRequest request = new ReviewRequest(2L, 1L, 4, "Delete this review", null);
         given(memberRepository.findById(2L)).willReturn(Optional.of(adminMember));
         given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
 
         // When
-        ReviewResponse response = reviewService.deleteReview(1L, 10L, request);
+        ReviewResponse response = reviewService.deleteReview(1L, 10L, 2L); // memberId=2L (관리자) 전달
 
         // Then
         assertEquals(10L, response.getReviewId());
@@ -457,16 +456,14 @@ class ReviewServiceImplTest {
      * - "해당 리뷰를 삭제할 권한이 없습니다." 예외 발생
      */
     @Test
-    void testDeleteReviewByNonAdmin() throws Exception {
+    void testDeleteReviewByNonAdmin() {
         // Given
-        // member는 이미 role_id=1(Member)로 설정됨
-        ReviewRequest request = new ReviewRequest(1L, 1L, 4, "Delete Attempt", null);
         given(memberRepository.findById(1L)).willReturn(Optional.of(member));
         given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
 
         // When/Then
         InvalidReviewException exception = assertThrows(InvalidReviewException.class, () -> {
-            reviewService.deleteReview(1L, 10L, request);
+            reviewService.deleteReview(1L, 10L, 1L); // memberId=1L (일반 사용자) 전달
         });
         assertEquals("해당 리뷰를 삭제할 권한이 없습니다.", exception.getMessage());
     }
@@ -481,13 +478,12 @@ class ReviewServiceImplTest {
     @Test
     void testDeleteReviewNotFound() {
         // Given (adminMember는 이미 존재)
-        ReviewRequest request = new ReviewRequest(2L, 1L, 4, "Delete Attempt", null);
         given(memberRepository.findById(2L)).willReturn(Optional.of(adminMember));
         given(reviewRepository.findById(999L)).willReturn(Optional.empty());
 
         // When/Then
         InvalidReviewException exception = assertThrows(InvalidReviewException.class, () -> {
-            reviewService.deleteReview(1L, 999L, request);
+            reviewService.deleteReview(1L, 999L, 2L); // memberId=2L (관리자) 전달
         });
         assertEquals("리뷰를 찾을 수 없습니다.", exception.getMessage());
     }
@@ -503,15 +499,15 @@ class ReviewServiceImplTest {
     void testDeleteReviewWrongBook() {
         // Given
         review.getBook().setBookId(2L); // 도서 불일치
-        ReviewRequest request = new ReviewRequest(2L, 1L, 4, "Delete Attempt", null);
         given(memberRepository.findById(2L)).willReturn(Optional.of(adminMember));
         given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
 
         // When/Then
         InvalidReviewException exception = assertThrows(InvalidReviewException.class, () -> {
-            reviewService.deleteReview(1L, 10L, request);
+            reviewService.deleteReview(1L, 10L, 2L); // memberId=2L (관리자) 전달
         });
         assertEquals("리뷰가 해당 도서에 속하지 않습니다.", exception.getMessage());
     }
 
 }
+
