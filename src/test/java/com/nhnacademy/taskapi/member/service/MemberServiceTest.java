@@ -11,6 +11,7 @@ import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.member.service.impl.MemberServiceImpl;
+import com.nhnacademy.taskapi.point.service.impl.PointServiceImpl;
 import com.nhnacademy.taskapi.roles.domain.Role;
 import com.nhnacademy.taskapi.roles.dto.RoleResponseDto;
 import com.nhnacademy.taskapi.roles.service.impl.RoleServiceImpl;
@@ -42,6 +43,9 @@ public class MemberServiceTest {
 
     @Mock
     private GradeServiceImpl gradeService;
+
+    @Mock
+    private PointServiceImpl pointService;
 
     @Mock
     private MemberRepository memberRepository;
@@ -176,6 +180,7 @@ public class MemberServiceTest {
         Mockito.when(gradeService.getDefaultGrade()).thenReturn(gradeResponseDto);
         Mockito.when(roleService.getDefaultRole()).thenReturn(roleResponseDto);
         Mockito.when(memberRepository.save(Mockito.any())).thenReturn(member);
+        Mockito.doNothing().when(pointService).registerMemberPoints(Mockito.any());
 
        MemberResponseDto result =  memberService.registerMember(new MemberRegisterRequestDto(
                 "김주혁",

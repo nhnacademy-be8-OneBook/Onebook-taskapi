@@ -121,7 +121,7 @@ public class MemberServiceImpl implements MemberService {
 
             Member result = memberRepository.save(member);
             pointService.registerMemberPoints(result);
-            // TODO 회원가입시 Welcome 쿠폰 제공.
+            // TODO 쿠폰 CRUD 완료하면 Welcome 쿠폰 생성 추가
             return MemberResponseDto.from(result);
 
         }catch(DataIntegrityViolationException e) {
