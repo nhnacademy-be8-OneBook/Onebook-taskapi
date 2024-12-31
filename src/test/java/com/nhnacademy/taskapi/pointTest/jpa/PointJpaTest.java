@@ -25,7 +25,6 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PointJpaTest {
-
     @Mock
     private JpaPointLogRepository pointLogRepository;
 
@@ -53,7 +52,7 @@ class PointJpaTest {
         point.setAmount(1000);
 
         pointLog = new PointLog(1L, LocalDateTime.now(), "ADD", 100, point);
-        pointPolicy = new PointPolicy(1L, "Test Policy", 10, 100, "Condition", 100, LocalDate.now(), LocalDate.now(), true, true, memberId);
+        pointPolicy = new PointPolicy(1L, "Test Policy", 10, 100, "Condition", 100, LocalDateTime.now(), LocalDateTime.now(), true, true);
     }
 
     @Test

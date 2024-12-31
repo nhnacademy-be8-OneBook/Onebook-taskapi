@@ -24,7 +24,6 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PointServiceImplTest {
-
     @Mock
     private JpaPointRepository pointRepository;
 

@@ -19,7 +19,6 @@ public interface PointService {
 }
 
 
-
 //사진 첨부된 경우 500포인트 적립
 //pointService.registerReviewPoints(member, true);
 //사진 첨부되지 않은 경우 200포인트 적립
