@@ -156,7 +156,6 @@ public class MemberServiceImpl implements MemberService {
        return MemberResponseDto.from(member);
     }
 
-
     // 회원 탈퇴 - 상태만 'DELETED' 로 변경.
     @Override
     public void removeMember(Long memberId) {
