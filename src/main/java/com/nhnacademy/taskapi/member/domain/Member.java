@@ -53,11 +53,11 @@ public class Member {
 
     @Email
     @NotBlank
-    @Column(name="email", unique=true)
+    @Column(name="email")
     private String email;
 
     @NotBlank
-    @Column(name="phone_number", unique = true)
+    @Column(name="phone_number")
     private String phoneNumber;
 
     @Setter
