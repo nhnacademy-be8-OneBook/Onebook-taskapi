@@ -1,18 +1,13 @@
 package com.nhnacademy.taskapi.coupon.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPricePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPricePolicyForCategoryRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForCategoryRequest;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddPricePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddPricePolicyForCategoryResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddRatePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddRatePolicyForCategoryResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetPricePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetPricePolicyForCategoryResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetRatePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetRatePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.PricePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.PricePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.RatePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.RatePolicyForCategoryResponse;
 import com.nhnacademy.taskapi.coupon.service.policies.PolicyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,99 +22,131 @@ public class PolicyController {
 
     private final PolicyService policyService;
 
+    // Create
     @PostMapping("/policies/rate/book")
-    public ResponseEntity<AddRatePolicyForBookResponse> addRatePolicyForBook(@RequestBody AddRatePolicyForBookRequest addRatePolicyForBookRequest){
+    public ResponseEntity<RatePolicyForBookResponse> addRatePolicyForBook(@RequestBody AddRatePolicyForBookRequest addRatePolicyForBookRequest){
 
-        AddRatePolicyForBookResponse  addRatePolicyForBookResponse =
+        RatePolicyForBookResponse  addRatePolicyForBookResponse =
                 policyService.addRatePolicyForBook(addRatePolicyForBookRequest);
         return ResponseEntity.ok(addRatePolicyForBookResponse);
     }
 
     @PostMapping("/policies/rate/category")
-    public ResponseEntity<AddRatePolicyForCategoryResponse> addRatePolicyForCategory(@RequestBody AddRatePolicyForCategoryRequest addRatePolicyForCategoryRequest){
+    public ResponseEntity<RatePolicyForCategoryResponse> addRatePolicyForCategory(@RequestBody AddRatePolicyForCategoryRequest addRatePolicyForCategoryRequest){
 
-        AddRatePolicyForCategoryResponse addRatePolicyForCategoryResponse =
+        RatePolicyForCategoryResponse addRatePolicyForCategoryResponse =
                 policyService.addRatePolicyForCategory(addRatePolicyForCategoryRequest);
         return ResponseEntity.ok(addRatePolicyForCategoryResponse);
     }
 
     @PostMapping("/policies/price/book")
-    public ResponseEntity<AddPricePolicyForBookResponse> addPricePolicyForBook
+    public ResponseEntity<PricePolicyForBookResponse> addPricePolicyForBook
             (@RequestBody AddPricePolicyForBookRequest addPricePolicyForBookRequest){
 
-        AddPricePolicyForBookResponse addPricePolicyForBookResponse =
+        PricePolicyForBookResponse addPricePolicyForBookResponse =
                 policyService.addPricePolicyForBook(addPricePolicyForBookRequest);
         return ResponseEntity.ok(addPricePolicyForBookResponse);
     }
 
     @PostMapping("/policies/price/category")
-    public ResponseEntity<AddPricePolicyForCategoryResponse> addPricePolicyForCategory
+    public ResponseEntity<PricePolicyForCategoryResponse> addPricePolicyForCategory
             (@RequestBody AddPricePolicyForCategoryRequest addPricePolicyForCategoryRequest){
 
-        AddPricePolicyForCategoryResponse addPricePolicyForCategoryResponse =
+        PricePolicyForCategoryResponse addPricePolicyForCategoryResponse =
                 policyService.addPricePolicyForCategory(addPricePolicyForCategoryRequest);
         return ResponseEntity.ok(addPricePolicyForCategoryResponse);
     }
 
+
+    // Read All
     @GetMapping("/policies/rate/book")
-    public ResponseEntity<List<GetRatePolicyForBookResponse>> getRatePoliciesForBook
+    public ResponseEntity<List<RatePolicyForBookResponse>> getRatePoliciesForBook
             (@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo)
     {
-        List<GetRatePolicyForBookResponse> response = policyService.getRatePoliciesForBook(pageNo);
+        List<RatePolicyForBookResponse> response = policyService.getRatePoliciesForBook(pageNo);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/policies/rate/category")
-    public ResponseEntity<List<GetRatePolicyForCategoryResponse>> getRatePoliciesForCategory
+    public ResponseEntity<List<RatePolicyForCategoryResponse>> getRatePoliciesForCategory
             (@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo)
     {
-        List<GetRatePolicyForCategoryResponse> responses = policyService.getRatePoliciesForCategory(pageNo);
+        List<RatePolicyForCategoryResponse> responses = policyService.getRatePoliciesForCategory(pageNo);
         return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/policies/price/book")
-    public ResponseEntity<List<GetPricePolicyForBookResponse>> getPricePoliciesForBook
+    public ResponseEntity<List<PricePolicyForBookResponse>> getPricePoliciesForBook
             (@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo)
     {
-        List<GetPricePolicyForBookResponse> responses = policyService.getPricePoliciesForBook(pageNo);
+        List<PricePolicyForBookResponse> responses = policyService.getPricePoliciesForBook(pageNo);
         return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/policies/price/category")
-    public ResponseEntity<List<GetPricePolicyForCategoryResponse>> getPricePoliciesForCategory
+    public ResponseEntity<List<PricePolicyForCategoryResponse>> getPricePoliciesForCategory
             (@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo)
     {
-        List<GetPricePolicyForCategoryResponse> responses = policyService.getPricePoliciesForCategory(pageNo);
+        List<PricePolicyForCategoryResponse> responses = policyService.getPricePoliciesForCategory(pageNo);
         return ResponseEntity.ok(responses);
     }
 
+    // Read One
     @GetMapping("/policies/rate/book/{id}")
-    public ResponseEntity<GetRatePolicyForBookResponse> getRatePolicyForBook(@PathVariable Long id)
+    public ResponseEntity<RatePolicyForBookResponse> getRatePolicyForBook(@PathVariable Long id)
     {
-        GetRatePolicyForBookResponse response = policyService.getRatePolicyForBook(id);
+        RatePolicyForBookResponse response = policyService.getRatePolicyForBook(id);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/policies/rate/category/{id}")
-    public ResponseEntity<GetRatePolicyForCategoryResponse> getRatePolicyForCategory(@PathVariable Long id)
+    public ResponseEntity<RatePolicyForCategoryResponse> getRatePolicyForCategory(@PathVariable Long id)
     {
-        GetRatePolicyForCategoryResponse response = policyService.getRatePolicyForCategory(id);
+        RatePolicyForCategoryResponse response = policyService.getRatePolicyForCategory(id);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/policies/price/book/{id}")
-    public ResponseEntity<GetPricePolicyForBookResponse> getPricePolicyForBook(@PathVariable Long id)
+    public ResponseEntity<PricePolicyForBookResponse> getPricePolicyForBook(@PathVariable Long id)
     {
-        GetPricePolicyForBookResponse response = policyService.getPricePolicyForBook(id);
+        PricePolicyForBookResponse response = policyService.getPricePolicyForBook(id);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/policies/price/category/{id}")
-    public ResponseEntity<GetPricePolicyForCategoryResponse> getPricePolicyForCategory(@PathVariable Long id)
+    public ResponseEntity<PricePolicyForCategoryResponse> getPricePolicyForCategory(@PathVariable Long id)
     {
-        GetPricePolicyForCategoryResponse response = policyService.getPricePolicyForCategory(id);
+        PricePolicyForCategoryResponse response = policyService.getPricePolicyForCategory(id);
         return ResponseEntity.ok(response);
     }
 
+    // Delete
+    @DeleteMapping("/policies/rate/book/{id}")
+    public ResponseEntity<RatePolicyForBookResponse> deleteRatePolicyForBook(@PathVariable Long id)
+    {
+        RatePolicyForBookResponse response = policyService.deleteRatePolicyForBook(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/policies/rate/category/{id}")
+    public ResponseEntity<RatePolicyForCategoryResponse> deleteRatePolicyForCategory(@PathVariable Long id)
+    {
+        RatePolicyForCategoryResponse response = policyService.deleteRatePolicyForCategory(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/policies/price/book/{id}")
+    public ResponseEntity<PricePolicyForBookResponse> deletePricePolicyForBook(@PathVariable Long id)
+    {
+        PricePolicyForBookResponse response = policyService.deletePricePolicyForBook(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/policies/price/category/{id}")
+    public ResponseEntity<PricePolicyForCategoryResponse> deletePricePolicyForCategory(@PathVariable Long id)
+    {
+        PricePolicyForCategoryResponse response = policyService.deletePricePolicyForCategory(id);
+        return ResponseEntity.ok(response);
+    }
 
 }

@@ -3,23 +3,20 @@ package com.nhnacademy.taskapi.coupon.service.policies;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.book.exception.BookNotFoundException;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPricePolicyForCategoryRequest;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddPricePolicyForCategoryResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetPricePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetPricePolicyForCategoryResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetRatePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetRatePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.PricePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.PricePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.RatePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.RatePolicyForCategoryResponse;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForCategory;
 import com.nhnacademy.taskapi.category.exception.CategoryNotFoundException;
 import com.nhnacademy.taskapi.category.repository.CategoryRepository;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPricePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForCategoryRequest;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddPricePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddRatePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddRatePolicyForCategoryResponse;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForBook;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForBook;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForCategory;
+import com.nhnacademy.taskapi.coupon.domain.entity.status.PolicyStatus;
 import com.nhnacademy.taskapi.coupon.exception.PolicyNotFoundException;
 import com.nhnacademy.taskapi.coupon.exception.PolicyStatusNotFoundException;
 import com.nhnacademy.taskapi.coupon.repository.policies.PricePoliciesForBookRepository;
@@ -52,7 +49,7 @@ public class PolicyService {
     private final Integer PAGE_SIZE = 10;
 
     // 정률정책 for Book save
-    public AddRatePolicyForBookResponse addRatePolicyForBook(AddRatePolicyForBookRequest addRatePolicyForBookRequest){
+    public RatePolicyForBookResponse addRatePolicyForBook(AddRatePolicyForBookRequest addRatePolicyForBookRequest){
 
         RatePolicyForBook ratePolicyForBook = RatePolicyForBook.createRatePolicyForBook(
                 addRatePolicyForBookRequest,
@@ -63,11 +60,11 @@ public class PolicyService {
                 );
 
                 ratePoliciesForBookRepository.save(ratePolicyForBook);
-                return AddRatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook);
+                return RatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook);
     }
 
     // 정률정책 for Category save
-    public AddRatePolicyForCategoryResponse addRatePolicyForCategory(AddRatePolicyForCategoryRequest addRatePolicyForCategoryRequest){
+    public RatePolicyForCategoryResponse addRatePolicyForCategory(AddRatePolicyForCategoryRequest addRatePolicyForCategoryRequest){
 
         RatePolicyForCategory ratePolicyForCategory = RatePolicyForCategory.createRatePolicyForCategory(
                 addRatePolicyForCategoryRequest,
@@ -78,11 +75,11 @@ public class PolicyService {
                 );
 
                 ratePoliciesForCategoryRepository.save(ratePolicyForCategory);
-                return AddRatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory);
+                return RatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory);
     }
 
     // 정액정책 for Book save
-    public AddPricePolicyForBookResponse addPricePolicyForBook(AddPricePolicyForBookRequest addPricePolicyForBookRequest){
+    public PricePolicyForBookResponse addPricePolicyForBook(AddPricePolicyForBookRequest addPricePolicyForBookRequest){
 
         PricePolicyForBook pricePolicyForBook = PricePolicyForBook.createPricePolicyForBook(
                 addPricePolicyForBookRequest,
@@ -93,11 +90,11 @@ public class PolicyService {
         );
 
                 pricePoliciesForBookRepository.save(pricePolicyForBook);
-                return AddPricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook);
+                return PricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook);
     }
 
     // 정액정책 for Category save
-    public AddPricePolicyForCategoryResponse addPricePolicyForCategory(AddPricePolicyForCategoryRequest addPricePolicyForCategoryRequest){
+    public PricePolicyForCategoryResponse addPricePolicyForCategory(AddPricePolicyForCategoryRequest addPricePolicyForCategoryRequest){
 
         PricePolicyForCategory pricePolicyForCategory = PricePolicyForCategory.createPricePolicyForCategory(
                 addPricePolicyForCategoryRequest,
@@ -108,99 +105,178 @@ public class PolicyService {
                 );
 
                 pricePoliciesForCategoryRepository.save(pricePolicyForCategory);
-                return AddPricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory);
+                return PricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory);
     }
 
     // 정률정책 for Book read (all)
-    public List<GetRatePolicyForBookResponse> getRatePoliciesForBook(int pageNo){
+    public List<RatePolicyForBookResponse> getRatePoliciesForBook(int pageNo){
 
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
         Page<RatePolicyForBook> page = ratePoliciesForBookRepository.findAll(pageable);
 
-        List<GetRatePolicyForBookResponse> result = new ArrayList<>();
+        List<RatePolicyForBookResponse> result = new ArrayList<>();
 
         for(RatePolicyForBook ratePolicyForBook : page){
-            result.add(GetRatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook));
+            result.add(RatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook));
         }
 
         return result;
     }
 
     // 정률정책 for Category read (all)
-    public List<GetRatePolicyForCategoryResponse> getRatePoliciesForCategory(int pageNo){
+    public List<RatePolicyForCategoryResponse> getRatePoliciesForCategory(int pageNo){
 
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
         Page<RatePolicyForCategory> page = ratePoliciesForCategoryRepository.findAll(pageable);
 
-        List<GetRatePolicyForCategoryResponse> result = new ArrayList<>();
+        List<RatePolicyForCategoryResponse> result = new ArrayList<>();
 
         for(RatePolicyForCategory ratePolicyForCategory : page){
-            result.add(GetRatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory));
+            result.add(RatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory));
         }
 
         return result;
     }
 
     // 정액정책 for Book read (all)
-    public List<GetPricePolicyForBookResponse> getPricePoliciesForBook(int pageNo){
+    public List<PricePolicyForBookResponse> getPricePoliciesForBook(int pageNo){
 
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
         Page<PricePolicyForBook> page = pricePoliciesForBookRepository.findAll(pageable);
 
-        List<GetPricePolicyForBookResponse> result = new ArrayList<>();
+        List<PricePolicyForBookResponse> result = new ArrayList<>();
 
         for(PricePolicyForBook pricePolicyForBook : page){
-            result.add(GetPricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook));
+            result.add(PricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook));
         }
 
         return result;
     }
 
     // 정액정책 for Category read (all)
-    public List<GetPricePolicyForCategoryResponse> getPricePoliciesForCategory(int pageNo){
+    public List<PricePolicyForCategoryResponse> getPricePoliciesForCategory(int pageNo){
 
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
         Page<PricePolicyForCategory> page = pricePoliciesForCategoryRepository.findAll(pageable);
 
-        List<GetPricePolicyForCategoryResponse> result = new ArrayList<>();
+        List<PricePolicyForCategoryResponse> result = new ArrayList<>();
 
         for(PricePolicyForCategory pricePolicyForCategory : page){
-            result.add(GetPricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory));
+            result.add(PricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory));
         }
 
         return result;
     }
 
     // 정률정책 for Book read (one)
-    public GetRatePolicyForBookResponse getRatePolicyForBook(Long id){
+    public RatePolicyForBookResponse getRatePolicyForBook(Long id){
 
         RatePolicyForBook ratePolicyForBook = ratePoliciesForBookRepository.findById(id)
                 .orElseThrow(() ->new PolicyNotFoundException("해당하는 ID의 정책이 존재하지 않습니다"));
-        return GetRatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook);
+        return RatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook);
     }
 
     // 정률정책 for Category read (one)
-    public GetRatePolicyForCategoryResponse getRatePolicyForCategory(Long id){
+    public RatePolicyForCategoryResponse getRatePolicyForCategory(Long id){
 
         RatePolicyForCategory ratePolicyForCategory = ratePoliciesForCategoryRepository.findById(id)
                 .orElseThrow(()->new PolicyNotFoundException("해당하는 ID의 정책이 존재하지 않습니다"));
-        return GetRatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory);
+        return RatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory);
     }
 
     // 정액정책 for Book read (one)
-    public GetPricePolicyForBookResponse getPricePolicyForBook(Long id){
+    public PricePolicyForBookResponse getPricePolicyForBook(Long id){
 
         PricePolicyForBook pricePolicyForBook = pricePoliciesForBookRepository.findById(id)
                 .orElseThrow(()->new PolicyNotFoundException("해당하는 ID의 정책이 존재하지 않습니다"));
-        return GetPricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook);
+        return PricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook);
     }
 
     // 정액정책 for Category read (one)
-    public GetPricePolicyForCategoryResponse getPricePolicyForCategory(Long id){
+    public PricePolicyForCategoryResponse getPricePolicyForCategory(Long id){
 
         PricePolicyForCategory pricePolicyForCategory = pricePoliciesForCategoryRepository.findById(id)
                 .orElseThrow(()->new PolicyNotFoundException("해당하는 ID의 정책이 존재하지 않습니다"));
-        return GetPricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory);
+        return PricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory);
+    }
+
+    // 정률정책 for Book delete
+    public RatePolicyForBookResponse deleteRatePolicyForBook(Long id){
+
+        RatePolicyForBook ratePolicyForBook = ratePoliciesForBookRepository.findById(id)
+                .orElseThrow(()->new PolicyNotFoundException("해당하는 ID의 정책이 존재하지 않습니다"));
+        PolicyStatus deleteStatus = policyStatusRepository.findByName("삭제됨");
+
+        if(ratePolicyForBook.getPolicyStatus().getName().equals("사용됨")){
+            ratePolicyForBook.deletePolicy(deleteStatus);
+        }
+        else{
+            ratePolicyForBook.deletePolicy(deleteStatus);
+            ratePoliciesForBookRepository.delete(ratePolicyForBook);
+        }
+        return RatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook);
+
+    }
+
+    // 정률정책 for Category delete
+    public RatePolicyForCategoryResponse deleteRatePolicyForCategory(Long id){
+
+        RatePolicyForCategory ratePolicyForCategory = ratePoliciesForCategoryRepository.findById(id)
+                .orElseThrow(()->new PolicyNotFoundException("해당하는 ID의 정책이 존재하지 않습니다"));
+
+        PolicyStatus deleteStatus = policyStatusRepository.findByName("삭제됨");
+
+        if(ratePolicyForCategory.getPolicyStatus().getName().equals("사용됨")){
+            ratePolicyForCategory.deletePolicy(deleteStatus);
+        }
+        else{
+            ratePolicyForCategory.deletePolicy(deleteStatus);
+            ratePoliciesForCategoryRepository.delete(ratePolicyForCategory);
+        }
+        return RatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory);
+
+    }
+
+    // 정액정책 for Book delete
+    public PricePolicyForBookResponse deletePricePolicyForBook(Long id){
+
+        PricePolicyForBook pricePolicyForBook = pricePoliciesForBookRepository.findById(id)
+                .orElseThrow(()->new PolicyNotFoundException("해당하는 ID의 정책이 존재하지 않습니다"));
+
+        PolicyStatus deleteStatus = policyStatusRepository.findByName("삭제됨");
+
+        if(pricePolicyForBook.getPolicyStatus().getName().equals("사용됨")){
+            pricePolicyForBook.deletePolicy(deleteStatus);
+        }
+        else{
+            pricePolicyForBook.deletePolicy(deleteStatus);
+            pricePoliciesForBookRepository.delete(pricePolicyForBook);
+        }
+        return PricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook);
+
+    }
+
+    // 정액정책 for Category delete
+    public PricePolicyForCategoryResponse deletePricePolicyForCategory(Long id){
+
+        PricePolicyForCategory pricePolicyForCategory = pricePoliciesForCategoryRepository.findById(id)
+                .orElseThrow(()->new PolicyNotFoundException("해당하는 ID의 정책이 존재하지 않습니다"));
+
+        PolicyStatus deleteStatus = policyStatusRepository.findByName("삭제됨");
+
+        if(pricePolicyForCategory.getPolicyStatus().getName().equals("사용됨")){
+
+            pricePolicyForCategory.deletePolicy(deleteStatus);
+
+        }
+        else{
+
+            pricePolicyForCategory.deletePolicy(deleteStatus);
+            pricePoliciesForCategoryRepository.delete(pricePolicyForCategory);
+        }
+
+        return PricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory);
+
     }
 
 }

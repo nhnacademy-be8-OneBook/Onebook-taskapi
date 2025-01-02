@@ -106,4 +106,11 @@ class PricePoliciesForBookRepositoryTest {
 
         pricePoliciesForBookRepository.findById(0L);
     }
+
+    @Test
+    @DisplayName("PricePolicyBook - deleteById - 동작테스트")
+    void deleteByIdTest(){
+
+        pricePoliciesForBookRepository.deleteById(0L);
+    }
 }

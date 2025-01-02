@@ -89,4 +89,10 @@ class PricePoliciesForCategoryRepositoryTest {
         pricePoliciesForCategoryRepository.findById(0L);
     }
 
+    @Test
+    @DisplayName("PricePolicyCategory - deleteById - 동작테스트")
+    void deleteByIdTest(){
+
+        pricePoliciesForCategoryRepository.deleteById(0L);
+    }
 }

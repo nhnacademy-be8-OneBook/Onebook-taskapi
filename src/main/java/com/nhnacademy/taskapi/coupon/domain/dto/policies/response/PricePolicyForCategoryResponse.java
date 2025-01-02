@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read;
+package com.nhnacademy.taskapi.coupon.domain.dto.policies.response;
 
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForCategory;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
-public class GetPricePolicyForCategoryResponse {
+public class PricePolicyForCategoryResponse {
 
     private Long id;
     private Integer minimumOrderAmount;
@@ -24,8 +24,8 @@ public class GetPricePolicyForCategoryResponse {
     private String categoryName;
     private String policyStatusName;
 
-    public static GetPricePolicyForCategoryResponse changeEntityToDto(PricePolicyForCategory pricePolicyForCategory){
-        return new GetPricePolicyForCategoryResponse(
+    public static PricePolicyForCategoryResponse changeEntityToDto(PricePolicyForCategory pricePolicyForCategory){
+        return new PricePolicyForCategoryResponse(
                 pricePolicyForCategory.getPricePolicyForCategoryId(),
                 pricePolicyForCategory.getMinimumOrderAmount(),
                 pricePolicyForCategory.getDiscountPrice(),
