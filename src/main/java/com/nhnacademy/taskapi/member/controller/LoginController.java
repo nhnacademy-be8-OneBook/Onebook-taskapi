@@ -6,10 +6,7 @@ import com.nhnacademy.taskapi.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -35,8 +32,8 @@ public class LoginController {
         return ResponseEntity.ok().body( result != null );
     }
 
-    @GetMapping("/task/auth/members")
-    public ResponseEntity<MemberLoginDto> loadByMemberId(String loginId){
+    @GetMapping("/task/auth/members/{loginId}")
+    public ResponseEntity<MemberLoginDto> loadByMemberId(@PathVariable(name = "loginId") String loginId){
         log.info("call load ");
         Member memberByLoginId = memberService.getMemberByLoginId(loginId);
 
