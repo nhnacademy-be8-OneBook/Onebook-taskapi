@@ -13,7 +13,7 @@ public record MemberRegisterRequestDto(
         String name,
 
         @NotBlank(message="로그인 아이디는 필수 입력 항목입니다.")
-        @Size(max=10, message = "로그인 ID는 최대 10자까지 입력 가능합니다.")
+        @Size(max=20, message = "로그인 ID는 최대 20자까지 입력 가능합니다.")
         @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "영어 알파벳과 숫자만 입력 가능합니다.")
         String loginId,
 
