@@ -23,9 +23,12 @@ public class OrderController {
 
     @GetMapping("/task/orders")
     public ResponseEntity<List<OrderResponseDTO>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId) {
-
-        // TODO null일 경우 list 반환 방법
         List<OrderResponseDTO> orderList = orderService.getOrderList(memberId);
+
+        // null일 경우 list 반환 방법
+        if (orderList == null || orderList.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok().body(orderList);
     }
 }

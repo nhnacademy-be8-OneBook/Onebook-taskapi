@@ -37,6 +37,8 @@ public class Order {
     int deliveryPrice;
     @Column(name = "total_price")
     int totalPrice;
+    @Column(name = "order_name")
+    String orderName;
 
     // 양방향
 //    @OneToMany
@@ -44,6 +46,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order")
     List<OrderDetail> orderDetailList;
+
 
     @OneToMany(mappedBy = "order")
     List<Delivery> deliveryList;
