@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -29,7 +30,7 @@ import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.Objects;
 
-@Component
+@Service
 public class KeyFactoryManager {
     @Value(value = "${nhnKey.url}")
     private String url;
@@ -37,7 +38,7 @@ public class KeyFactoryManager {
     @Value("${nhnKey.appKey}")
     private String appKey;
 
-    @Value(("${nhnKey.keyPath}"))
+    @Value("${nhnKey.keyPath}")
     private String keyPath;
 
     @Value("${nhnKey.password}")
