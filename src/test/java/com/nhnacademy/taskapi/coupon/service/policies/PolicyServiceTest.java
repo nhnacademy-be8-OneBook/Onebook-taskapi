@@ -10,14 +10,10 @@ import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPrice
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPricePolicyForCategoryRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForCategoryRequest;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddPricePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddPricePolicyForCategoryResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddRatePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.create.AddRatePolicyForCategoryResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetPricePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetPricePolicyForCategoryResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetRatePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.read.GetRatePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.PricePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.PricePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.RatePolicyForBookResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.RatePolicyForCategoryResponse;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForBook;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForCategory;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForBook;
@@ -44,6 +40,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.ReflectionUtils;
+import org.springframework.util.Assert;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -74,7 +71,8 @@ class PolicyServiceTest {
 
     private Book book;
     private Category category;
-    private PolicyStatus policyStatus;
+    private PolicyStatus usedStatus;
+    private PolicyStatus unusedStatus;
     
 
 
@@ -90,10 +88,10 @@ class PolicyServiceTest {
             field.setAccessible(true);
         }
         ReflectionUtils.setField(book.getClass().getDeclaredField("bookId"), book,1L );
-        ReflectionUtils.setField(book.getClass().getDeclaredField("title"), book,"테스트 title" );
-        ReflectionUtils.setField(book.getClass().getDeclaredField("content"), book,"테스트 content" );
-        ReflectionUtils.setField(book.getClass().getDeclaredField("description"), book,"테스트 description");
-        ReflectionUtils.setField(book.getClass().getDeclaredField("isbn13"), book,"테스트 isbn13");
+        ReflectionUtils.setField(book.getClass().getDeclaredField("title"), book,"테스트용 도서" );
+        ReflectionUtils.setField(book.getClass().getDeclaredField("content"), book,"테스트용 content" );
+        ReflectionUtils.setField(book.getClass().getDeclaredField("description"), book,"테스트용 description");
+        ReflectionUtils.setField(book.getClass().getDeclaredField("isbn13"), book,"테스트용 Isbn13");
         ReflectionUtils.setField(book.getClass().getDeclaredField("price"), book,10000);
         ReflectionUtils.setField(book.getClass().getDeclaredField("salePrice"), book,8000);
         ReflectionUtils.setField(book.getClass().getDeclaredField("amount"), book,500);
@@ -107,15 +105,25 @@ class PolicyServiceTest {
         for(Field field : category.getClass().getDeclaredFields()){
             field.setAccessible(true);
         }
-        ReflectionUtils.setField(category.getClass().getDeclaredField("name"),category,"소설" );
+        ReflectionUtils.setField(category.getClass().getDeclaredField("name"),category,"테스트용 카테고리" );
 
-        // 테스트용 정책상태
-        policyStatus = new PolicyStatus();
-        for(Field field :policyStatus.getClass().getDeclaredFields()){
+        // 사용됨
+        usedStatus = new PolicyStatus();
+        for(Field field : usedStatus.getClass().getDeclaredFields()){
             field.setAccessible(true);
         }
-        ReflectionUtils.setField(policyStatus.getClass().getDeclaredField("policyStatusId"), policyStatus,0);
-        ReflectionUtils.setField(policyStatus.getClass().getDeclaredField("name"), policyStatus,"미사용" );
+        ReflectionUtils.setField(usedStatus.getClass().getDeclaredField("policyStatusId"), usedStatus,0);
+        ReflectionUtils.setField(usedStatus.getClass().getDeclaredField("name"), usedStatus,"사용됨" );
+
+        // 사용되지않음
+        unusedStatus = new PolicyStatus();
+        for(Field field : unusedStatus.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(usedStatus.getClass().getDeclaredField("policyStatusId"), unusedStatus,1);
+        ReflectionUtils.setField(usedStatus.getClass().getDeclaredField("name"), unusedStatus,"미사용" );
+
+
 
     }
 
@@ -168,11 +176,12 @@ class PolicyServiceTest {
         Mockito.when(bookRepository.findById(addRatePolicyForBookRequest.getBookId()))
                 .thenReturn(Optional.of(book));
         Mockito.when(policyStatusRepository.findById(addRatePolicyForBookRequest.getPolicyStatusId()))
-                .thenReturn(Optional.of(policyStatus));
+                .thenReturn(Optional.of(usedStatus));
 
         // 예싱 응답
-        AddRatePolicyForBookResponse expected =
-                new AddRatePolicyForBookResponse(
+        RatePolicyForBookResponse expected =
+                new RatePolicyForBookResponse(
+                        null,
                         10,
                         30000,
                         10000,
@@ -180,12 +189,13 @@ class PolicyServiceTest {
                         LocalDateTime.of(2024,1,10,12,0),
                         "테스트용 정책",
                         "테스트용 정책 설명",
-                        1L,
-                        0
+                        "테스트용 도서",
+                        "테스트용 Isbn13",
+                        "사용됨"
                 );
 
         // 실제 응답
-        AddRatePolicyForBookResponse actual
+        RatePolicyForBookResponse actual
                 = policyService.addRatePolicyForBook(addRatePolicyForBookRequest);
 
         // addRatePolicyForBook() 메서드 안의 ratePoliciesForBookRepository.save()가 실행되었는지 검증
@@ -364,11 +374,12 @@ class PolicyServiceTest {
         Mockito.when(categoryRepository.findById(addRatePolicyForCategoryRequest.getCategoryId()))
                 .thenReturn(Optional.of(category));
         Mockito.when(policyStatusRepository.findById(addRatePolicyForCategoryRequest.getPolicyStatusId()))
-                .thenReturn(Optional.of(policyStatus));
+                .thenReturn(Optional.of(usedStatus));
 
         // 예싱 응답
-        AddRatePolicyForCategoryResponse expected =
-                new AddRatePolicyForCategoryResponse(
+        RatePolicyForCategoryResponse expected =
+                new RatePolicyForCategoryResponse(
+                        null,
                         10,
                         30000,
                         10000,
@@ -376,12 +387,12 @@ class PolicyServiceTest {
                         LocalDateTime.of(2024,1,10,12,0),
                         "테스트용 정책",
                         "테스트용 정책 설명",
-                        0,
-                        0
+                        "테스트용 카테고리",
+                        "사용됨"
                 );
 
         // 실제 응답
-        AddRatePolicyForCategoryResponse actual
+        RatePolicyForCategoryResponse actual
                 = policyService.addRatePolicyForCategory(addRatePolicyForCategoryRequest);
 
         // addRatePolicyForBook() 메서드 안의 ratePoliciesForBookRepository.save()가 실행되었는지 검증
@@ -551,23 +562,25 @@ class PolicyServiceTest {
         Mockito.when(bookRepository.findById(addPricePolicyForBookRequest.getBookId()))
                 .thenReturn(Optional.of(book));
         Mockito.when(policyStatusRepository.findById(addPricePolicyForBookRequest.getPolicyStatusId()))
-                .thenReturn(Optional.of(policyStatus));
+                .thenReturn(Optional.of(usedStatus));
 
         // 예싱 응답
-        AddPricePolicyForBookResponse expected =
-                new AddPricePolicyForBookResponse(
+        PricePolicyForBookResponse expected =
+                new PricePolicyForBookResponse(
+                        null,
                         20000,
                         5000,
                         LocalDateTime.of(2024,1,1,12,0),
                         LocalDateTime.of(2024,1,10,12,0),
                         "테스트용 정액정책 for Book",
                         "테스트용 정액정책 for Book 설명",
-                        1L,
-                        0
+                        "테스트용 도서",
+                        "테스트용 Isbn13",
+                        "사용됨"
                 );
 
         // 실제 응답
-        AddPricePolicyForBookResponse actual
+        PricePolicyForBookResponse actual
                 = policyService.addPricePolicyForBook(addPricePolicyForBookRequest);
 
         // addRatePolicyForBook() 메서드 안의 ratePoliciesForBookRepository.save()가 실행되었는지 검증
@@ -730,23 +743,24 @@ class PolicyServiceTest {
         Mockito.when(categoryRepository.findById(addPricePolicyForCategoryRequest.getCategoryId()))
                 .thenReturn(Optional.of(category));
         Mockito.when(policyStatusRepository.findById(addPricePolicyForCategoryRequest.getPolicyStatusId()))
-                .thenReturn(Optional.of(policyStatus));
+                .thenReturn(Optional.of(usedStatus));
 
         // 예싱 응답
-        AddPricePolicyForCategoryResponse expected =
-                new AddPricePolicyForCategoryResponse(
+        PricePolicyForCategoryResponse expected =
+                new PricePolicyForCategoryResponse(
+                        null,
                         20000,
                         5000,
                         LocalDateTime.of(2024,1,1,12,0),
                         LocalDateTime.of(2024,1,10,12,0),
                         "테스트용 정액정책 for Category",
                         "테스트용 정액정책 for Category 설명",
-                        0,
-                        0
+                        "테스트용 카테고리",
+                        "사용됨"
                 );
 
         // 실제 응답
-        AddPricePolicyForCategoryResponse actual
+        PricePolicyForCategoryResponse actual
                 = policyService.addPricePolicyForCategory(addPricePolicyForCategoryRequest);
 
         // addRatePolicyForBook() 메서드 안의 ratePoliciesForBookRepository.save()가 실행되었는지 검증
@@ -911,7 +925,7 @@ class PolicyServiceTest {
                 ReflectionUtils.setField(
                         ratePolicyForBook.getClass().getDeclaredField("policyStatus"),
                         ratePolicyForBook,
-                        policyStatus);
+                        usedStatus);
 
                 list.add(ratePolicyForBook);
             }
@@ -921,12 +935,12 @@ class PolicyServiceTest {
         Page<RatePolicyForBook> page = new PageImpl<>(list);
         Mockito.when(ratePoliciesForBookRepository.findAll(Mockito.any(Pageable.class)))
                 .thenReturn(page);
-        List<GetRatePolicyForBookResponse> expected = new ArrayList<>();
+        List<RatePolicyForBookResponse> expected = new ArrayList<>();
         for(RatePolicyForBook ratePolicyForBook : page){
-            expected.add(GetRatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook));
+            expected.add(RatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook));
         }
 
-        List<GetRatePolicyForBookResponse> actual  = policyService.getRatePoliciesForBook(1);
+        List<RatePolicyForBookResponse> actual  = policyService.getRatePoliciesForBook(1);
 
         Mockito.verify(ratePoliciesForBookRepository,
                 Mockito.times(1))
@@ -986,7 +1000,7 @@ class PolicyServiceTest {
                 ReflectionUtils.setField(
                        ratePolicyForCategory.getClass().getDeclaredField("policyStatus"),
                        ratePolicyForCategory,
-                        policyStatus);
+                        usedStatus);
 
                 list.add(ratePolicyForCategory);
             }
@@ -996,12 +1010,12 @@ class PolicyServiceTest {
         Page<RatePolicyForCategory> page = new PageImpl<>(list);
         Mockito.when(ratePoliciesForCategoryRepository.findAll(Mockito.any(Pageable.class)))
                 .thenReturn(page);
-        List<GetRatePolicyForCategoryResponse> expected = new ArrayList<>();
+        List<RatePolicyForCategoryResponse> expected = new ArrayList<>();
         for(RatePolicyForCategory ratePolicyForCategory : page){
-            expected.add(GetRatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory));
+            expected.add(RatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory));
         }
 
-        List<GetRatePolicyForCategoryResponse> actual  = policyService.getRatePoliciesForCategory(1);
+        List<RatePolicyForCategoryResponse> actual  = policyService.getRatePoliciesForCategory(1);
 
         Mockito.verify(ratePoliciesForCategoryRepository,
                         Mockito.times(1))
@@ -1056,7 +1070,7 @@ class PolicyServiceTest {
                 ReflectionUtils.setField(
                         pricePolicyForBook.getClass().getDeclaredField("policyStatus"),
                         pricePolicyForBook,
-                        policyStatus);
+                        usedStatus);
 
                 list.add(pricePolicyForBook);
             }
@@ -1066,12 +1080,12 @@ class PolicyServiceTest {
         Page<PricePolicyForBook> page = new PageImpl<>(list);
         Mockito.when(pricePoliciesForBookRepository.findAll(Mockito.any(Pageable.class)))
                 .thenReturn(page);
-        List<GetPricePolicyForBookResponse> expected = new ArrayList<>();
+        List<PricePolicyForBookResponse> expected = new ArrayList<>();
         for(PricePolicyForBook pricePolicyForBook : page){
-            expected.add(GetPricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook));
+            expected.add(PricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook));
         }
 
-        List<GetPricePolicyForBookResponse> actual  = policyService.getPricePoliciesForBook(1);
+        List<PricePolicyForBookResponse> actual  = policyService.getPricePoliciesForBook(1);
 
         Mockito.verify(pricePoliciesForBookRepository,
                         Mockito.times(1))
@@ -1126,7 +1140,7 @@ class PolicyServiceTest {
                 ReflectionUtils.setField(
                         pricePolicyForCategory.getClass().getDeclaredField("policyStatus"),
                         pricePolicyForCategory,
-                        policyStatus);
+                        usedStatus);
 
                 list.add(pricePolicyForCategory);
             }
@@ -1136,12 +1150,12 @@ class PolicyServiceTest {
         Page<PricePolicyForCategory> page = new PageImpl<>(list);
         Mockito.when(pricePoliciesForCategoryRepository.findAll(Mockito.any(Pageable.class)))
                 .thenReturn(page);
-        List<GetPricePolicyForCategoryResponse> expected = new ArrayList<>();
+        List<PricePolicyForCategoryResponse> expected = new ArrayList<>();
         for(PricePolicyForCategory pricePolicyForCategory : page){
-            expected.add(GetPricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory));
+            expected.add(PricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory));
         }
 
-        List<GetPricePolicyForCategoryResponse> actual  = policyService.getPricePoliciesForCategory(1);
+        List<PricePolicyForCategoryResponse> actual  = policyService.getPricePoliciesForCategory(1);
 
         Mockito.verify(pricePoliciesForCategoryRepository,
                         Mockito.times(1))
@@ -1197,11 +1211,11 @@ class PolicyServiceTest {
         ReflectionUtils.setField(
                 ratePolicyForBook.getClass().getDeclaredField("policyStatus"),
                 ratePolicyForBook,
-                policyStatus);
+                usedStatus);
 
         Mockito.when(ratePoliciesForBookRepository.findById(0L)).thenReturn(Optional.of(ratePolicyForBook));
-        GetRatePolicyForBookResponse expected = GetRatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook);
-        GetRatePolicyForBookResponse actual = policyService.getRatePolicyForBook(0L);
+        RatePolicyForBookResponse expected = RatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook);
+        RatePolicyForBookResponse actual = policyService.getRatePolicyForBook(0L);
 
         Mockito.verify(ratePoliciesForBookRepository, Mockito.times(1) ).findById(0L);
         Assertions.assertEquals(expected,actual);
@@ -1267,11 +1281,11 @@ class PolicyServiceTest {
         ReflectionUtils.setField(
                 ratePolicyForCategory.getClass().getDeclaredField("policyStatus"),
                 ratePolicyForCategory,
-                policyStatus);
+                usedStatus);
 
         Mockito.when(ratePoliciesForCategoryRepository.findById(0L)).thenReturn(Optional.of(ratePolicyForCategory));
-        GetRatePolicyForCategoryResponse expected = GetRatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory);
-        GetRatePolicyForCategoryResponse actual = policyService.getRatePolicyForCategory(0L);
+        RatePolicyForCategoryResponse expected = RatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory);
+        RatePolicyForCategoryResponse actual = policyService.getRatePolicyForCategory(0L);
 
         Mockito.verify(ratePoliciesForCategoryRepository, Mockito.times(1) ).findById(0L);
         Assertions.assertEquals(expected,actual);
@@ -1333,11 +1347,11 @@ class PolicyServiceTest {
         ReflectionUtils.setField(
                 pricePolicyForBook.getClass().getDeclaredField("policyStatus"),
                 pricePolicyForBook,
-                policyStatus);
+                usedStatus);
 
         Mockito.when(pricePoliciesForBookRepository.findById(0L)).thenReturn(Optional.of(pricePolicyForBook));
-        GetPricePolicyForBookResponse expected = GetPricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook);
-        GetPricePolicyForBookResponse actual = policyService.getPricePolicyForBook(0L);
+        PricePolicyForBookResponse expected = PricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook);
+        PricePolicyForBookResponse actual = policyService.getPricePolicyForBook(0L);
 
         Mockito.verify(pricePoliciesForBookRepository, Mockito.times(1) ).findById(0L);
         Assertions.assertEquals(expected,actual);
@@ -1399,11 +1413,11 @@ class PolicyServiceTest {
         ReflectionUtils.setField(
                 pricePolicyForCategory.getClass().getDeclaredField("policyStatus"),
                 pricePolicyForCategory,
-                policyStatus);
+                usedStatus);
 
         Mockito.when(pricePoliciesForCategoryRepository.findById(0L)).thenReturn(Optional.of(pricePolicyForCategory));
-        GetPricePolicyForCategoryResponse expected = GetPricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory);
-        GetPricePolicyForCategoryResponse actual = policyService.getPricePolicyForCategory(0L);
+        PricePolicyForCategoryResponse expected = PricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory);
+        PricePolicyForCategoryResponse actual = policyService.getPricePolicyForCategory(0L);
 
         Mockito.verify(pricePoliciesForCategoryRepository, Mockito.times(1) ).findById(0L);
         Assertions.assertEquals(expected,actual);
@@ -1421,5 +1435,747 @@ class PolicyServiceTest {
 
         Mockito.verify(pricePoliciesForCategoryRepository, Mockito.times(1) ).findById(0L);
     }
+    
+    @Test
+    @DisplayName("정률정책 for Book 삭제 - 사용된 정책 - 정상동작")
+    void deleteUsedRatePolicyForBookTest() throws NoSuchFieldException {
 
+        RatePolicyForBook ratePolicyForBook = new RatePolicyForBook();
+        for(Field field : ratePolicyForBook.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("ratePolicyForBookId"),
+                ratePolicyForBook,
+                0L);
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("discountRate"),
+                ratePolicyForBook,
+                10);
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("minimumOrderAmount"),
+                ratePolicyForBook,
+                10000);
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("maximumDiscountPrice"),
+                ratePolicyForBook,
+                2000);
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("expirationPeriodStart"),
+                ratePolicyForBook,
+                LocalDateTime.of(2024,1,1,1,1));
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("expirationPeriodEnd"),
+                ratePolicyForBook,
+                LocalDateTime.of(2024,1,10,1,1));
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("name"),
+                ratePolicyForBook,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("description"),
+                ratePolicyForBook,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("book"),
+                ratePolicyForBook,
+                book);
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("policyStatus"),
+                ratePolicyForBook,
+                usedStatus);
+        
+        Mockito.when(ratePoliciesForBookRepository.findById(0L))
+                .thenReturn(Optional.of(ratePolicyForBook));
+
+        PolicyStatus deleteStatus = new PolicyStatus();
+        for(Field field :deleteStatus.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("policyStatusId"),
+                deleteStatus,
+                2
+                );
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("name"),
+                deleteStatus,
+                "삭제됨"
+        );
+        Mockito.when(policyStatusRepository.findByName("삭제됨"))
+                .thenReturn(deleteStatus);
+
+        RatePolicyForBookResponse expected = new RatePolicyForBookResponse(
+                0L,
+                10,
+                10000,
+                2000,
+                LocalDateTime.of(2024,1,1,1,1),
+                LocalDateTime.of(2024,1,10,1,1),
+                "테스트용 정률정책 for Book",
+                "테스트용 정률정책 for Book",
+                "테스트용 도서",
+                "테스트용 Isbn13",
+                "삭제됨"
+        );
+        RatePolicyForBookResponse actual = policyService.deleteRatePolicyForBook(0L);
+        Mockito.verify(ratePoliciesForBookRepository,Mockito.times(1)).findById(0L);
+        Mockito.verify(policyStatusRepository,Mockito.times(1)).findByName("삭제됨");
+
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    @DisplayName("정률정책 for Book 삭제 - 사용되지 않은 정책 - 정상동작")
+    void deleteUnusedRatePolicyForBookTest() throws NoSuchFieldException {
+
+        RatePolicyForBook ratePolicyForBook = new RatePolicyForBook();
+        for(Field field : ratePolicyForBook.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("ratePolicyForBookId"),
+                ratePolicyForBook,
+                0L);
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("discountRate"),
+                ratePolicyForBook,
+                10);
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("minimumOrderAmount"),
+                ratePolicyForBook,
+                10000);
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("maximumDiscountPrice"),
+                ratePolicyForBook,
+                2000);
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("expirationPeriodStart"),
+                ratePolicyForBook,
+                LocalDateTime.of(2024,1,1,1,1));
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("expirationPeriodEnd"),
+                ratePolicyForBook,
+                LocalDateTime.of(2024,1,10,1,1));
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("name"),
+                ratePolicyForBook,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("description"),
+                ratePolicyForBook,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("book"),
+                ratePolicyForBook,
+                book);
+        ReflectionUtils.setField(
+                ratePolicyForBook.getClass().getDeclaredField("policyStatus"),
+                ratePolicyForBook,
+                unusedStatus);
+
+        Mockito.when(ratePoliciesForBookRepository.findById(0L))
+                .thenReturn(Optional.of(ratePolicyForBook));
+
+        PolicyStatus deleteStatus = new PolicyStatus();
+        for(Field field :deleteStatus.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("policyStatusId"),
+                deleteStatus,
+                2
+        );
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("name"),
+                deleteStatus,
+                "삭제됨"
+        );
+        Mockito.when(policyStatusRepository.findByName("삭제됨"))
+                .thenReturn(deleteStatus);
+
+        RatePolicyForBookResponse expected = new RatePolicyForBookResponse(
+                0L,
+                10,
+                10000,
+                2000,
+                LocalDateTime.of(2024,1,1,1,1),
+                LocalDateTime.of(2024,1,10,1,1),
+                "테스트용 정률정책 for Book",
+                "테스트용 정률정책 for Book",
+                "테스트용 도서",
+                "테스트용 Isbn13",
+                "삭제됨"
+        );
+
+        RatePolicyForBookResponse actual = policyService.deleteRatePolicyForBook(0L);
+        Mockito.verify(ratePoliciesForBookRepository,Mockito.times(1)).findById(0L);
+        Mockito.verify(ratePoliciesForBookRepository,Mockito.times(1)).delete(ratePolicyForBook);
+        Mockito.verify(policyStatusRepository,Mockito.times(1)).findByName("삭제됨");
+
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    @DisplayName("정률정책 for Book 삭제 - 해당하는 ID의 정책이 없을때")
+    void deleteRatePolicyForBookWhenPolicyNotFoundTest() throws NoSuchFieldException {
+
+        Mockito.when(ratePoliciesForBookRepository.findById(99999L)) // 존재하지 않는 id
+                .thenThrow(PolicyNotFoundException.class);
+
+        Assertions.assertThrows(PolicyNotFoundException.class,()->{
+            policyService.deleteRatePolicyForBook(99999L);
+        });
+    }
+
+    @Test
+    @DisplayName("정률정책 for Category 삭제 - 사용된 정책 - 정상동작")
+    void deleteUsedRatePolicyForCategoryTest() throws NoSuchFieldException {
+
+        RatePolicyForCategory ratePolicyForCategory = new RatePolicyForCategory();
+        for(Field field : ratePolicyForCategory.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("ratePolicyForCategoryId"),
+                ratePolicyForCategory,
+                0L);
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("discountRate"),
+                ratePolicyForCategory,
+                10);
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("minimumOrderAmount"),
+                ratePolicyForCategory,
+                10000);
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("maximumDiscountPrice"),
+                ratePolicyForCategory,
+                2000);
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("expirationPeriodStart"),
+                ratePolicyForCategory,
+                LocalDateTime.of(2024,1,1,1,1));
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("expirationPeriodEnd"),
+                ratePolicyForCategory,
+                LocalDateTime.of(2024,1,10,1,1));
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("name"),
+                ratePolicyForCategory,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("description"),
+                ratePolicyForCategory,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("category"),
+                ratePolicyForCategory,
+                category);
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("policyStatus"),
+                ratePolicyForCategory,
+                usedStatus);
+
+        Mockito.when(ratePoliciesForCategoryRepository.findById(0L))
+                .thenReturn(Optional.of(ratePolicyForCategory));
+
+        PolicyStatus deleteStatus = new PolicyStatus();
+        for(Field field :deleteStatus.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("policyStatusId"),
+                deleteStatus,
+                2
+        );
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("name"),
+                deleteStatus,
+                "삭제됨"
+        );
+        Mockito.when(policyStatusRepository.findByName("삭제됨"))
+                .thenReturn(deleteStatus);
+
+        RatePolicyForCategoryResponse expected = new RatePolicyForCategoryResponse(
+                0L,
+                10,
+                10000,
+                2000,
+                LocalDateTime.of(2024,1,1,1,1),
+                LocalDateTime.of(2024,1,10,1,1),
+                "테스트용 정률정책 for Book",
+                "테스트용 정률정책 for Book",
+                "테스트용 카테고리",
+                "삭제됨"
+        );
+        RatePolicyForCategoryResponse actual = policyService.deleteRatePolicyForCategory(0L);
+        Mockito.verify(ratePoliciesForCategoryRepository,Mockito.times(1)).findById(0L);
+        Mockito.verify(policyStatusRepository,Mockito.times(1)).findByName("삭제됨");
+
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    @DisplayName("정률정책 for Category 삭제 - 사용되지 않은 정책 - 정상동작")
+    void deleteUnusedRatePolicyForCategoryTest() throws NoSuchFieldException {
+
+        RatePolicyForCategory ratePolicyForCategory = new RatePolicyForCategory();
+        for(Field field : ratePolicyForCategory.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("ratePolicyForCategoryId"),
+                ratePolicyForCategory,
+                0L);
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("discountRate"),
+                ratePolicyForCategory,
+                10);
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("minimumOrderAmount"),
+                ratePolicyForCategory,
+                10000);
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("maximumDiscountPrice"),
+                ratePolicyForCategory,
+                2000);
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("expirationPeriodStart"),
+                ratePolicyForCategory,
+                LocalDateTime.of(2024,1,1,1,1));
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("expirationPeriodEnd"),
+                ratePolicyForCategory,
+                LocalDateTime.of(2024,1,10,1,1));
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("name"),
+                ratePolicyForCategory,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("description"),
+                ratePolicyForCategory,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("category"),
+                ratePolicyForCategory,
+                category);
+        ReflectionUtils.setField(
+                ratePolicyForCategory.getClass().getDeclaredField("policyStatus"),
+                ratePolicyForCategory,
+                unusedStatus);
+
+        Mockito.when(ratePoliciesForCategoryRepository.findById(0L))
+                .thenReturn(Optional.of(ratePolicyForCategory));
+
+        PolicyStatus deleteStatus = new PolicyStatus();
+        for(Field field :deleteStatus.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("policyStatusId"),
+                deleteStatus,
+                2
+        );
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("name"),
+                deleteStatus,
+                "삭제됨"
+        );
+        Mockito.when(policyStatusRepository.findByName("삭제됨"))
+                .thenReturn(deleteStatus);
+
+        RatePolicyForCategoryResponse expected = new RatePolicyForCategoryResponse(
+                0L,
+                10,
+                10000,
+                2000,
+                LocalDateTime.of(2024,1,1,1,1),
+                LocalDateTime.of(2024,1,10,1,1),
+                "테스트용 정률정책 for Book",
+                "테스트용 정률정책 for Book",
+                "테스트용 카테고리",
+                "삭제됨"
+        );
+        RatePolicyForCategoryResponse actual = policyService.deleteRatePolicyForCategory(0L);
+        Mockito.verify(ratePoliciesForCategoryRepository,Mockito.times(1)).delete(ratePolicyForCategory);
+        Mockito.verify(ratePoliciesForCategoryRepository,Mockito.times(1)).findById(0L);
+        Mockito.verify(policyStatusRepository,Mockito.times(1)).findByName("삭제됨");
+
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    @DisplayName("정률정책 for Category 삭제 - 해당하는 ID의 정책이 없을때")
+    void deleteRatePolicyForCategoryWhenPolicyNotFoundTest() throws NoSuchFieldException {
+
+        Mockito.when(ratePoliciesForCategoryRepository.findById(99999L)) // 존재하지 않는 id
+                .thenThrow(PolicyNotFoundException.class);
+
+        Assertions.assertThrows(PolicyNotFoundException.class,()->{
+            policyService.deleteRatePolicyForCategory(99999L);
+        });
+    }
+
+    @Test
+    @DisplayName("정액정책 for Book 삭제 - 사용된 정책 - 정상동작")
+    void deleteUsedPricePolicyForBookTest() throws NoSuchFieldException {
+
+        PricePolicyForBook pricePolicyForBook = new PricePolicyForBook();
+        for(Field field : pricePolicyForBook.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("pricePolicyForBookId"),
+                pricePolicyForBook,
+                0L);
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("discountPrice"),
+                pricePolicyForBook,
+                2000);
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("minimumOrderAmount"),
+                pricePolicyForBook,
+                10000);
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("expirationPeriodStart"),
+                pricePolicyForBook,
+                LocalDateTime.of(2024,1,1,1,1));
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("expirationPeriodEnd"),
+                pricePolicyForBook,
+                LocalDateTime.of(2024,1,10,1,1));
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("name"),
+                pricePolicyForBook,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("description"),
+                pricePolicyForBook,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("book"),
+                pricePolicyForBook,
+                book);
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("policyStatus"),
+                pricePolicyForBook,
+                usedStatus);
+
+        Mockito.when(pricePoliciesForBookRepository.findById(0L))
+                .thenReturn(Optional.of(pricePolicyForBook));
+
+        PolicyStatus deleteStatus = new PolicyStatus();
+        for(Field field :deleteStatus.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("policyStatusId"),
+                deleteStatus,
+                2
+        );
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("name"),
+                deleteStatus,
+                "삭제됨"
+        );
+        Mockito.when(policyStatusRepository.findByName("삭제됨"))
+                .thenReturn(deleteStatus);
+
+        PricePolicyForBookResponse expected = new PricePolicyForBookResponse(
+                0L,
+                10000,
+                2000,
+                LocalDateTime.of(2024,1,1,1,1),
+                LocalDateTime.of(2024,1,10,1,1),
+                "테스트용 정률정책 for Book",
+                "테스트용 정률정책 for Book",
+                "테스트용 도서",
+                "테스트용 Isbn13",
+                "삭제됨"
+        );
+        PricePolicyForBookResponse actual = policyService.deletePricePolicyForBook(0L);
+        Mockito.verify(pricePoliciesForBookRepository,Mockito.times(1)).findById(0L);
+        Mockito.verify(policyStatusRepository,Mockito.times(1)).findByName("삭제됨");
+
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    @DisplayName("정액정책 for Book 삭제 - 사용되지 않은 정책 - 정상동작")
+    void deleteUnusedPricePolicyForBookTest() throws NoSuchFieldException {
+
+        PricePolicyForBook pricePolicyForBook = new PricePolicyForBook();
+        for(Field field : pricePolicyForBook.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("pricePolicyForBookId"),
+                pricePolicyForBook,
+                0L);
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("discountPrice"),
+                pricePolicyForBook,
+                2000);
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("minimumOrderAmount"),
+                pricePolicyForBook,
+                10000);
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("expirationPeriodStart"),
+                pricePolicyForBook,
+                LocalDateTime.of(2024,1,1,1,1));
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("expirationPeriodEnd"),
+                pricePolicyForBook,
+                LocalDateTime.of(2024,1,10,1,1));
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("name"),
+                pricePolicyForBook,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("description"),
+                pricePolicyForBook,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("book"),
+                pricePolicyForBook,
+                book);
+        ReflectionUtils.setField(
+                pricePolicyForBook.getClass().getDeclaredField("policyStatus"),
+                pricePolicyForBook,
+                unusedStatus);
+
+        Mockito.when(pricePoliciesForBookRepository.findById(0L))
+                .thenReturn(Optional.of(pricePolicyForBook));
+
+        PolicyStatus deleteStatus = new PolicyStatus();
+        for(Field field :deleteStatus.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("policyStatusId"),
+                deleteStatus,
+                2
+        );
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("name"),
+                deleteStatus,
+                "삭제됨"
+        );
+        Mockito.when(policyStatusRepository.findByName("삭제됨"))
+                .thenReturn(deleteStatus);
+
+        PricePolicyForBookResponse expected = new PricePolicyForBookResponse(
+                0L,
+                10000,
+                2000,
+                LocalDateTime.of(2024,1,1,1,1),
+                LocalDateTime.of(2024,1,10,1,1),
+                "테스트용 정률정책 for Book",
+                "테스트용 정률정책 for Book",
+                "테스트용 도서",
+                "테스트용 Isbn13",
+                "삭제됨"
+        );
+        PricePolicyForBookResponse actual = policyService.deletePricePolicyForBook(0L);
+
+        Mockito.verify(pricePoliciesForBookRepository,Mockito.times(1)).delete(pricePolicyForBook);
+        Mockito.verify(policyStatusRepository,Mockito.times(1)).findByName("삭제됨");
+        Mockito.verify(pricePoliciesForBookRepository,Mockito.times(1)).findById(0L);
+
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    @DisplayName("정액정책 for Book 삭제 - 해당 ID의 정책이 없을때")
+    void deletePricePolicyForBookWhenPolicyNotFoundTest() throws NoSuchFieldException {
+
+        Mockito.when(pricePoliciesForBookRepository.findById(99999L))
+                .thenThrow(PolicyNotFoundException.class);
+
+        Assertions.assertThrows(PolicyNotFoundException.class , ()->{
+            policyService.deletePricePolicyForBook(99999L);
+        });
+
+    }
+
+    @Test
+    @DisplayName("정액정책 for Category 삭제 - 사용된 정책 - 정상동작")
+    void deleteUsedPricePolicyForCategoryTest() throws NoSuchFieldException {
+
+        PricePolicyForCategory pricePolicyForCategory = new PricePolicyForCategory();
+        for(Field field : pricePolicyForCategory.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("pricePolicyForCategoryId"),
+                pricePolicyForCategory,
+                0L);
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("discountPrice"),
+                pricePolicyForCategory,
+                2000);
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("minimumOrderAmount"),
+                pricePolicyForCategory,
+                10000);
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("expirationPeriodStart"),
+                pricePolicyForCategory,
+                LocalDateTime.of(2024,1,1,1,1));
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("expirationPeriodEnd"),
+                pricePolicyForCategory,
+                LocalDateTime.of(2024,1,10,1,1));
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("name"),
+                pricePolicyForCategory,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("description"),
+                pricePolicyForCategory,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("category"),
+                pricePolicyForCategory,
+                category);
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("policyStatus"),
+                pricePolicyForCategory,
+                usedStatus);
+
+        Mockito.when(pricePoliciesForCategoryRepository.findById(0L))
+                .thenReturn(Optional.of(pricePolicyForCategory));
+
+        PolicyStatus deleteStatus = new PolicyStatus();
+        for(Field field :deleteStatus.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("policyStatusId"),
+                deleteStatus,
+                2
+        );
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("name"),
+                deleteStatus,
+                "삭제됨"
+        );
+        Mockito.when(policyStatusRepository.findByName("삭제됨"))
+                .thenReturn(deleteStatus);
+
+        PricePolicyForCategoryResponse expected = new PricePolicyForCategoryResponse(
+                0L,
+                10000,
+                2000,
+                LocalDateTime.of(2024,1,1,1,1),
+                LocalDateTime.of(2024,1,10,1,1),
+                "테스트용 정률정책 for Book",
+                "테스트용 정률정책 for Book",
+                "테스트용 카테고리",
+                "삭제됨"
+        );
+        PricePolicyForCategoryResponse actual = policyService.deletePricePolicyForCategory(0L);
+        Mockito.verify(pricePoliciesForCategoryRepository,Mockito.times(1)).findById(0L);
+        Mockito.verify(policyStatusRepository,Mockito.times(1)).findByName("삭제됨");
+
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    @DisplayName("정액정책 for Category 삭제 - 사용되지 않은 정책 - 정상동작")
+    void deleteUnusedPricePolicyForCategoryTest() throws NoSuchFieldException {
+
+        PricePolicyForCategory pricePolicyForCategory = new PricePolicyForCategory();
+        for(Field field : pricePolicyForCategory.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("pricePolicyForCategoryId"),
+                pricePolicyForCategory,
+                0L);
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("discountPrice"),
+                pricePolicyForCategory,
+                2000);
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("minimumOrderAmount"),
+                pricePolicyForCategory,
+                10000);
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("expirationPeriodStart"),
+                pricePolicyForCategory,
+                LocalDateTime.of(2024,1,1,1,1));
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("expirationPeriodEnd"),
+                pricePolicyForCategory,
+                LocalDateTime.of(2024,1,10,1,1));
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("name"),
+                pricePolicyForCategory,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("description"),
+                pricePolicyForCategory,
+                "테스트용 정률정책 for Book");
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("category"),
+                pricePolicyForCategory,
+                category);
+        ReflectionUtils.setField(
+                pricePolicyForCategory.getClass().getDeclaredField("policyStatus"),
+                pricePolicyForCategory,
+                unusedStatus);
+
+        Mockito.when(pricePoliciesForCategoryRepository.findById(0L))
+                .thenReturn(Optional.of(pricePolicyForCategory));
+
+        PolicyStatus deleteStatus = new PolicyStatus();
+        for(Field field :deleteStatus.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+        }
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("policyStatusId"),
+                deleteStatus,
+                2
+        );
+        ReflectionUtils.setField(
+                deleteStatus.getClass().getDeclaredField("name"),
+                deleteStatus,
+                "삭제됨"
+        );
+        Mockito.when(policyStatusRepository.findByName("삭제됨"))
+                .thenReturn(deleteStatus);
+
+        PricePolicyForCategoryResponse expected = new PricePolicyForCategoryResponse(
+                0L,
+                10000,
+                2000,
+                LocalDateTime.of(2024,1,1,1,1),
+                LocalDateTime.of(2024,1,10,1,1),
+                "테스트용 정률정책 for Book",
+                "테스트용 정률정책 for Book",
+                "테스트용 카테고리",
+                "삭제됨"
+        );
+        PricePolicyForCategoryResponse actual = policyService.deletePricePolicyForCategory(0L);
+        Mockito.verify(pricePoliciesForCategoryRepository,Mockito.times(1)).findById(0L);
+        Mockito.verify(policyStatusRepository,Mockito.times(1)).findByName("삭제됨");
+        Mockito.verify(pricePoliciesForCategoryRepository,Mockito.times(1)).delete(pricePolicyForCategory);
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    @DisplayName("정액정책 for Category 삭제 - 해당 ID의 정책이 없을때")
+    void deletePricePolicyForCategoryWhenPolicyNotFoundTest() throws NoSuchFieldException {
+
+        Mockito.when(pricePoliciesForCategoryRepository.findById(99999L))
+                .thenThrow(PolicyNotFoundException.class);
+
+        Assertions.assertThrows(PolicyNotFoundException.class , ()->{
+            policyService.deletePricePolicyForCategory(99999L);
+        });
+
+    }
 }

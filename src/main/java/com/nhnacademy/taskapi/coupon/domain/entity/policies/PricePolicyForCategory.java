@@ -70,6 +70,11 @@ public class PricePolicyForCategory {
                 category,
                 policyStatus
         );
+    }
 
+    // 사용되고 있는 쿠폰 정책을 삭제할때는 policyStatus를 "삭제됨" 으로 업뎃
+    // 사용되지 않고있는 쿠폰 정책이라면 삭제할때 그냥 db에서 삭제
+    public void deletePolicy(PolicyStatus policyStatus){
+        this.policyStatus = policyStatus;
     }
 }

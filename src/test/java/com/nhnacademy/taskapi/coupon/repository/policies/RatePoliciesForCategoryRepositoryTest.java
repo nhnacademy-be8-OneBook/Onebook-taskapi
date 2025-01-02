@@ -100,4 +100,11 @@ class RatePoliciesForCategoryRepositoryTest {
         ratePoliciesForCategoryRepository.findById(0L);
     }
 
+    @Test
+    @DisplayName("RatePolicyCategory - deleteById - 동작테스트")
+    void deleteByIdTest(){
+
+        ratePoliciesForCategoryRepository.deleteById(0L);
+    }
+
 }

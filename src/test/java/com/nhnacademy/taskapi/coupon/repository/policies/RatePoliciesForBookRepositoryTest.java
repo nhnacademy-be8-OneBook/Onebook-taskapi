@@ -115,4 +115,11 @@ class RatePoliciesForBookRepositoryTest {
         ratePoliciesForBookRepository.findById(0L);
     }
 
+    @Test
+    @DisplayName("RatePolicyBook - deleteById - 동작테스트")
+    void deleteByIdTest(){
+
+        ratePoliciesForBookRepository.deleteById(0L);
+    }
+
 }
