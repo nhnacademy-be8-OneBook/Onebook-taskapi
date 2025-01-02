@@ -47,3 +47,11 @@ servlet:
     max-file-size: 10MB  # 최대 파일 크기
     max-request-size: 10MB  # 최대 요청 크기
     enabled: true
+
+
+nhnKey:
+  url: https://api-keymanager.nhncloudservice.com
+  appKey: qTQNj7LyHhdAazH3
+  keyPath: ./1nebook.p12
+  password: 1nebook
+  keyId: 7b34378ad2034b71b2037ca9b1538d41
