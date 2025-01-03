@@ -125,6 +125,20 @@
             <version>5.3.1</version>
         </dependency>
 
+        <!-- Spring Security 의존성 추가 -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>5.7.1</version>
+        </dependency>
+
+        <!-- Swagger - Springfox -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
         <!--        DONE : Data접속 암호화를 위한 dependency-->
     </dependencies>
 
