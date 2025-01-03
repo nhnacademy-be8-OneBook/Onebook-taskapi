@@ -40,7 +40,7 @@ public class MemberRepositoryTest {
 
         Grade savedGrade = entityManager.persist(grade);
         Role savedRole = entityManager.persist(role);
-        Member member = Member.createNewMember(savedGrade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", savedRole);
+        Member member = Member.createNewMember(savedGrade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", savedRole);
 
         Member savedMember = memberRepository.save(member);
 
@@ -75,7 +75,7 @@ public class MemberRepositoryTest {
 
         Grade savedGrade = entityManager.persist(grade);
         Role savedRole = entityManager.persist(role);
-        Member member = Member.createNewMember(savedGrade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", savedRole);
+        Member member = Member.createNewMember(savedGrade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", savedRole);
 
         Member savedMember = memberRepository.save(member);
 
@@ -101,7 +101,7 @@ public class MemberRepositoryTest {
 
         Grade savedGrade = entityManager.persist(grade);
         Role savedRole = entityManager.persist(role);
-        Member member = Member.createNewMember(savedGrade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", savedRole);
+        Member member = Member.createNewMember(savedGrade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", savedRole);
 
         Member savedMember = memberRepository.save(member);
 
@@ -127,7 +127,7 @@ public class MemberRepositoryTest {
 
         Grade savedGrade = entityManager.persist(grade);
         Role savedRole = entityManager.persist(role);
-        Member member = Member.createNewMember(savedGrade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", savedRole);
+        Member member = Member.createNewMember(savedGrade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", savedRole);
 
         Member savedMember = memberRepository.save(member);
 
@@ -145,7 +145,7 @@ public class MemberRepositoryTest {
 
         Grade savedGrade = entityManager.persist(grade);
         Role savedRole = entityManager.persist(role);
-        Member member = Member.createNewMember(savedGrade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", savedRole);
+        Member member = Member.createNewMember(savedGrade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", savedRole);
 
         Member savedMember = memberRepository.save(member);
 
@@ -162,7 +162,7 @@ public class MemberRepositoryTest {
 
         Grade savedGrade = entityManager.persist(grade);
         Role savedRole = entityManager.persist(role);
-        Member member = Member.createNewMember(savedGrade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", savedRole);
+        Member member = Member.createNewMember(savedGrade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", savedRole);
 
         Member savedMember = memberRepository.save(member);
 
