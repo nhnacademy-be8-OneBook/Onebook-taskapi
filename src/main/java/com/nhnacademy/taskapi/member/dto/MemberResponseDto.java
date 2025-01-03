@@ -62,17 +62,18 @@ public record MemberResponseDto(
         return localPart + "@" + domainPart;
     }
 
-    // 전화번호 마스킹 처리 (예: 010-1111-1111 -> 010-1****-1****)
     private static String maskPhoneNumber(String phoneNumber) {
-        String[] split = phoneNumber.split("-");
+        // 전화번호를 3부분으로 나누기
+        String firstPart = phoneNumber.substring(0, 3); // 첫 3자리
+        String middlePart = phoneNumber.substring(3, 7); // 중간 4자리
+        String endPart = phoneNumber.substring(7); // 마지막 4자리
 
-        String middlePart = split[1];
-        middlePart = middlePart.charAt(0) + makeMask(middlePart.length() - 1);
+        // 중간 부분과 마지막 부분을 마스킹
+        middlePart = middlePart.charAt(0) + makeMask(middlePart.length() - 1); // 첫 문자 유지, 나머지는 마스크
+        endPart = endPart.charAt(0) + makeMask(endPart.length() - 1); // 첫 문자 유지, 나머지는 마스크
 
-        String endPart = split[2];
-        endPart = endPart.charAt(0) + makeMask(endPart.length() - 1);
-
-        return split[0] + "-" + middlePart + "-" + endPart;
+        // 마스킹 처리된 전화번호 반환 (하이픈 없이)
+        return firstPart + middlePart + endPart;
     }
 
 }
