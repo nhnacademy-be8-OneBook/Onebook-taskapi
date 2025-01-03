@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.taskapi.address.domain.dto.req.AddMemberAddressRequest;
 import com.nhnacademy.taskapi.address.domain.dto.req.DeleteMemberAddressRequest;
 import com.nhnacademy.taskapi.address.domain.dto.req.UpdateMemberAddressRequest;
-import com.nhnacademy.taskapi.address.domain.dto.resp.AddMemberAddressResponse;
-import com.nhnacademy.taskapi.address.domain.dto.resp.DeleteMemberAddressResponse;
-import com.nhnacademy.taskapi.address.domain.dto.resp.GetMemberAddressResponse;
-import com.nhnacademy.taskapi.address.domain.dto.resp.UpdateMemberAddressResponse;
+import com.nhnacademy.taskapi.address.domain.dto.resp.MemberAddressResponse;
 import com.nhnacademy.taskapi.address.domain.entity.MemberAddress;
 import com.nhnacademy.taskapi.address.service.AddressService;
 import com.nhnacademy.taskapi.grade.domain.Grade;
@@ -54,11 +51,11 @@ class AddressControllerTest {
     private UpdateMemberAddressRequest updateMemberAddressRequest;
     private DeleteMemberAddressRequest deleteMemberAddressRequest;
     private MemberAddress memberAddress;
-    private AddMemberAddressResponse addMemberAddressResponse;
-    private GetMemberAddressResponse getMemberAddressResponse;
-    private List<GetMemberAddressResponse> getMemberAddressResponseList;
-    private UpdateMemberAddressResponse updateMemberAddressResponse;
-    private DeleteMemberAddressResponse deleteMemberAddressResponse;
+    private MemberAddressResponse addMemberAddressResponse;
+    private MemberAddressResponse getMemberAddressResponse;
+    private List<MemberAddressResponse> getMemberAddressResponseList;
+    private MemberAddressResponse updateMemberAddressResponse;
+    private MemberAddressResponse deleteMemberAddressResponse;
 
     @BeforeEach
     void setUp(){
@@ -166,20 +163,20 @@ class AddressControllerTest {
         }
 
         // 테스트용 AddMemberResponse
-        addMemberAddressResponse = AddMemberAddressResponse.changeEntityToDto(memberAddress);
+        addMemberAddressResponse = MemberAddressResponse.changeEntityToDto(memberAddress);
 
         // 테스트용 GetMemberResponse
-        getMemberAddressResponse = GetMemberAddressResponse.changeEntityToDto(memberAddress);
+        getMemberAddressResponse = MemberAddressResponse.changeEntityToDto(memberAddress);
 
         // 테스트용 GetMemberResponses
         getMemberAddressResponseList = List.of(getMemberAddressResponse);
 
         // 테스트용 UpdateMemberResponse
         memberAddress.updateMemberAddress(updateMemberAddressRequest);
-        updateMemberAddressResponse = UpdateMemberAddressResponse.changeEntityToDto(memberAddress);
+        updateMemberAddressResponse = MemberAddressResponse.changeEntityToDto(memberAddress);
 
         // 테스트용 DeleteMemberResponse
-        deleteMemberAddressResponse = DeleteMemberAddressResponse.changeEntityToDto(1L);
+        deleteMemberAddressResponse = MemberAddressResponse.changeEntityToDto(memberAddress);
     }
 
     @Test

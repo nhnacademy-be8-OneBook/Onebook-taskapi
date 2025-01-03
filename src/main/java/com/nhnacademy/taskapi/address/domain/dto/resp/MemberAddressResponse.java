@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class UpdateMemberAddressResponse {
+public class MemberAddressResponse {
     private Long id;
     private String name;
     private String phoneNumber;
@@ -21,8 +21,8 @@ public class UpdateMemberAddressResponse {
     private String detailAddress;
     private boolean defaultLocation;
 
-    public static UpdateMemberAddressResponse changeEntityToDto(MemberAddress memberAddress) {
-        return new UpdateMemberAddressResponse(
+    public static MemberAddressResponse changeEntityToDto(MemberAddress memberAddress) {
+        return new MemberAddressResponse(
                 memberAddress.getId(),memberAddress.getName(), memberAddress.getPhoneNumber(), memberAddress.getAlias(),
                 memberAddress.getRequestedTerm(), memberAddress.getZipCode(), memberAddress.getRoadNameAddress(),
                 memberAddress.getNumberAddress(), memberAddress.getNotes(), memberAddress.getDetailAddress(),
