@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -65,5 +66,16 @@ public class ImageServiceImpl implements ImageService {
     public void deleteImage(long imageId) {
         Image image = imageRepository.findById(imageId).orElseThrow(() -> new ImageNotFoundException("Image not found"));
         imageRepository.delete(image);
+    }
+
+
+    @Override
+    public Image getImage(long bookId){
+        Image image = imageRepository.findByBook_BookId(bookId);
+        if(Objects.isNull(image)) {
+            throw new ImageNotFoundException("Image not found");
+        }
+
+        return image;
     }
 }

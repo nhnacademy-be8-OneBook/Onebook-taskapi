@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface ImageRepository extends JpaRepository<Image, Long> {
 
     Optional<Image> findByBook(Book book);
+    Image findByBook_BookId(Long bookId);
 }

@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/task/categories")
@@ -38,6 +40,12 @@ public class CategoryController {
     public ResponseEntity<Category> getCategories(@PathVariable int categoryId){
         Category category = categoryService.getCategory(categoryId);
         return ResponseEntity.ok().body(category);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Category>> getCategories(){
+        List<Category> categoryList = categoryService.getAllCategories();
+        return ResponseEntity.ok().body(categoryList);
     }
 
 }

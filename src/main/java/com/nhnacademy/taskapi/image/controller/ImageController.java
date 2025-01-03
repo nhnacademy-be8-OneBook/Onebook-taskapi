@@ -42,10 +42,17 @@ public class ImageController {
 
     }
 
-    @DeleteMapping("{imageId}")
+    @DeleteMapping("/{imageId}")
     public ResponseEntity<Void> deleteImage(@PathVariable("imageId") long imageId) {
         imageService.deleteImage(imageId);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @GetMapping("/{bookId}")
+    public ResponseEntity<Image> getImage(@PathVariable("bookId") long bookId) {
+        Image image = imageService.getImage(bookId);
+        return ResponseEntity.ok().body(image);
     }
 
 
