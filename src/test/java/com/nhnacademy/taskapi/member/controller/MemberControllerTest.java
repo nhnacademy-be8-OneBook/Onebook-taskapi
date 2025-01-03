@@ -40,7 +40,7 @@ public class MemberControllerTest {
     void getMembersTest() throws Exception {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
-        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
 
         List<Member> memberList = List.of(member);
         Pageable pageable = PageRequest.of(0, 10);
@@ -56,8 +56,8 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.content[0].name").value("김주혁"))
                 .andExpect(jsonPath("$.content[0].loginId").value("joo"))
                 .andExpect(jsonPath("$.content[0].gender").value("M"))
-                .andExpect(jsonPath("$.content[0].email").value("hel*******@gmail.com"))
-                .andExpect(jsonPath("$.content[0].phoneNumber").value("010-1***-1***"))
+                .andExpect(jsonPath("$.content[0].email").value("helloworld@gmail.com"))
+                .andExpect(jsonPath("$.content[0].phoneNumber").value("01011111111"))
                 .andExpect(jsonPath("$.content[0].status").value("ACTIVE"));
     }
 
@@ -66,7 +66,7 @@ public class MemberControllerTest {
     void getMemberByIdTest() throws Exception {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
-        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
         MemberResponseDto result = MemberResponseDto.from(member);
 
         Mockito.when(memberService.getMemberById(Mockito.anyLong())).thenReturn(result);
@@ -77,8 +77,8 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.name").value("김주혁"))
                 .andExpect(jsonPath("$.loginId").value("joo"))
                 .andExpect(jsonPath("$.gender").value("M"))
-                .andExpect(jsonPath("$.email").value("hel*******@gmail.com"))
-                .andExpect(jsonPath("$.phoneNumber").value("010-1***-1***"))
+                .andExpect(jsonPath("$.email").value("helloworld@gmail.com"))
+                .andExpect(jsonPath("$.phoneNumber").value("01011111111"))
                 .andExpect(jsonPath("$.status").value("ACTIVE"));
     }
 
@@ -87,7 +87,7 @@ public class MemberControllerTest {
     void createMemberTest() throws Exception {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
-        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
         MemberResponseDto result = MemberResponseDto.from(member);
 
         Mockito.when(memberService.registerMember(Mockito.any())).thenReturn(result);
@@ -101,14 +101,14 @@ public class MemberControllerTest {
                                 "  \"dateOfBirth\": \"2024-12-20\",\n" +
                                 "  \"gender\": \"M\",\n" +
                                 "  \"email\": \"helloworld@gmail.com\",\n" +
-                                "  \"phoneNumber\": \"010-1111-1111\"\n" +
+                                "  \"phoneNumber\": \"01011111111\"\n" +
                                 "}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("김주혁"))
                 .andExpect(jsonPath("$.loginId").value("joo"))
                 .andExpect(jsonPath("$.gender").value("M"))
-                .andExpect(jsonPath("$.email").value("hel*******@gmail.com"))
-                .andExpect(jsonPath("$.phoneNumber").value("010-1***-1***"))
+                .andExpect(jsonPath("$.email").value("helloworld@gmail.com"))
+                .andExpect(jsonPath("$.phoneNumber").value("01011111111"))
                 .andExpect(jsonPath("$.status").value("ACTIVE"));
     }
 
@@ -117,7 +117,7 @@ public class MemberControllerTest {
     void updateMemberTest() throws Exception {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
-        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
         MemberResponseDto result = MemberResponseDto.from(member);
 
         Mockito.when(memberService.modifyMember(Mockito.any(), Mockito.any())).thenReturn(result);
@@ -129,14 +129,14 @@ public class MemberControllerTest {
                                 "  \"name\": \"김주혁\",\n" +
                                 "  \"password\": \"jjjjjjjjjj\",\n" +
                                 "  \"email\": \"helloworld@gmail.com\",\n" +
-                                "  \"phoneNumber\": \"010-1111-1111\"\n" +
+                                "  \"phoneNumber\": \"01011111111\"\n" +
                                 "}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("김주혁"))
                 .andExpect(jsonPath("$.loginId").value("joo"))
                 .andExpect(jsonPath("$.gender").value("M"))
-                .andExpect(jsonPath("$.email").value("hel*******@gmail.com"))
-                .andExpect(jsonPath("$.phoneNumber").value("010-1***-1***"))
+                .andExpect(jsonPath("$.email").value("helloworld@gmail.com"))
+                .andExpect(jsonPath("$.phoneNumber").value("01011111111"))
                 .andExpect(jsonPath("$.status").value("ACTIVE"));
     }
 

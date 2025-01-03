@@ -17,8 +17,8 @@ public record MemberModifyRequestDto(
         @Email(message = "이메일 형식으로 작성해야 합니다.")
         String email,
 
-        @NotBlank(message="전화번호는 필수 입력 항목입니다.")
-        @Pattern(regexp = "^01[0]-\\d{4}-\\d{4}$", message = "핸드폰 번호 형식이 올바르지 않습니다. (예: 010-1234-5678)")
+        @NotBlank(message = "전화번호는 필수 입력 항목입니다.")
+        @Pattern(regexp = "^01[0-9]\\d{7,8}$", message = "핸드폰 번호 형식이 올바르지 않습니다. (예: 01012345678)")
         String phoneNumber
 
 ) {}

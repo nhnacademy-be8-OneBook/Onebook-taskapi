@@ -60,7 +60,7 @@ public class MemberServiceTest {
     void getAllMembersTest() {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
-        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.desc("createdAt")));
 
         List<Member> memberList = List.of(member);
@@ -73,8 +73,8 @@ public class MemberServiceTest {
         assertThat(result.getPageable().getPageSize()).isEqualTo(10);
         assertThat(result.getContent().getFirst().name()).isEqualTo(member.getName());
         assertThat(result.getContent().getFirst().gender()).isEqualTo("M");
-        assertThat(result.getContent().getFirst().email()).isEqualTo("hel*******@gmail.com");
-        assertThat(result.getContent().getFirst().phoneNumber()).isEqualTo("010-1***-1***");
+        assertThat(result.getContent().getFirst().email()).isEqualTo("helloworld@gmail.com");
+        assertThat(result.getContent().getFirst().phoneNumber()).isEqualTo("01011111111");
     }
 
 //    @Test
@@ -89,7 +89,7 @@ public class MemberServiceTest {
     void getMemberByIdTest() {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
-        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
 
         Mockito.when(memberRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(member));
 
@@ -98,8 +98,8 @@ public class MemberServiceTest {
         Mockito.verify(memberRepository, Mockito.times(1)).findById(1L);
         assertThat(result.name()).isEqualTo(member.getName());
         assertThat(result.gender()).isEqualTo("M");
-        assertThat(result.email()).isEqualTo("hel*******@gmail.com");
-        assertThat(result.phoneNumber()).isEqualTo("010-1***-1***");
+        assertThat(result.email()).isEqualTo("helloworld@gmail.com");
+        assertThat(result.phoneNumber()).isEqualTo("01011111111");
     }
 
     @Test
@@ -122,7 +122,7 @@ public class MemberServiceTest {
     void getMemberByLoginIdTest() {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
-        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
 
         Mockito.when(memberRepository.findByLoginId(Mockito.anyString())).thenReturn(Optional.of(member));
 
@@ -171,7 +171,7 @@ public class MemberServiceTest {
     void registerMemberTest() {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
-        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
 
         GradeResponseDto gradeResponseDto = new GradeResponseDto(1,"ROYAL", 10, "일반 등급");
         RoleResponseDto roleResponseDto = new RoleResponseDto(1, "MEMBER", "일반 회원");
@@ -189,14 +189,14 @@ public class MemberServiceTest {
                 LocalDate.now(),
                 Member.Gender.M,
                 "helloworld@gmail.com",
-                "010-1111-1111"
+                "01011111111"
         ));
 
         Mockito.verify(memberRepository, Mockito.times(1)).save(Mockito.any());
         assertThat(result.name()).isEqualTo(member.getName());
         assertThat(result.gender()).isEqualTo("M");
-        assertThat(result.email()).isEqualTo("hel*******@gmail.com");
-        assertThat(result.phoneNumber()).isEqualTo("010-1***-1***");
+        assertThat(result.email()).isEqualTo("helloworld@gmail.com");
+        assertThat(result.phoneNumber()).isEqualTo("01011111111");
     }
 
     @Test
@@ -212,7 +212,7 @@ public class MemberServiceTest {
                 LocalDate.now(),
                 Member.Gender.M,
                 "helloworld@gmail.com",
-                "010-1111-1111"
+                "01011111111"
         )));
 
     }
@@ -237,7 +237,7 @@ public class MemberServiceTest {
                 LocalDate.now(),
                 Member.Gender.M,
                 "helloworld@gmail.com",
-                "010-1111-1111"
+                "01011111111"
         )));
     }
 
@@ -246,7 +246,7 @@ public class MemberServiceTest {
     void modifyMemberTest1() {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
-        Member member = Member.createNewMember(grade, "김주혁", "joo", BCrypt.hashpw("jjjjjjjjjj", BCrypt.gensalt()), LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        Member member = Member.createNewMember(grade, "김주혁", "joo", BCrypt.hashpw("jjjjjjjjjj", BCrypt.gensalt()), LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
 
         Mockito.when(memberRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(member));
 
@@ -254,14 +254,14 @@ public class MemberServiceTest {
                 "혁주김",
                 "oooooooooo",
                 "worldhello@gmail.com",
-                "010-2222-2222"
+                "01022222222"
         ));
 
         Mockito.verify(memberRepository, Mockito.times(1)).findById(Mockito.any());
         assertThat(result.name()).isEqualTo(member.getName());
         assertThat(result.gender()).isEqualTo("M");
-        assertThat(result.email()).isEqualTo("wor*******@gmail.com");
-        assertThat(result.phoneNumber()).isEqualTo("010-2***-2***");
+        assertThat(result.email()).isEqualTo("worldhello@gmail.com");
+        assertThat(result.phoneNumber()).isEqualTo("01022222222");
     }
 
     @Test
@@ -269,7 +269,7 @@ public class MemberServiceTest {
     void modifyMemberTest2() {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
-        Member member = Member.createNewMember(grade, "김주혁", "joo", BCrypt.hashpw("jjjjjjjjjj", BCrypt.gensalt()), LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        Member member = Member.createNewMember(grade, "김주혁", "joo", BCrypt.hashpw("jjjjjjjjjj", BCrypt.gensalt()), LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
 
         Mockito.when(memberRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(member));
 
@@ -277,14 +277,14 @@ public class MemberServiceTest {
                 "혁주김",
                 "jjjjjjjjjj",
                 "worldhello@gmail.com",
-                "010-2222-2222"
+                "01022222222"
         ));
 
         Mockito.verify(memberRepository, Mockito.times(1)).findById(Mockito.any());
         assertThat(result.name()).isEqualTo(member.getName());
         assertThat(result.gender()).isEqualTo("M");
-        assertThat(result.email()).isEqualTo("wor*******@gmail.com");
-        assertThat(result.phoneNumber()).isEqualTo("010-2***-2***");
+        assertThat(result.email()).isEqualTo("worldhello@gmail.com");
+        assertThat(result.phoneNumber()).isEqualTo("01022222222");
     }
 
 //    @Test
@@ -312,7 +312,7 @@ public class MemberServiceTest {
     void removeMemberTest() {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
-        Member member = Member.createNewMember(grade, "김주혁", "joo", BCrypt.hashpw("jjjjjjjjjj", BCrypt.gensalt()), LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        Member member = Member.createNewMember(grade, "김주혁", "joo", BCrypt.hashpw("jjjjjjjjjj", BCrypt.gensalt()), LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
 
         Mockito.when(memberRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(member));
 
@@ -326,7 +326,7 @@ public class MemberServiceTest {
     void changeStatusToActivation1() {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
-        Member member = Member.createNewMember(grade, "김주혁", "joo", BCrypt.hashpw("jjjjjjjjjj", BCrypt.gensalt()), LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        Member member = Member.createNewMember(grade, "김주혁", "joo", BCrypt.hashpw("jjjjjjjjjj", BCrypt.gensalt()), LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
 
         Mockito.when(memberRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(member));
 
@@ -339,7 +339,7 @@ public class MemberServiceTest {
     void changeStatusToActivation2() {
         Grade grade = Grade.create("ROYAL", 10, "일반 등급");
         Role role = Role.createRole("MEMBER", "일반 회원");
-        Member member = Member.createNewMember(grade, "김주혁", "joo", BCrypt.hashpw("jjjjjjjjjj", BCrypt.gensalt()), LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+        Member member = Member.createNewMember(grade, "김주혁", "joo", BCrypt.hashpw("jjjjjjjjjj", BCrypt.gensalt()), LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
 
         Mockito.when(memberRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(member));
 
