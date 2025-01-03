@@ -11,4 +11,5 @@ public interface ImageService {
     // 이미지 클라우드에 업로드
     Image saveImage (ImageSaveDTO dto);
     void deleteImage(long imageId);
+    Image getImage(long bookId);
 }

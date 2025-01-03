@@ -4,6 +4,8 @@ import com.nhnacademy.taskapi.category.domain.Category;
 import com.nhnacademy.taskapi.category.dto.CategoryCreateDTO;
 import com.nhnacademy.taskapi.category.dto.CategoryUpdateDTO;
 
+import java.util.List;
+
 public interface CategoryService {
     Category addCategory(CategoryCreateDTO dto);
     Category updateCategory(CategoryUpdateDTO updateDTO);
@@ -11,4 +13,5 @@ public interface CategoryService {
 
     Category addCategoryByAladin(String categoryName);
     Category getCategory(int categoryId);
+    List<Category> getAllCategories();
 }
