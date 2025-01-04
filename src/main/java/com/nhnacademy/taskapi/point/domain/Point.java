@@ -22,15 +22,20 @@ public class Point {
 
     @NotNull
     @Column(nullable = false, precision = 10, scale = 2)
-    private int pointCurrent;  // 현재 포인트
+    private int pointCurrent;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "point_policy_id")
+    private PointPolicy pointPolicy;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "member_id")
     private Member member;
 
     @Builder
-    public Point(int pointCurrent, Member member) {
+    public Point(int pointCurrent, PointPolicy pointPolicy, Member member) {
         this.pointCurrent = pointCurrent;
+        this.pointPolicy = pointPolicy;
         this.member = member;
     }
 

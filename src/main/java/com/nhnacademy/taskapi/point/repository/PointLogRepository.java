@@ -6,5 +6,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface PointLogRepository extends JpaRepository<PointLog, Long> {
-    Page<PointLog> findByPointMemberIdOrderByPointLogUpdatedAtDesc(Long memberId, Pageable pageable);
+    Page<PointLog> findByPointMemberIdOrderByPointLogUpdatedAtDesc(Long memberId, Pageable pageable); // 카멜로 통일
 }

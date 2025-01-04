@@ -46,13 +46,14 @@ public class PointPolicy {
     @Column(nullable = false)
     private boolean pointPolicyState;
 
+    // 하나의 정책이 여러 개의 포인트를 가질 수 있도록 OneToMany
     @OneToMany(mappedBy = "pointPolicy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Point> point;
+    private Set<Point> points;
 
     @Builder
     public PointPolicy(Long pointPolicyId, String pointPolicyName, Integer pointPolicyRate, Integer pointPolicyConditionAmount,
                        String pointPolicyCondition, Integer pointPolicyApplyAmount, LocalDateTime pointPolicyCreatedAt,
-                       LocalDateTime pointPolicyUpdatedAt, boolean pointPolicyApplyType, boolean pointPolicyState, Point point) {
+                       LocalDateTime pointPolicyUpdatedAt, boolean pointPolicyApplyType, boolean pointPolicyState) {
         this.pointPolicyId = pointPolicyId;
         this.pointPolicyName = pointPolicyName;
         this.pointPolicyRate = pointPolicyRate;
@@ -63,10 +64,8 @@ public class PointPolicy {
         this.pointPolicyUpdatedAt = pointPolicyUpdatedAt;
         this.pointPolicyApplyType = pointPolicyApplyType;
         this.pointPolicyState = pointPolicyState;
-        this.point = point;  // Point와의 관계 설정
     }
 
-    // @PrePersist와 @PreUpdate를 이용하여 생성 및 수정 일자를 자동으로 처리
     @PrePersist
     public void prePersist() {
         this.pointPolicyCreatedAt = LocalDateTime.now();

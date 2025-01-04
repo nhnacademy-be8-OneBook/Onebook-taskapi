@@ -45,11 +45,12 @@ class PointJpaTest {
 
         // 필요한 데이터 초기화
         memberId = 1L;
-        point = new Point(1000, null); // 임시 객체
+        Member member1 = new Member();
+        point = new Point(1000, null, member1); // 임시 객체
         point.setAmount(1000);
 
         pointLog = new PointLog(1L, LocalDateTime.now(), "ADD", 100, point);
-        pointPolicy = new PointPolicy(1L, "Test Policy", 10, 100, "Condition", 100, LocalDateTime.now(), LocalDateTime.now(), true, true, point);    }
+        pointPolicy = new PointPolicy(1L, "Test Policy", 10, 100, "Condition", 100, LocalDateTime.now(), LocalDateTime.now(), true, true);    }
 
     @Test
     void testFindByPointMemberIdOrderByPointLogUpdatedAtDesc() {

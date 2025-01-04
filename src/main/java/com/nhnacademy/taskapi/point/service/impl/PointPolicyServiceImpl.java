@@ -92,6 +92,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
         pointPolicy.updatePointPolicyCondition(policyRequest.pointPolicyCondition());
         pointPolicy.updatePointPolicyApplyType(policyRequest.pointPolicyApplyType());
         pointPolicy.updatePointPolicyState(true);
+        // save() 삭제
 
         return PointPolicyResponse.builder()
                 .pointPolicyId(pointPolicy.getPointPolicyId())

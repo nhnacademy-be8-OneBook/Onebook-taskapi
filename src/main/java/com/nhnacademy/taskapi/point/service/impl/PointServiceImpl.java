@@ -36,7 +36,11 @@ public class PointServiceImpl implements PointService {
      */
     @Override
     public void registerMemberPoints(Member member) {
-        Point point = new Point(5000, member);  // 5000포인트 적립
+        Point point = Point.builder()
+                .pointCurrent(5000)
+                .member(member)
+                .pointPolicy(getDefaultPointPolicy())  // 기본 포인트 정책 설정
+                .build();
         pointRepository.save(point);
 
         // 포인트 로그 기록
