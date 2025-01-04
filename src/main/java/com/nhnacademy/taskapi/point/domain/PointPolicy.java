@@ -44,20 +44,25 @@ public class PointPolicy {
     @Column(nullable = false)
     private boolean pointPolicyState;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "point_id")  // 외래키 컬럼 이름 설정
+    private Point point;
+
     @Builder
     public PointPolicy(Long pointPolicyId, String pointPolicyName, Integer pointPolicyRate, Integer pointPolicyConditionAmount,
                        String pointPolicyCondition, Integer pointPolicyApplyAmount, LocalDateTime pointPolicyCreatedAt,
-                       LocalDateTime pointPolicyUpdatedAt, boolean pointPolicyApplyType, boolean pointPolicyState) {
+                       LocalDateTime pointPolicyUpdatedAt, boolean pointPolicyApplyType, boolean pointPolicyState, Point point) {
         this.pointPolicyId = pointPolicyId;
         this.pointPolicyName = pointPolicyName;
-        this.pointPolicyConditionAmount = pointPolicyConditionAmount;
         this.pointPolicyRate = pointPolicyRate;
+        this.pointPolicyConditionAmount = pointPolicyConditionAmount;
         this.pointPolicyCondition = pointPolicyCondition;
         this.pointPolicyApplyAmount = pointPolicyApplyAmount;
-        this.pointPolicyApplyType = pointPolicyApplyType;
         this.pointPolicyCreatedAt = pointPolicyCreatedAt;
         this.pointPolicyUpdatedAt = pointPolicyUpdatedAt;
+        this.pointPolicyApplyType = pointPolicyApplyType;
         this.pointPolicyState = pointPolicyState;
+        this.point = point;  // Point와의 관계 설정
     }
 
     // @PrePersist와 @PreUpdate를 이용하여 생성 및 수정 일자를 자동으로 처리
@@ -72,7 +77,7 @@ public class PointPolicy {
         this.pointPolicyUpdatedAt = LocalDateTime.now();
     }
 
-    // 필드를 업데이트하는 메서드
+    // 필드를 업데이트하는 메서드들
     public void updatePointPolicyName(String pointPolicyName) {
         this.pointPolicyName = pointPolicyName;
     }
@@ -103,8 +108,8 @@ public class PointPolicy {
 
     public void updatePointPolicyCreatedAt(LocalDateTime pointPolicyCreatedAt) {
         this.pointPolicyCreatedAt = pointPolicyCreatedAt;
-
     }
+
     public void updatePointPolicyUpdatedAt(LocalDateTime pointPolicyUpdatedAt) {
         this.pointPolicyUpdatedAt = pointPolicyUpdatedAt;
     }
