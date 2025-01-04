@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +51,7 @@ public class AddressService {
         MemberAddress memberAddress = addressRepository.findById(addressId)
                 .orElseThrow(()-> new MemberAddressNotFoundException("해당하는 ID의 배송지가 존재하지 않습니다"));
 
-        if (memberAddress.getMember().getId() != memberId){
+        if (!Objects.equals(memberAddress.getMember().getId(), memberId)){
             throw new InvalidMemberAddressException("해당 ID 배송지의 member ID와 요청한 member ID가 일치하지 않습니다.");
         }
         
@@ -82,7 +83,7 @@ public class AddressService {
         MemberAddress memberAddress = addressRepository.findById(updateMemberAddressRequest.getId())
                 .orElseThrow(()-> new MemberAddressNotFoundException("해당하는 ID의 배송지가 존재하지 않습니다"));
 
-        if (memberAddress.getMember().getId() != memberId){
+        if (!Objects.equals(memberAddress.getMember().getId(), memberId)){
             throw new InvalidMemberAddressException("해당 ID 배송지의 member ID와 요청한 member ID가 일치하지 않습니다.");
         }
 
@@ -90,14 +91,13 @@ public class AddressService {
 
         return MemberAddressResponse.changeEntityToDto(memberAddress);
     }
-
-
+    
     public MemberAddressResponse deleteMemberAddress(Long memberId , DeleteMemberAddressRequest deleteMemberAddressRequest){
 
         MemberAddress memberAddress =  addressRepository.findById(deleteMemberAddressRequest.getId())
                 .orElseThrow(()->new MemberAddressNotFoundException("해당하는 ID의 배송지가 존재하지 않습니다"));
 
-        if (memberAddress.getMember().getId() != memberId){
+        if (!Objects.equals(memberAddress.getMember().getId(), memberId)){
             throw new InvalidMemberAddressException("해당 ID 배송지의 member ID와 요청한 member ID가 일치하지 않습니다.");
         }
 
