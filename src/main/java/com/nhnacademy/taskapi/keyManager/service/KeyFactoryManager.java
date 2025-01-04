@@ -59,12 +59,15 @@ public class KeyFactoryManager {
             // keyStore
             KeyStore clientStore = KeyStore.getInstance("PKCS12");
 
-//            ClassPathResource resource = new ClassPathResource(keyPath);
-//            File file = resource.getFile();
+            /* 기존 dev 코드
+            ClassPathResource resource = new ClassPathResource(keyPath);
+            File file = resource.getFile();
 
-//            FileInputStream fis = new FileInputStream(Objects.requireNonNull(getClass().getClassLoader().getResource(keyPath)).getFile());
-//            clientStore.load(fis, password.toCharArray());
+            FileInputStream fis = new FileInputStream(Objects.requireNonNull(getClass().getClassLoader().getResource(keyPath)).getFile());
+            clientStore.load(fis, password.toCharArray());
+            */
 
+            // keyPath 수정
             ClassPathResource classPathResource = new ClassPathResource(keyPath);
             InputStream keyInputStream = classPathResource.getInputStream();
             clientStore.load(keyInputStream, password.toCharArray());
