@@ -15,7 +15,6 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "point_policies")
 public class PointPolicy {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pointPolicyId;
@@ -39,7 +38,6 @@ public class PointPolicy {
     @NotNull(message = "포인트 생성일은 필수입니다.")
     @Column(nullable = false)
     private LocalDateTime pointPolicyCreatedAt;
-
     private LocalDateTime pointPolicyUpdatedAt;
 
     @NotNull(message = "포인트 상태는 필수입니다.")
@@ -48,7 +46,7 @@ public class PointPolicy {
 
     // 하나의 정책이 여러 개의 포인트를 가질 수 있도록 OneToMany
     @OneToMany(mappedBy = "pointPolicy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Point> points;
+    private Set<Point> point;
 
     @Builder
     public PointPolicy(Long pointPolicyId, String pointPolicyName, Integer pointPolicyRate, Integer pointPolicyConditionAmount,

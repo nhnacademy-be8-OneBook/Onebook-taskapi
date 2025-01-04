@@ -27,7 +27,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     public PointPolicyResponse createPointPolicy(CreatePointPolicyRequest policyRequest) {
         PointPolicy pointPolicy = policyRequest.toEntity();
         pointPolicy.updatePointPolicyCreatedAt(LocalDateTime.now()); // 생성일을 현재 시간으로 설정
-        pointPolicy.updatePointPolicyState(true); // 기본적으로 활성 상태 설정
+        pointPolicy.updatePointPolicyState(true); // 기본적으로 활성화 상태 설정
         pointPolicyRepository.save(pointPolicy); // DB에 저장
 
         return PointPolicyResponse.builder()

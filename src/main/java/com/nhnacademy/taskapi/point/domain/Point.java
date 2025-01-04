@@ -8,14 +8,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "points")
 public class Point {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pointId;
@@ -39,17 +36,14 @@ public class Point {
         this.member = member;
     }
 
-    // 포인트 값 갱신 메소드
     public void updatePointCurrent(int pointCurrent) {
         this.pointCurrent = pointCurrent;
     }
 
-    // 포인트를 반환하는 메소드 (getter 역할)
     public int getAmount() {
         return this.pointCurrent;
     }
 
-    // 포인트를 설정하는 메소드 (setter 역할)
     public void setAmount(int updatedAmount) {
         this.pointCurrent = updatedAmount;
     }
