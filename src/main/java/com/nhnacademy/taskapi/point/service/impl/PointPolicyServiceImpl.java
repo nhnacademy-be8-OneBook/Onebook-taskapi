@@ -25,7 +25,6 @@ public class PointPolicyServiceImpl implements PointPolicyService {
 
     @Override
     public PointPolicyResponse createPointPolicy(CreatePointPolicyRequest policyRequest) {
-        // CreatePointPolicyRequest에서 필요한 필드를 받아 PointPolicy Entity로 변환
         PointPolicy pointPolicy = policyRequest.toEntity();
         pointPolicy.updatePointPolicyCreatedAt(LocalDateTime.now()); // 생성일을 현재 시간으로 설정
         pointPolicy.updatePointPolicyState(true); // 기본적으로 활성 상태 설정
@@ -42,7 +41,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
                 .pointPolicyCreatedAt(pointPolicy.getPointPolicyCreatedAt())
                 .pointPolicyUpdatedAt(pointPolicy.getPointPolicyUpdatedAt())
                 .pointPolicyState(pointPolicy.isPointPolicyState())
-                .build();  // Response로 변환하여 반환
+                .build();
     }
 
     @Override
@@ -92,10 +91,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
         pointPolicy.updatePointPolicyRate(policyRequest.pointPolicyRate());
         pointPolicy.updatePointPolicyCondition(policyRequest.pointPolicyCondition());
         pointPolicy.updatePointPolicyApplyType(policyRequest.pointPolicyApplyType());
-        pointPolicy.updatePointPolicyState(true);  // 상태를 true로 설정 (위에서 조건에 맞는 값을 넣을 수 있음)
-        // pointPolicy.updatePointPolicyUpdatedAt(); // 이 부분을 제거합니다. @PreUpdate로 자동 처리됩니다.
-
-        pointPolicyRepository.save(pointPolicy); // 업데이트된 정보 저장
+        pointPolicy.updatePointPolicyState(true);
 
         return PointPolicyResponse.builder()
                 .pointPolicyId(pointPolicy.getPointPolicyId())
@@ -108,8 +104,9 @@ public class PointPolicyServiceImpl implements PointPolicyService {
                 .pointPolicyCreatedAt(pointPolicy.getPointPolicyCreatedAt())
                 .pointPolicyUpdatedAt(pointPolicy.getPointPolicyUpdatedAt())
                 .pointPolicyState(pointPolicy.isPointPolicyState())
-                .build();  // Response로 변환하여 반환
+                .build();
     }
+
     @Override
     public void deletePointPolicyById(String pointPolicyId) {
         pointPolicyRepository.deleteById(Long.valueOf(pointPolicyId));

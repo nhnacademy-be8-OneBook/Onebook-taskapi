@@ -28,9 +28,6 @@ public class Point {
     @JoinColumn(nullable = false, name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "point", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<PointPolicy> pointPolicies;
-
     @Builder
     public Point(int pointCurrent, Member member) {
         this.pointCurrent = pointCurrent;

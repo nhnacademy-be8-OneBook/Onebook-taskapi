@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -45,9 +46,8 @@ public class PointPolicy {
     @Column(nullable = false)
     private boolean pointPolicyState;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "point_id")  // 외래키 컬럼 이름 설정
-    private Point point;
+    @OneToMany(mappedBy = "pointPolicy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Point> point;
 
     @Builder
     public PointPolicy(Long pointPolicyId, String pointPolicyName, Integer pointPolicyRate, Integer pointPolicyConditionAmount,
