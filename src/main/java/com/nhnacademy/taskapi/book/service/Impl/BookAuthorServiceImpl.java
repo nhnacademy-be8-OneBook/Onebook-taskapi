@@ -14,6 +14,7 @@ import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.book.service.BookAuthorService;
 import com.nhnacademy.taskapi.book.service.BookService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookAuthorServiceImpl implements BookAuthorService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
@@ -42,5 +44,13 @@ public class BookAuthorServiceImpl implements BookAuthorService {
         bookAuthor.setBook(book);
         bookAuthor.setAuthor(author);
         return bookAuthorRepository.save(bookAuthor);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BookAuthor getBookAuthorByBookId(long bookId){
+        log.info("bookId: {}", bookId);
+        bookAuthorRepository.findByBook_bookId(bookId);
+        return bookAuthorRepository.findByBook_bookId(bookId);
     }
 }
