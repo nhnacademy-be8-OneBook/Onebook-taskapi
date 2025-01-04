@@ -50,7 +50,7 @@ public class BookAuthorServiceImpl implements BookAuthorService {
     @Transactional(readOnly = true)
     public BookAuthor getBookAuthorByBookId(long bookId){
         log.info("bookId: {}", bookId);
-        bookAuthorRepository.findByBook_bookId(bookId);
-        return bookAuthorRepository.findByBook_bookId(bookId);
+        BookAuthor  bookAuthor =bookAuthorRepository.findByBook_bookId(bookId);
+        return bookAuthor;
     }
 }
