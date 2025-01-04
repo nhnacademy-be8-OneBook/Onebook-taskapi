@@ -14,6 +14,7 @@ import org.apache.hc.core5.http.config.Registry;
 import org.apache.hc.core5.http.config.RegistryBuilder;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.net.ssl.SSLContext;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.security.*;
 import java.security.cert.CertificateException;
@@ -60,9 +62,12 @@ public class KeyFactoryManager {
 //            ClassPathResource resource = new ClassPathResource(keyPath);
 //            File file = resource.getFile();
 
-            FileInputStream fis = new FileInputStream(Objects.requireNonNull(getClass().getClassLoader().getResource(keyPath)).getFile());
+//            FileInputStream fis = new FileInputStream(Objects.requireNonNull(getClass().getClassLoader().getResource(keyPath)).getFile());
+//            clientStore.load(fis, password.toCharArray());
 
-            clientStore.load(fis, password.toCharArray());
+            ClassPathResource classPathResource = new ClassPathResource(keyPath);
+            InputStream keyInputStream = classPathResource.getInputStream();
+            clientStore.load(keyInputStream, password.toCharArray());
 
             // ssl 연결 설정
 
