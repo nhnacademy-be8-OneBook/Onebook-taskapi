@@ -10,10 +10,3 @@ eureka:
       defaultZone: http://admin:1234@localhost:8310/eureka
   instance:
     prefer-ip-address: true
-
-nhnKey:
-  url: https://api-keymanager.nhncloudservice.com
-  appKey: qTQNj7LyHhdAazH3
-  keyPath: classpath:1nebook.p12
-  password: 1nebook
-  keyId: 7b34378ad2034b71b2037ca9b1538d41
