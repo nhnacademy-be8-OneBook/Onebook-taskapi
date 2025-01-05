@@ -24,6 +24,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.net.ssl.SSLContext;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.security.*;
 import java.security.cert.CertificateException;
@@ -60,9 +61,16 @@ public class KeyFactoryManager {
 //            ClassPathResource resource = new ClassPathResource(keyPath);
 //            File file = resource.getFile();
 
+            /*
             FileInputStream fis = new FileInputStream(Objects.requireNonNull(getClass().getClassLoader().getResource(keyPath)).getFile());
-
             clientStore.load(fis, password.toCharArray());
+            */
+
+            InputStream keyStoreInputStream = getClass().getClassLoader().getResourceAsStream(keyPath);
+            if (keyStoreInputStream == null) {
+                throw new KeyManagerException("Hexa_certificate.p12 not found in classpath at " + keyPath);
+            }
+            clientStore.load(keyStoreInputStream, password.toCharArray());
 
             // ssl 연결 설정
 
