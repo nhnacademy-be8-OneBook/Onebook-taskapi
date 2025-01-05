@@ -49,17 +49,14 @@ public class KeyFactoryManager {
     private String keyId;
 
 
-    @PostConstruct
+//    @PostConstruct
     public ResponseEntity<KeyResponseDto> keyInit() throws KeyManagerException {
         final String apiPath = String.format("/keymanager/v1.0/appkey/%s/secrets/%s", appKey, keyId);
-
         System.out.println(apiPath);
+
         try {
             // keyStore
             KeyStore clientStore = KeyStore.getInstance("PKCS12");
-
-//            ClassPathResource resource = new ClassPathResource(keyPath);
-//            File file = resource.getFile();
 
             /*
             FileInputStream fis = new FileInputStream(Objects.requireNonNull(getClass().getClassLoader().getResource(keyPath)).getFile());
@@ -68,7 +65,7 @@ public class KeyFactoryManager {
 
             InputStream keyStoreInputStream = getClass().getClassLoader().getResourceAsStream(keyPath);
             if (keyStoreInputStream == null) {
-                throw new KeyManagerException("Hexa_certificate.p12 not found in classpath at " + keyPath);
+                throw new KeyManagerException("1nebook.p12 not found in classpath at " + keyPath);
             }
             clientStore.load(keyStoreInputStream, password.toCharArray());
 
