@@ -14,4 +14,6 @@ public interface CategoryService {
     Category addCategoryByAladin(String categoryName);
     Category getCategory(int categoryId);
     List<Category> getAllCategories();
+    List<Category> getTopLevelCategories();
+    List<Category> getSubCategories(int categoryId);
 }

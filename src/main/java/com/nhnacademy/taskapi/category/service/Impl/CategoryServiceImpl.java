@@ -114,4 +114,14 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> getAllCategories(){
         return categoryRepository.findAll();
     }
+
+    @Override
+    public List<Category> getTopLevelCategories() {
+        return categoryRepository.findTopLevelCategories();
+    }
+    @Override
+    public List<Category> getSubCategories(int categoryId) {
+        Category category = getCategory(categoryId);
+        return categoryRepository.findByParentCategory(category);
+    }
 }
