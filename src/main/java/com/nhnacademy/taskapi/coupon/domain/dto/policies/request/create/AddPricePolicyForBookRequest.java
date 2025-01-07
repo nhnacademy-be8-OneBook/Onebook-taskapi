@@ -23,7 +23,6 @@ public class AddPricePolicyForBookRequest {
     @NotNull
     private String description;
     @NotNull
-    private Long bookId;
-    @NotNull
-    private Integer policyStatusId;
+    private String bookIsbn13;
+
 }

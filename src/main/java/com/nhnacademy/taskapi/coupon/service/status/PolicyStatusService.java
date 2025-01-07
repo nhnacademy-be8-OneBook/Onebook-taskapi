@@ -27,4 +27,8 @@ public class PolicyStatusService {
         return GetPolicyStatusResponse.changeEntityToDto(policyStatus);
     }
 
+    public void deleteAll(){
+        policyStatusRepository.deleteAll();
+    }
+
 }
