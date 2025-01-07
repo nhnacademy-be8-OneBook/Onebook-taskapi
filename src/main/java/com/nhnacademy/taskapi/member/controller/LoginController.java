@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.member.controller;
 
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.dto.MemberLoginDto;
+import com.nhnacademy.taskapi.member.dto.MemberLoginResponseDto;
 import com.nhnacademy.taskapi.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,13 +34,13 @@ public class LoginController {
     }
 
     @GetMapping("/task/auth/members/{loginId}")
-    public ResponseEntity<MemberLoginDto> loadByMemberId(@PathVariable(name = "loginId") String loginId){
+    public ResponseEntity<MemberLoginResponseDto> loadByMemberId(@PathVariable(name = "loginId") String loginId){
         log.info("call load ");
-        Member memberByLoginId = memberService.getMemberByLoginId(loginId);
+        Member member = memberService.getMemberByLoginId(loginId);
 
-        if(memberByLoginId != null){
-            MemberLoginDto loginDto = new MemberLoginDto(memberByLoginId.getLoginId(), memberByLoginId.getPassword());
-            return ResponseEntity.of(Optional.of(loginDto));
+        if(member != null){
+            MemberLoginResponseDto result = new MemberLoginResponseDto(member.getLoginId(), member.getPassword(), member.getRole().getName());
+            return ResponseEntity.of(Optional.of(result));
         }
 
         throw new RuntimeException();
