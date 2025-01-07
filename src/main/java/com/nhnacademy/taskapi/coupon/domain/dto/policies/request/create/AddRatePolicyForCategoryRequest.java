@@ -26,6 +26,4 @@ public class AddRatePolicyForCategoryRequest {
     private String description;
     @NotNull
     private Integer categoryId;
-    @NotNull
-    private Integer policyStatusId;
 }

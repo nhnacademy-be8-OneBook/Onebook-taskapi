@@ -54,11 +54,6 @@ public class PolicyService {
         RatePolicyForBook ratePolicyForBook = RatePolicyForBook.createRatePolicyForBook(
                 addRatePolicyForBookRequest,
                 bookRepository.findByIsbn13(addRatePolicyForBookRequest.getBookIsbn13()),
-//                bookRepository.findById(addRatePolicyForBookRequest.getBookId())
-//                        .orElseThrow(()->new BookNotFoundException("해당하는 ID의 도서를 찾을 수 없습니다")),
-//                policyStatusRepository.findById(addRatePolicyForBookRequest.getPolicyStatusId())
-//                        .orElseThrow(()->new PolicyStatusNotFoundException("해당하는 ID의 정책상태를 찾을수 없습니다"))
-//                );
                 policyStatusRepository.findByName("미사용")
         );
 
@@ -75,9 +70,8 @@ public class PolicyService {
                 addRatePolicyForCategoryRequest,
                 categoryRepository.findById(addRatePolicyForCategoryRequest.getCategoryId())
                         .orElseThrow(()->new CategoryNotFoundException("해당하는 ID의 카테고리를 찾을 수 없습니다")),
-                policyStatusRepository.findById(addRatePolicyForCategoryRequest.getPolicyStatusId())
-                        .orElseThrow(()->new PolicyStatusNotFoundException("해당하는 ID의 정책상태를 찾을수 없습니다"))
-                );
+                policyStatusRepository.findByName("미사용"));
+
 
                 ratePoliciesForCategoryRepository.save(ratePolicyForCategory);
                 return RatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory);
