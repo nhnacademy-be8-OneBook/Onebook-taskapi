@@ -11,4 +11,5 @@ public class JwtMemberDto {
 
     Long id;
     String loginId;
+    String role;
 }

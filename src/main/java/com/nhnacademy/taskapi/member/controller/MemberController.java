@@ -27,6 +27,18 @@ public class MemberController {
         return ResponseEntity.ok().body(memberResponseDtoPage);
     }
 
+    /**
+     * Auth 서버에서 사용.
+     * memberID로 member 정보 return.
+     * @param memberId
+     * @return
+     */
+    @GetMapping("/{memberId}")
+    public ResponseEntity<MemberResponseDto> getMemberByParameterId(@PathVariable("memberId") Long memberId) {
+        MemberResponseDto result = memberService.getMemberById(memberId);
+        return ResponseEntity.ok(result);
+    }
+
     // request header의 인조키(id)로 멤버 조회
     @GetMapping
     public ResponseEntity<MemberResponseDto> getMemberById(@RequestHeader("X-MEMBER-ID") Long memberId) {
@@ -63,7 +75,10 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // 멤버 정보 리턴 for JWT
+    /**
+     * Auth api 에서 사용.
+     * 멤버 정보 리턴 for JWT
+     */
     @GetMapping("/jwt/{loginId}")
     public ResponseEntity<JwtMemberDto> getMemberForJWT(@PathVariable("loginId") String loginId) {
         Member member = memberService.getMemberByLoginId(loginId);
@@ -71,6 +86,7 @@ public class MemberController {
 
         jwtMemberDto.setId(member.getId());
         jwtMemberDto.setLoginId(member.getLoginId());
+        jwtMemberDto.setRole(member.getRole().getName());
 
         return ResponseEntity.ok().body(jwtMemberDto);
     }

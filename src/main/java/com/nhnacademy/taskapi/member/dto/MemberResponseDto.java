@@ -11,8 +11,10 @@ public record MemberResponseDto(
          * Role ID -> 1: MEMBER, 2: ADMIN
          */
 
-        Integer gradeId,
-        Integer roleId,
+//        Integer gradeId,
+//        Integer roleId,
+        String grade,
+        String role,
         String name,
         String loginId,
         LocalDate dateOfBirth,
@@ -26,8 +28,8 @@ public record MemberResponseDto(
 ) {
     public static MemberResponseDto from(Member member) {
         return new MemberResponseDto(
-                member.getGrade().getId(),
-                member.getRole().getId(),
+                member.getGrade().getName(),
+                member.getRole().getName(),
                 member.getName(),
                 member.getLoginId(),
                 member.getDateOfBirth(),
