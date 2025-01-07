@@ -1,10 +1,12 @@
 package com.nhnacademy.taskapi.order.service.Impl;
 
+import com.nhnacademy.taskapi.address.repository.AddressRepository;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.order.dto.OrderCreateDTO;
 import com.nhnacademy.taskapi.order.dto.OrderResponseDTO;
+import com.nhnacademy.taskapi.order.dto.OrdererResponseDto;
 import com.nhnacademy.taskapi.order.entity.Order;
 import com.nhnacademy.taskapi.order.repository.OrderRepository;
 import com.nhnacademy.taskapi.order.service.OrderService;
@@ -20,6 +22,7 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
+    private final AddressRepository addressRepository;
 
     // create
     @Override
@@ -54,7 +57,25 @@ public class OrderServiceImpl implements OrderService {
         return dtoList;
     }
 
-//    public List<OrderDetail> getOrderDetailList(Long orderId) {
+    @Override
+    public OrdererResponseDto getOrderer(Long memberId) {
+        memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id" + memberId + " dose not exist"));
+
+
+        String ordererName = memberRepository.findById(memberId).get().getName();
+        String ordererPhoneNumber = memberRepository.findById(memberId).get().getPhoneNumber();
+        // 배송지 별명
+        String recipientAlias;
+        String recipientName;
+        String recipientPhoneNumber;
+        String recipientAddress;
+        // 요청사항
+        String recipientRequestedTerm;
+
+        return null;
+    }
+
+    //    public List<OrderDetail> getOrderDetailList(Long orderId) {
 //        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("Order id " + orderId + " does not exist"));
 //        return order.getOrderDetailList();
 //    }
