@@ -41,7 +41,23 @@ public class PaymentServiceImpl implements PaymentService {
         // 2. 이미 결제된 주문인지 확인
         Payment existingPayment = paymentRepository.findByOrder_OrderId(realOrderId);
         if (existingPayment != null) {
-            throw new InvalidPaymentException("이미 결제된 주문입니다.");
+            // 기존 Payment가 존재하는 경우
+            if ("READY".equals(existingPayment.getStatus())) {
+                // 이미 READY 상태이면 새로운 Payment 생성 없이 기존 정보를 반환
+                return PaymentResponse.builder()
+                        .paymentId(existingPayment.getPaymentId())
+                        .orderId(orderIdStr)
+                        .paymentKey(null)  // 아직 승인 전이므로 null
+                        .totalAmount(existingPayment.getTotalAmount())
+                        .currency(existingPayment.getCurrency())
+                        .status(existingPayment.getStatus())
+                        .requestedAt(existingPayment.getRequestedAt())
+                        .approvedAt(existingPayment.getApprovedAt())
+                        .usePoint(existingPayment.getPoint())
+                        .build();
+            } else {
+                throw new InvalidPaymentException("이미 결제된 주문입니다.");
+            }
         }
 
         // 3. 주문 존재 확인
