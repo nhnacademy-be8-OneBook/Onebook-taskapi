@@ -48,4 +48,14 @@ public class CategoryController {
         return ResponseEntity.ok().body(categoryList);
     }
 
+    @GetMapping("/topCategories")
+    public List<Category> getTopCategories() {
+        return categoryService.getTopLevelCategories(); // 최상위 카테고리와 하위 카테고리를 반환
+    }
+
+    @GetMapping("/subCategories/{categoryId}")
+    public List<Category> getSubCategories(@PathVariable int categoryId) {
+        return categoryService.getSubCategories(categoryId);
+    }
+
 }
