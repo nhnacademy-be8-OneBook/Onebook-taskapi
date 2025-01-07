@@ -23,14 +23,14 @@ public class PolicyStatusController {
 
     @PostConstruct
     public void init(){
-        policyStatusService.deleteAll();
-        AddPolicyStatusRequest addPolicyStatusRequestForMakeUnused = new AddPolicyStatusRequest("미사용");
-        AddPolicyStatusRequest addPolicyStatusRequestForMakeUsed = new AddPolicyStatusRequest("사용됨");
-        AddPolicyStatusRequest addPolicyStatusRequestForMakeDeleted = new AddPolicyStatusRequest("삭제됨");
-        policyStatusService.addPolicyStatus(addPolicyStatusRequestForMakeUsed);
-        policyStatusService.addPolicyStatus(addPolicyStatusRequestForMakeUnused);
-        policyStatusService.addPolicyStatus(addPolicyStatusRequestForMakeDeleted);
-        log.info("PolicyStatus 초기데이터 삽입 완료");
+//        policyStatusService.deleteAll();
+//        AddPolicyStatusRequest addPolicyStatusRequestForMakeUnused = new AddPolicyStatusRequest("미사용");
+//        AddPolicyStatusRequest addPolicyStatusRequestForMakeUsed = new AddPolicyStatusRequest("사용됨");
+//        AddPolicyStatusRequest addPolicyStatusRequestForMakeDeleted = new AddPolicyStatusRequest("삭제됨");
+//        policyStatusService.addPolicyStatus(addPolicyStatusRequestForMakeUsed);
+//        policyStatusService.addPolicyStatus(addPolicyStatusRequestForMakeUnused);
+//        policyStatusService.addPolicyStatus(addPolicyStatusRequestForMakeDeleted);
+//        log.info("PolicyStatus 초기데이터 삽입 완료");
     }
 
     @GetMapping("/policies/status")

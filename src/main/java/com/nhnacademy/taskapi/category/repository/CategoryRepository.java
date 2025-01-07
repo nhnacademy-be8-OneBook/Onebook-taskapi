@@ -15,4 +15,6 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     // 특정 카테고리의 하위 카테고리 조회
     List<Category> findByParentCategory(Category parentCategory);
+
+
 }
