@@ -59,6 +59,10 @@ public class TossPaymentServiceImpl {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Basic " + base64Secret);
 
+        // 토스에서 응답값을 영어로 가져오기 위해..
+        // 한글이 깨짐..
+        headers.set("Accept-Language", "en-US");
+
         // 결제 승인 금액 (문자열 → int)
         int approveAmount;
         try {
@@ -156,6 +160,7 @@ public class TossPaymentServiceImpl {
         result.setStatus(status);
         result.setApprovedAt(payment.getApprovedAt());
         result.setMessage("결제 승인 성공 (카드/간편결제 등 정보가 저장되었습니다.)");
+        result.setMemberId(result.getMemberId());
 
         return result;
     }

@@ -35,7 +35,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public PaymentResponse createPayment(String orderIdStr, Long memberId, PaymentRequest paymentRequest) {
-        // 1. orderIdStr을 Long으로 변환
+        // 1. orderIdStr → Long 변환
         Long realOrderId = parseOrderId(orderIdStr);
 
         // 2. 이미 결제된 주문인지 확인
@@ -61,43 +61,49 @@ public class PaymentServiceImpl implements PaymentService {
             throw new InsufficientPointException("사용할 포인트가 보유한 포인트보다 많습니다.");
         }
 
-        // 6. 결제금액 계산
-        int orderTotalAmount = order.getTotalPrice();  // 주문 총액
+        // 6. **결제금액 서버 계산**
+        int orderTotalAmount = order.getTotalPrice();  // 주문 총액 (DB)
         long usedPoint = paymentRequest.getUsedPoint();
         int finalPayAmount = orderTotalAmount - (int) usedPoint;
+        if (finalPayAmount < 0) {
+            throw new InvalidPaymentException("포인트 사용액이 주문 금액을 초과합니다.");
+        }
 
         // 7. Payment 엔티티 생성 (status=READY)
         Payment newPayment = new Payment();
         newPayment.setOrder(order);
         newPayment.setStatus("READY");
         newPayment.setRequestedAt(LocalDateTime.now());
-        newPayment.setTotalAmount(finalPayAmount);
+        newPayment.setTotalAmount(finalPayAmount); // 서버 계산 결과
         newPayment.setCurrency(
                 paymentRequest.getCurrency() != null
                         ? paymentRequest.getCurrency()
                         : "KRW"
         );
-        // 나중에 결제승인 시 paymentKey 세팅 (TossPaymentService)
 
+        newPayment.setPoint(usedPoint);
+        // PaymentKey는 결제승인 시점에 세팅됨
         Payment savedPayment = paymentRepository.save(newPayment);
 
         // 8. 포인트 차감
+        // TODO 결제 취소 시 복원 로직 필요...?
         point.setAmount((int) (userPoint - usedPoint));
         pointRepository.save(point);
 
-        // 9. 응답
+        // 9. 응답: 클라이언트가 최종 결제금액(finalPayAmount)을 알 수 있도록
         return PaymentResponse.builder()
                 .paymentId(savedPayment.getPaymentId())
-                .orderId(orderIdStr) // 원본 orderIdStr 포함
-                .paymentKey(null) // 승인 전이므로 null
-                .totalAmount(savedPayment.getTotalAmount())
+                .orderId(orderIdStr)
+                .paymentKey(null) // 승인 전
+                .totalAmount(savedPayment.getTotalAmount()) // 최종 계산된 금액
                 .currency(savedPayment.getCurrency())
                 .status(savedPayment.getStatus()) // READY
                 .requestedAt(savedPayment.getRequestedAt())
-                .approvedAt(savedPayment.getApprovedAt()) // 아직 null
+                .approvedAt(savedPayment.getApprovedAt()) // null
                 .usePoint(usedPoint)
                 .build();
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -143,6 +149,7 @@ public class PaymentServiceImpl implements PaymentService {
         Point point = pointRepository.findByMember_Id(memberId)
                 .orElseThrow(() -> new PaymentNotFoundException("포인트 정보가 없습니다."));
 
+
         // 5. 응답 DTO 작성
         CheckoutInfoResponse dto = new CheckoutInfoResponse();
 
@@ -155,6 +162,8 @@ public class PaymentServiceImpl implements PaymentService {
         dto.setOrdererName(member.getName());
         dto.setOrdererEmail(member.getEmail());
         dto.setOrdererPhone(member.getPhoneNumber());
+
+        dto.setMemberId(memberId);
 
         return dto;
     }
