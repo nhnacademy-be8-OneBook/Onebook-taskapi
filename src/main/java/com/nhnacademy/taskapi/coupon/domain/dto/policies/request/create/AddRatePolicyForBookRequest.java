@@ -25,7 +25,6 @@ public class AddRatePolicyForBookRequest {
     @NotNull
     private String description;
     @NotNull
-    private Long bookId;
-    @NotNull
-    private Integer policyStatusId;
+    private String bookIsbn13;
+
 }

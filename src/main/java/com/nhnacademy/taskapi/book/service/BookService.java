@@ -17,7 +17,6 @@ public interface BookService {
     // 책 수정
     Book updateBook(Long bookId, BookUpdateDTO bookUpdateDTO);
 
-
     // 책 삭제
     void deleteBook(Long bookId);
 

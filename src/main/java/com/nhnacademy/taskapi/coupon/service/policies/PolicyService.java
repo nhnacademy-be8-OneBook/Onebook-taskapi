@@ -53,11 +53,16 @@ public class PolicyService {
 
         RatePolicyForBook ratePolicyForBook = RatePolicyForBook.createRatePolicyForBook(
                 addRatePolicyForBookRequest,
-                bookRepository.findById(addRatePolicyForBookRequest.getBookId())
-                        .orElseThrow(()->new BookNotFoundException("해당하는 ID의 도서를 찾을 수 없습니다")),
-                policyStatusRepository.findById(addRatePolicyForBookRequest.getPolicyStatusId())
-                        .orElseThrow(()->new PolicyStatusNotFoundException("해당하는 ID의 정책상태를 찾을수 없습니다"))
-                );
+                bookRepository.findByIsbn13(addRatePolicyForBookRequest.getBookIsbn13()),
+//                bookRepository.findById(addRatePolicyForBookRequest.getBookId())
+//                        .orElseThrow(()->new BookNotFoundException("해당하는 ID의 도서를 찾을 수 없습니다")),
+//                policyStatusRepository.findById(addRatePolicyForBookRequest.getPolicyStatusId())
+//                        .orElseThrow(()->new PolicyStatusNotFoundException("해당하는 ID의 정책상태를 찾을수 없습니다"))
+//                );
+                policyStatusRepository.findByName("미사용")
+        );
+
+
 
                 ratePoliciesForBookRepository.save(ratePolicyForBook);
                 return RatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook);
@@ -83,11 +88,10 @@ public class PolicyService {
 
         PricePolicyForBook pricePolicyForBook = PricePolicyForBook.createPricePolicyForBook(
                 addPricePolicyForBookRequest,
-                bookRepository.findById(addPricePolicyForBookRequest.getBookId())
-                        .orElseThrow(()->new BookNotFoundException("해당하는 ID의 도서를 찾을 수 없습니다")),
-                policyStatusRepository.findById(addPricePolicyForBookRequest.getPolicyStatusId())
-                        .orElseThrow(()->new PolicyStatusNotFoundException("해당하는 ID의 정책상태를 찾을수 없습니다"))
+                bookRepository.findByIsbn13(addPricePolicyForBookRequest.getBookIsbn13()),
+                policyStatusRepository.findByName("미사용")
         );
+
 
                 pricePoliciesForBookRepository.save(pricePolicyForBook);
                 return PricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook);
