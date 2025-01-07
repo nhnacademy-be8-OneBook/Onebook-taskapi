@@ -14,4 +14,6 @@ public class TossConfirmResponse {
     private String status;       // DONE, etc
     private LocalDateTime approvedAt;
     private String message;      // "결제 승인 성공" 등
+
+    private Long memberId;
 }
