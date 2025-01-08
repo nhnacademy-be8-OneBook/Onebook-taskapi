@@ -1,7 +1,7 @@
 package com.nhnacademy.taskapi.packaging.service.Impl;
 
 import com.nhnacademy.taskapi.packaging.dto.PackagingRequestDto;
-import com.nhnacademy.taskapi.packaging.dto.PackagingResponseDTO;
+import com.nhnacademy.taskapi.packaging.dto.PackagingResponseDto;
 import com.nhnacademy.taskapi.packaging.entity.Packaging;
 import com.nhnacademy.taskapi.packaging.exception.PackagingAlreadyExistException;
 import com.nhnacademy.taskapi.packaging.exception.PackagingNotFoundException;
@@ -34,8 +34,8 @@ public class PackagingServiceImpl implements PackagingService {
     }
 
     // read
-    public List<PackagingResponseDTO> getAllPackaging() {
-        List<PackagingResponseDTO> list = packagingRepository.findAll().stream().map(PackagingResponseDTO::fromPackaging).toList();
+    public List<PackagingResponseDto> getAllPackaging() {
+        List<PackagingResponseDto> list = packagingRepository.findAll().stream().map(PackagingResponseDto::fromPackaging).toList();
         return list;
     };
 
