@@ -178,6 +178,13 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    // 멤버 로그인 기록 업데이트
+    @Override
+    public void updateMemberLoginId(String loginId) {
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(()-> new MemberNotFoundException("Member Not Found by " + loginId));
+        member.setLastLoginAt(LocalDateTime.now());
+    }
+
     // 로그인
     @Override
     public MemberLoginDto validateLogin(MemberLoginDto memberLoginDto) {
