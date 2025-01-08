@@ -54,7 +54,7 @@ public class PaymentServiceImpl implements PaymentService {
                 existingPayment.setPoint(newUsedPoint);
                 existingPayment.setTotalAmount(newFinalPayAmount);
 
-                // [추가] 만약 newFinalPayAmount == 0 이면 => 전액 포인트 결제
+                // 만약 newFinalPayAmount == 0 이면 => 전액 포인트 결제
                 if (newFinalPayAmount == 0) {
                     // 즉시 DONE 처리
                     handleFullPointPayment(existingPayment, memberId);
@@ -91,11 +91,11 @@ public class PaymentServiceImpl implements PaymentService {
         newPayment.setCurrency((paymentRequest.getCurrency() != null) ? paymentRequest.getCurrency() : "KRW");
 
         if (finalPayAmount == 0) {
-            // [추가] 전액 포인트 결제 → 즉시 DONE 처리
+            // 전액 포인트 결제 → 즉시 DONE 처리
             newPayment.setStatus("DONE");
             handleFullPointPayment(newPayment, memberId);
         } else {
-            // [기존대로] 토스/외부결제 진행을 위해 READY
+            // 토스/외부결제 진행을 위해 READY
             newPayment.setStatus("READY");
         }
 

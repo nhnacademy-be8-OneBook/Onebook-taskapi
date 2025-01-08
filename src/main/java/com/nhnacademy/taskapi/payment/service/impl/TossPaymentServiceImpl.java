@@ -35,6 +35,8 @@ public class TossPaymentServiceImpl {
     private final PaymentRepository paymentRepository;
     private final JpaPointRepository pointRepository;
 
+    // 토스 결제 승인시 응답을 JSON 문자열로 받고
+    // 이를 Map<String, Object>로 변환하여 쉽게 접근할 수 있도록 함
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final String TOSS_SECRET_KEY = "test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6";
 
