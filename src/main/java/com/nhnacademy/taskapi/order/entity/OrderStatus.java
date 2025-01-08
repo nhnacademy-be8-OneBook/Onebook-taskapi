@@ -16,4 +16,8 @@ public class OrderStatus {
     @UniqueElements
     @Column(name = "order_status_name")
     private String statusName;
+
+    public OrderStatus(String statusName) {
+        this.statusName = statusName;
+    }
 }
