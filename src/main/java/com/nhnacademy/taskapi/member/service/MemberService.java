@@ -18,6 +18,7 @@ public interface MemberService {
     MemberResponseDto modifyMember(Long memberId, MemberModifyRequestDto memberModifyRequestDto);
     void removeMember(Long memberId);
     void changeStatusToActivation(Long memberId, String status);
+    void updateMemberLoginId(String loginId);
     MemberLoginDto validateLogin(MemberLoginDto memberLoginDto);
     String getLoginIdById(Long id);
 
