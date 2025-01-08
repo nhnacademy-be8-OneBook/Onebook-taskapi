@@ -26,6 +26,7 @@ import com.nhnacademy.taskapi.coupon.repository.policies.RatePoliciesForCategory
 import com.nhnacademy.taskapi.coupon.repository.status.PolicyStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -102,63 +103,55 @@ public class PolicyService {
     }
 
     // 정률정책 for Book read (all)
-    public List<RatePolicyForBookResponse> getRatePoliciesForBook(int pageNo){
+    public Page<RatePolicyForBookResponse> getRatePoliciesForBook(Pageable pageable){
 
-        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
-        Page<RatePolicyForBook> page = ratePoliciesForBookRepository.findAll(pageable);
-
+//        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
+        Page<RatePolicyForBook> list = ratePoliciesForBookRepository.findAll(pageable);
         List<RatePolicyForBookResponse> result = new ArrayList<>();
-
-        for(RatePolicyForBook ratePolicyForBook : page){
+        for(RatePolicyForBook ratePolicyForBook : list){
             result.add(RatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook));
         }
 
-        return result;
+       return new PageImpl<>(result);
     }
 
     // 정률정책 for Category read (all)
-    public List<RatePolicyForCategoryResponse> getRatePoliciesForCategory(int pageNo){
+    public Page<RatePolicyForCategoryResponse> getRatePoliciesForCategory(Pageable pageable){
 
-        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
+//        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
         Page<RatePolicyForCategory> page = ratePoliciesForCategoryRepository.findAll(pageable);
-
         List<RatePolicyForCategoryResponse> result = new ArrayList<>();
-
         for(RatePolicyForCategory ratePolicyForCategory : page){
             result.add(RatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory));
         }
 
-        return result;
+        return new PageImpl<>(result);
     }
 
     // 정액정책 for Book read (all)
-    public List<PricePolicyForBookResponse> getPricePoliciesForBook(int pageNo){
+    public Page<PricePolicyForBookResponse> getPricePoliciesForBook(Pageable pageable){
 
-        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
+//        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
         Page<PricePolicyForBook> page = pricePoliciesForBookRepository.findAll(pageable);
-
         List<PricePolicyForBookResponse> result = new ArrayList<>();
-
         for(PricePolicyForBook pricePolicyForBook : page){
             result.add(PricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook));
         }
 
-        return result;
+        return new PageImpl<>(result);
     }
 
     // 정액정책 for Category read (all)
-    public List<PricePolicyForCategoryResponse> getPricePoliciesForCategory(int pageNo){
+    public Page<PricePolicyForCategoryResponse> getPricePoliciesForCategory(Pageable pageable){
 
-        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
+//        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
         Page<PricePolicyForCategory> page = pricePoliciesForCategoryRepository.findAll(pageable);
-
         List<PricePolicyForCategoryResponse> result = new ArrayList<>();
-
         for(PricePolicyForCategory pricePolicyForCategory : page){
             result.add(PricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory));
         }
 
-        return result;
+        return new PageImpl<>(result);
     }
 
     // 정률정책 for Book read (one)

@@ -10,6 +10,8 @@ import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.RatePolicyForB
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.RatePolicyForCategoryResponse;
 import com.nhnacademy.taskapi.coupon.service.policies.PolicyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,34 +62,34 @@ public class PolicyController {
 
     // Read All
     @GetMapping("/policies/rate/book")
-    public ResponseEntity<List<RatePolicyForBookResponse>> getRatePoliciesForBook
-            (@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo)
+    public ResponseEntity<Page<RatePolicyForBookResponse>> getRatePoliciesForBook
+            (Pageable pageable)
     {
-        List<RatePolicyForBookResponse> response = policyService.getRatePoliciesForBook(pageNo);
+        Page<RatePolicyForBookResponse> response = policyService.getRatePoliciesForBook(pageable);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/policies/rate/category")
-    public ResponseEntity<List<RatePolicyForCategoryResponse>> getRatePoliciesForCategory
-            (@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo)
+    public ResponseEntity<Page<RatePolicyForCategoryResponse>> getRatePoliciesForCategory
+            (Pageable pageable)
     {
-        List<RatePolicyForCategoryResponse> responses = policyService.getRatePoliciesForCategory(pageNo);
+        Page<RatePolicyForCategoryResponse> responses = policyService.getRatePoliciesForCategory(pageable);
         return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/policies/price/book")
-    public ResponseEntity<List<PricePolicyForBookResponse>> getPricePoliciesForBook
-            (@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo)
+    public ResponseEntity<Page<PricePolicyForBookResponse>> getPricePoliciesForBook
+            (Pageable pageable)
     {
-        List<PricePolicyForBookResponse> responses = policyService.getPricePoliciesForBook(pageNo);
+        Page<PricePolicyForBookResponse> responses = policyService.getPricePoliciesForBook(pageable);
         return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/policies/price/category")
-    public ResponseEntity<List<PricePolicyForCategoryResponse>> getPricePoliciesForCategory
-            (@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo)
+    public ResponseEntity<Page<PricePolicyForCategoryResponse>> getPricePoliciesForCategory
+            (Pageable pageable)
     {
-        List<PricePolicyForCategoryResponse> responses = policyService.getPricePoliciesForCategory(pageNo);
+        Page<PricePolicyForCategoryResponse> responses = policyService.getPricePoliciesForCategory(pageable);
         return ResponseEntity.ok(responses);
     }
 
