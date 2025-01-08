@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class PaymentRequest {
-    private long usedPoint;      // 사용 포인트
+    private int usedPoint;      // 사용 포인트
     private String method;       // Toss, NaverPay, ...
     private int totalAmount;     // 주문 총 금액
     private String currency;     // KRW 등

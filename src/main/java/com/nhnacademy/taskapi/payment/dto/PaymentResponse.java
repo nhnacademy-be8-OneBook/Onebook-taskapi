@@ -23,5 +23,5 @@ public class PaymentResponse {
     private String status;
     private LocalDateTime requestedAt;
     private LocalDateTime approvedAt;
-    private long usePoint;
+    private int usePoint;
 }

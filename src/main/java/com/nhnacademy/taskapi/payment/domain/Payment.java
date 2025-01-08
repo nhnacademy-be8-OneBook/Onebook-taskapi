@@ -24,7 +24,7 @@ public class Payment {
     private long paymentId;
 
     @Column(nullable = false)
-    private long point = 0;  // default, 결제 시 내가 사용할 포인트 금액
+    private int point = 0;  // default, 결제 시 내가 사용할 포인트 금액
 
     @NotNull
     private String status = "READY";

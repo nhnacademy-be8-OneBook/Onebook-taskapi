@@ -30,5 +30,4 @@ public class PaymentMethod {
     private String cardType;            // ex) "신용"
     private String cardApproveNo;       // ex) "00000000"
     private Integer cardInstallmentPlanMonths; // ex) 12
-    //private String cardOwner;           // (추가필드) buyer or ???
 }
