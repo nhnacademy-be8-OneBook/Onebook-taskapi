@@ -29,6 +29,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -105,53 +106,50 @@ public class PolicyService {
     // 정률정책 for Book read (all)
     public Page<RatePolicyForBookResponse> getRatePoliciesForBook(Pageable pageable){
 
-//        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
-        Page<RatePolicyForBook> list = ratePoliciesForBookRepository.findAll(pageable);
+
+        Page<RatePolicyForBook> page = ratePoliciesForBookRepository.findAll(pageable);
         List<RatePolicyForBookResponse> result = new ArrayList<>();
-        for(RatePolicyForBook ratePolicyForBook : list){
+
+        for(RatePolicyForBook ratePolicyForBook : page){
             result.add(RatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook));
         }
 
-       return new PageImpl<>(result);
+        return page.map(RatePolicyForBookResponse::changeEntityToDto);
     }
 
     // 정률정책 for Category read (all)
     public Page<RatePolicyForCategoryResponse> getRatePoliciesForCategory(Pageable pageable){
 
-//        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
         Page<RatePolicyForCategory> page = ratePoliciesForCategoryRepository.findAll(pageable);
         List<RatePolicyForCategoryResponse> result = new ArrayList<>();
         for(RatePolicyForCategory ratePolicyForCategory : page){
             result.add(RatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory));
         }
-
-        return new PageImpl<>(result);
+        return page.map(RatePolicyForCategoryResponse::changeEntityToDto);
     }
 
     // 정액정책 for Book read (all)
     public Page<PricePolicyForBookResponse> getPricePoliciesForBook(Pageable pageable){
 
-//        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
         Page<PricePolicyForBook> page = pricePoliciesForBookRepository.findAll(pageable);
         List<PricePolicyForBookResponse> result = new ArrayList<>();
         for(PricePolicyForBook pricePolicyForBook : page){
             result.add(PricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook));
         }
 
-        return new PageImpl<>(result);
+        return page.map(PricePolicyForBookResponse::changeEntityToDto);
     }
 
     // 정액정책 for Category read (all)
     public Page<PricePolicyForCategoryResponse> getPricePoliciesForCategory(Pageable pageable){
 
-//        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
         Page<PricePolicyForCategory> page = pricePoliciesForCategoryRepository.findAll(pageable);
         List<PricePolicyForCategoryResponse> result = new ArrayList<>();
         for(PricePolicyForCategory pricePolicyForCategory : page){
             result.add(PricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory));
         }
 
-        return new PageImpl<>(result);
+        return page.map(PricePolicyForCategoryResponse::changeEntityToDto);
     }
 
     // 정률정책 for Book read (one)
