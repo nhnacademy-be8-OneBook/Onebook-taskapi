@@ -29,4 +29,6 @@ public class Category {
     @Length(max = 20)
     @Column(nullable = false)
     private String name;
+
+    private boolean status = false;
 }
