@@ -8,14 +8,14 @@ import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
-public class OrderResponseDTO {
+public class OrderResponseDto {
     String orderer;
     LocalDateTime dateTime;
     int deliveryPrice;
     int totalPrice;
 
-    public static OrderResponseDTO fromOrder(Order order) {
-        return new OrderResponseDTO(
+    public static OrderResponseDto fromOrder(Order order) {
+        return new OrderResponseDto(
                 order.getOrderer(),
                 order.getDateTime(),
                 order.getDeliveryPrice(),

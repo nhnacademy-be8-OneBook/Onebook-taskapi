@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.order.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.hibernate.validator.constraints.UniqueElements;
 
 @Getter
 @Entity
@@ -12,6 +13,7 @@ public class OrderStatus {
     @Column(name = "order_status_id")
     private Long orderStatusId;
 
+    @UniqueElements
     @Column(name = "order_status_name")
     private String statusName;
 }

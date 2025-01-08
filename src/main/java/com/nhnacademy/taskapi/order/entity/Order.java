@@ -64,6 +64,16 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
+    public Order(Member member, String orderer, String phoneNumber, LocalDateTime dateTime, int deliveryPrice, int totalPrice, OrderStatus orderStatus) {
+        this.member = member;
+        this.orderer = orderer;
+        this.phoneNumber = phoneNumber;
+        this.dateTime = dateTime;
+        this.deliveryPrice = deliveryPrice;
+        this.totalPrice = totalPrice;
+        this.orderStatus = orderStatus;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
