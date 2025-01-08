@@ -51,6 +51,10 @@ public class Order {
     @OneToMany(mappedBy = "order")
     List<Delivery> deliveryList;
 
+    @ManyToOne
+    @JoinColumn(name = "order_status_id")
+    OrderStatus orderStatus;
+
     public Order(Member member, String orderer, String phoneNumber, LocalDateTime dateTime, int deliveryPrice, int totalPrice) {
         this.member = member;
         this.orderer = orderer;
