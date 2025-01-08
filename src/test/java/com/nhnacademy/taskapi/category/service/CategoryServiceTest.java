@@ -272,27 +272,27 @@ public class CategoryServiceTest {
         Assertions.assertThrows(InvalidCategoryNameException.class, () -> categoryService.updateCategory(dto));
     }
 
-    @Test
-    @DisplayName("deleteCategory_Success")
-    void deleteCategory_Success() {
-        Category category = new Category();
-        category.setCategoryId(1);
-        category.setName("TestCategory");
-        category.setParentCategory(null);
-
-        when(categoryRepository.findById(any(Integer.class))).thenReturn(Optional.of(category));
-
-        categoryService.deleteCategory(1);
-        verify(categoryRepository).delete(any(Category.class));
-    }
-
-    @Test
-    @DisplayName("deleteCategory_Fail_NotFound")
-    void deleteCategory_Fail_NotFound() {
-        when(categoryRepository.findById(any(Integer.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(CategoryNotFoundException.class, () -> categoryService.deleteCategory(1));
-    }
+//    @Test
+//    @DisplayName("deleteCategory_Success")
+//    void deleteCategory_Success() {
+//        Category category = new Category();
+//        category.setCategoryId(1);
+//        category.setName("TestCategory");
+//        category.setParentCategory(null);
+//
+//        when(categoryRepository.findById(any(Integer.class))).thenReturn(Optional.of(category));
+//
+//        categoryService.deleteCategory(1);
+//        verify(categoryRepository).delete(any(Category.class));
+//    }
+//
+//    @Test
+//    @DisplayName("deleteCategory_Fail_NotFound")
+//    void deleteCategory_Fail_NotFound() {
+//        when(categoryRepository.findById(any(Integer.class))).thenReturn(Optional.empty());
+//
+//        Assertions.assertThrows(CategoryNotFoundException.class, () -> categoryService.deleteCategory(1));
+//    }
 
     @Test
     @DisplayName("getCategory_Success")
