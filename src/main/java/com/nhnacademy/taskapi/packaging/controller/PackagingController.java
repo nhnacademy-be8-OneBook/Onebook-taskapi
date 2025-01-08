@@ -1,10 +1,9 @@
 package com.nhnacademy.taskapi.packaging.controller;
 
 import com.nhnacademy.taskapi.packaging.dto.PackagingRequestDto;
-import com.nhnacademy.taskapi.packaging.dto.PackagingResponseDTO;
+import com.nhnacademy.taskapi.packaging.dto.PackagingResponseDto;
 import com.nhnacademy.taskapi.packaging.service.PackagingService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,8 +16,8 @@ public class PackagingController {
 
     // TODO ResponseEntity 등록
     @GetMapping("/task/packagings")
-    public List<PackagingResponseDTO> packaging() {
-        List<PackagingResponseDTO> allPackaging = packagingService.getAllPackaging();
+    public List<PackagingResponseDto> packaging() {
+        List<PackagingResponseDto> allPackaging = packagingService.getAllPackaging();
         return allPackaging;
     }
 

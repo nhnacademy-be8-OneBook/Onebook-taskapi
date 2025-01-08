@@ -5,7 +5,9 @@ import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.order.dto.OrderCreateDTO;
 import com.nhnacademy.taskapi.order.entity.Order;
+import com.nhnacademy.taskapi.order.entity.OrderStatus;
 import com.nhnacademy.taskapi.order.repository.OrderRepository;
+import com.nhnacademy.taskapi.order.repository.OrderStatusRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +33,9 @@ class OrderServiceImplTest {
     @Mock
     private OrderRepository orderRepository;
 
+    @Mock
+    private OrderStatusRepository orderStatusRepository;
+
 //    private OrderCreateDTO orderCreateDTO;
 
     @BeforeEach
@@ -51,6 +56,7 @@ class OrderServiceImplTest {
     void saveMember() {
         // given
         Long memberId = 1L;
+        when(orderStatusRepository.findByStatusName("결제대기")).thenReturn(Optional.of(new OrderStatus("결제대기")));
         OrderCreateDTO orderCreateDTO = new OrderCreateDTO("김선준", "010-9999-9999", LocalDateTime.now(), 3000, 25000);
         when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
 
@@ -68,8 +74,8 @@ class OrderServiceImplTest {
         // given
         Long memberId = 1L;
         OrderCreateDTO orderCreateDTO = new OrderCreateDTO("김선준", "010-9999-9999", LocalDateTime.now(), 3000, 25000);
-
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(mockMember()));
+        when(orderStatusRepository.findByStatusName("결제대기")).thenReturn(Optional.of(new OrderStatus("결제대기")));
 
         // when
         orderService.saveOrder(1L, orderCreateDTO);

@@ -51,6 +51,10 @@ public class Order {
     @OneToMany(mappedBy = "order")
     List<Delivery> deliveryList;
 
+    @ManyToOne
+    @JoinColumn(name = "order_status_id")
+    OrderStatus orderStatus;
+
     public Order(Member member, String orderer, String phoneNumber, LocalDateTime dateTime, int deliveryPrice, int totalPrice) {
         this.member = member;
         this.orderer = orderer;
@@ -58,6 +62,16 @@ public class Order {
         this.dateTime = dateTime;
         this.deliveryPrice = deliveryPrice;
         this.totalPrice = totalPrice;
+    }
+
+    public Order(Member member, String orderer, String phoneNumber, LocalDateTime dateTime, int deliveryPrice, int totalPrice, OrderStatus orderStatus) {
+        this.member = member;
+        this.orderer = orderer;
+        this.phoneNumber = phoneNumber;
+        this.dateTime = dateTime;
+        this.deliveryPrice = deliveryPrice;
+        this.totalPrice = totalPrice;
+        this.orderStatus = orderStatus;
     }
 
     @Override

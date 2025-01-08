@@ -1,7 +1,7 @@
 package com.nhnacademy.taskapi.order.controller;
 
 import com.nhnacademy.taskapi.order.dto.OrderCreateDTO;
-import com.nhnacademy.taskapi.order.dto.OrderResponseDTO;
+import com.nhnacademy.taskapi.order.dto.OrderResponseDto;
 import com.nhnacademy.taskapi.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +22,8 @@ public class OrderController {
     }
 
     @GetMapping("/task/orders")
-    public ResponseEntity<List<OrderResponseDTO>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId) {
-        List<OrderResponseDTO> orderList = orderService.getOrderList(memberId);
+    public ResponseEntity<List<OrderResponseDto>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId) {
+        List<OrderResponseDto> orderList = orderService.getOrderList(memberId);
 
         // null일 경우 list 반환 방법
         if (orderList == null || orderList.isEmpty()) {
@@ -32,7 +32,11 @@ public class OrderController {
         return ResponseEntity.ok().body(orderList);
     }
 
-
+    @GetMapping("/task/admin/orders")
+    public ResponseEntity<List<OrderResponseDto>> getOrdersByStatusName(@RequestParam String status) {
+        List<OrderResponseDto> ordersByStatusName = orderService.getOrdersByStatusName(status);
+        return ResponseEntity.ok(ordersByStatusName);
+    }
 
 
 }
