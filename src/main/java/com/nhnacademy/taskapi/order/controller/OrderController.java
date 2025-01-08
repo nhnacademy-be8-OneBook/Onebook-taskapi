@@ -32,7 +32,7 @@ public class OrderController {
         return ResponseEntity.ok().body(orderList);
     }
 
-    @GetMapping("/admin/orders")
+    @GetMapping("/task/admin/orders")
     public ResponseEntity<List<OrderResponseDto>> getOrdersByStatusName(@RequestParam String status) {
         List<OrderResponseDto> ordersByStatusName = orderService.getOrdersByStatusName(status);
         return ResponseEntity.ok(ordersByStatusName);
