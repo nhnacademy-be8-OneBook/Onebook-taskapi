@@ -23,20 +23,12 @@ public class Tag {
     @Column(name = "tag_name")
     private String name;
 
-    @Column(name = "last_modified")
-    private LocalDateTime lastModified;
-
-    @ManyToOne
-    @JoinColumn(name = "book_id")
-    private Book book;
 
     public Tag() {}
 
     @Builder
-    public Tag(Long tagId, Book book, String name, LocalDateTime lastModified) {
+    public Tag(Long tagId, String name) {
         this.tagId = tagId;
-        this.book = book;
         this.name = name;
-        this.lastModified = lastModified;
     }
 }

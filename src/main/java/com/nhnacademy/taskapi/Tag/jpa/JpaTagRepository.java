@@ -6,5 +6,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface JpaTagRepository extends JpaRepository<Tag, Long> {
-    List<Tag> findByLastModifiedAfter(LocalDateTime lastModified);
+//    List<Tag> findByLastModifiedAfter(LocalDateTime lastModified);
 }
