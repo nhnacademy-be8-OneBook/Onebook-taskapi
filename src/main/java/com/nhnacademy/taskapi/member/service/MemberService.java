@@ -1,10 +1,7 @@
 package com.nhnacademy.taskapi.member.service;
 
 import com.nhnacademy.taskapi.member.domain.Member;
-import com.nhnacademy.taskapi.member.dto.MemberLoginDto;
-import com.nhnacademy.taskapi.member.dto.MemberModifyRequestDto;
-import com.nhnacademy.taskapi.member.dto.MemberRegisterRequestDto;
-import com.nhnacademy.taskapi.member.dto.MemberResponseDto;
+import com.nhnacademy.taskapi.member.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,6 +15,8 @@ public interface MemberService {
     MemberResponseDto modifyMember(Long memberId, MemberModifyRequestDto memberModifyRequestDto);
     void removeMember(Long memberId);
     void changeStatusToActivation(Long memberId, String status);
+    void updateMemberLoginId(String loginId);
+    MembershipCheckResponseDto validateMembership(Long memberId, MembershipCheckRequestDto membershipCheckRequestDto);
     MemberLoginDto validateLogin(MemberLoginDto memberLoginDto);
     String getLoginIdById(Long id);
 

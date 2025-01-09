@@ -46,4 +46,11 @@ public class LoginController {
         throw new RuntimeException();
     }
 
+    // 멤버 로그인 기록 업데이트 by loginId
+    @PutMapping("/task/auth/{loginId}/login-history")
+    public ResponseEntity<String> updateMemberLoginHistory(@PathVariable("loginId") String loginId) {
+        memberService.updateMemberLoginId(loginId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,16 @@ public class GradeServiceImpl implements GradeService {
 
         Grade grade = gradeRepository.findById(id)
                 .orElseThrow(()->new GradeNotFoundException("Not Found grade by" + id));
+
+        return GradeResponseDto.from(grade);
+    }
+
+    // 이름(unique)로 등급 조회
+    @Transactional(readOnly = true)
+    @Override
+    public GradeResponseDto getGradeByName(String name) {
+        Grade grade = gradeRepository.findGradeByName(name)
+                .orElseThrow(()-> new GradeNotFoundException("Not Found Grade by " + name));
 
         return GradeResponseDto.from(grade);
     }

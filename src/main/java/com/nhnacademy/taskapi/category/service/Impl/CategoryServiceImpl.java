@@ -100,7 +100,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteCategory(int categoryId){
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException("this Category Not Exist !"));
 
-        categoryRepository.delete(category);
+        category.setStatus(true);
     }
 
 

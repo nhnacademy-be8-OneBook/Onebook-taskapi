@@ -5,7 +5,8 @@ import com.nhnacademy.taskapi.grade.domain.Grade;
 public record GradeResponseDto(
 
         /**
-         * 1: REGULAR, 2: ROYAL, 3: GOLD, 4: PLATINUM
+         * id
+         * 1: 일반, 2: 로얄, 3: 골드, 4: 플래티넘
          */
 
         Integer id,
