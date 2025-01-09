@@ -1,7 +1,12 @@
 package com.nhnacademy.taskapi.point.service;
 
 import com.nhnacademy.taskapi.member.domain.Member;
+import com.nhnacademy.taskapi.point.domain.Point;
+import com.nhnacademy.taskapi.point.domain.PointLog;
 import com.nhnacademy.taskapi.point.domain.PointPolicy;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface PointService {
 
@@ -22,6 +27,22 @@ public interface PointService {
 
     // 포인트 환불 기능 (포인트 복구)
     void updatePointByRefund(String memberId, int refundAmount);
+
+    // 회원의 전체 포인트 조회
+    Point getMemberPoints(Long memberId);
+
+    // 특정 회원의 포인트 변동 내역 조회 (기간 등 필터링 가능)
+    List<PointLog> getPointLogsByMember(Long memberId);
+
+    List<PointLog> getPointLogsByMember(Long memberId, Pageable pageable);
+
+    List<PointPolicy> getActivePointPolicies(Pageable pageable);
+
+    // 포인트 정책 활성화/비활성화
+    void togglePointPolicy(Long pointPolicyId, boolean isActive);
+
+    // 모든 활성화된 포인트 정책 조회
+    List<PointPolicy> getActivePointPolicies();
 }
 
 

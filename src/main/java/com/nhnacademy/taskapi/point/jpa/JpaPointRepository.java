@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface JpaPointRepository extends JpaRepository<Point, Long> {
     Optional<Point> findByMember_Id(Long memberId);
+    void updateMemberPoints(Long memberId, int updatedAmount);
 }
