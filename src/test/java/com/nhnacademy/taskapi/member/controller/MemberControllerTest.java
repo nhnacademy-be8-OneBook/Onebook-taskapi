@@ -1,6 +1,7 @@
 package com.nhnacademy.taskapi.member.controller;
 
 import com.nhnacademy.taskapi.grade.domain.Grade;
+import com.nhnacademy.taskapi.grade.service.GradeService;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.dto.MemberResponseDto;
 import com.nhnacademy.taskapi.member.service.MemberService;
@@ -35,6 +36,9 @@ public class MemberControllerTest {
     @MockBean
     private MemberService memberService;
 
+    @MockBean
+    private GradeService gradeService;
+
     @Test
     @DisplayName("GET All Members")
     void getMembersTest() throws Exception {
@@ -52,12 +56,12 @@ public class MemberControllerTest {
         mockMvc.perform(get("/task/members/list?page=0&size=10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalPages").value(1))
-                .andExpect(jsonPath("$.size").value(10))
-                .andExpect(jsonPath("$.content[0].name").value("김주혁"))
-                .andExpect(jsonPath("$.content[0].loginId").value("joo"))
+                .andExpect(jsonPath("$.size").value(pageable.getPageSize()))
+                .andExpect(jsonPath("$.content[0].name").value(member.getName()))
+                .andExpect(jsonPath("$.content[0].loginId").value(member.getLoginId()))
                 .andExpect(jsonPath("$.content[0].gender").value("M"))
-                .andExpect(jsonPath("$.content[0].email").value("helloworld@gmail.com"))
-                .andExpect(jsonPath("$.content[0].phoneNumber").value("01011111111"))
+                .andExpect(jsonPath("$.content[0].email").value(member.getEmail()))
+                .andExpect(jsonPath("$.content[0].phoneNumber").value(member.getPhoneNumber()))
                 .andExpect(jsonPath("$.content[0].status").value("ACTIVE"));
     }
 

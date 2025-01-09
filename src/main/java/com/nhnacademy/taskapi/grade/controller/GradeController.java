@@ -36,11 +36,11 @@ public class GradeController {
     }
 
     // 이름(unique)로 등급 조회
-    @GetMapping("/{name}")
-    public ResponseEntity<GradeResponseDto> getGradeByName(@PathVariable String name) {
-        GradeResponseDto gradeResponseDto = gradeService.getGradeByName(name);
-        return ResponseEntity.ok(gradeResponseDto);
-    }
+//    @GetMapping("/{name}")
+//    public ResponseEntity<GradeResponseDto> getGradeByName(@PathVariable String name) {
+//        GradeResponseDto gradeResponseDto = gradeService.getGradeByName(name);
+//        return ResponseEntity.ok(gradeResponseDto);
+//    }
 
     // 등급 등록
     @PostMapping
