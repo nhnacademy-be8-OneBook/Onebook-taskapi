@@ -3,26 +3,31 @@ package com.nhnacademy.taskapi.delivery.entity;
 import com.nhnacademy.taskapi.delivery.domain.Status;
 import com.nhnacademy.taskapi.order.entity.Order;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDate;
 
+@Getter
 @Entity
 @Table(name = "deliveries")
 public class Delivery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long delivery_id;
+    @Column(name = "delivery_id")
+    Long deliveryId;
 
     @ManyToOne
     @JoinColumn(name = "orders_id")
     Order order;
 
-    LocalDate start_date;
-    LocalDate done_date;
-    String phone_number;
+    LocalDate startDate;
+    LocalDate doneDate;
+    String phoneNumber;
     String recipient;
     String location;
     Status status;
-    String invoice_number;
+
+    // 송장번호
+    String invoiceNumber;
 
 }

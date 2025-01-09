@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.order.controller;
 
 import com.nhnacademy.taskapi.order.dto.OrderCreateDTO;
 import com.nhnacademy.taskapi.order.dto.OrderResponseDto;
+import com.nhnacademy.taskapi.order.dto.OrderStatusResponseDto;
 import com.nhnacademy.taskapi.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +34,8 @@ public class OrderController {
     }
 
     @GetMapping("/task/admin/orders")
-    public ResponseEntity<List<OrderResponseDto>> getOrdersByStatusName(@RequestParam String status) {
-        List<OrderResponseDto> ordersByStatusName = orderService.getOrdersByStatusName(status);
+    public ResponseEntity<List<OrderStatusResponseDto>> getOrdersByStatusName(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestParam String status) {
+        List<OrderStatusResponseDto> ordersByStatusName = orderService.getOrdersByStatusName(status);
         return ResponseEntity.ok(ordersByStatusName);
     }
 

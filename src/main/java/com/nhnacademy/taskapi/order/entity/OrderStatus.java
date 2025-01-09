@@ -2,10 +2,12 @@ package com.nhnacademy.taskapi.order.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.UniqueElements;
 
 @Getter
 @Entity
+@NoArgsConstructor
 @Table(name = "order_Statuses")
 public class OrderStatus {
     @Id

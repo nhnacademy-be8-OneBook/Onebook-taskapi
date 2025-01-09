@@ -11,6 +11,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByPhoneNumber(String s);
     List<Order> findAllByMemberId(Long memberId);
 
-    @Query("SELECT o FROM Order o JOIN FETCH o.orderStatus WHERE o.orderStatus.statusName = :statusName")
+    // TODO:QueryFactory 찾아보기
+    @Query("SELECT o FROM Order o JOIN FETCH o.orderStatus WHERE o.orderStatus.statusName = :statusName") // 캐시 사용불가
     List<Order> findByStatusName(@Param("statusName") String statusName);
 }
