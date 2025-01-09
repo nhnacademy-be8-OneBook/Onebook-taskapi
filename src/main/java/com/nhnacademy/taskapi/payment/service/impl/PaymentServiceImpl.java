@@ -77,6 +77,11 @@ public class PaymentServiceImpl implements PaymentService {
             throw new InvalidPaymentException("본인 주문이 아닙니다.");
         }
 
+        // orderStatusRepository.findByStatusName("결제대기").getOrderStatusId
+        if(order.getOrderStatus().getOrderStatusId() != 1) {
+            throw new InvalidPaymentException("결제 대기중인 상품이 아닙니다.");
+        }
+
         // 최종 결제금액
         int usedPoint = paymentRequest.getUsedPoint();
         int finalPayAmount = order.getTotalPrice() - usedPoint;
