@@ -72,7 +72,7 @@ class PointServiceImplTest {
 
         // 예외 발생 검증
         PointPolicyException exception = assertThrows(PointPolicyException.class, () -> {
-            pointService.usePointsForPayment("1", paymentAmount); // memberId는 String 타입, 이걸 Long으로 변환해서 사용
+            pointService.usePointsForPayment(1l, paymentAmount); // memberId는 String 타입, 이걸 Long으로 변환해서 사용
         });
 
         // 예외 메시지와 상태 코드 검증
@@ -92,7 +92,7 @@ class PointServiceImplTest {
         when(pointRepository.save(any(Point.class))).thenReturn(point);
 
         // 포인트 결제
-        pointService.usePointsForPayment("1", paymentAmount); // memberId는 String 타입, 이걸 Long으로 변환해서 사용
+        pointService.usePointsForPayment(1l, paymentAmount); // memberId는 String 타입, 이걸 Long으로 변환해서 사용
 
         // 포인트가 차감되었는지 검증
         assertEquals(500, point.getPointCurrent()); // 포인트가 500으로 차감되었어야 함
