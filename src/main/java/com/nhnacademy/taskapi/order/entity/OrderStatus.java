@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.UniqueElements;
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "order_Statuses")
+@Table(name = "order_statuses")
 public class OrderStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
