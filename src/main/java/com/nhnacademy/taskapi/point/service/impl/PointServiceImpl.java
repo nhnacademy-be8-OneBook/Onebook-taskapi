@@ -151,7 +151,7 @@ public class PointServiceImpl implements PointService {
     @Override
     public void usePointsForPayment(Long memberId, int paymentAmount) {
         // 회원의 포인트 정보 가져오기
-        Optional<Point> optionalPoint = pointRepository.findByMember_Id(Long.valueOf(memberId));
+        Optional<Point> optionalPoint = pointRepository.findByMember_Id(memberId);
         Point point = optionalPoint.orElseThrow(() -> new PointPolicyException("회원 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
         // 결제 금액이 포인트보다 많은지 확인
@@ -183,7 +183,7 @@ public class PointServiceImpl implements PointService {
     @Override
     public void updatePointByRefund(Long memberId, int refundAmount) {
         // 회원의 포인트 정보 가져오기
-        Optional<Point> optionalPoint = pointRepository.findByMember_Id(Long.valueOf(memberId));
+        Optional<Point> optionalPoint = pointRepository.findByMember_Id(memberId);
         Point point = optionalPoint.orElseThrow(() -> new PointPolicyException("회원 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
         // 환불 금액이 포인트보다 많은지 확인
