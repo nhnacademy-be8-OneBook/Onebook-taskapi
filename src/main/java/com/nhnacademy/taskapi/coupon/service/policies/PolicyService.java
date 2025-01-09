@@ -117,7 +117,11 @@ public class PolicyService {
     public Page<RatePolicyForBookResponse> getRatePoliciesForBook(Pageable pageable){
 
 
-        Page<RatePolicyForBook> page = ratePoliciesForBookRepository.findAll(pageable);
+//        Page<RatePolicyForBook> page = ratePoliciesForBookRepository.findAll(pageable);
+
+        Page<RatePolicyForBook> page = ratePoliciesForBookRepository.
+                findByPolicyStatus_NameOrPolicyStatus_Name("미사용","사용됨",pageable);
+
         List<RatePolicyForBookResponse> result = new ArrayList<>();
 
         for(RatePolicyForBook ratePolicyForBook : page){
@@ -130,7 +134,10 @@ public class PolicyService {
     // 정률정책 for Category read (all)
     public Page<RatePolicyForCategoryResponse> getRatePoliciesForCategory(Pageable pageable){
 
-        Page<RatePolicyForCategory> page = ratePoliciesForCategoryRepository.findAll(pageable);
+//        Page<RatePolicyForCategory> page = ratePoliciesForCategoryRepository.findAll(pageable);
+        Page<RatePolicyForCategory> page = ratePoliciesForCategoryRepository.
+                findByPolicyStatus_NameOrPolicyStatus_Name("미사용","사용됨",pageable);
+
         List<RatePolicyForCategoryResponse> result = new ArrayList<>();
         for(RatePolicyForCategory ratePolicyForCategory : page){
             result.add(RatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory));
@@ -141,7 +148,11 @@ public class PolicyService {
     // 정액정책 for Book read (all)
     public Page<PricePolicyForBookResponse> getPricePoliciesForBook(Pageable pageable){
 
-        Page<PricePolicyForBook> page = pricePoliciesForBookRepository.findAll(pageable);
+//        Page<PricePolicyForBook> page = pricePoliciesForBookRepository.findAll(pageable);
+
+        Page<PricePolicyForBook> page = pricePoliciesForBookRepository.
+                findByPolicyStatus_NameOrPolicyStatus_Name("미사용","사용됨",pageable);
+
         List<PricePolicyForBookResponse> result = new ArrayList<>();
         for(PricePolicyForBook pricePolicyForBook : page){
             result.add(PricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook));
@@ -153,7 +164,9 @@ public class PolicyService {
     // 정액정책 for Category read (all)
     public Page<PricePolicyForCategoryResponse> getPricePoliciesForCategory(Pageable pageable){
 
-        Page<PricePolicyForCategory> page = pricePoliciesForCategoryRepository.findAll(pageable);
+//        Page<PricePolicyForCategory> page = pricePoliciesForCategoryRepository.findAll(pageable);
+        Page<PricePolicyForCategory> page = pricePoliciesForCategoryRepository
+                .findByPolicyStatus_NameOrPolicyStatus_Name("미사용","사용됨",pageable);
         List<PricePolicyForCategoryResponse> result = new ArrayList<>();
         for(PricePolicyForCategory pricePolicyForCategory : page){
             result.add(PricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory));
