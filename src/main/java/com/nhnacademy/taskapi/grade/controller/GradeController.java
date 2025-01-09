@@ -5,6 +5,7 @@ import com.nhnacademy.taskapi.grade.dto.GradeModifyRequestDto;
 import com.nhnacademy.taskapi.grade.dto.GradeRegisterRequestDto;
 import com.nhnacademy.taskapi.grade.dto.GradeResponseDto;
 import com.nhnacademy.taskapi.grade.service.GradeService;
+import com.nhnacademy.taskapi.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,13 @@ public class GradeController {
         GradeResponseDto gradeResponseDto = gradeService.getGradeById(id);
         return ResponseEntity.ok().body(gradeResponseDto);
     }
+
+    // 이름(unique)로 등급 조회
+//    @GetMapping("/{name}")
+//    public ResponseEntity<GradeResponseDto> getGradeByName(@PathVariable String name) {
+//        GradeResponseDto gradeResponseDto = gradeService.getGradeByName(name);
+//        return ResponseEntity.ok(gradeResponseDto);
+//    }
 
     // 등급 등록
     @PostMapping

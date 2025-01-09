@@ -2,11 +2,13 @@ package com.nhnacademy.taskapi.order.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.UniqueElements;
 
 @Getter
 @Entity
-@Table(name = "order_Statuses")
+@NoArgsConstructor
+@Table(name = "order_statuses")
 public class OrderStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -16,6 +16,7 @@ import com.nhnacademy.taskapi.payment.repository.PaymentRepository;
 import com.nhnacademy.taskapi.payment.service.PaymentService;
 import com.nhnacademy.taskapi.point.domain.Point;
 import com.nhnacademy.taskapi.point.jpa.JpaPointRepository;
+import com.nhnacademy.taskapi.point.service.PointService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
     private final JpaPointRepository pointRepository;
+    private final PointService pointService;
 
     @Override
     @Transactional
@@ -73,6 +75,11 @@ public class PaymentServiceImpl implements PaymentService {
         // 주문 소유자 확인
         if (!order.getMember().getId().equals(memberId)) {
             throw new InvalidPaymentException("본인 주문이 아닙니다.");
+        }
+
+        // orderStatusRepository.findByStatusName("결제대기").getOrderStatusId
+        if(order.getOrderStatus().getOrderStatusId() != 1) {
+            throw new InvalidPaymentException("결제 대기중인 상품이 아닙니다.");
         }
 
         // 최종 결제금액
@@ -117,8 +124,9 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         // 2) 포인트 차감
-        userPoint.setAmount(userPoint.getAmount() - usedPoint);
-        pointRepository.save(userPoint);
+//        userPoint.setAmount(userPoint.getAmount() - usedPoint);
+//        pointRepository.save(userPoint);
+        pointService.usePointsForPayment(memberId, usedPoint);
 
         // 3) PaymentMethod를 "POINT" 방식으로 생성 (cascade=ALL 가정)
         PaymentMethod pm = payment.getPaymentMethod();

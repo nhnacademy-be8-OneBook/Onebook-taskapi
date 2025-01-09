@@ -5,6 +5,7 @@ import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.order.dto.OrderCreateDTO;
 import com.nhnacademy.taskapi.order.dto.OrderResponseDto;
+import com.nhnacademy.taskapi.order.dto.OrderStatusResponseDto;
 import com.nhnacademy.taskapi.order.dto.OrdererResponseDto;
 import com.nhnacademy.taskapi.order.entity.Order;
 import com.nhnacademy.taskapi.order.entity.OrderStatus;
@@ -81,10 +82,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResponseDto> getOrdersByStatusName(String statusName) {
+    public List<OrderStatusResponseDto> getOrdersByStatusName(String statusName) {
         orderStatusRepository.findByStatusName(statusName).orElseThrow(() -> new OrderStatusNotFoundException("OrderStatus is not found; error!!"));
 
-        return orderRepository.findByStatusName(statusName).stream().map(OrderResponseDto::fromOrder).toList();
+        List<OrderStatusResponseDto> byStatusName = orderRepository.findByStatusName(statusName).stream().map(
+                order -> OrderStatusResponseDto.fromOrderStatus(order)
+        ).toList();
+        return byStatusName;
     }
 
     //    public List<OrderDetail> getOrderDetailList(Long orderId) {
