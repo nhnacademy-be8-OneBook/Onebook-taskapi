@@ -39,5 +39,14 @@ public class OrderController {
         return ResponseEntity.ok(ordersByStatusName);
     }
 
+    // 주문 상태 변경하기
+    @PutMapping("/task/admin/orders")
+    public void updateOrderStatus(@RequestBody List<Long> orderIds, @RequestParam String status) {
+        System.out.println(orderIds);
+        System.out.println(status);
+
+        orderService.updateOrderStatus(orderIds, status);
+
+    };
 
 }

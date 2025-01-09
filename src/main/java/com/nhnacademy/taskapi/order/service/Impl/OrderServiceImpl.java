@@ -9,6 +9,7 @@ import com.nhnacademy.taskapi.order.dto.OrderStatusResponseDto;
 import com.nhnacademy.taskapi.order.dto.OrdererResponseDto;
 import com.nhnacademy.taskapi.order.entity.Order;
 import com.nhnacademy.taskapi.order.entity.OrderStatus;
+import com.nhnacademy.taskapi.order.exception.OrderNotFoundException;
 import com.nhnacademy.taskapi.order.exception.OrderStatusNotFoundException;
 import com.nhnacademy.taskapi.order.repository.OrderRepository;
 import com.nhnacademy.taskapi.order.repository.OrderStatusRepository;
@@ -89,6 +90,16 @@ public class OrderServiceImpl implements OrderService {
                 order -> OrderStatusResponseDto.fromOrderStatus(order)
         ).toList();
         return byStatusName;
+    }
+
+    @Override
+    public void updateOrderStatus(List<Long> orderIds, String status) {
+        OrderStatus newOrderStatus = orderStatusRepository.findByStatusName(status).orElseThrow(() -> new OrderStatusNotFoundException("OrderStatus is not found; error!!"));
+
+        for (Long orderId : orderIds) {
+            Order newOrder = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("Order id " + orderId + " does not exist"));
+            newOrder.setOrderStatus(newOrderStatus);
+        }
     }
 
     //    public List<OrderDetail> getOrderDetailList(Long orderId) {
