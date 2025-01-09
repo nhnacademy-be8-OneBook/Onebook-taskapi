@@ -3,10 +3,7 @@ package com.nhnacademy.taskapi.member.service.impl;
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.grade.service.GradeService;
 import com.nhnacademy.taskapi.member.domain.Member;
-import com.nhnacademy.taskapi.member.dto.MemberLoginDto;
-import com.nhnacademy.taskapi.member.dto.MemberModifyRequestDto;
-import com.nhnacademy.taskapi.member.dto.MemberRegisterRequestDto;
-import com.nhnacademy.taskapi.member.dto.MemberResponseDto;
+import com.nhnacademy.taskapi.member.dto.*;
 import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
@@ -136,15 +133,15 @@ public class MemberServiceImpl implements MemberService {
        Member member = memberRepository.findById(memberId).orElseThrow(()-> new MemberNotFoundException("Not Found Member by " + memberId));
 
        // 비밀번호 암호화
-       if(BCrypt.checkpw(memberModifyRequestDto.password() ,member.getPassword())) {
+       if(BCrypt.checkpw(memberModifyRequestDto.password(), member.getPassword())) { // 비교했는데 같으면 그냥 member password 넣음.
            member.modifyMember(
                    memberModifyRequestDto.name(),
-                   memberModifyRequestDto.password(),
+                   member.getPassword(),
                    memberModifyRequestDto.email(),
                    memberModifyRequestDto.phoneNumber()
            );
        } else {
-           String HashedPassword = BCrypt.hashpw(memberModifyRequestDto.password(), BCrypt.gensalt());
+           String HashedPassword = BCrypt.hashpw(memberModifyRequestDto.password(), BCrypt.gensalt()); // 비교했는데 다르면 dto 것을 hash 암호화해서 넣음.
            member.modifyMember(
                    memberModifyRequestDto.name(),
                    HashedPassword,
@@ -184,6 +181,21 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(()-> new MemberNotFoundException("Member Not Found by " + loginId));
         member.setLastLoginAt(LocalDateTime.now());
     }
+
+    // 회원 여부 조회
+    @Override
+    public MembershipCheckResponseDto validateMembership(Long memberId, MembershipCheckRequestDto membershipCheckRequestDto) {
+        Member member = memberRepository.findById(memberId).orElseThrow(()-> new MemberNotFoundException("Member Not Found by " + memberId));
+
+        // 비밀번호가 일치하면
+        if(BCrypt.checkpw(membershipCheckRequestDto.password(), member.getPassword())) {
+            return new MembershipCheckResponseDto(true);
+        }
+
+        return new MembershipCheckResponseDto(false);
+    }
+
+
 
     // 로그인
     @Override

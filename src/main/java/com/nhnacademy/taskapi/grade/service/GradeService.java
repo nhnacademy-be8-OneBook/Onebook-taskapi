@@ -11,6 +11,7 @@ public interface GradeService {
     List<GradeResponseDto> getAllGrades();
     GradeResponseDto getDefaultGrade();
     GradeResponseDto getGradeById(Integer id);
+    GradeResponseDto getGradeByName(String name);
     GradeResponseDto registerGrade(GradeRegisterRequestDto gradeRegisterRequestDto);
 //    boolean isDuplicateName(String name);
 GradeResponseDto modifyGrade(Integer id, GradeModifyRequestDto gradeModifyRequestDto);
