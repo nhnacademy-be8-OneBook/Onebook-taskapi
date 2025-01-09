@@ -1,10 +1,9 @@
 package com.nhnacademy.taskapi.member.controller;
 
+import com.nhnacademy.taskapi.grade.dto.GradeResponseDto;
+import com.nhnacademy.taskapi.grade.service.GradeService;
 import com.nhnacademy.taskapi.member.domain.Member;
-import com.nhnacademy.taskapi.member.dto.JwtMemberDto;
-import com.nhnacademy.taskapi.member.dto.MemberModifyRequestDto;
-import com.nhnacademy.taskapi.member.dto.MemberRegisterRequestDto;
-import com.nhnacademy.taskapi.member.dto.MemberResponseDto;
+import com.nhnacademy.taskapi.member.dto.*;
 import com.nhnacademy.taskapi.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private final GradeService gradeService;
 
     // 전체 멤버 조회
     @GetMapping("/list")
@@ -31,7 +31,7 @@ public class MemberController {
      * Auth 서버에서 사용.
      * memberID로 member 정보 return.
      * @param memberId
-     * @return
+     * @return MemberResponseDto
      */
     @GetMapping("/{memberId}")
     public ResponseEntity<MemberResponseDto> getMemberByParameterId(@PathVariable("memberId") Long memberId) {
@@ -73,6 +73,23 @@ public class MemberController {
     public ResponseEntity<String> modifyMemberStatus(@RequestHeader("X-MEMBER-ID") Long memberId, @PathVariable("status") String status) {
         memberService.changeStatusToActivation(memberId, status);
         return ResponseEntity.noContent().build();
+    }
+
+    // 회원 등급 조회.
+    @GetMapping("/grade")
+    public ResponseEntity<GradeResponseDto> getGrade(@RequestHeader("X-MEMBER-ID") Long memberId) {
+       MemberResponseDto memberResponseDto = memberService.getMemberById(memberId);
+       GradeResponseDto result = gradeService.getGradeByName(memberResponseDto.grade());
+       return ResponseEntity.ok(result);
+    }
+
+    // 회원 여부 조회.
+    @PostMapping("/membership")
+    public ResponseEntity<MembershipCheckResponseDto> checkMembership(
+            @RequestHeader("X-MEMBER-ID") Long memberId,
+            @RequestBody MembershipCheckRequestDto membershipCheckRequestDto) {
+        MembershipCheckResponseDto membershipCheckResponseDto = memberService.validateMembership(memberId, membershipCheckRequestDto);
+        return ResponseEntity.ok(membershipCheckResponseDto);
     }
 
     /**
