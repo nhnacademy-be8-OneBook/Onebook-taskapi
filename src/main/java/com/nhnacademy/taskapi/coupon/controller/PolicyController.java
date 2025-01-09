@@ -4,6 +4,10 @@ import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPrice
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPricePolicyForCategoryRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForCategoryRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdatePricePolicyForBookRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdatePricePolicyForCategoryRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdateRatePolicyForBookRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdateRatePolicyForCategoryRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.PricePolicyForBookResponse;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.PricePolicyForCategoryResponse;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.RatePolicyForBookResponse;
@@ -12,7 +16,6 @@ import com.nhnacademy.taskapi.coupon.service.policies.PolicyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +30,8 @@ public class PolicyController {
 
     // Create
     @PostMapping("/policies/rate/book")
-    public ResponseEntity<RatePolicyForBookResponse> addRatePolicyForBook(@RequestBody AddRatePolicyForBookRequest addRatePolicyForBookRequest){
+    public ResponseEntity<RatePolicyForBookResponse> addRatePolicyForBook
+            (@RequestBody AddRatePolicyForBookRequest addRatePolicyForBookRequest){
 
         RatePolicyForBookResponse  addRatePolicyForBookResponse =
                 policyService.addRatePolicyForBook(addRatePolicyForBookRequest);
@@ -35,7 +39,8 @@ public class PolicyController {
     }
 
     @PostMapping("/policies/rate/category")
-    public ResponseEntity<RatePolicyForCategoryResponse> addRatePolicyForCategory(@RequestBody AddRatePolicyForCategoryRequest addRatePolicyForCategoryRequest){
+    public ResponseEntity<RatePolicyForCategoryResponse> addRatePolicyForCategory
+            (@RequestBody AddRatePolicyForCategoryRequest addRatePolicyForCategoryRequest){
 
         RatePolicyForCategoryResponse addRatePolicyForCategoryResponse =
                 policyService.addRatePolicyForCategory(addRatePolicyForCategoryRequest);
@@ -59,7 +64,6 @@ public class PolicyController {
                 policyService.addPricePolicyForCategory(addPricePolicyForCategoryRequest);
         return ResponseEntity.ok(addPricePolicyForCategoryResponse);
     }
-
 
     // Read All
     @GetMapping("/policies/rate/book")
@@ -120,6 +124,35 @@ public class PolicyController {
     public ResponseEntity<PricePolicyForCategoryResponse> getPricePolicyForCategory(@PathVariable Long id)
     {
         PricePolicyForCategoryResponse response = policyService.getPricePolicyForCategory(id);
+        return ResponseEntity.ok(response);
+    }
+
+    // Update
+    @PutMapping("/policies/rate/book")
+    public ResponseEntity<RatePolicyForBookResponse> updateRatePolicyForBook
+        (@RequestBody UpdateRatePolicyForBookRequest updateRatePolicyForBookRequest){
+        RatePolicyForBookResponse response = policyService.updateRatePolicyForBook(updateRatePolicyForBookRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/policies/rate/category")
+    public ResponseEntity<RatePolicyForCategoryResponse> updateRatePolicyForCategory
+            (@RequestBody UpdateRatePolicyForCategoryRequest updateRatePolicyForCategoryRequest){
+        RatePolicyForCategoryResponse response = policyService.updateRatePolicyForCategory(updateRatePolicyForCategoryRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/policies/price/book")
+    public ResponseEntity<PricePolicyForBookResponse> updatePricePolicyForBook
+            (@RequestBody UpdatePricePolicyForBookRequest updatePricePolicyForBookRequest){
+        PricePolicyForBookResponse response = policyService.updatePricePolicyForBook(updatePricePolicyForBookRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/policies/price/category")
+    public ResponseEntity<PricePolicyForCategoryResponse> updatePricePolicyForCategory
+            (@RequestBody UpdatePricePolicyForCategoryRequest updatePricePolicyForCategoryRequest){
+        PricePolicyForCategoryResponse response = policyService.updatePricePolicyForCategory(updatePricePolicyForCategoryRequest);
         return ResponseEntity.ok(response);
     }
 

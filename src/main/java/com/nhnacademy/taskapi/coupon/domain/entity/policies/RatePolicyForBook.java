@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.coupon.domain.entity.policies;
 
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForBookRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdateRatePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.PolicyStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -72,6 +73,18 @@ public class RatePolicyForBook {
                 addRatePolicyForBookRequest.getName(),
                 addRatePolicyForBookRequest.getDescription(),book,policyStatus
         );
+    }
+
+
+    public void updatePolicy(UpdateRatePolicyForBookRequest updateRatePolicyForBookRequest, Book book){
+        discountRate = updateRatePolicyForBookRequest.getDiscountRate();
+        minimumOrderAmount = updateRatePolicyForBookRequest.getMinimumOrderAmount();
+        maximumDiscountPrice = updateRatePolicyForBookRequest.getMaximumDiscountPrice();
+        expirationPeriodStart = updateRatePolicyForBookRequest.getExpirationPeriodStart();
+        expirationPeriodEnd = updateRatePolicyForBookRequest.getExpirationPeriodEnd();
+        name = updateRatePolicyForBookRequest.getName();
+        description = updateRatePolicyForBookRequest.getDescription();
+        this.book = book;
     }
 
     // 사용되고 있는 쿠폰 정책을 삭제할때는 policyStatus를 "삭제됨" 으로 업뎃
