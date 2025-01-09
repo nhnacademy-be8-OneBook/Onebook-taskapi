@@ -105,7 +105,8 @@ public class PointServiceImpl implements PointService {
      * 기본 포인트 정책을 가져옵니다.
      * (예시로 가장 최근에 활성화된 포인트 정책을 가져옴)
      */
-    private PointPolicy getDefaultPointPolicy() {
+    @Override
+    public PointPolicy getDefaultPointPolicy() {
         return pointPolicyRepository.findAll()
                 .stream()
                 .filter(PointPolicy::isPointPolicyState)  // 활성화된 정책만
@@ -117,7 +118,8 @@ public class PointServiceImpl implements PointService {
      * 결제 금액에 따른 포인트를 계산합니다.
      * (구체적인 로직은 포인트 정책에 따라 달라짐)
      */
-    private int calculatePointsBasedOnPolicy(int purchaseAmount, PointPolicy pointPolicy) {
+    @Override
+    public int calculatePointsBasedOnPolicy(int purchaseAmount, PointPolicy pointPolicy) {
         if (pointPolicy.isPointPolicyApplyType()) {
             // 적립률 비율 기반으로 포인트 계산
             return (purchaseAmount * pointPolicy.getPointPolicyRate()) / 100;
@@ -146,6 +148,7 @@ public class PointServiceImpl implements PointService {
      * @param paymentAmount - 결제 금액
      * @throws PointPolicyException - 포인트가 부족한 경우 예외 발생
      */
+    @Override
     public void usePointsForPayment(String memberId, int paymentAmount) {
         // 회원의 포인트 정보 가져오기
         Optional<Point> optionalPoint = pointRepository.findByMember_Id(Long.valueOf(memberId));
@@ -177,6 +180,7 @@ public class PointServiceImpl implements PointService {
      * @param refundAmount - 환불 금액
      * @throws PointPolicyException - 포인트가 부족한 경우 예외 발생
      */
+    @Override
     public void updatePointByRefund(String memberId, int refundAmount) {
         // 회원의 포인트 정보 가져오기
         Optional<Point> optionalPoint = pointRepository.findByMember_Id(Long.valueOf(memberId));
