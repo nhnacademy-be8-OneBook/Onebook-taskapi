@@ -1,6 +1,9 @@
 package com.nhnacademy.taskapi.coupon.domain.entity.policies;
+import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.category.domain.Category;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForCategoryRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdateRatePolicyForBookRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdateRatePolicyForCategoryRequest;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.PolicyStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -73,6 +76,17 @@ public class RatePolicyForCategory {
                 category,
                 policyStatus
         );
+    }
+
+    public void updatePolicy(UpdateRatePolicyForCategoryRequest updateRatePolicyForCategoryRequest, Category category){
+        discountRate = updateRatePolicyForCategoryRequest.getDiscountRate();
+        minimumOrderAmount = updateRatePolicyForCategoryRequest.getMinimumOrderAmount();
+        maximumDiscountPrice = updateRatePolicyForCategoryRequest.getMaximumDiscountPrice();
+        expirationPeriodStart = updateRatePolicyForCategoryRequest.getExpirationPeriodStart();
+        expirationPeriodEnd = updateRatePolicyForCategoryRequest.getExpirationPeriodEnd();
+        name = updateRatePolicyForCategoryRequest.getName();
+        description = updateRatePolicyForCategoryRequest.getDescription();
+        this.category = category;
     }
 
     // 사용되고 있는 쿠폰 정책을 삭제할때는 policyStatus를 "삭제됨" 으로 업뎃

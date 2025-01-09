@@ -2,6 +2,8 @@ package com.nhnacademy.taskapi.coupon.domain.entity.policies;
 
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPricePolicyForBookRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdatePricePolicyForBookRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdateRatePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.PolicyStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -69,6 +71,16 @@ public class PricePolicyForBook {
                 book,
                 policyStatus
         );
+    }
+
+    public void updatePolicy(UpdatePricePolicyForBookRequest updatePricePolicyForBookRequest, Book book){
+        minimumOrderAmount = updatePricePolicyForBookRequest.getMinimumOrderAmount();
+        discountPrice = updatePricePolicyForBookRequest.getDiscountPrice();
+        expirationPeriodStart = updatePricePolicyForBookRequest.getExpirationPeriodStart();
+        expirationPeriodEnd = updatePricePolicyForBookRequest.getExpirationPeriodEnd();
+        name = updatePricePolicyForBookRequest.getName();
+        description = updatePricePolicyForBookRequest.getDescription();
+        this.book = book;
     }
 
     // 사용되고 있는 쿠폰 정책을 삭제할때는 policyStatus를 "삭제됨" 으로 업뎃
