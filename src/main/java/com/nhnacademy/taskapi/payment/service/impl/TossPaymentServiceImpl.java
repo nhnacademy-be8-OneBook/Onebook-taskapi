@@ -10,6 +10,7 @@ import com.nhnacademy.taskapi.payment.exception.PaymentNotFoundException;
 import com.nhnacademy.taskapi.payment.repository.PaymentRepository;
 import com.nhnacademy.taskapi.point.domain.Point;
 import com.nhnacademy.taskapi.point.jpa.JpaPointRepository;
+import com.nhnacademy.taskapi.point.service.PointService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -39,6 +40,7 @@ public class TossPaymentServiceImpl {
     // 이를 Map<String, Object>로 변환하여 쉽게 접근할 수 있도록 함
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final String TOSS_SECRET_KEY = "test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6";
+    private final PointService pointService;
 
     @Transactional
     public TossConfirmResponse confirmTossPayment(TossConfirmRequest request) {
@@ -151,8 +153,9 @@ public class TossPaymentServiceImpl {
             if (userPoint.getAmount() < usedPoint) {
                 throw new InsufficientPointException("포인트가 부족합니다.");
             }
-            userPoint.setAmount(userPoint.getAmount() - usedPoint);
-            pointRepository.save(userPoint);
+//            userPoint.setAmount(userPoint.getAmount() - usedPoint);
+//            pointRepository.save(userPoint);
+            pointService.usePointsForPayment(memberId, usedPoint);
         }
 
         // 5) Payment 상태 업데이트
