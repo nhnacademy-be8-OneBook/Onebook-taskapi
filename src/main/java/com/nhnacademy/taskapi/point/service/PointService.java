@@ -22,10 +22,10 @@ public interface PointService {
     void updatePointPolicy(Long pointPolicyId, PointPolicy pointPolicy);
 
     // 포인트 결제 기능 (포인트 사용)
-    void usePointsForPayment(String memberId, int paymentAmount);
+    void usePointsForPayment(Long memberId, int paymentAmount);
 
     // 포인트 환불 기능 (포인트 복구)
-    void updatePointByRefund(String memberId, int refundAmount);
+    void updatePointByRefund(Long memberId, int refundAmount);
 }
 
 
