@@ -46,7 +46,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     }
 
     @Override
-    public PointPolicyResponse findPointPolicyById(String pointPolicyId) {
+    public PointPolicyResponse findPointPolicyById(Long pointPolicyId) {
         PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid point policy id: " + pointPolicyId));
 
@@ -81,7 +81,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     }
 
     @Override
-    public PointPolicyResponse updatePointPolicyById(String pointPolicyId, PointPolicyRequest policyRequest) {
+    public PointPolicyResponse updatePointPolicyById(Long pointPolicyId, PointPolicyRequest policyRequest) {
         PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid point policy id: " + pointPolicyId));
 
@@ -111,7 +111,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
                 .build();  // Response로 변환하여 반환
     }
     @Override
-    public void deletePointPolicyById(String pointPolicyId) {
+    public void deletePointPolicyById(Long pointPolicyId) {
         pointPolicyRepository.deleteById(pointPolicyId);
     }
 }
