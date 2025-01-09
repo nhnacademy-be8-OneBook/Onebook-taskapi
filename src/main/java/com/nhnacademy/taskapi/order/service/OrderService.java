@@ -12,4 +12,5 @@ public interface OrderService {
     List<OrderResponseDto> getOrderList(Long memberId);
     OrdererResponseDto getOrderer(Long memberId);
     List<OrderStatusResponseDto> getOrdersByStatusName(String statusName);
+    void updateOrderStatus(List<Long> orderIds, String status);
 }
