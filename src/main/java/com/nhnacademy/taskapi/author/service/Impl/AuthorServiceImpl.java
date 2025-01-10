@@ -100,4 +100,9 @@ public class AuthorServiceImpl implements AuthorService {
         }
         return author;
     }
+
+    @Override
+    public Page<Author> getAllAuthorList(Pageable pageable){
+        return authorRepository.findAllByOrderByAuthorIdAsc(pageable);
+    }
 }

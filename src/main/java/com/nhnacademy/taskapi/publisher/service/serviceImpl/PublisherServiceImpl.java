@@ -9,6 +9,8 @@ import com.nhnacademy.taskapi.publisher.repository.PublisherRepository;
 import com.nhnacademy.taskapi.publisher.service.PublisherService;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -95,6 +97,15 @@ public class PublisherServiceImpl implements PublisherService {
         List<Publisher> publisherList = publisherRepository.findAllByName(name);
         return publisherList;
 
+    }
+
+    @Override
+    public Page<Publisher> getList(Pageable pageable){
+        return publisherRepository.findAllByOrderByPublisherIdAsc(pageable);
+    }
+    public Publisher getPublisherById(long publisherId) {
+        return publisherRepository.findById(publisherId)
+                .orElseThrow(() -> new PublisherNotFoundException("Publisher not found with ID: " + publisherId));
     }
 
 
