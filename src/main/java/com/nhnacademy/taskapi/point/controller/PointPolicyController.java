@@ -31,7 +31,7 @@ public class PointPolicyController {
     @Operation(summary = "포인트 정책 조회", description = "특정 포인트 정책을 조회합니다.")
     @GetMapping("/point-policies/{pointPolicyId}")
     public ResponseEntity<PointPolicyResponse> findPointPolicyById(@PathVariable Long pointPolicyId) {
-        return new ResponseEntity<>(pointPolicyService.findPointPolicyById(String.valueOf(pointPolicyId)), HttpStatus.OK);
+        return new ResponseEntity<>(pointPolicyService.findPointPolicyById(pointPolicyId), HttpStatus.OK); // 수정된 부분
     }
 
     @Operation(summary = "포인트 정책 목록 조회", description = "모든 포인트 정책 목록을 조회합니다.")
@@ -43,13 +43,13 @@ public class PointPolicyController {
     @Operation(summary = "포인트 정책 수정", description = "특정 포인트 정책을 수정합니다.")
     @PutMapping("/point-policies/{pointPolicyId}")
     public ResponseEntity<PointPolicyResponse> updatePointPolicy(@PathVariable Long pointPolicyId, @RequestBody PointPolicyRequest policyRequest) {
-        return new ResponseEntity<>(pointPolicyService.updatePointPolicyById(String.valueOf(pointPolicyId), policyRequest), HttpStatus.OK);
+        return new ResponseEntity<>(pointPolicyService.updatePointPolicyById(pointPolicyId, policyRequest), HttpStatus.OK); // 수정된 부분
     }
 
     @Operation(summary = "포인트 정책 삭제", description = "특정 포인트 정책을 삭제합니다.")
     @DeleteMapping("/point-policies/{pointPolicyId}")
     public ResponseEntity<Void> deletePointPolicy(@PathVariable Long pointPolicyId) {
-        pointPolicyService.deletePointPolicyById(String.valueOf(pointPolicyId));
+        pointPolicyService.deletePointPolicyById(pointPolicyId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

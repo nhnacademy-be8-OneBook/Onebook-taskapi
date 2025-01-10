@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 public class CreatePointPolicyRequest {
     private String pointPolicyName;
     private int pointPolicyRate;
-    private int pointPolicyConditionAmount;
-    private int pointPolicyApplyAmount;
+    private Integer pointPolicyConditionAmount;  // Integer로 변경(null O)
+    private Integer pointPolicyApplyAmount;      // Integer로 변경(null O)
     private String pointPolicyCondition;
     private boolean pointPolicyApplyType;
 
