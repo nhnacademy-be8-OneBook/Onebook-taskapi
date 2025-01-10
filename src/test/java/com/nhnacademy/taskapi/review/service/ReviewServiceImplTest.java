@@ -6,6 +6,7 @@ import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.domain.Member.Gender;
 import com.nhnacademy.taskapi.member.domain.Member.Status;
+import com.nhnacademy.taskapi.point.service.PointService;
 import com.nhnacademy.taskapi.review.exception.InvalidReviewException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.point.domain.Point;
@@ -60,6 +61,9 @@ class ReviewServiceImplTest {
 
     @InjectMocks
     private ReviewServiceImpl reviewService;
+
+    @Mock
+    private PointService pointService;
 
     private Member member;       // 일반 사용자
     private Member adminMember;  // 관리자
@@ -153,7 +157,8 @@ class ReviewServiceImplTest {
     @Test
     void testRegisterReviewSuccess() {
         // Given
-        ReviewRequest request = new ReviewRequest(5, "개추", List.of("img1", "img2")); // memberId 제거
+        ReviewRequest request = new ReviewRequest(5, "개추", List.of("img1", "img2"));
+
         given(memberRepository.findById(1L)).willReturn(Optional.of(member));
         given(bookRepository.findById(1L)).willReturn(Optional.of(book));
         given(reviewRepository.findByMemberAndBook(member, book)).willReturn(Optional.empty());
@@ -163,13 +168,11 @@ class ReviewServiceImplTest {
             return saved;
         });
 
-        // 포인트가 정상 적립 되었는가 확인하기 위해..
-        Point mockPoint = Mockito.mock(Point.class);
-        given(pointRepository.findByMember_Id(1L)).willReturn(Optional.of(mockPoint));
-
+        // 포인트 관련 객체 설정 및 예상
+        doNothing().when(pointService).registerReviewPoints(member, true);
 
         // When
-        ReviewResponse response = reviewService.registerReview(1L, 1L, request); // memberId 별도 전달
+        ReviewResponse response = reviewService.registerReview(1L, 1L, request);
 
         // Then
         assertEquals(100L, response.getReviewId());
@@ -180,12 +183,10 @@ class ReviewServiceImplTest {
         assertTrue(response.getImageUrl().contains("img1"));
         assertTrue(response.getImageUrl().contains("img2"));
 
-        // 포인트 관련 repository 메서드 호출 검증
-        verify(pointRepository, times(1)).findByMember_Id(1L);
-        verify(pointRepository, times(1)).save(any(Point.class));
-        verify(pointLogRepository, times(1)).save(any(PointLog.class));
-
+        // 포인트 관련 service 메서드 호출 검증
+        verify(pointService, times(1)).registerReviewPoints(member, true);
     }
+
 
     /**
      * 테스트 시나리오: 이미 해당 도서에 리뷰를 작성한 경우 예외 발생.

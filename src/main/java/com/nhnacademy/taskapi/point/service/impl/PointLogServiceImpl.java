@@ -23,19 +23,19 @@ public class PointLogServiceImpl implements PointLogService {
     /**
      * 회원 ID에 해당하는 포인트 로그를 페이지네이션으로 조회
      *
-     * @param memberId - 회원 ID
+     * @param member_id - 회원 ID
      * @param pageable  - 페이징 정보 (page size, page number 등)
      * @return Page<PointLogResponse> - 포인트 로그 응답 객체
      */
     @Override
-    public Page<PointLogResponse> findAllPointLogsByMemberId(Long memberId, Pageable pageable) {
+    public Page<PointLogResponse> findAllPointLogsByMemberId(Long member_id, Pageable pageable) {
         // memberId에 해당하는 포인트 로그를 Pageable 형식으로 조회
-        Page<PointLog> pointLogs = pointLogRepository.findByPoint_Member_Id(memberId, pageable);
+        Page<PointLog> pointLogs = pointLogRepository.findByPoint_Member_Id(member_id, pageable);
 
         // PointLog 엔티티를 PointLogResponse DTO로 변환하여 반환
         return pointLogs.map(pointLog -> PointLogResponse.builder()
                 .pointCurrent(pointLog.getPoint().getAmount()) // 해당 포인트의 현재 금액
-                .pointLogUpdatedType(pointLog.getPointLogUpdatedType())
+                .pointLogUpdatedType(String.valueOf(pointLog.getPointLogUpdatedType()))
                 .pointLogAmount(pointLog.getPointLogAmount())
                 .pointLogUpdatedAt(pointLog.getPointLogUpdatedAt())
                 .build());

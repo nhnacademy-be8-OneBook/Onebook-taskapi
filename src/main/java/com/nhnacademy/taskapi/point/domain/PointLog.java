@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "point_logs")
 public class PointLog {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pointLogId;
@@ -21,9 +22,11 @@ public class PointLog {
     @Column(nullable = false)
     private LocalDateTime pointLogUpdatedAt;
 
+    // pointLogUpdatedType을 String 대신 Enum으로 변경
     @NotNull(message = "포인트 변경 타입은 필수입니다.")
+    @Enumerated(EnumType.STRING)  // Enum 값을 저장할 때 String 형태로 저장
     @Column(nullable = false, length = 20)
-    private String pointLogUpdatedType;
+    private PointLogUpdatedType pointLogUpdatedType;
 
     @NotNull(message = "포인트 갱신액은 필수입니다.")
     @Column(nullable = false, precision = 10, scale = 2)
@@ -34,7 +37,7 @@ public class PointLog {
     private Point point;
 
     @Builder
-    public PointLog(Long pointLogId, LocalDateTime pointLogUpdatedAt, String pointLogUpdatedType, int pointLogAmount, Point point) {
+    public PointLog(Long pointLogId, LocalDateTime pointLogUpdatedAt, PointLogUpdatedType pointLogUpdatedType, int pointLogAmount, Point point) {
         this.pointLogId = pointLogId;
         this.pointLogUpdatedAt = pointLogUpdatedAt;
         this.pointLogUpdatedType = pointLogUpdatedType;
