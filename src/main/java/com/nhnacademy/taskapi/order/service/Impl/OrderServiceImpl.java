@@ -15,11 +15,13 @@ import com.nhnacademy.taskapi.order.repository.OrderRepository;
 import com.nhnacademy.taskapi.order.repository.OrderStatusRepository;
 import com.nhnacademy.taskapi.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -30,10 +32,8 @@ public class OrderServiceImpl implements OrderService {
 
     // create
     @Override
-    public void saveOrder(Long memberId, OrderCreateDTO orderCreateDTO) {
-//        if (!memberRepository.existsById(memberId)) {
-//            throw new MemberIllegalArgumentException("Member id " + memberId + " does not exist");
-//        }
+    public Long saveOrder(Long memberId, OrderCreateDTO orderCreateDTO) {
+        memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id" + memberId + " dose not exist"));
 
         // 주문 상태 default 값 대기
         OrderStatus waitingStatus = orderStatusRepository.findByStatusName("결제대기").orElseThrow(() -> new OrderStatusNotFoundException("OrderStatus is not found; error!!"));
@@ -50,7 +50,9 @@ public class OrderServiceImpl implements OrderService {
             orderCreateDTO.getTotalPrice(),
             waitingStatus
         );
-        orderRepository.save(order);
+        Order save = orderRepository.save(order);
+
+        return save.getOrderId();
     }
 
     // read
