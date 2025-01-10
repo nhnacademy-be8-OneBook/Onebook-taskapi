@@ -13,4 +13,4 @@ public interface OrderService {
     OrdererResponseDto getOrderer(Long memberId);
     List<OrderStatusResponseDto> getOrdersByStatusName(String statusName);
     void updateOrderStatus(List<Long> orderIds, String status);
-}
+}//
