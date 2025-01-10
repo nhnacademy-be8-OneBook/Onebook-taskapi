@@ -96,7 +96,7 @@ class PointServiceImplTest {
 
         // 포인트가 차감되었는지 검증
         assertEquals(500, point.getPointCurrent()); // 포인트가 500으로 차감되었어야 함
-        verify(pointRepository, times(1)).findByMember_Id(1L); // memberId 1L로 찾기
+        verify(pointRepository, times(2)).findByMember_Id(1L); // memberId 1L로 찾기
         verify(pointRepository, times(1)).save(any(Point.class)); // 포인트 저장이 호출되었는지
         verify(pointLogRepository, times(1)).save(any(PointLog.class)); // 포인트 로그도 저장되었는지 확인
     }
