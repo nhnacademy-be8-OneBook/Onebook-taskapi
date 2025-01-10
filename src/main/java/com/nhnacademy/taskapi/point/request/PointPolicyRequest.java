@@ -30,7 +30,7 @@ public class PointPolicyRequest {
                 .build();
     }
 
-    // 명시적인 getter 메서드들 (getter는 @Getter로 자동 생성되지만, 명시적으로 구현할 수도 있음)
+
     public String pointPolicyName() {
         return pointPolicyName;
     }

@@ -1,7 +1,12 @@
 package com.nhnacademy.taskapi.point.service;
 
 import com.nhnacademy.taskapi.member.domain.Member;
+import com.nhnacademy.taskapi.point.domain.Point;
+import com.nhnacademy.taskapi.point.domain.PointLog;
 import com.nhnacademy.taskapi.point.domain.PointPolicy;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface PointService {
 
@@ -13,6 +18,18 @@ public interface PointService {
 
     // 도서 결제 시 포인트 적립
     void registerPurchasePoints(Member member, int purchaseAmount);
+
+    Point getMemberPoints(Long memberId);
+
+    List<PointLog> getPointLogsByMember(Long memberId);
+
+    List<PointLog> getPointLogsByMember(Long memberId, Pageable pageable);
+
+    List<PointPolicy> getActivePointPolicies(Pageable pageable);
+
+    List<PointPolicy> getActivePointPolicies();
+
+    void togglePointPolicy(Long pointPolicyId, boolean isActive);
 
     PointPolicy getDefaultPointPolicy();
 
