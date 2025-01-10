@@ -76,11 +76,18 @@ class OrderServiceImplTest {
         OrderCreateDTO orderCreateDTO = new OrderCreateDTO("김선준", "010-9999-9999", LocalDateTime.now(), 3000, 25000);
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(mockMember()));
         when(orderStatusRepository.findByStatusName("결제대기")).thenReturn(Optional.of(new OrderStatus("결제대기")));
+        when(orderRepository.save(any(Order.class))).thenAnswer(invocatoin -> {
+            Order order = invocatoin.getArgument(0);
+            order.setOrderId(1L);
+            return order;
+        });
 
         // when
-        orderService.saveOrder(1L, orderCreateDTO);
+        Long orderId = orderService.saveOrder(1L, orderCreateDTO);
 
         // then
+        assertNotNull(orderId);
+        assertEquals(1L, orderId);
         verify(orderRepository).save(any(Order.class));
     }
 
