@@ -16,6 +16,7 @@ import com.nhnacademy.taskapi.roles.domain.Role;
 import com.nhnacademy.taskapi.roles.dto.RoleResponseDto;
 import com.nhnacademy.taskapi.roles.service.impl.RoleServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -328,24 +329,24 @@ public class MemberServiceTest {
         Role role = Role.createRole("MEMBER", "일반 회원");
         Member member = Member.createNewMember(grade, "김주혁", "joo", BCrypt.hashpw("jjjjjjjjjj", BCrypt.gensalt()), LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
 
-        Mockito.when(memberRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(member));
+        Mockito.when(memberRepository.findByLoginId(Mockito.anyString())).thenReturn(Optional.of(member));
 
-        memberService.changeStatusToActivation(Mockito.anyLong(), "ACTIVE");
-        Mockito.verify(memberRepository, Mockito.times(1)).findById(Mockito.any());
+        memberService.changeStatusToActivation(Mockito.anyString());
+        Mockito.verify(memberRepository, Mockito.times(1)).findByLoginId(Mockito.any());
     }
 
-    @Test
-    @DisplayName("Change Status2 - To SUSPENDED")
-    void changeStatusToActivation2() {
-        Grade grade = Grade.create("ROYAL", 10, "일반 등급");
-        Role role = Role.createRole("MEMBER", "일반 회원");
-        Member member = Member.createNewMember(grade, "김주혁", "joo", BCrypt.hashpw("jjjjjjjjjj", BCrypt.gensalt()), LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
-
-        Mockito.when(memberRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(member));
-
-        memberService.changeStatusToActivation(Mockito.anyLong(), "SUSPENDED");
-        Mockito.verify(memberRepository, Mockito.times(1)).findById(Mockito.any());
-    }
+//    @Test
+//    @DisplayName("Change Status2 - To SUSPENDED")
+//    void changeStatusToActivation2() {
+//        Grade grade = Grade.create("ROYAL", 10, "일반 등급");
+//        Role role = Role.createRole("MEMBER", "일반 회원");
+//        Member member = Member.createNewMember(grade, "김주혁", "joo", BCrypt.hashpw("jjjjjjjjjj", BCrypt.gensalt()), LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", role);
+//
+//        Mockito.when(memberRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(member));
+//
+//        memberService.changeStatusToActivation(Mockito.anyLong(), "SUSPENDED");
+//        Mockito.verify(memberRepository, Mockito.times(1)).findById(Mockito.any());
+//    }
 
 //    @Test
 //    @DisplayName("Remove Member Failed - DB error")
