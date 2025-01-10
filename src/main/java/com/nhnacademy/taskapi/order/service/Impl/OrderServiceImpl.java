@@ -50,9 +50,9 @@ public class OrderServiceImpl implements OrderService {
             orderCreateDTO.getTotalPrice(),
             waitingStatus
         );
-        Order save = orderRepository.save(order);
+        Order saveOrder = orderRepository.save(order);
 
-        return save.getOrderId();
+        return saveOrder.getOrderId();
     }
 
     // read
