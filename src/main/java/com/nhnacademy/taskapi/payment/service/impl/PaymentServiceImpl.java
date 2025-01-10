@@ -47,7 +47,7 @@ public class PaymentServiceImpl implements PaymentService {
         if (existingPayment != null) {
             // 이미 Payment가 존재하는 상황
             if ("READY".equals(existingPayment.getStatus())) {
-                int orderTotalAmount = existingPayment.getOrder().getTotalPrice();
+                int orderTotalAmount = existingPayment.getOrder().getTotalPrice() + existingPayment.getOrder().getDeliveryPrice();
                 int newUsedPoint = paymentRequest.getUsedPoint();
                 int newFinalPayAmount = orderTotalAmount - newUsedPoint;
                 if (newFinalPayAmount < 0) {
@@ -84,7 +84,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         // 최종 결제금액
         int usedPoint = paymentRequest.getUsedPoint();
-        int finalPayAmount = order.getTotalPrice() - usedPoint;
+        int finalPayAmount = order.getTotalPrice() + order.getDeliveryPrice() - usedPoint;
         if (finalPayAmount < 0) {
             throw new InvalidPaymentException("포인트 사용액이 주문 금액을 초과합니다.");
         }
@@ -198,7 +198,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         CheckoutInfoResponse dto = new CheckoutInfoResponse();
         dto.setOrderId(orderIdStr);
-        dto.setOrderAmount(order.getTotalPrice());
+        dto.setOrderAmount(order.getTotalPrice() + order.getDeliveryPrice());
         dto.setUserPoint(point.getAmount());
         dto.setOrderName(order.getOrderName());
 
