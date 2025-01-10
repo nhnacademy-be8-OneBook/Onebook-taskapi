@@ -100,7 +100,7 @@ public class ReviewServiceImpl implements ReviewService {
         // 리뷰 저장
         Review savedReview = reviewRepository.save(review);
         log.debug("Review saved with reviewId: {}", savedReview.getReviewId());
-        
+
         pointService.registerReviewPoints(member, isPhotoAttached);
 
         // 응답 DTO 생성
