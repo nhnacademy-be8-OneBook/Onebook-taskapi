@@ -184,5 +184,8 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
-
+    @Override
+    public Page<Book> findAllBooks(Pageable pageable) {
+        return bookRepository.findAllByOrderByTitleAsc(pageable);
+    }
 }
