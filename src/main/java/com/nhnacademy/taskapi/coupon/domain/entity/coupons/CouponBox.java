@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Table(name = "coupon_box")
 public class CouponBox {
 
     @Id
@@ -25,5 +24,5 @@ public class CouponBox {
 
     private LocalDateTime issueDateTime;
     private LocalDateTime useDateTime;
-    
+
 }

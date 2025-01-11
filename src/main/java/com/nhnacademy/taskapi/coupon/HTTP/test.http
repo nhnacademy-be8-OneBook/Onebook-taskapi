@@ -1,0 +1,35 @@
+### 정률정책 for Book 등록
+POST localhost:8510/coupon/rate/book
+Content-Type: application/json
+
+{
+  "count":3,
+  "policyId": 3
+}
+
+### 정률정책 for Category 등록
+POST localhost:8510/coupon/rate/category
+Content-Type: application/json
+
+{
+"count":3,
+"policyId": 1
+}
+
+### 정액정책 for Book 등록
+POST localhost:8510/coupon/price/book
+Content-Type: application/json
+
+{
+  "count":5,
+  "policyId": 7
+}
+
+### 정액정책 for Category 등록
+POST localhost:8510/coupon/price/category
+Content-Type: application/json
+
+{
+  "count":5,
+  "policyId": 8
+}
