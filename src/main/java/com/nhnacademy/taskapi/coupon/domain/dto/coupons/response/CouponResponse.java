@@ -11,7 +11,6 @@ import java.util.Objects;
 @Builder
 public class CouponResponse {
 
-    private Long id;
     private String couponNumber;
     private String couponStatus;
     private Long ratePolicyForBookId;
@@ -22,8 +21,7 @@ public class CouponResponse {
     public static CouponResponse changeEntityToDto(Coupon coupon){
 
         if(Objects.nonNull(coupon.getPricePolicyForBook())){
-            return CouponResponse.builder().
-                    id(coupon.getCouponId())
+            return CouponResponse.builder()
                     .couponNumber(coupon.getCouponNumber())
                     .couponStatus(coupon.getCouponStatus().getName())
                     .pricePolicyForBookId(coupon.getPricePolicyForBook().getPricePolicyForBookId())
@@ -31,8 +29,7 @@ public class CouponResponse {
         }
 
         if(Objects.nonNull(coupon.getPricePolicyForCategory())){
-            return CouponResponse.builder().
-                    id(coupon.getCouponId())
+            return CouponResponse.builder()
                     .couponNumber(coupon.getCouponNumber())
                     .couponStatus(coupon.getCouponStatus().getName())
                     .pricePolicyForCategoryId(coupon.getPricePolicyForCategory().getPricePolicyForCategoryId())
@@ -40,8 +37,7 @@ public class CouponResponse {
         }
 
         if(Objects.nonNull(coupon.getRatePolicyForBook())){
-            return CouponResponse.builder().
-                    id(coupon.getCouponId())
+            return CouponResponse.builder()
                     .couponNumber(coupon.getCouponNumber())
                     .couponStatus(coupon.getCouponStatus().getName())
                     .ratePolicyForBookId(coupon.getRatePolicyForBook().getRatePolicyForBookId())
@@ -49,8 +45,7 @@ public class CouponResponse {
         }
 
         if(Objects.nonNull(coupon.getRatePolicyForCategory())){
-            return CouponResponse.builder().
-                    id(coupon.getCouponId())
+            return CouponResponse.builder()
                     .couponNumber(coupon.getCouponNumber())
                     .couponStatus(coupon.getCouponStatus().getName())
                     .ratePolicyForCategoryId(coupon.getRatePolicyForCategory().getRatePolicyForCategoryId())

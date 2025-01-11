@@ -7,15 +7,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/task")
 public class CouponController {
 
     private final CouponService couponService;
@@ -49,5 +47,12 @@ public class CouponController {
 
         Page<CouponResponse> couponResponses = couponService.getAllCoupons(pageable);
         return ResponseEntity.ok(couponResponses);
+    }
+
+    @DeleteMapping("/coupon/{coupon-number}")
+    public ResponseEntity<CouponResponse> deleteCoupon(@PathVariable(name = "coupon-number") String couponNumber){
+
+        CouponResponse couponResponse = couponService.deleteCoupon(couponNumber);
+        return ResponseEntity.ok(couponResponse);
     }
 }
