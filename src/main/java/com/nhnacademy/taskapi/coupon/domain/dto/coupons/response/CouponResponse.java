@@ -4,7 +4,6 @@ import com.nhnacademy.taskapi.coupon.domain.entity.coupons.Coupon;
 import com.nhnacademy.taskapi.coupon.exception.CouponHasNoPolicyExceptioin;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Objects;
 

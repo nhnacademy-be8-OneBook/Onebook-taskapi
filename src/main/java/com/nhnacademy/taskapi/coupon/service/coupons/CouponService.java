@@ -16,6 +16,8 @@ import com.nhnacademy.taskapi.coupon.repository.policies.RatePoliciesForBookRepo
 import com.nhnacademy.taskapi.coupon.repository.policies.RatePoliciesForCategoryRepository;
 import com.nhnacademy.taskapi.coupon.repository.status.CouponStatusRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,15 +40,15 @@ public class CouponService {
                 .orElseThrow(()-> new PolicyNotFoundException("해당하는 ID의 정책을 찾을 수 없습니다"));
 
         CouponStatus unUsedStatus = couponStatusRepository.findByName("미발급");
-        List<CouponResponse> couponResponses = new ArrayList<>();
+        List<CouponResponse> couponCreateRespons = new ArrayList<>();
 
         for(int i = 0; i < createCouponRequest.getCount(); i++){
             Coupon coupon = couponRepository.save(Coupon.createRateCouponForBook(ratePolicyForBook, unUsedStatus));
             CouponResponse couponResponse = CouponResponse.changeEntityToDto(coupon);
-            couponResponses.add(couponResponse);
+            couponCreateRespons.add(couponResponse);
         }
 
-        return couponResponses;
+        return couponCreateRespons;
 
     }
 
@@ -56,15 +58,15 @@ public class CouponService {
                 .orElseThrow(()-> new PolicyNotFoundException("해당하는 ID의 정책을 찾을 수 없습니다"));
 
         CouponStatus unUsedStatus = couponStatusRepository.findByName("미발급");
-        List<CouponResponse> couponResponses = new ArrayList<>();
+        List<CouponResponse> couponCreateRespons = new ArrayList<>();
 
         for(int i = 0; i < createCouponRequest.getCount(); i++){
             Coupon coupon = couponRepository.save(Coupon.createRateCouponForCategory(ratePolicyForCategory, unUsedStatus));
             CouponResponse couponResponse = CouponResponse.changeEntityToDto(coupon);
-            couponResponses.add(couponResponse);
+            couponCreateRespons.add(couponResponse);
         }
 
-        return couponResponses;
+        return couponCreateRespons;
     }
 
     public List<CouponResponse> CreatePriceCouponForBook(CreateCouponRequest createCouponRequest){
@@ -73,15 +75,15 @@ public class CouponService {
                 .orElseThrow(()-> new PolicyNotFoundException("해당하는 ID의 정책을 찾을 수 없습니다"));
 
         CouponStatus unUsedStatus = couponStatusRepository.findByName("미발급");
-        List<CouponResponse> couponResponses = new ArrayList<>();
+        List<CouponResponse> couponCreateRespons = new ArrayList<>();
 
         for(int i = 0; i < createCouponRequest.getCount(); i++){
             Coupon coupon = couponRepository.save(Coupon.createPriceCouponForBook(pricePolicyForBook, unUsedStatus));
             CouponResponse couponResponse = CouponResponse.changeEntityToDto(coupon);
-            couponResponses.add(couponResponse);
+            couponCreateRespons.add(couponResponse);
         }
 
-        return couponResponses;
+        return couponCreateRespons;
     }
 
     public List<CouponResponse> CreatePriceCouponForCategory(CreateCouponRequest createCouponRequest){
@@ -90,16 +92,20 @@ public class CouponService {
                 .orElseThrow(()-> new PolicyNotFoundException("해당하는 ID의 정책을 찾을 수 없습니다"));
 
         CouponStatus unUsedStatus = couponStatusRepository.findByName("미발급");
-        List<CouponResponse> couponResponses = new ArrayList<>();
+        List<CouponResponse> couponCreateRespons = new ArrayList<>();
 
         for(int i = 0; i < createCouponRequest.getCount(); i++){
             Coupon coupon = couponRepository.save(Coupon.createPriceCouponForCategory(pricePolicyForCategory, unUsedStatus));
             CouponResponse couponResponse = CouponResponse.changeEntityToDto(coupon);
-            couponResponses.add(couponResponse);
+            couponCreateRespons.add(couponResponse);
         }
 
-        return couponResponses;
+        return couponCreateRespons;
     }
 
+    public Page<CouponResponse> getAllCoupons(Pageable pageable){
+        Page<Coupon> coupons = couponRepository.findAll(pageable);
+        return coupons.map(CouponResponse::changeEntityToDto);
+    }
 
 }

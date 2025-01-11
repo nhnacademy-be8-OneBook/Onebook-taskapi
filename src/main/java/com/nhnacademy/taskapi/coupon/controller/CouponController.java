@@ -4,7 +4,10 @@ import com.nhnacademy.taskapi.coupon.domain.dto.coupons.request.CreateCouponRequ
 import com.nhnacademy.taskapi.coupon.domain.dto.coupons.response.CouponResponse;
 import com.nhnacademy.taskapi.coupon.service.coupons.CouponService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,8 +28,8 @@ public class CouponController {
 
     @PostMapping("/coupon/rate/category")
     public ResponseEntity<List<CouponResponse>> CreateRateCouponForCategory(@RequestBody CreateCouponRequest createCouponRequest){
-        List<CouponResponse> couponResponse = couponService.CreateRateCouponForCategory(createCouponRequest);
-        return ResponseEntity.ok(couponResponse);
+        List<CouponResponse> couponResponses = couponService.CreateRateCouponForCategory(createCouponRequest);
+        return ResponseEntity.ok(couponResponses);
     }
 
     @PostMapping("/coupon/price/book")
@@ -38,6 +41,13 @@ public class CouponController {
     @PostMapping("/coupon/price/category")
     public ResponseEntity<List<CouponResponse>> CreatePriceCouponForCategory(@RequestBody CreateCouponRequest createCouponRequest){
         List<CouponResponse> couponResponses = couponService.CreatePriceCouponForCategory(createCouponRequest);
+        return ResponseEntity.ok(couponResponses);
+    }
+
+    @GetMapping("/coupon")
+    public ResponseEntity<Page<CouponResponse>> getAllCoupons(Pageable pageable){
+
+        Page<CouponResponse> couponResponses = couponService.getAllCoupons(pageable);
         return ResponseEntity.ok(couponResponses);
     }
 }
