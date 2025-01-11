@@ -13,4 +13,5 @@ public interface BookCategoryRepository extends JpaRepository<BookCategory, Long
     BookCategory findByBook_bookIdAndCategory_categoryId(Long bookId, Integer categoryId);
 
     Page<BookCategory> findAllByCategory_CategoryIdOrderByBook_AmountDesc(int categoryId, Pageable pageable);
+    BookCategory findByBook_bookId(long bookId);
 }

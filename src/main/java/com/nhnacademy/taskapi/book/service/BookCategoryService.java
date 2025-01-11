@@ -11,4 +11,5 @@ import java.util.List;
 public interface BookCategoryService {
     BookCategory save(BookCategorySaveDTO bookCategorySaveDTO);
     Page<BookCategory> getBookByCategory(int categoryId, Pageable pageable);
+    BookCategory getBookCategoryByBookId(long bookId);
 }

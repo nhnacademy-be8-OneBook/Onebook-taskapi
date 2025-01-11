@@ -6,6 +6,8 @@ import com.nhnacademy.taskapi.category.dto.CategoryCreateDTO;
 import com.nhnacademy.taskapi.category.dto.CategoryUpdateDTO;
 import com.nhnacademy.taskapi.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,6 +58,12 @@ public class CategoryController {
     @GetMapping("/subCategories/{categoryId}")
     public List<Category> getSubCategories(@PathVariable int categoryId) {
         return categoryService.getSubCategories(categoryId);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<Page<Category>> getAllCategories(Pageable pageable) {
+        Page<Category> categories = categoryService.getAllCategoriesByPaging(pageable);
+        return ResponseEntity.ok().body(categories);
     }
 
 }

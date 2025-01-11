@@ -29,4 +29,9 @@ public class StockController {
         return ResponseEntity.status(HttpStatus.OK).body(stock);
     }
 
+    @GetMapping("/{bookId}")
+    public ResponseEntity<Stock> getStock(@PathVariable("bookId") long bookId){
+        Stock stock = stockService.getStock(bookId);
+        return ResponseEntity.ok().body(stock);
+    }
 }

@@ -8,4 +8,6 @@ public interface BookTagRepository extends JpaRepository<BookTag, Long> {
     BookTag findByBook_BookIdAndTag_TagId(Long bookId, Long tagId);
 
     void deleteByBook(Book book);
+
+    BookTag findByBook_BookId(Long bookId);
 }
