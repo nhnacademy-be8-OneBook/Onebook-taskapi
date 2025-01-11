@@ -111,6 +111,7 @@ public class CouponService {
     }
 
     public Page<CouponResponse> getAllCoupons(Pageable pageable){
+
         Page<Coupon> coupons = couponRepository.findAll(pageable);
         return coupons.map(CouponResponse::changeEntityToDto);
     }
