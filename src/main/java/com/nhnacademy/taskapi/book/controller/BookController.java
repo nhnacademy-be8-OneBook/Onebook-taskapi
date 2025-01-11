@@ -61,5 +61,10 @@ public class BookController {
         return ResponseEntity.ok().body(book);
     }
 
+    @GetMapping("/book-list")
+    public ResponseEntity<Page<Book>> getBookList(Pageable pageable){
+        Page<Book> books = bookService.findAllBooks(pageable);
+        return ResponseEntity.ok().body(books);
+    }
 
 }
