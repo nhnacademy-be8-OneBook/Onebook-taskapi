@@ -8,6 +8,7 @@ import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForCatego
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForBook;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForCategory;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.CouponStatus;
+import com.nhnacademy.taskapi.coupon.exception.CouponCannotDeleteException;
 import com.nhnacademy.taskapi.coupon.exception.CouponNotFoundException;
 import com.nhnacademy.taskapi.coupon.exception.PolicyNotFoundException;
 import com.nhnacademy.taskapi.coupon.repository.coupons.CouponRepository;
@@ -112,6 +113,11 @@ public class CouponService {
     public CouponResponse deleteCoupon(String couponNumber){
         Coupon coupon = couponRepository.findByCouponNumber(couponNumber).
                 orElseThrow(()->new CouponNotFoundException("해당하는 쿠폰넘버의 쿠폰이 존재하지 않습니다"));
+
+        if(coupon.getCouponStatus().getName().equals("발급-삭제불가")){
+            throw new CouponCannotDeleteException("해당 쿠폰은 이미 발급되고 사용되어 삭제할 수 없습니다");
+        }
+
         couponRepository.delete(coupon);
         return CouponResponse.changeEntityToDto(coupon);
     }
