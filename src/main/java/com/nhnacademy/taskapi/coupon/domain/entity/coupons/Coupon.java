@@ -26,7 +26,7 @@ public class Coupon {
     private String couponNumber;
 
     @Column(nullable = false)
-    private LocalDateTime couponCreationDatetime;
+    private LocalDateTime creationTime;
 
     @ManyToOne
     @JoinColumn(name ="rate_policy_for_book_id")
@@ -51,28 +51,28 @@ public class Coupon {
     public Coupon(String couponNumber, RatePolicyForBook ratePolicyForBook, CouponStatus couponStatus, LocalDateTime creationTime) {
         this.couponNumber = couponNumber;
         this.ratePolicyForBook = ratePolicyForBook;
-        this.couponCreationDatetime = creationTime;
+        this.creationTime = creationTime;
         this.couponStatus = couponStatus;
     }
 
     public Coupon(String couponNumber, RatePolicyForCategory ratePolicyForCategory, CouponStatus couponStatus, LocalDateTime creationTime) {
         this.couponNumber = couponNumber;
         this.ratePolicyForCategory = ratePolicyForCategory;
-        this.couponCreationDatetime = creationTime;
+        this.creationTime = creationTime;
         this.couponStatus = couponStatus;
     }
 
     public Coupon(String couponNumber, PricePolicyForBook pricePolicyForBook, CouponStatus couponStatus, LocalDateTime creationTime) {
         this.couponNumber = couponNumber;
         this.pricePolicyForBook = pricePolicyForBook;
-        this.couponCreationDatetime = creationTime;
+        this.creationTime = creationTime;
         this.couponStatus = couponStatus;
     }
 
     public Coupon(String couponNumber, PricePolicyForCategory pricePolicyForCategory, CouponStatus couponStatus, LocalDateTime creationTime) {
         this.couponNumber = couponNumber;
         this.pricePolicyForCategory = pricePolicyForCategory;
-        this.couponCreationDatetime = creationTime;
+        this.creationTime = creationTime;
         this.couponStatus = couponStatus;
     }
 
