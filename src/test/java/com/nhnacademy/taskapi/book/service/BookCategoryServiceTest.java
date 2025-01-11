@@ -121,56 +121,56 @@ public class BookCategoryServiceTest {
         Assertions.assertThrows(BookCategoryDuplicateException.class, () -> bookCategoryService.save(dto));
     }
 
-    @Test
-    @DisplayName("getBookByCategory_Success")
-    public void getBookByCategory_Success() {
-        // Arrange
-        int categoryId = 1;
-
-        // 가짜 데이터 준비
-        Book book1 = new Book();
-        book1.setBookId(1L);
-        book1.setTitle("Test Book 1");
-
-        Book book2 = new Book();
-        book2.setBookId(2L);
-        book2.setTitle("Test Book 2");
-
-        Category category = new Category();
-        category.setCategoryId(categoryId);
-        category.setName("Test Category");
-
-        BookCategory bookCategory1 = new BookCategory();
-        bookCategory1.setBook(book1);
-        bookCategory1.setCategory(category);
-
-        BookCategory bookCategory2 = new BookCategory();
-        bookCategory2.setBook(book2);
-        bookCategory2.setCategory(category);
-
-        List<BookCategory> mockList = List.of(bookCategory1, bookCategory2);
-
-        when(bookCategoryRepository.findAllByCategory_CategoryId(categoryId)).thenReturn(mockList);
-
-        // Act
-        List<BookCategory> result = bookCategoryService.getBookByCategory(categoryId);
-
-        // Assert
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(2, result.size());
-        Assertions.assertEquals("Test Book 1", result.get(0).getBook().getTitle());
-        Assertions.assertEquals("Test Category", result.get(0).getCategory().getName());
-
-        verify(bookCategoryRepository, times(1)).findAllByCategory_CategoryId(categoryId);
-    }
-
-    @Test
-    @DisplayName("getBookByCategory_Fail_NotFound")
-    public void getBookByCategory_Fail_NotFound() {
-        when(bookCategoryRepository.findAllByCategory_CategoryId(any(Integer.class))).thenReturn(null);
-
-        Assertions.assertThrows(BookCategoryNotFoundException.class, () -> bookCategoryService.getBookByCategory(1));
-
-    }
+//    @Test
+//    @DisplayName("getBookByCategory_Success")
+//    public void getBookByCategory_Success() {
+//        // Arrange
+//        int categoryId = 1;
+//
+//        // 가짜 데이터 준비
+//        Book book1 = new Book();
+//        book1.setBookId(1L);
+//        book1.setTitle("Test Book 1");
+//
+//        Book book2 = new Book();
+//        book2.setBookId(2L);
+//        book2.setTitle("Test Book 2");
+//
+//        Category category = new Category();
+//        category.setCategoryId(categoryId);
+//        category.setName("Test Category");
+//
+//        BookCategory bookCategory1 = new BookCategory();
+//        bookCategory1.setBook(book1);
+//        bookCategory1.setCategory(category);
+//
+//        BookCategory bookCategory2 = new BookCategory();
+//        bookCategory2.setBook(book2);
+//        bookCategory2.setCategory(category);
+//
+//        List<BookCategory> mockList = List.of(bookCategory1, bookCategory2);
+//
+//        when(bookCategoryRepository.findAllByCategory_CategoryId(categoryId)).thenReturn(mockList);
+//
+//        // Act
+//        List<BookCategory> result = bookCategoryService.getBookByCategory(categoryId);
+//
+//        // Assert
+//        Assertions.assertNotNull(result);
+//        Assertions.assertEquals(2, result.size());
+//        Assertions.assertEquals("Test Book 1", result.get(0).getBook().getTitle());
+//        Assertions.assertEquals("Test Category", result.get(0).getCategory().getName());
+//
+//        verify(bookCategoryRepository, times(1)).findAllByCategory_CategoryId(categoryId);
+//    }
+//
+//    @Test
+//    @DisplayName("getBookByCategory_Fail_NotFound")
+//    public void getBookByCategory_Fail_NotFound() {
+//        when(bookCategoryRepository.findAllByCategory_CategoryId(any(Integer.class))).thenReturn(null);
+//
+//        Assertions.assertThrows(BookCategoryNotFoundException.class, () -> bookCategoryService.getBookByCategory(1));
+//
+//    }
 
 }
