@@ -33,3 +33,6 @@ Content-Type: application/json
   "count":5,
   "policyId": 8
 }
+
+### 쿠폰삭제
+DELETE localhost:8510/coupon/8529d05c-6705-4899-8bcf-aeecb451150b
