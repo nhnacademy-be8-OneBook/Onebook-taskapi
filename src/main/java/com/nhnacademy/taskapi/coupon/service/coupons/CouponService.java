@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,9 +44,10 @@ public class CouponService {
 
         CouponStatus unUsedStatus = couponStatusRepository.findByName("미발급");
         List<CouponResponse> couponCreateResponses = new ArrayList<>();
+        LocalDateTime creationTime = LocalDateTime.now();
 
         for(int i = 0; i < createCouponRequest.getCount(); i++){
-            Coupon coupon = couponRepository.save(Coupon.createRateCouponForBook(ratePolicyForBook, unUsedStatus));
+            Coupon coupon = couponRepository.save(Coupon.createRateCouponForBook(ratePolicyForBook, unUsedStatus,creationTime));
             CouponResponse couponResponse = CouponResponse.changeEntityToDto(coupon);
             couponCreateResponses.add(couponResponse);
         }
@@ -61,9 +63,10 @@ public class CouponService {
 
         CouponStatus unUsedStatus = couponStatusRepository.findByName("미발급");
         List<CouponResponse> couponCreateResponses = new ArrayList<>();
+        LocalDateTime creationTime = LocalDateTime.now();
 
         for(int i = 0; i < createCouponRequest.getCount(); i++){
-            Coupon coupon = couponRepository.save(Coupon.createRateCouponForCategory(ratePolicyForCategory, unUsedStatus));
+            Coupon coupon = couponRepository.save(Coupon.createRateCouponForCategory(ratePolicyForCategory, unUsedStatus,creationTime));
             CouponResponse couponResponse = CouponResponse.changeEntityToDto(coupon);
             couponCreateResponses.add(couponResponse);
         }
@@ -78,9 +81,10 @@ public class CouponService {
 
         CouponStatus unUsedStatus = couponStatusRepository.findByName("미발급");
         List<CouponResponse> couponCreateResponses = new ArrayList<>();
+        LocalDateTime creationTime = LocalDateTime.now();
 
         for(int i = 0; i < createCouponRequest.getCount(); i++){
-            Coupon coupon = couponRepository.save(Coupon.createPriceCouponForBook(pricePolicyForBook, unUsedStatus));
+            Coupon coupon = couponRepository.save(Coupon.createPriceCouponForBook(pricePolicyForBook, unUsedStatus,creationTime));
             CouponResponse couponResponse = CouponResponse.changeEntityToDto(coupon);
             couponCreateResponses.add(couponResponse);
         }
@@ -95,9 +99,10 @@ public class CouponService {
 
         CouponStatus unUsedStatus = couponStatusRepository.findByName("미발급");
         List<CouponResponse> couponCreateResponses = new ArrayList<>();
+        LocalDateTime creationTime = LocalDateTime.now();
 
         for(int i = 0; i < createCouponRequest.getCount(); i++){
-            Coupon coupon = couponRepository.save(Coupon.createPriceCouponForCategory(pricePolicyForCategory, unUsedStatus));
+            Coupon coupon = couponRepository.save(Coupon.createPriceCouponForCategory(pricePolicyForCategory, unUsedStatus,creationTime));
             CouponResponse couponResponse = CouponResponse.changeEntityToDto(coupon);
             couponCreateResponses.add(couponResponse);
         }

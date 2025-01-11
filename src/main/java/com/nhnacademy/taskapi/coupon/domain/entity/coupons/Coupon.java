@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -21,8 +22,11 @@ public class Coupon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long couponId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String couponNumber;
+
+    @Column(nullable = false)
+    private LocalDateTime couponCreationDatetime;
 
     @ManyToOne
     @JoinColumn(name ="rate_policy_for_book_id")
@@ -44,59 +48,67 @@ public class Coupon {
     @JoinColumn(name = "coupon_status_id", nullable = false)
     private CouponStatus couponStatus;
 
-    public Coupon(String couponNumber, RatePolicyForBook ratePolicyForBook, CouponStatus couponStatus) {
+    public Coupon(String couponNumber, RatePolicyForBook ratePolicyForBook, CouponStatus couponStatus, LocalDateTime creationTime) {
         this.couponNumber = couponNumber;
         this.ratePolicyForBook = ratePolicyForBook;
+        this.couponCreationDatetime = creationTime;
         this.couponStatus = couponStatus;
     }
 
-    public Coupon(String couponNumber, RatePolicyForCategory ratePolicyForCategory, CouponStatus couponStatus) {
+    public Coupon(String couponNumber, RatePolicyForCategory ratePolicyForCategory, CouponStatus couponStatus, LocalDateTime creationTime) {
         this.couponNumber = couponNumber;
         this.ratePolicyForCategory = ratePolicyForCategory;
+        this.couponCreationDatetime = creationTime;
         this.couponStatus = couponStatus;
     }
 
-    public Coupon(String couponNumber, PricePolicyForBook pricePolicyForBook, CouponStatus couponStatus) {
+    public Coupon(String couponNumber, PricePolicyForBook pricePolicyForBook, CouponStatus couponStatus, LocalDateTime creationTime) {
         this.couponNumber = couponNumber;
         this.pricePolicyForBook = pricePolicyForBook;
+        this.couponCreationDatetime = creationTime;
         this.couponStatus = couponStatus;
     }
 
-    public Coupon(String couponNumber, PricePolicyForCategory pricePolicyForCategory, CouponStatus couponStatus) {
+    public Coupon(String couponNumber, PricePolicyForCategory pricePolicyForCategory, CouponStatus couponStatus, LocalDateTime creationTime) {
         this.couponNumber = couponNumber;
         this.pricePolicyForCategory = pricePolicyForCategory;
+        this.couponCreationDatetime = creationTime;
         this.couponStatus = couponStatus;
     }
 
-    public static Coupon createRateCouponForBook(RatePolicyForBook ratePolicyForBook, CouponStatus unUsedStatus){
+    public static Coupon createRateCouponForBook(RatePolicyForBook ratePolicyForBook, CouponStatus unUsedStatus, LocalDateTime creationTime){
         return new Coupon(
                 UUID.randomUUID().toString(),
                 ratePolicyForBook,
-                unUsedStatus
+                unUsedStatus,
+                creationTime
         );
     }
 
-    public static Coupon createPriceCouponForBook(PricePolicyForBook pricePolicyForBook, CouponStatus unUsedStatus){
+    public static Coupon createPriceCouponForBook(PricePolicyForBook pricePolicyForBook, CouponStatus unUsedStatus, LocalDateTime creationTime){
         return new Coupon(
                 UUID.randomUUID().toString(),
                 pricePolicyForBook,
-                unUsedStatus
+                unUsedStatus,
+                creationTime
         );
     }
 
-    public static Coupon createRateCouponForCategory(RatePolicyForCategory ratePolicyForCategory, CouponStatus unUsedStatus){
+    public static Coupon createRateCouponForCategory(RatePolicyForCategory ratePolicyForCategory, CouponStatus unUsedStatus, LocalDateTime creationTime){
         return new Coupon(
                 UUID.randomUUID().toString(),
                 ratePolicyForCategory,
-                unUsedStatus
+                unUsedStatus,
+                creationTime
         );
     }
 
-    public static Coupon createPriceCouponForCategory(PricePolicyForCategory pricePolicyForCategory , CouponStatus unUsedStatus){
+    public static Coupon createPriceCouponForCategory(PricePolicyForCategory pricePolicyForCategory , CouponStatus unUsedStatus, LocalDateTime creationTime){
         return new Coupon(
                 UUID.randomUUID().toString(),
                 pricePolicyForCategory,
-                unUsedStatus
+                unUsedStatus,
+                creationTime
         );
     }
 }

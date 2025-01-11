@@ -5,6 +5,7 @@ import com.nhnacademy.taskapi.coupon.exception.CouponHasNoPolicyExceptioin;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Getter
@@ -12,7 +13,9 @@ import java.util.Objects;
 public class CouponResponse {
 
     private String couponNumber;
+    private String creationTime;
     private String couponStatus;
+
     private Long ratePolicyForBookId;
     private Long ratePolicyForCategoryId;
     private Long pricePolicyForBookId;
@@ -23,6 +26,7 @@ public class CouponResponse {
         if(Objects.nonNull(coupon.getPricePolicyForBook())){
             return CouponResponse.builder()
                     .couponNumber(coupon.getCouponNumber())
+                    .creationTime(coupon.getCouponCreationDatetime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                     .couponStatus(coupon.getCouponStatus().getName())
                     .pricePolicyForBookId(coupon.getPricePolicyForBook().getPricePolicyForBookId())
                     .build();
@@ -31,6 +35,7 @@ public class CouponResponse {
         if(Objects.nonNull(coupon.getPricePolicyForCategory())){
             return CouponResponse.builder()
                     .couponNumber(coupon.getCouponNumber())
+                    .creationTime(coupon.getCouponCreationDatetime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                     .couponStatus(coupon.getCouponStatus().getName())
                     .pricePolicyForCategoryId(coupon.getPricePolicyForCategory().getPricePolicyForCategoryId())
                     .build();
@@ -39,6 +44,7 @@ public class CouponResponse {
         if(Objects.nonNull(coupon.getRatePolicyForBook())){
             return CouponResponse.builder()
                     .couponNumber(coupon.getCouponNumber())
+                    .creationTime(coupon.getCouponCreationDatetime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                     .couponStatus(coupon.getCouponStatus().getName())
                     .ratePolicyForBookId(coupon.getRatePolicyForBook().getRatePolicyForBookId())
                     .build();
@@ -47,6 +53,7 @@ public class CouponResponse {
         if(Objects.nonNull(coupon.getRatePolicyForCategory())){
             return CouponResponse.builder()
                     .couponNumber(coupon.getCouponNumber())
+                    .creationTime(coupon.getCouponCreationDatetime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                     .couponStatus(coupon.getCouponStatus().getName())
                     .ratePolicyForCategoryId(coupon.getRatePolicyForCategory().getRatePolicyForCategoryId())
                     .build();
