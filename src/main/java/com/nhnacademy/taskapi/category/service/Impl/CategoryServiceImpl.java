@@ -14,6 +14,8 @@ import com.nhnacademy.taskapi.category.exception.InvalidCategoryNameException;
 import com.nhnacademy.taskapi.category.repository.CategoryRepository;
 import com.nhnacademy.taskapi.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -123,5 +125,11 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> getSubCategories(int categoryId) {
         Category category = getCategory(categoryId);
         return categoryRepository.findByParentCategory(category);
+    }
+
+
+    @Override
+    public Page<Category> getAllCategoriesByPaging(Pageable pageable){
+        return categoryRepository.findAll(pageable);
     }
 }

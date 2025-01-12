@@ -60,4 +60,9 @@ public class StockServiceImpl implements StockService {
         stock.setStock(dto.getAmount());
         return stockRepository.save(stock);
     }
+
+    @Override
+    public Stock getStock(long bookId) {
+        return stockRepository.findByBook_bookId(bookId);
+    }
 }

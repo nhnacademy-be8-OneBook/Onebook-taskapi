@@ -62,4 +62,9 @@ public class BookCategoryServiceImpl implements BookCategoryService {
 
         return list;
     }
+
+    @Override
+    public BookCategory getBookCategoryByBookId(long bookId) {
+        return bookCategoryRepository.findByBook_bookId(bookId);
+    }
 }
