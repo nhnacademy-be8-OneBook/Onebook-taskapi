@@ -1,6 +1,6 @@
 package com.nhnacademy.taskapi.order.controller;
 
-import com.nhnacademy.taskapi.order.dto.OrderCreateDTO;
+import com.nhnacademy.taskapi.order.dto.OrderFormRequest;
 import com.nhnacademy.taskapi.order.dto.OrderResponseDto;
 import com.nhnacademy.taskapi.order.dto.OrderStatusResponseDto;
 import com.nhnacademy.taskapi.order.service.OrderService;
@@ -17,9 +17,9 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/task/order")
-    public ResponseEntity<Void> createOrder(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestBody OrderCreateDTO orderCreateDTO) {
-        orderService.saveOrder(memberId, orderCreateDTO);
-        return ResponseEntity.created(null).build();
+    public ResponseEntity<Long> createOrder(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestBody OrderFormRequest orderFormRequest) {
+        long orderId = orderService.saveOrder(memberId, orderFormRequest);
+        return ResponseEntity.created(null).body(orderId);
     }
 
     @GetMapping("/task/orders")
