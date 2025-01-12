@@ -18,9 +18,8 @@ public class OrderController {
 
     @PostMapping("/task/order")
     public ResponseEntity<Long> createOrder(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestBody OrderFormRequest orderFormRequest) {
-        long orderId = orderService.saveOrder(memberId, orderFormRequest);
-        return ResponseEntity.created(null).body(orderId);
-    }
+        long newOrderId = orderService.saveOrder(memberId, orderFormRequest);
+        return ResponseEntity.created(null).body(newOrderId);
 
     @GetMapping("/task/orders")
     public ResponseEntity<List<OrderResponseDto>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId) {

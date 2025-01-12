@@ -164,7 +164,6 @@ public class PolicyService {
     // 정액정책 for Category read (all)
     public Page<PricePolicyForCategoryResponse> getPricePoliciesForCategory(Pageable pageable){
 
-//        Page<PricePolicyForCategory> page = pricePoliciesForCategoryRepository.findAll(pageable);
         Page<PricePolicyForCategory> page = pricePoliciesForCategoryRepository
                 .findByPolicyStatus_NameOrPolicyStatus_Name("미사용","사용됨",pageable);
         List<PricePolicyForCategoryResponse> result = new ArrayList<>();

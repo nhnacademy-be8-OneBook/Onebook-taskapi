@@ -160,19 +160,11 @@ public class MemberServiceImpl implements MemberService {
         member.setStatus(Member.Status.DELETED);
     }
 
-    // 회원 상태 변경
+    // 회원 상태 'ACTIVE' 로 변경.
     @Override
-    public void changeStatusToActivation(Long memberId, String status) {
-        Member member = memberRepository.findById(memberId).orElseThrow(()-> new MemberNotFoundException("Member Not Found by " + memberId));
-
-        switch(status) {
-            case "ACTIVE":
-                member.setStatus(Member.Status.ACTIVE);
-                break;
-            case "SUSPENDED":
-                member.setStatus(Member.Status.SUSPENDED);
-                break;
-        }
+    public void changeStatusToActivation(String loginId) {
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(()-> new MemberNotFoundException("Member Not Found by " + loginId));
+        member.setStatus(Member.Status.ACTIVE);
     }
 
     // 멤버 로그인 기록 업데이트

@@ -48,4 +48,10 @@ public class AuthorController {
         return ResponseEntity.ok().body(authors);
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<Page<Author>> getAuthorList(Pageable pageable){
+        Page<Author> authors = authorService.getAllAuthorList(pageable);
+        return ResponseEntity.ok().body(authors);
+    }
+
 }

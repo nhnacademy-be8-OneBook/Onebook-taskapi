@@ -16,6 +16,8 @@ import com.nhnacademy.taskapi.category.repository.CategoryRepository;
 import com.nhnacademy.taskapi.book.dto.BookCategorySaveDTO;
 import com.nhnacademy.taskapi.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,12 +54,17 @@ public class BookCategoryServiceImpl implements BookCategoryService {
     }
 
     @Override
-    public List<BookCategory> getBookByCategory(int categoryId) {
-        List<BookCategory> list = bookCategoryRepository.findAllByCategory_CategoryId(categoryId);
+    public Page<BookCategory> getBookByCategory(int categoryId, Pageable pageable) {
+        Page<BookCategory> list = bookCategoryRepository.findAllByCategory_CategoryIdOrderByBook_AmountDesc(categoryId, pageable);
         if (Objects.isNull(list)) {
             throw new BookCategoryNotFoundException("Book Category Not Found !");
         }
 
         return list;
+    }
+
+    @Override
+    public BookCategory getBookCategoryByBookId(long bookId) {
+        return bookCategoryRepository.findByBook_bookId(bookId);
     }
 }

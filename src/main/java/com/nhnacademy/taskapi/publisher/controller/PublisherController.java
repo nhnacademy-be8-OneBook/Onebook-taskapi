@@ -4,6 +4,8 @@ import com.nhnacademy.taskapi.publisher.domain.Publisher;
 import com.nhnacademy.taskapi.publisher.dto.PublisherUpdateDTO;
 import com.nhnacademy.taskapi.publisher.service.PublisherService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,7 @@ public class PublisherController {
     private final PublisherService publisherService;
 
 
-    @PostMapping("/{puhlisherName}")
+    @PostMapping("/{publisherName}")
     public ResponseEntity<Publisher> createPublisher(@PathVariable String puhlisherName){
         Publisher publisher = publisherService.addPublisher(puhlisherName);
         return ResponseEntity.ok().body(publisher);
@@ -52,6 +54,18 @@ public class PublisherController {
 
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<Page<Publisher>> getAllPublishers(Pageable pageable) {
+        Page<Publisher> publishers = publisherService.getList(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(publishers);
+    }
+
+
+    @GetMapping
+    public ResponseEntity<Publisher> getPublisher(@RequestParam(value = "publisherId") long publisherId) {
+        Publisher publisher = publisherService.getPublisherById(publisherId);
+        return ResponseEntity.status(HttpStatus.OK).body(publisher);
+    }
 
 
 

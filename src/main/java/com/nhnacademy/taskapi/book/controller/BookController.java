@@ -6,10 +6,12 @@ import com.nhnacademy.taskapi.book.dto.BookSaveDTO;
 import com.nhnacademy.taskapi.book.dto.BookUpdateDTO;
 import com.nhnacademy.taskapi.book.service.BookService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,12 +19,14 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/task/book")
+@Slf4j
 public class BookController {
     private final BookService bookService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Book> addBook(@RequestPart(value = "dto") BookSaveDTO dto,
                                         @RequestPart(value = "image") MultipartFile image){
+        log.info("imageName: {}", image.getOriginalFilename());
         Book book = bookService.saveBook(dto, image);
         return ResponseEntity.status(HttpStatus.CREATED).body(book);
     }
@@ -57,5 +61,10 @@ public class BookController {
         return ResponseEntity.ok().body(book);
     }
 
+    @GetMapping("/book-list")
+    public ResponseEntity<Page<Book>> getBookList(Pageable pageable){
+        Page<Book> books = bookService.findAllBooks(pageable);
+        return ResponseEntity.ok().body(books);
+    }
 
 }
