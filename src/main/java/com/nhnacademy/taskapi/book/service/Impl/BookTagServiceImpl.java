@@ -48,4 +48,9 @@ public class BookTagServiceImpl implements BookTagService {
         }
         return bookTagRepository.save(bookTag);
     }
+
+    @Override
+    public BookTag getBookTag(long bookId){
+        return bookTagRepository.findByBook_BookId(bookId);
+    }
 }

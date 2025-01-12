@@ -8,6 +8,7 @@ import com.nhnacademy.taskapi.point.domain.Point;
 import com.nhnacademy.taskapi.point.domain.PointLog;
 import com.nhnacademy.taskapi.point.jpa.JpaPointRepository;
 import com.nhnacademy.taskapi.point.repository.PointLogRepository;
+import com.nhnacademy.taskapi.point.service.PointService;
 import com.nhnacademy.taskapi.review.domain.Review;
 import com.nhnacademy.taskapi.review.domain.ReviewImage;
 import com.nhnacademy.taskapi.review.dto.ReviewRequest;
@@ -41,8 +42,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final MemberRepository memberRepository;
 
     private final BookRepository bookRepository;
-    private final JpaPointRepository pointRepository;
-    private final PointLogRepository pointLogRepository;
+    private final PointService pointService;
 
     @Override
     @Transactional
@@ -71,6 +71,9 @@ public class ReviewServiceImpl implements ReviewService {
         if (reviewRequest.getImageUrl() != null && reviewRequest.getImageUrl().size() > 3) {
             throw new ImageLimitExceededException("이미지는 최대 3장까지 첨부할 수 있습니다.");
         }
+
+        boolean isPhotoAttached = false;
+
         log.debug("Image URL count: {}", reviewRequest.getImageUrl() != null ? reviewRequest.getImageUrl().size() : 0);
 
         // 리뷰 생성
@@ -85,6 +88,7 @@ public class ReviewServiceImpl implements ReviewService {
         // 사진 추가
         if (reviewRequest.getImageUrl() != null && !reviewRequest.getImageUrl().isEmpty()) {
             for (String imageUrl : reviewRequest.getImageUrl()) {
+                isPhotoAttached = true;
                 ReviewImage reviewImage = new ReviewImage();
                 reviewImage.setImageUrl(imageUrl);
                 reviewImage.setReview(review);
@@ -97,7 +101,7 @@ public class ReviewServiceImpl implements ReviewService {
         Review savedReview = reviewRepository.save(review);
         log.debug("Review saved with reviewId: {}", savedReview.getReviewId());
 
-        registerReviewPoints(member, reviewRequest.getImageUrl() != null && !reviewRequest.getImageUrl().isEmpty());
+        pointService.registerReviewPoints(member, isPhotoAttached);
 
         // 응답 DTO 생성
         ReviewResponse response = ReviewResponse.builder()
@@ -243,27 +247,5 @@ public class ReviewServiceImpl implements ReviewService {
 
         return response;
     }
-
-    // 리뷰 작성 포인트를 지급
-    private void registerReviewPoints(Member member, boolean isPhotoAttached) {
-        Point point = pointRepository.findByMember_Id(member.getId())
-                .orElseThrow(() -> new InvalidReviewException("회원 포인트를 찾을 수 없습니다,"));
-
-        int pointAmount = isPhotoAttached ? 500 : 200; // 사진 첨부하면 500p, 안하면 200p
-
-        point.setAmount(point.getAmount() + pointAmount);
-        pointRepository.save(point);
-
-
-        // 포인트 로그 기록
-        PointLog pointLog = PointLog.builder()
-                .pointLogUpdatedAt(LocalDateTime.now())
-                .pointLogUpdatedType("REVIEW") // 리뷰 작성으로 적립
-                .pointLogAmount(pointAmount)
-                .point(point)
-                .build();
-        pointLogRepository.save(pointLog);
-    }
-
 }
 

@@ -1,0 +1,38 @@
+### 정률정책 for Book 등록
+POST localhost:8510/task/coupon/rate/book
+Content-Type: application/json
+
+{
+  "count":10,
+  "policyId": 3
+}
+
+### 정률정책 for Category 등록
+POST localhost:8510/task/coupon/rate/category
+Content-Type: application/json
+
+{
+"count":10,
+"policyId": 1
+}
+
+### 정액정책 for Book 등록
+POST localhost:8510/task/coupon/price/book
+Content-Type: application/json
+
+{
+  "count":10,
+  "policyId": 7
+}
+
+### 정액정책 for Category 등록
+POST localhost:8510/task/coupon/price/category
+Content-Type: application/json
+
+{
+  "count":10,
+  "policyId": 8
+}
+
+### 쿠폰삭제
+DELETE localhost:8510/task/coupon/8529d05c-6705-4899-8bcf-aeecb451150b

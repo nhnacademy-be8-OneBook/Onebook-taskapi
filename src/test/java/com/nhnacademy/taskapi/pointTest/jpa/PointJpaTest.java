@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.pointTest.jpa;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.point.domain.Point;
 import com.nhnacademy.taskapi.point.domain.PointLog;
+import com.nhnacademy.taskapi.point.domain.PointLogUpdatedType;
 import com.nhnacademy.taskapi.point.domain.PointPolicy;
 import com.nhnacademy.taskapi.point.jpa.JpaPointLogRepository;
 import com.nhnacademy.taskapi.point.jpa.JpaPointPolicyRepository;
@@ -17,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -45,10 +45,12 @@ class PointJpaTest {
 
         // 필요한 데이터 초기화
         memberId = 1L;
-        point = new Point(1000, null); // 임시 객체
-        point.setAmount(1000);
+        Member member = new Member(); // Member 객체 초기화 필요
 
-        pointLog = new PointLog(1L, LocalDateTime.now(), "ADD", 100, point);
+        point = new Point(1000, member); // 임시 객체
+        point.setAmount(1000); // 포인트 설정
+
+        pointLog = new PointLog(1L, LocalDateTime.now(), PointLogUpdatedType.REGISTRATION, 100, point);  // PointLogUpdatedType 사용
         pointPolicy = new PointPolicy(1L, "Test Policy", 10, 100, "Condition", 100, LocalDateTime.now(), LocalDateTime.now(), true, true);
     }
 
@@ -99,9 +101,11 @@ class PointJpaTest {
                 .member(member)      // member 연결
                 .build();
 
+        // spy로 point 객체를 감싸서 포인트 ID를 설정
         point = Mockito.spy(point);
         doReturn(1L).when(point).getPointId();  // pointId를 1L로 설정
 
+        // Mockito를 사용해 pointRepository를 Mocking
         when(pointRepository.findByMember_Id(1L)).thenReturn(Optional.of(point));
 
         Optional<Point> result = pointRepository.findByMember_Id(1L);

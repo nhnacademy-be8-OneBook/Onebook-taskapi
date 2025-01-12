@@ -14,4 +14,5 @@ public interface AuthorService {
     Author getAuthor(int authorId);
     Page<Author> getAuthorList(Pageable pageable, String authorName);
     Author addAuthorByAladin(String name);
+    Page<Author> getAllAuthorList(Pageable pageable);
 }

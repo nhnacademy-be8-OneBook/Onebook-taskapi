@@ -1,11 +1,16 @@
 package com.nhnacademy.taskapi.payment.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhnacademy.taskapi.member.domain.Member;
+import com.nhnacademy.taskapi.member.repository.MemberRepository;
+import com.nhnacademy.taskapi.order.entity.Order;
+import com.nhnacademy.taskapi.order.repository.OrderRepository;
 import com.nhnacademy.taskapi.payment.domain.Payment;
 import com.nhnacademy.taskapi.payment.domain.PaymentMethod;
 import com.nhnacademy.taskapi.payment.dto.toss.TossConfirmRequest;
 import com.nhnacademy.taskapi.payment.dto.toss.TossConfirmResponse;
 import com.nhnacademy.taskapi.payment.exception.InsufficientPointException;
+import com.nhnacademy.taskapi.payment.exception.InvalidPaymentException;
 import com.nhnacademy.taskapi.payment.exception.PaymentNotFoundException;
 import com.nhnacademy.taskapi.payment.repository.PaymentRepository;
 import com.nhnacademy.taskapi.point.domain.Point;
@@ -41,6 +46,7 @@ public class TossPaymentServiceImpl {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final String TOSS_SECRET_KEY = "test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6";
     private final PointService pointService;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public TossConfirmResponse confirmTossPayment(TossConfirmRequest request) {
@@ -156,6 +162,23 @@ public class TossPaymentServiceImpl {
 //            userPoint.setAmount(userPoint.getAmount() - usedPoint);
 //            pointRepository.save(userPoint);
             pointService.usePointsForPayment(memberId, usedPoint);
+
+            Order order = payment.getOrder();
+            // 순수 결제 금액
+            // 여기서 order.getTotalPrice()는 배송비가 포함되지 않은 금액임.
+            int onlyBookAmount = order.getTotalPrice() - usedPoint;
+
+            // 만약 책값 18000원 + 배송비 3천원으로 총 결제금액이 21000원이 나와서
+            // 포인트로 2만원을 썼다고 가정하면
+            // 구매로 인한 적립은 "순수 도서 구매 금액"의 일정 %를 적립하기 때문에
+            // 총 결제금액 21000원 - 배송비 3천원 - 포인트 2만원 = -2000원
+            // 때문에 적립이 아니라 오히려 차감이 되어버리는 현상이 있음.
+            // 그래서 순수결제금액이 양수일때만 포인트 적립을 해야함.
+            if (onlyBookAmount > 0) {
+                Member member = memberRepository.findById(memberId)
+                        .orElseThrow(() -> new InvalidPaymentException("회원을 찾을 수 없습니다."));
+                pointService.registerPurchasePoints(member, onlyBookAmount);
+            }
         }
 
         // 5) Payment 상태 업데이트

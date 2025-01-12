@@ -18,6 +18,7 @@ import com.nhnacademy.taskapi.packaging.exception.PackagingNotAvailableException
 import com.nhnacademy.taskapi.packaging.exception.PackagingNotFoundException;
 import com.nhnacademy.taskapi.packaging.repository.PackagingRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service

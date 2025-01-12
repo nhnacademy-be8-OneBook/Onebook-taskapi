@@ -6,4 +6,5 @@ import com.nhnacademy.taskapi.stock.dto.StockCreateUpdateDTO;
 public interface StockService {
     Stock addStock(StockCreateUpdateDTO dto);
     Stock updateStock(StockCreateUpdateDTO dto);
+    Stock getStock(long bookId);
 }

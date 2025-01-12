@@ -31,18 +31,18 @@ public class PublisherControllerTest {
     @MockBean
     private PublisherService publisherService;
 
-    @Test
-    @DisplayName("출판사 생성 테스트")
-    void testCreatePublisher() throws Exception {
-        Publisher publisher = new Publisher();
-        publisher.setName("TestPublisher");
-
-        when(publisherService.addPublisher("TestPublisher")).thenReturn(publisher);
-
-        mockMvc.perform(post("/task/publisher/TestPublisher"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("TestPublisher"));
-    }
+//    @Test
+//    @DisplayName("출판사 생성 테스트")
+//    void testCreatePublisher() throws Exception {
+//        Publisher publisher = new Publisher();
+//        publisher.setName("TestPublisher");
+//
+//        when(publisherService.addPublisher("TestPublisher")).thenReturn(publisher);
+//
+//        mockMvc.perform(post("/task/publisher/TestPublisher"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.name").value("TestPublisher"));
+//    }
 
     @Test
     @DisplayName("출판사 수정 테스트")

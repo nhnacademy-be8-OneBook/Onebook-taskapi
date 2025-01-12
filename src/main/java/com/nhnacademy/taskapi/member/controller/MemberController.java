@@ -68,10 +68,10 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // 회원 상태 변경 -  'ACTIVE', 'SUSPENDED'.
-    @GetMapping("/status/{status}")
-    public ResponseEntity<String> modifyMemberStatus(@RequestHeader("X-MEMBER-ID") Long memberId, @PathVariable("status") String status) {
-        memberService.changeStatusToActivation(memberId, status);
+    // 회원 상태 변경 -  'ACTIVE'
+    @GetMapping("/status/{loginId}")
+    public ResponseEntity<String> modifyMemberStatus(@PathVariable("loginId") String loginId) {
+        memberService.changeStatusToActivation(loginId);
         return ResponseEntity.noContent().build();
     }
 
