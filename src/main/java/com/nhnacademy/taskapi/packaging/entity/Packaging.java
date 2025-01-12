@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 @NoArgsConstructor
 @Getter
 @Entity
+@Table(name = "packagings")
 public class Packaging {
     @Id
-    @Column(name = "packagings")
+    @Column(name = "packaging_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     String name;
