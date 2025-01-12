@@ -47,6 +47,6 @@ public class OrderController {
 
         orderService.updateOrderStatus(orderIds, status);
 
-    };
+    }
 
 }

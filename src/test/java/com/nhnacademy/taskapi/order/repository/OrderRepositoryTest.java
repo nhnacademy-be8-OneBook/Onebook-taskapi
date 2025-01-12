@@ -96,13 +96,13 @@ class OrderRepositoryTest {
         Long orderId = allByMemberId.get(0).getOrderId();
 
         // when
-        allByMemberId.get(0).setOrderer("김수정");
+        allByMemberId.get(0).setOrdererName("김수정");
 
         // then
         Order findOrder = orderRepository.findById(orderId).orElse(null);
 
         Assertions.assertNotNull(findOrder);
-        Assertions.assertEquals("김수정", findOrder.getOrderer());
+        Assertions.assertEquals("김수정", findOrder.getOrdererName());
     }
 
     // delete
