@@ -16,4 +16,5 @@ public class MyReviewResponse {
     private LocalDateTime createdAt;
     private int grade;
     private String description;
+    private long reviewId;
 }

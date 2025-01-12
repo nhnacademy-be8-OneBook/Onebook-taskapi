@@ -52,6 +52,13 @@ public class ReviewController {
         return ResponseEntity.ok(reviews);
     }
 
+    // 작성된 리뷰 개수 확인
+    @GetMapping("books/{bookId}/reviews/count")
+    public ResponseEntity<Integer> getReviewCount(@PathVariable Long bookId) {
+        int reviewCount = reviewService.getReviewCount(bookId);
+        return ResponseEntity.ok(reviewCount);
+    }
+
     // 리뷰 수정
     @PutMapping("/books/{bookId}/reviews/{reviewId}")
     public ResponseEntity<ReviewResponse> updateReview(
@@ -90,5 +97,13 @@ public class ReviewController {
     ) {
         List<MyReviewResponse> myReviews = myReviewService.getMyReviews(memberId);
         return ResponseEntity.ok(myReviews);
+    }
+
+    @GetMapping("/reviews/{reviewId}")
+    public ResponseEntity<ReviewResponse> getReview(
+            @RequestHeader("X-MEMBER-ID") long memberId,
+            @PathVariable long reviewId) {
+        ReviewResponse response = reviewService.getReviewById(memberId, reviewId);
+        return ResponseEntity.ok(response);
     }
 }

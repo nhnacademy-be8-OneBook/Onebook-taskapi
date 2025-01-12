@@ -45,7 +45,9 @@ public class MyReviewServiceImpl implements MyReviewService {
             int grade = review.getGrade();
             String description = review.getDescription();;
 
-            return new MyReviewResponse(bookId, bookName, bookImageUrl, createdAt, grade, description);
+            long reviewId = review.getReviewId();
+
+            return new MyReviewResponse(bookId, bookName, bookImageUrl, createdAt, grade, description, reviewId);
         }).collect(Collectors.toList());
     }
 }
