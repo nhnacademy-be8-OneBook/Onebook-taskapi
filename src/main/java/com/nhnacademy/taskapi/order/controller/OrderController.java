@@ -20,6 +20,7 @@ public class OrderController {
     public ResponseEntity<Long> createOrder(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestBody OrderFormRequest orderFormRequest) {
         long newOrderId = orderService.saveOrder(memberId, orderFormRequest);
         return ResponseEntity.created(null).body(newOrderId);
+    }
 
     @GetMapping("/task/orders")
     public ResponseEntity<List<OrderResponseDto>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId) {
@@ -45,7 +46,6 @@ public class OrderController {
         System.out.println(status);
 
         orderService.updateOrderStatus(orderIds, status);
-
     }
 
 }
