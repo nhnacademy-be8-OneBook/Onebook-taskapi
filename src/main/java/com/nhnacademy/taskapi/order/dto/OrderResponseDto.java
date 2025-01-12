@@ -16,7 +16,7 @@ public class OrderResponseDto {
 
     public static OrderResponseDto fromOrder(Order order) {
         return new OrderResponseDto(
-                order.getOrderer(),
+                order.getOrdererName(),
                 order.getDateTime(),
                 order.getDeliveryPrice(),
                 order.getTotalPrice()

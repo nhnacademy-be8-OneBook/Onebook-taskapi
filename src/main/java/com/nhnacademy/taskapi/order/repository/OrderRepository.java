@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findByPhoneNumber(String s);
+    List<Order> findByOrdererPhoneNumber(String s);
     List<Order> findAllByMemberId(Long memberId);
 
     // TODO:QueryFactory 찾아보기
