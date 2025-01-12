@@ -13,7 +13,7 @@ public class OrderStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_status_id")
-    private Long orderStatusId;
+    private int orderStatusId;
 
     @UniqueElements
     @Column(name = "order_status_name")
