@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -22,14 +23,25 @@ public class Delivery {
     @JoinColumn(name = "orders_id")
     Order order;
 
-    LocalDate startDate;
-    LocalDate doneDate;
+    LocalDateTime startDate;
+    LocalDateTime doneDate;
+    LocalDate expectedDate;
     String recipientName;
     String recipientPhoneNumber;
     String recipientAddress;
+    String recipientRequestedTerm;
     Status status;
 
     // 송장번호
     String invoiceNumber;
 
+    public Delivery(Order order, String recipientName, String recipientPhoneNumber, String recipientAddress, String recipientRequestedTerm, LocalDate expectedDate) {
+        this.order = order;
+        this.recipientName = recipientName;
+        this.recipientPhoneNumber = recipientPhoneNumber;
+        this.recipientAddress = recipientAddress;
+        this.recipientRequestedTerm = recipientRequestedTerm;
+        this.expectedDate = expectedDate;
+        this.status = Status.배송전;
+    }
 }
