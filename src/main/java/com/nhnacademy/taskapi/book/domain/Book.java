@@ -31,16 +31,12 @@ public class Book {
     @JoinColumn(name = "publisher_id", nullable = false)
     private Publisher publisher;
 
-    @NotBlank
-    @Length(max = 100)
+
     @Column(nullable = false)
     private String title;
 
-    @NotBlank
-    @Length(max = 100)
     private String content;
 
-    @NotBlank
     @Column(nullable = false)
     private String description;
 
