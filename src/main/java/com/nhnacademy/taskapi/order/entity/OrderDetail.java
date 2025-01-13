@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.order.entity;
 import com.nhnacademy.taskapi.book.domain.Book;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
@@ -19,6 +20,7 @@ public class OrderDetail {
     Order order;
 
     @ManyToOne
+    @Getter
     @JoinColumn(name = "book_id")
     Book book;
 
