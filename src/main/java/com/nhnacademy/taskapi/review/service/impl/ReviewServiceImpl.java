@@ -110,6 +110,7 @@ public class ReviewServiceImpl implements ReviewService {
                     ReviewImage reviewImage = new ReviewImage();
                     reviewImage.setImageUrl(uploadedUrl);
                     reviewImage.setReview(review);
+                    reviewImage.setImageUrl(uploadedUrl);
                     review.getReviewImage().add(reviewImage);
 
                     log.debug("Uploaded review image URL: {}", uploadedUrl);

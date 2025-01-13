@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.review.service;
 
+import com.nhnacademy.taskapi.adapter.NhnImageManagerAdapter;
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.grade.domain.Grade;
@@ -29,6 +30,7 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -53,17 +55,14 @@ class ReviewServiceImplTest {
     @Mock
     private BookRepository bookRepository;
 
-    @Mock
-    private JpaPointRepository pointRepository;
-
-    @Mock
-    private PointLogRepository pointLogRepository;
-
     @InjectMocks
     private ReviewServiceImpl reviewService;
 
     @Mock
     private PointService pointService;
+
+    @Mock
+    private NhnImageManagerAdapter nhnImageManagerAdapter;
 
     private Member member;       // 일반 사용자
     private Member adminMember;  // 관리자
@@ -155,7 +154,7 @@ class ReviewServiceImplTest {
      * - 포인트 적립 함수 호출 확인(사진첨부=true -> 500포인트)
      */
     @Test
-    void testRegisterReviewSuccess() {
+    void testRegisterReviewSuccess() throws IOException {
         // Given
         ReviewRequest request = new ReviewRequest(5, "개추", List.of("img1", "img2"));
 
@@ -167,6 +166,9 @@ class ReviewServiceImplTest {
             saved.setReviewId(100L);
             return saved;
         });
+
+        given(nhnImageManagerAdapter.uploadReviewImage(any(byte[].class), anyString(), anyLong(), anyString()))
+                .willReturn("img1", "img2");
 
         // 포인트 관련 객체 설정 및 예상
         doNothing().when(pointService).registerReviewPoints(member, true);
@@ -186,6 +188,7 @@ class ReviewServiceImplTest {
         // 포인트 관련 service 메서드 호출 검증
         verify(pointService, times(1)).registerReviewPoints(member, true);
     }
+
 
 
     /**
