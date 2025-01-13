@@ -1,12 +1,11 @@
 package com.nhnacademy.taskapi.review.service.impl;
 
 import com.nhnacademy.taskapi.book.domain.Book;
-import com.nhnacademy.taskapi.image.domain.Image;
 import com.nhnacademy.taskapi.image.service.ImageService;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.order.entity.Order;
-import com.nhnacademy.taskapi.orderdetail.entity.OrderDetail;
+import com.nhnacademy.taskapi.order.entity.OrderDetail;
 import com.nhnacademy.taskapi.payment.domain.Payment;
 import com.nhnacademy.taskapi.payment.repository.PaymentRepository;
 import com.nhnacademy.taskapi.review.domain.Review;
