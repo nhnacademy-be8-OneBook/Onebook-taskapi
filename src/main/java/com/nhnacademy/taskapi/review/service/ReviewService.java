@@ -14,4 +14,8 @@ public interface ReviewService {
     ReviewResponse updateReview(long bookId, long reviewId, Long memberId, ReviewRequest reviewRequest);
 
     ReviewResponse deleteReview(long bookId, long reviewId, Long memberId);
+
+    public int getReviewCount(long bookId);
+
+    ReviewResponse getReviewById(long memberId, long reviewId);
 }

@@ -24,4 +24,5 @@ public class ReviewResponse {
     private long memberId;
     private long bookId;
     private List<String> imageUrl;
+    private String loginId;
 }

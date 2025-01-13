@@ -4,10 +4,6 @@ import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
-import com.nhnacademy.taskapi.point.domain.Point;
-import com.nhnacademy.taskapi.point.domain.PointLog;
-import com.nhnacademy.taskapi.point.jpa.JpaPointRepository;
-import com.nhnacademy.taskapi.point.repository.PointLogRepository;
 import com.nhnacademy.taskapi.point.service.PointService;
 import com.nhnacademy.taskapi.review.domain.Review;
 import com.nhnacademy.taskapi.review.domain.ReviewImage;
@@ -117,6 +113,7 @@ public class ReviewServiceImpl implements ReviewService {
                                 .map(ReviewImage::getImageUrl)
                                 .collect(Collectors.toList())
                 )
+                .loginId(member.getLoginId())
                 .build();
         log.debug("ReviewResponse created: {}", response);
 
@@ -145,6 +142,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .imageUrl(review.getReviewImage().stream()
                         .map(ReviewImage::getImageUrl)
                         .collect(Collectors.toList()))
+                .loginId(review.getMember().getLoginId())
                 .build());
     }
 
@@ -200,6 +198,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .imageUrl(updatedReview.getReviewImage().stream()
                         .map(ReviewImage::getImageUrl)
                         .collect(Collectors.toList()))
+                .loginId(updatedReview.getMember().getLoginId())
                 .build();
     }
 
@@ -240,12 +239,40 @@ public class ReviewServiceImpl implements ReviewService {
                 .imageUrl(review.getReviewImage().stream()
                         .map(ReviewImage::getImageUrl)
                         .collect(Collectors.toList()))
+                .loginId(review.getMember().getLoginId())
                 .build();
 
         // 리뷰 삭제
         reviewRepository.delete(review);
 
         return response;
+    }
+
+    // 리뷰 작성 개수
+    @Override
+    public int getReviewCount(long bookId) {
+        return reviewRepository.countByBookBookId(bookId);
+    }
+
+    @Override
+    public ReviewResponse getReviewById(long memberId, long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new InvalidReviewException("리뷰를 찾을 수 없습니다."));
+
+
+        return ReviewResponse.builder()
+                .reviewId(review.getReviewId())
+                .grade(review.getGrade())
+                .description(review.getDescription())
+                .createdAt(review.getCreatedAt())
+                .updatedAt(review.getUpdatedAt())
+                .memberId(memberId)
+                .bookId(review.getBook().getBookId())
+                .imageUrl(review.getReviewImage().stream()
+                        .map(ReviewImage::getImageUrl)
+                        .collect(Collectors.toList()))
+                .loginId(review.getMember().getLoginId())
+                .build();
     }
 }
 
