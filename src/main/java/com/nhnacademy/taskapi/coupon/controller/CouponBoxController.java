@@ -6,9 +6,7 @@ import com.nhnacademy.taskapi.coupon.service.coupons.CouponBoxService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,5 +20,13 @@ public class CouponBoxController {
 
         IssuedCouponResponse issuedCouponResponse = couponBoxService.issueCouponToMember(issueCouponToMemberRequest);
         return ResponseEntity.ok(issuedCouponResponse);
+    }
+
+    @PostMapping("/coupon/issue/welcome/{login-id}")
+    public ResponseEntity<IssuedCouponResponse> issueWelcomeCouponToMember(@PathVariable(name = "login-id") String loginId){
+        IssuedCouponResponse issuedWelcomeCouponResponse =
+                couponBoxService.issueWelcomeCouponToMember(loginId);
+
+        return ResponseEntity.ok(issuedWelcomeCouponResponse);
     }
 }

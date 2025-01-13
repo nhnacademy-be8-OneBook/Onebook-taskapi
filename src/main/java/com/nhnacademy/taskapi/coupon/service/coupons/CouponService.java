@@ -1,13 +1,17 @@
 package com.nhnacademy.taskapi.coupon.service.coupons;
 
+import com.nhnacademy.taskapi.category.domain.Category;
+import com.nhnacademy.taskapi.category.repository.CategoryRepository;
 import com.nhnacademy.taskapi.coupon.domain.dto.coupons.request.CreateCouponRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.coupons.response.CouponResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForCategoryRequest;
 import com.nhnacademy.taskapi.coupon.domain.entity.coupons.Coupon;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForBook;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForCategory;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForBook;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForCategory;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.CouponStatus;
+import com.nhnacademy.taskapi.coupon.domain.entity.status.PolicyStatus;
 import com.nhnacademy.taskapi.coupon.exception.CouponCannotDeleteException;
 import com.nhnacademy.taskapi.coupon.exception.CouponNotFoundException;
 import com.nhnacademy.taskapi.coupon.exception.PolicyNotFoundException;
@@ -17,10 +21,17 @@ import com.nhnacademy.taskapi.coupon.repository.policies.PricePoliciesForCategor
 import com.nhnacademy.taskapi.coupon.repository.policies.RatePoliciesForBookRepository;
 import com.nhnacademy.taskapi.coupon.repository.policies.RatePoliciesForCategoryRepository;
 import com.nhnacademy.taskapi.coupon.repository.status.CouponStatusRepository;
+import com.nhnacademy.taskapi.coupon.repository.status.PolicyStatusRepository;
+import com.nhnacademy.taskapi.coupon.service.policies.PolicyService;
+import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Window;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,6 +39,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CouponService {
 
     private final CouponRepository couponRepository;
@@ -37,10 +49,16 @@ public class CouponService {
     private final PricePoliciesForBookRepository pricePoliciesForBookRepository;
     private final PricePoliciesForCategoryRepository pricePoliciesForCategoryRepository;
 
-    public List<CouponResponse> CreateRateCouponForBook(CreateCouponRequest createCouponRequest){
+    private final CategoryRepository categoryRepository;
+    private final PolicyStatusRepository policyStatusRepository;
+
+    public List<CouponResponse> createRateCouponForBook(CreateCouponRequest createCouponRequest){
 
         RatePolicyForBook ratePolicyForBook = ratePoliciesForBookRepository.findById(createCouponRequest.getPolicyId())
                 .orElseThrow(()-> new PolicyNotFoundException("해당하는 ID의 정책을 찾을 수 없습니다"));
+
+        PolicyStatus policyStatus = policyStatusRepository.findByName("사용됨");
+        ratePolicyForBook.usePolicy(policyStatus);
 
         CouponStatus unUsedStatus = couponStatusRepository.findByName("미발급");
         List<CouponResponse> couponCreateResponses = new ArrayList<>();
@@ -56,10 +74,13 @@ public class CouponService {
 
     }
 
-    public List<CouponResponse> CreateRateCouponForCategory(CreateCouponRequest createCouponRequest){
+    public List<CouponResponse> createRateCouponForCategory(CreateCouponRequest createCouponRequest){
 
         RatePolicyForCategory ratePolicyForCategory = ratePoliciesForCategoryRepository.findById(createCouponRequest.getPolicyId())
                 .orElseThrow(()-> new PolicyNotFoundException("해당하는 ID의 정책을 찾을 수 없습니다"));
+
+        PolicyStatus policyStatus = policyStatusRepository.findByName("사용됨");
+        ratePolicyForCategory.usePolicy(policyStatus);
 
         CouponStatus unUsedStatus = couponStatusRepository.findByName("미발급");
         List<CouponResponse> couponCreateResponses = new ArrayList<>();
@@ -74,10 +95,13 @@ public class CouponService {
         return couponCreateResponses;
     }
 
-    public List<CouponResponse> CreatePriceCouponForBook(CreateCouponRequest createCouponRequest){
+    public List<CouponResponse> createPriceCouponForBook(CreateCouponRequest createCouponRequest){
 
         PricePolicyForBook pricePolicyForBook = pricePoliciesForBookRepository.findById(createCouponRequest.getPolicyId())
                 .orElseThrow(()-> new PolicyNotFoundException("해당하는 ID의 정책을 찾을 수 없습니다"));
+
+        PolicyStatus policyStatus = policyStatusRepository.findByName("사용됨");
+        pricePolicyForBook.usePolicy(policyStatus);
 
         CouponStatus unUsedStatus = couponStatusRepository.findByName("미발급");
         List<CouponResponse> couponCreateResponses = new ArrayList<>();
@@ -92,10 +116,13 @@ public class CouponService {
         return couponCreateResponses;
     }
 
-    public List<CouponResponse> CreatePriceCouponForCategory(CreateCouponRequest createCouponRequest){
+    public List<CouponResponse> createPriceCouponForCategory(CreateCouponRequest createCouponRequest){
 
         PricePolicyForCategory pricePolicyForCategory = pricePoliciesForCategoryRepository.findById(createCouponRequest.getPolicyId())
                 .orElseThrow(()-> new PolicyNotFoundException("해당하는 ID의 정책을 찾을 수 없습니다"));
+
+        PolicyStatus policyStatus = policyStatusRepository.findByName("사용됨");
+        pricePolicyForCategory.usePolicy(policyStatus);
 
         CouponStatus unUsedStatus = couponStatusRepository.findByName("미발급");
         List<CouponResponse> couponCreateResponses = new ArrayList<>();
@@ -126,5 +153,39 @@ public class CouponService {
 
         couponRepository.delete(coupon);
         return CouponResponse.changeEntityToDto(coupon);
+    }
+
+    public CouponResponse createWelcomeCoupon(){
+
+        LocalDateTime startDate = LocalDateTime.now();
+        LocalDateTime endDate = startDate.plusDays(30);
+        PolicyStatus policyStatus = policyStatusRepository.findByName("미사용");
+        CouponStatus couponStatus = couponStatusRepository.findByName("발급-삭제가능");
+        Category category = categoryRepository.findByName("전체");
+
+        RatePolicyForCategory ratePolicyForCategory =
+                ratePoliciesForCategoryRepository.save(
+                        new RatePolicyForCategory(
+                                10,
+                                10000,
+                                50000,
+                                startDate,
+                                endDate,
+                                "신규 회원 Welcome Coupon",
+                                "신규 회원을 대상으로 한 Welcome Coupon 입니다",
+                                category,
+                                policyStatus
+                        )
+                );
+
+
+
+        Coupon welcomeCoupon = couponRepository.save(Coupon.createRateCouponForCategory(
+                ratePolicyForCategory,
+                couponStatus,
+                startDate
+        ));
+
+        return CouponResponse.changeEntityToDto(welcomeCoupon);
     }
 }

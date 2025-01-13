@@ -1,6 +1,7 @@
 package com.nhnacademy.taskapi.coupon.service.coupons;
 
 import com.nhnacademy.taskapi.coupon.domain.dto.coupons.request.IssueCouponToMemberRequest;
+import com.nhnacademy.taskapi.coupon.domain.dto.coupons.response.CouponResponse;
 import com.nhnacademy.taskapi.coupon.domain.dto.coupons.response.IssuedCouponResponse;
 import com.nhnacademy.taskapi.coupon.domain.entity.coupons.Coupon;
 import com.nhnacademy.taskapi.coupon.domain.entity.coupons.IssuedCoupon;
@@ -21,6 +22,8 @@ public class CouponBoxService {
     private final CouponRepository couponRepository;
     private final MemberRepository memberRepository;
 
+    private final CouponService couponService;
+
     public IssuedCouponResponse issueCouponToMember(IssueCouponToMemberRequest issueCouponToMemberRequest){
 
         Member member = memberRepository.
@@ -32,6 +35,23 @@ public class CouponBoxService {
                 .orElseThrow(()->new CouponNotFoundException("해당하는 번호의 쿠폰을 찾을 수 없습니다"));
 
         IssuedCoupon issuedCoupon = couponBoxRepository.save(IssuedCoupon.createIssuedCoupon(coupon,member));
+
+        return IssuedCouponResponse.changeEntityToDto(issuedCoupon);
+    }
+
+    public IssuedCouponResponse issueWelcomeCouponToMember(String loginId){
+
+        CouponResponse couponResponse = couponService.createWelcomeCoupon();
+
+        Coupon welcomeCoupon = couponRepository
+                .findByCouponNumber(couponResponse.getCouponNumber())
+                .orElseThrow(()->new CouponNotFoundException("해당하는 번호의 쿠폰을 찾을 수 없습니다"));
+
+        Member newMember = memberRepository.findByLoginId(loginId)
+                .orElseThrow(()->new MemberNotFoundException("해당하는 로그인 아이디의 회원을 찾을 수 없습니다"));
+
+        IssuedCoupon issuedCoupon =
+                couponBoxRepository.save(IssuedCoupon.createIssuedCoupon(welcomeCoupon,newMember));
 
         return IssuedCouponResponse.changeEntityToDto(issuedCoupon);
     }
