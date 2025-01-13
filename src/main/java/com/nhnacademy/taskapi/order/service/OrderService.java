@@ -8,10 +8,9 @@ import com.nhnacademy.taskapi.order.dto.OrdererResponseDto;
 import java.util.List;
 
 public interface OrderService {
-    long saveOrder(Long member_id, OrderFormRequest orderFormRequest);
+    long processOrder(Long memberId, OrderFormRequest orderFormRequest);
     List<OrderResponseDto> getOrderList(Long memberId);
     OrdererResponseDto getOrderer(Long memberId);
     List<OrderStatusResponseDto> getOrdersByStatusName(String statusName);
     void updateOrderStatus(List<Long> orderIds, String status);
-    long processOrder(Long memberId, OrderFormRequest orderFormRequest);
 }

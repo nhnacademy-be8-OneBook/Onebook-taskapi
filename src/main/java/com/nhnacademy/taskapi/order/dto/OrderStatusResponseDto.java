@@ -4,10 +4,12 @@ import com.nhnacademy.taskapi.order.entity.Order;
 import com.nhnacademy.taskapi.order.entity.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class OrderStatusResponseDto {
@@ -33,18 +35,18 @@ public class OrderStatusResponseDto {
     // TODO memberId 적용하기
 //    public static OrderStatusResponseDto fromOrderStatus(Long memberId, Order order) {
     public static OrderStatusResponseDto fromOrderStatus(Order order) {
-        return new OrderStatusResponseDto(
-            order.getOrderId(),
-            order.getMember().getId(),
-            order.getOrderStatus().getStatusName(),
-            order.getOrderName(),
-            order.getOrdererName(),
-            order.getOrdererPhoneNumber(),
+        return new OrderStatusResponseDto();
+//            order.getOrderId(),
+//            order.getMember().getId(),
+//            order.getOrderStatus().getStatusName(),
+//            order.getOrderName(),
+//            order.getOrdererName(),
+//            order.getOrdererPhoneNumber(),
 //            order.getDateTime(),
-            null,
+//            null,
 //            order.getDeliveryList().get(0).getDoneDate(),
-            null,
-            order.getDeliveryPrice(),
-            order.getTotalPrice());
+//            null,
+//            order.getDeliveryPrice(),
+//            order.getTotalPrice());
     }
 }

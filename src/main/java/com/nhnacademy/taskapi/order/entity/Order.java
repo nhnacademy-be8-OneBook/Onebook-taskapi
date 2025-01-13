@@ -66,7 +66,7 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
-    public Order(Member member, String ordererName, String ordererPhoneNumber, LocalDateTime dateTime, int deliveryPrice, int totalPrice, String orderName, Packaging packaging, OrderStatus orderStatus) {
+    public Order(Member member, String ordererName, String ordererPhoneNumber, LocalDateTime dateTime, int deliveryPrice, int totalPrice, String orderName, Packaging packaging, int packagingPrice, OrderStatus orderStatus) {
         this.member = member;
         this.ordererName = ordererName;
         this.ordererPhoneNumber = ordererPhoneNumber;
@@ -75,6 +75,8 @@ public class Order {
         this.totalPrice = totalPrice;
         this.packaging = packaging;
         this.orderName = orderName;
+        this.packaging = packaging;
+        this.packagingPrice = packagingPrice;
         this.orderStatus = orderStatus;
     }
 }

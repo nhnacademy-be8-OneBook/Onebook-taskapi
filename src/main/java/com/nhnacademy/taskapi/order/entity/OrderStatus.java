@@ -15,8 +15,7 @@ public class OrderStatus {
     @Column(name = "order_status_id")
     private int orderStatusId;
 
-    @UniqueElements
-    @Column(name = "order_status_name")
+    @Column(name = "order_status_name", unique = true)
     private String statusName;
 
     public OrderStatus(String statusName) {
