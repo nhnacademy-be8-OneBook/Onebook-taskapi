@@ -48,7 +48,7 @@ public class NhnImageManagerAdapter {
         HttpEntity<byte[]> entity = new HttpEntity<>(imageBytes, headers);
 
         // 리뷰 이미지 업로드 경로 구성
-        String path = "/onebook/" + bookId + "/" + loginId + "/" + fileName;
+        String path = "/onebook/Review/" + bookId + "/" + loginId + "/" + fileName;
         String url = URL.replace("{appkey}", imageProperties.getAppkey()) + "?path=" + path + "&overwrite=true";
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
