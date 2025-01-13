@@ -120,11 +120,11 @@ public class PolicyService {
         Page<RatePolicyForBook> page = ratePoliciesForBookRepository.
                 findByPolicyStatus_NameOrPolicyStatus_Name("미사용","사용됨",pageable);
 
-        List<RatePolicyForBookResponse> result = new ArrayList<>();
-
-        for(RatePolicyForBook ratePolicyForBook : page){
-            result.add(RatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook));
-        }
+//        List<RatePolicyForBookResponse> result = new ArrayList<>();
+//
+//        for(RatePolicyForBook ratePolicyForBook : page){
+//            result.add(RatePolicyForBookResponse.changeEntityToDto(ratePolicyForBook));
+//        }
 
         return page.map(RatePolicyForBookResponse::changeEntityToDto);
     }
@@ -136,10 +136,10 @@ public class PolicyService {
         Page<RatePolicyForCategory> page = ratePoliciesForCategoryRepository.
                 findByPolicyStatus_NameOrPolicyStatus_Name("미사용","사용됨",pageable);
 
-        List<RatePolicyForCategoryResponse> result = new ArrayList<>();
-        for(RatePolicyForCategory ratePolicyForCategory : page){
-            result.add(RatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory));
-        }
+//        List<RatePolicyForCategoryResponse> result = new ArrayList<>();
+//        for(RatePolicyForCategory ratePolicyForCategory : page){
+//            result.add(RatePolicyForCategoryResponse.changeEntityToDto(ratePolicyForCategory));
+//        }
         return page.map(RatePolicyForCategoryResponse::changeEntityToDto);
     }
 
@@ -151,10 +151,10 @@ public class PolicyService {
         Page<PricePolicyForBook> page = pricePoliciesForBookRepository.
                 findByPolicyStatus_NameOrPolicyStatus_Name("미사용","사용됨",pageable);
 
-        List<PricePolicyForBookResponse> result = new ArrayList<>();
-        for(PricePolicyForBook pricePolicyForBook : page){
-            result.add(PricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook));
-        }
+//        List<PricePolicyForBookResponse> result = new ArrayList<>();
+//        for(PricePolicyForBook pricePolicyForBook : page){
+//            result.add(PricePolicyForBookResponse.changeEntityToDto(pricePolicyForBook));
+//        }
 
         return page.map(PricePolicyForBookResponse::changeEntityToDto);
     }
@@ -164,10 +164,10 @@ public class PolicyService {
 
         Page<PricePolicyForCategory> page = pricePoliciesForCategoryRepository
                 .findByPolicyStatus_NameOrPolicyStatus_Name("미사용","사용됨",pageable);
-        List<PricePolicyForCategoryResponse> result = new ArrayList<>();
-        for(PricePolicyForCategory pricePolicyForCategory : page){
-            result.add(PricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory));
-        }
+//        List<PricePolicyForCategoryResponse> result = new ArrayList<>();
+//        for(PricePolicyForCategory pricePolicyForCategory : page){
+//            result.add(PricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory));
+//        }
 
         return page.map(PricePolicyForCategoryResponse::changeEntityToDto);
     }
