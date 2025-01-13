@@ -2,7 +2,6 @@ package com.nhnacademy.taskapi.order.entity;
 
 import com.nhnacademy.taskapi.delivery.entity.Delivery;
 import com.nhnacademy.taskapi.member.domain.Member;
-import com.nhnacademy.taskapi.orderdetail.entity.OrderDetail;
 import com.nhnacademy.taskapi.packaging.entity.Packaging;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
