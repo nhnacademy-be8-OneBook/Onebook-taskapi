@@ -20,8 +20,8 @@ public class PublisherController {
 
 
     @PostMapping("/{publisherName}")
-    public ResponseEntity<Publisher> createPublisher(@PathVariable String puhlisherName){
-        Publisher publisher = publisherService.addPublisher(puhlisherName);
+    public ResponseEntity<Publisher> createPublisher(@PathVariable String publisherName){
+        Publisher publisher = publisherService.addPublisher(publisherName);
         return ResponseEntity.ok().body(publisher);
     }
 
