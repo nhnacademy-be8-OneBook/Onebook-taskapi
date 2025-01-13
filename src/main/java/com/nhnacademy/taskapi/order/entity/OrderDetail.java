@@ -22,6 +22,7 @@ public class OrderDetail {
     @JoinColumn(name = "book_id")
     Book book;
 
+//    @Column(name = "book_price")
     int bookPrice;
 
     public OrderDetail(Order order, Book book, int bookPrice) {
