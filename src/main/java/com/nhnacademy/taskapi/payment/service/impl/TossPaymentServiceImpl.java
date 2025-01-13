@@ -165,7 +165,7 @@ public class TossPaymentServiceImpl {
 
             Order order = payment.getOrder();
             // 순수 결제 금액
-            // 여기서 order.getTotalPrice()는 배송비가 포함되지 않은 금액임.
+            // 여기서 order.getTotalPrice()는 배송비와 포장비가 포함되지 않은 금액임.
             int onlyBookAmount = order.getTotalPrice() - usedPoint;
 
             // 만약 책값 18000원 + 배송비 3천원으로 총 결제금액이 21000원이 나와서
