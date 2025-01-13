@@ -11,10 +11,17 @@ import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.dto.BookAladinDTO;
 import com.nhnacademy.taskapi.book.dto.BookAuthorCreateDTO;
 import com.nhnacademy.taskapi.book.dto.BookCategorySaveDTO;
+import com.nhnacademy.taskapi.book.exception.BookAlreadyExistException;
+import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.book.service.BookAuthorService;
 import com.nhnacademy.taskapi.book.service.BookCategoryService;
+import com.nhnacademy.taskapi.book.service.BookService;
 import com.nhnacademy.taskapi.category.domain.Category;
 import com.nhnacademy.taskapi.category.service.CategoryService;
+import com.nhnacademy.taskapi.image.domain.Image;
+import com.nhnacademy.taskapi.image.dto.ImageSaveDTO;
+import com.nhnacademy.taskapi.image.repository.ImageRepository;
+import com.nhnacademy.taskapi.image.service.ImageService;
 import com.nhnacademy.taskapi.publisher.domain.Publisher;
 import com.nhnacademy.taskapi.publisher.repository.PublisherRepository;
 import com.nhnacademy.taskapi.publisher.service.PublisherService;
@@ -37,10 +44,12 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class AladinBookService {
     private final AladinApiAdapter aladinApiAdapter;
+    private final BookRepository bookRepository;
     private final PublisherService publisherService;
     private final AuthorService authorService;
     private final CategoryService categoryService;
     private final BookAuthorService bookAuthorService;
+    private final ImageRepository imageRepository;
     private final BookCategoryService bookCategoryService;
     private final StockService stockService;
 
@@ -48,7 +57,7 @@ public class AladinBookService {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<BookAladinDTO> saveAladin() {
         List<BookAladinDTO> dtoList = new ArrayList<>();
-        String url = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbtjswns12211534001&QueryType=Bestseller&MaxResults=50&start=1&SearchTarget=Book&output=js&Version=20131101";
+        String url = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbtjswns12211534001&QueryType=Bestseller&MaxResults=20&start=1&SearchTarget=Book&output=js&Version=20131101";
         String response = aladinApiAdapter.fetchAladinData(url);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -101,6 +110,12 @@ public class AladinBookService {
             book.setPrice(dto.getPriceStandard());
             book.setAmount(dto.getSalesPoint());
             book.setViews(0);
+            if(bookRepository.findByIsbn13(dto.getIsbn13()) != null){
+                throw new BookAlreadyExistException("book already exist");
+            }else{
+                bookRepository.save(book);
+            }
+
 
 
             //책-작가 등록
@@ -119,6 +134,15 @@ public class AladinBookService {
             stockCreateUpdateDTO.setBookId(book.getBookId());
             stockCreateUpdateDTO.setAmount(100);
             stockService.addStock(stockCreateUpdateDTO);
+
+            // 이미지 등록
+            Image image = new Image();
+            image.setBook(book);
+            image.setUrl("http://image.toast.com/aaaacmr/onebook/noImage.jpg");
+            image.setName(book.getTitle());
+            imageRepository.save(image);
+
+
         }
     }
 }

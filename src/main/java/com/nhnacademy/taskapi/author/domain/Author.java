@@ -20,6 +20,5 @@ public class Author {
     private int  authorId;
 
     @NotBlank
-    @Length(max=20)
     private String name;
 }
