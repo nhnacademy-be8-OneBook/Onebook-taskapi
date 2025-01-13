@@ -40,6 +40,26 @@ public class NhnImageManagerAdapter {
         }
     }
 
+    public String uploadReviewImage(byte[] imageBytes, String fileName, long bookId, String loginId) throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", imageProperties.getSecretkey());
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        HttpEntity<byte[]> entity = new HttpEntity<>(imageBytes, headers);
+
+        // 리뷰 이미지 업로드 경로 구성
+        String path = "/onebook/" + bookId + "/" + loginId + "/" + fileName;
+        String url = URL.replace("{appkey}", imageProperties.getAppkey()) + "?path=" + path + "&overwrite=true";
+
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
+
+        if(response.getStatusCode() == HttpStatus.OK){
+            return extractUrl(response.getBody());
+        } else {
+            return null;
+        }
+    }
+
     private String extractUrl(String responseBody) {
         if (responseBody.contains("url")) {
             String prefix = "\"url\":\"";
