@@ -4,9 +4,11 @@ import com.nhnacademy.taskapi.delivery.domain.Status;
 import com.nhnacademy.taskapi.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@NoArgsConstructor
 @Getter
 @Entity
 @Table(name = "deliveries")
@@ -22,9 +24,9 @@ public class Delivery {
 
     LocalDate startDate;
     LocalDate doneDate;
-    String phoneNumber;
-    String recipient;
-    String location;
+    String recipientName;
+    String recipientPhoneNumber;
+    String recipientAddress;
     Status status;
 
     // 송장번호
