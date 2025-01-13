@@ -90,4 +90,9 @@ public class PricePolicyForCategory {
     public void deletePolicy(PolicyStatus policyStatus){
         this.policyStatus = policyStatus;
     }
+
+    // 쿠폰 정책이, 어느 쿠폰에 적용이 되면 usePolicy 메서드를 사용해 policyStatus 변경
+    public void usePolicy(PolicyStatus policyStatus){
+        this.policyStatus = policyStatus;
+    }
 }

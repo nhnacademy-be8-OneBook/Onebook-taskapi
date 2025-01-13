@@ -58,8 +58,6 @@ public class PolicyService {
     private final PricePoliciesForBookRepository pricePoliciesForBookRepository;
     private final PricePoliciesForCategoryRepository pricePoliciesForCategoryRepository;
 
-    private final Integer PAGE_SIZE = 10;
-
     // 정률정책 for Book save
     public RatePolicyForBookResponse addRatePolicyForBook(AddRatePolicyForBookRequest addRatePolicyForBookRequest){
 

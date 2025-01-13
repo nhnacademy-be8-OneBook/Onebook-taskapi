@@ -1,12 +1,14 @@
 package com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class AddRatePolicyForCategoryRequest {
 

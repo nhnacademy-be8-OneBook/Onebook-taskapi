@@ -20,25 +20,25 @@ public class CouponController {
 
     @PostMapping("/coupon/rate/book")
     public ResponseEntity<List<CouponResponse>> createRateCouponForBook(@RequestBody CreateCouponRequest createCouponRequest){
-        List<CouponResponse> couponResponses = couponService.CreateRateCouponForBook(createCouponRequest);
+        List<CouponResponse> couponResponses = couponService.createRateCouponForBook(createCouponRequest);
         return ResponseEntity.ok(couponResponses);
     }
 
     @PostMapping("/coupon/rate/category")
     public ResponseEntity<List<CouponResponse>> createRateCouponForCategory(@RequestBody CreateCouponRequest createCouponRequest){
-        List<CouponResponse> couponResponses = couponService.CreateRateCouponForCategory(createCouponRequest);
+        List<CouponResponse> couponResponses = couponService.createRateCouponForCategory(createCouponRequest);
         return ResponseEntity.ok(couponResponses);
     }
 
     @PostMapping("/coupon/price/book")
     public ResponseEntity<List<CouponResponse>> createPriceCouponForBook(@RequestBody CreateCouponRequest createCouponRequest){
-        List<CouponResponse> couponResponses = couponService.CreatePriceCouponForBook(createCouponRequest);
+        List<CouponResponse> couponResponses = couponService.createPriceCouponForBook(createCouponRequest);
         return ResponseEntity.ok(couponResponses);
     }
 
     @PostMapping("/coupon/price/category")
     public ResponseEntity<List<CouponResponse>> createPriceCouponForCategory(@RequestBody CreateCouponRequest createCouponRequest){
-        List<CouponResponse> couponResponses = couponService.CreatePriceCouponForCategory(createCouponRequest);
+        List<CouponResponse> couponResponses = couponService.createPriceCouponForCategory(createCouponRequest);
         return ResponseEntity.ok(couponResponses);
     }
 
@@ -55,4 +55,6 @@ public class CouponController {
         CouponResponse couponResponse = couponService.deleteCoupon(couponNumber);
         return ResponseEntity.ok(couponResponse);
     }
+
+
 }
