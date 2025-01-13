@@ -26,6 +26,6 @@ public class PricingServiceImpl implements PricingService {
 
     @Override
     public int calculatorDeliveryFee(int totalBookPrice) {
-        return totalBookPrice > 30000 ? 5000 : 0;
+        return totalBookPrice <= 30000 ? 5000 : 0;
     }
 }
