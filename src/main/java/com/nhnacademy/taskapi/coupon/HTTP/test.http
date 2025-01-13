@@ -36,3 +36,21 @@ Content-Type: application/json
 
 ### 쿠폰삭제
 DELETE localhost:8510/task/coupon/8529d05c-6705-4899-8bcf-aeecb451150b
+
+### 쿠폰발급
+POST localhost:8510/task/coupon/issue
+Content-Type: application/json
+
+{
+ "couponNumber": "2cbc1add-ed1b-40f5-8493-4197d5f989ff",
+  "memberId": 662829385225167686
+}
+
+### 쿠폰발급
+POST localhost:8510/task/coupon/issue
+Content-Type: application/json
+
+{
+  "couponNumber": "2cbc1add-ed1b-40f5-8493-4197d5f989ff",
+  "memberId": 662839895941817076
+}

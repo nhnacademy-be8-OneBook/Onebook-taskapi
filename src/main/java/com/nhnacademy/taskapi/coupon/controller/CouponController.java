@@ -19,25 +19,25 @@ public class CouponController {
     private final CouponService couponService;
 
     @PostMapping("/coupon/rate/book")
-    public ResponseEntity<List<CouponResponse>> CreateRateCouponForBook(@RequestBody CreateCouponRequest createCouponRequest){
+    public ResponseEntity<List<CouponResponse>> createRateCouponForBook(@RequestBody CreateCouponRequest createCouponRequest){
         List<CouponResponse> couponResponses = couponService.CreateRateCouponForBook(createCouponRequest);
         return ResponseEntity.ok(couponResponses);
     }
 
     @PostMapping("/coupon/rate/category")
-    public ResponseEntity<List<CouponResponse>> CreateRateCouponForCategory(@RequestBody CreateCouponRequest createCouponRequest){
+    public ResponseEntity<List<CouponResponse>> createRateCouponForCategory(@RequestBody CreateCouponRequest createCouponRequest){
         List<CouponResponse> couponResponses = couponService.CreateRateCouponForCategory(createCouponRequest);
         return ResponseEntity.ok(couponResponses);
     }
 
     @PostMapping("/coupon/price/book")
-    public ResponseEntity<List<CouponResponse>> CreatePriceCouponForBook(@RequestBody CreateCouponRequest createCouponRequest){
+    public ResponseEntity<List<CouponResponse>> createPriceCouponForBook(@RequestBody CreateCouponRequest createCouponRequest){
         List<CouponResponse> couponResponses = couponService.CreatePriceCouponForBook(createCouponRequest);
         return ResponseEntity.ok(couponResponses);
     }
 
     @PostMapping("/coupon/price/category")
-    public ResponseEntity<List<CouponResponse>> CreatePriceCouponForCategory(@RequestBody CreateCouponRequest createCouponRequest){
+    public ResponseEntity<List<CouponResponse>> createPriceCouponForCategory(@RequestBody CreateCouponRequest createCouponRequest){
         List<CouponResponse> couponResponses = couponService.CreatePriceCouponForCategory(createCouponRequest);
         return ResponseEntity.ok(couponResponses);
     }
