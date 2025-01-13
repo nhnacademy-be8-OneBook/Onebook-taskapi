@@ -59,9 +59,9 @@ public class CouponBoxService {
         return IssuedCouponResponse.changeEntityToDto(issuedCoupon);
     }
 
-    public Page<IssuedCouponResponse> getIssuedCouponsByLoginId(Pageable pageable, String loginId){
+    public Page<IssuedCouponResponse> getIssuedCouponsByLoginId(Pageable pageable, Long memberId){
 
-        Member member = memberRepository.findByLoginId(loginId)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(()-> new MemberNotFoundException("해당하는 로그인 아이디의 회원을 찾을 수 없습니다"));
 
         Page<IssuedCoupon> couponsOfMember = couponBoxRepository.findByMemberAndUseDateTimeIsNull(member,pageable);

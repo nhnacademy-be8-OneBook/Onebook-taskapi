@@ -17,9 +17,9 @@ public class CouponBoxController {
 
     private final CouponBoxService couponBoxService;
 
-    @GetMapping("/coupon/coupon-box/{login-id}")
-    public ResponseEntity<Page<IssuedCouponResponse>> getIssuedCouponsByLoginId(Pageable pageable, @PathVariable(name = "login-id")String loginId){
-        Page<IssuedCouponResponse> couponsOfMembers = couponBoxService.getIssuedCouponsByLoginId(pageable,loginId);
+    @GetMapping("/coupon/coupon-box/{member-id}")
+    public ResponseEntity<Page<IssuedCouponResponse>> getIssuedCouponsByMemberId(Pageable pageable, @PathVariable(name = "member-id")Long memberId){
+        Page<IssuedCouponResponse> couponsOfMembers = couponBoxService.getIssuedCouponsByLoginId(pageable,memberId);
         return ResponseEntity.ok(couponsOfMembers);
     }
 
