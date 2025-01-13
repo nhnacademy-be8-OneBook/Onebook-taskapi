@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.coupon.controller;
 import com.nhnacademy.taskapi.coupon.domain.dto.coupons.request.CreateCouponRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.coupons.response.CouponResponse;
 import com.nhnacademy.taskapi.coupon.service.coupons.CouponService;
+import feign.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +48,13 @@ public class CouponController {
 
         Page<CouponResponse> couponResponses = couponService.getAllCoupons(pageable);
         return ResponseEntity.ok(couponResponses);
+    }
+
+    @GetMapping("/coupon/{coupon-number}")
+    public ResponseEntity<CouponResponse> getCouponByCouponNumber(@PathVariable(name = "coupon-number") String couponNumber){
+
+        CouponResponse couponResponse = couponService.getCouponByCouponNumber(couponNumber);
+        return ResponseEntity.ok(couponResponse);
     }
 
     @DeleteMapping("/coupon/{coupon-number}")
