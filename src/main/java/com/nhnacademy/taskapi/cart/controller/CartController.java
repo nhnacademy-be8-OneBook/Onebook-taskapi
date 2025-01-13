@@ -19,12 +19,19 @@ public class CartController {
 
     // 장바구니 조회 by memberId
     @GetMapping
-    public ResponseEntity<CartResponseDto> getCartForMember(
+    public ResponseEntity<CartResponseDto> getCartForMemberById(
             @RequestHeader(value="X-MEMBER-ID", required = false) Long memberId) {
         if(Objects.isNull(memberId)) {
             throw new CartIllegalArgumentException("memberId is null");
         }
         CartResponseDto result = cartService.getCartByMemberId(memberId);
+        return ResponseEntity.ok().body(result);
+    }
+
+    // 장바구니 조회 by loginId
+    @GetMapping("/member")
+    public ResponseEntity<CartResponseDto> getCartForMemberByLoginId(@RequestBody String loginId) {
+        CartResponseDto result = cartService.getCartByLoginId(loginId);
         return ResponseEntity.ok().body(result);
     }
 
