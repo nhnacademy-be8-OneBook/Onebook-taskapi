@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.review.service.impl;
 
+import com.nhnacademy.taskapi.adapter.NhnImageManagerAdapter;
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.member.domain.Member;
@@ -24,7 +25,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,6 +42,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final BookRepository bookRepository;
     private final PointService pointService;
+
+    private final NhnImageManagerAdapter nhnImageManagerAdapter;
 
     @Override
     @Transactional
@@ -83,13 +88,34 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 사진 추가
         if (reviewRequest.getImageUrl() != null && !reviewRequest.getImageUrl().isEmpty()) {
-            for (String imageUrl : reviewRequest.getImageUrl()) {
+            int counter = 1;
+            for (String base64Image : reviewRequest.getImageUrl()) {
                 isPhotoAttached = true;
-                ReviewImage reviewImage = new ReviewImage();
-                reviewImage.setImageUrl(imageUrl);
-                reviewImage.setReview(review);
-                review.getReviewImage().add(reviewImage);
-                log.debug("Added ReviewImage: {}", imageUrl);
+                try {
+                    String[] parts = base64Image.split(",");
+                    byte[] imageBytes = Base64.getDecoder().decode(parts.length > 1 ? parts[1] : parts[0]);
+
+                    // 고유 파일명 생성
+                    String fileName = "review_" + memberId + "_" + System.currentTimeMillis() + "_" + counter + ".jpg";
+                    counter++;
+
+                    // bookId와 loginId 가져오기
+                    long bookIdValue = book.getBookId();
+                    String loginId = member.getLoginId();
+
+                    // 리뷰 이미지 업로드 (새로 추가한 메서드 사용)
+                    String uploadedUrl = nhnImageManagerAdapter.uploadReviewImage(imageBytes, fileName, bookIdValue, loginId);
+
+                    // ReviewImage 생성 및 설정
+                    ReviewImage reviewImage = new ReviewImage();
+                    reviewImage.setImageUrl(uploadedUrl);
+                    reviewImage.setReview(review);
+                    review.getReviewImage().add(reviewImage);
+
+                    log.debug("Uploaded review image URL: {}", uploadedUrl);
+                } catch (IOException e) {
+                    log.error("이미지 업로드 실패", e);
+                }
             }
         }
 

@@ -26,7 +26,7 @@ public class ReviewController {
     private final MyReviewService myReviewService;
 
     // 리뷰 등록
-    @PostMapping("/books/{bookId}/reviews")
+    @PostMapping("/reviews/books/{bookId}")
     public ResponseEntity<ReviewResponse> registerReview(
             @PathVariable long bookId,
             @RequestHeader("X-MEMBER-ID") Long memberId,
@@ -36,14 +36,14 @@ public class ReviewController {
     }
 
     // 도서의 리뷰 평점 평균
-    @GetMapping("/books/{bookId}/reviews/average")
+    @GetMapping("/reviews/books/{bookId}/average")
     public ResponseEntity<Double> getReviewGradeAverage(@PathVariable long bookId) {
         double average = reviewService.getReviewGradeAverage(bookId);
         return ResponseEntity.ok(average);
     }
 
     // 도서의 리뷰 목록 조회, 페이징 처리
-    @GetMapping("/books/{bookId}/reviews")
+    @GetMapping("/reviews/books/{bookId}")
     public ResponseEntity<Page<ReviewResponse>> getReviewsByBook(
             @PathVariable long bookId,
             @RequestParam(defaultValue = "0") int page,
@@ -53,14 +53,14 @@ public class ReviewController {
     }
 
     // 작성된 리뷰 개수 확인
-    @GetMapping("books/{bookId}/reviews/count")
+    @GetMapping("/reviews/count/books/{bookId}")
     public ResponseEntity<Integer> getReviewCount(@PathVariable Long bookId) {
         int reviewCount = reviewService.getReviewCount(bookId);
         return ResponseEntity.ok(reviewCount);
     }
 
     // 리뷰 수정
-    @PutMapping("/books/{bookId}/reviews/{reviewId}")
+    @PutMapping("/reviews/{reviewId}/books/{bookId}")
     public ResponseEntity<ReviewResponse> updateReview(
             @PathVariable long bookId,
             @PathVariable long reviewId,
@@ -71,7 +71,7 @@ public class ReviewController {
     }
 
     // 리뷰 삭제
-    @DeleteMapping("/books/{bookId}/reviews/{reviewId}")
+    @DeleteMapping("/reviews/{reviewId}/books/{bookId}")
     public ResponseEntity<ReviewResponse> deleteReview(
             @PathVariable long bookId,
             @PathVariable long reviewId,
