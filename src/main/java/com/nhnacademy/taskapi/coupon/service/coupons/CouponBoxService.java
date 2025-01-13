@@ -12,7 +12,10 @@ import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @RequiredArgsConstructor
@@ -54,5 +57,25 @@ public class CouponBoxService {
                 couponBoxRepository.save(IssuedCoupon.createIssuedCoupon(welcomeCoupon,newMember));
 
         return IssuedCouponResponse.changeEntityToDto(issuedCoupon);
+    }
+
+    public Page<IssuedCouponResponse> getIssuedCouponsByLoginId(Pageable pageable, String loginId){
+
+        Member member = memberRepository.findByLoginId(loginId)
+                .orElseThrow(()-> new MemberNotFoundException("해당하는 로그인 아이디의 회원을 찾을 수 없습니다"));
+
+        Page<IssuedCoupon> couponsOfMember = couponBoxRepository.findByMemberAndUseDateTimeIsNull(member,pageable);
+
+        return couponsOfMember.map(IssuedCouponResponse::changeEntityToDto);
+    }
+
+    public Page<IssuedCouponResponse> getIssuedCouponByLoginIdAndBookId(Pageable pageable, String loginId, String bookIsbn13){
+
+        Member member = memberRepository.findByLoginId(loginId)
+                .orElseThrow(()-> new MemberNotFoundException("해당하는 로그인 아이디의 회원을 찾을 수 없습니다"));
+
+        Page<IssuedCoupon> couponsOfMember = couponBoxRepository.findByMemberAndUseDateTimeIsNull(member,pageable);
+
+        return couponsOfMember.map(IssuedCouponResponse::changeEntityToDto);
     }
 }
