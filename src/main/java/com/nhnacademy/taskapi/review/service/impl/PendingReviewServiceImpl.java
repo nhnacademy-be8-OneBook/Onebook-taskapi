@@ -5,7 +5,7 @@ import com.nhnacademy.taskapi.image.service.ImageService;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.order.entity.Order;
-//import com.nhnacademy.taskapi.orderdetail.entity.OrderDetail;
+import com.nhnacademy.taskapi.order.entity.OrderDetail;
 import com.nhnacademy.taskapi.payment.domain.Payment;
 import com.nhnacademy.taskapi.payment.repository.PaymentRepository;
 import com.nhnacademy.taskapi.review.domain.Review;
@@ -60,28 +60,28 @@ public class PendingReviewServiceImpl implements PendingReviewService {
                 continue;
             }
 
-//            for (OrderDetail detail : order.getOrderDetailList()) {
-//                Book book = detail.getBook();
+            for (OrderDetail detail : order.getOrderDetailList()) {
+                Book book = detail.getBook();
 
-//                if (book == null) {
-//                    continue;
-//                }
-//
-//                // 리뷰 작성 유무 확인
-//                Optional<Review> checkReview = reviewRepository.findByMemberAndBook(member, book);
-//                if (checkReview.isEmpty()) {
-//                    // 리뷰를 안썼으면 BookReviewableResponse 에 담아
-//                    BookReviewableResponse dto = new BookReviewableResponse(
-//                            book.getBookId(),
-//                            book.getTitle(),
-//                            imageService.getImage(book.getBookId()).getUrl(),
-//                            order.getDateTime() // 추후 배송 완료일로 변경해도 괜찮을듯?
-//                    );
-//
-//                    result.add(dto);
-//                }
+                if (book == null) {
+                    continue;
+                }
+
+                // 리뷰 작성 유무 확인
+                Optional<Review> checkReview = reviewRepository.findByMemberAndBook(member, book);
+                if (checkReview.isEmpty()) {
+                    // 리뷰를 안썼으면 BookReviewableResponse 에 담아
+                    BookReviewableResponse dto = new BookReviewableResponse(
+                            book.getBookId(),
+                            book.getTitle(),
+                            imageService.getImage(book.getBookId()).getUrl(),
+                            order.getDateTime() // 추후 배송 완료일로 변경해도 괜찮을듯?
+                    );
+
+                    result.add(dto);
+                }
             }
-       // }
-        return null;
+        }
+        return result;
     }
 }
