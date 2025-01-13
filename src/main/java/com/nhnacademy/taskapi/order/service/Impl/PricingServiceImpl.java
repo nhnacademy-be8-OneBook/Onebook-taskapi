@@ -18,7 +18,7 @@ public class PricingServiceImpl implements PricingService {
         for (BookOrderRequest item : items) {
             int salePrice = bookRepository.findById(item.getBookId())
                     .orElseThrow(() -> new BookNotFoundException("Book id " + item.getBookId() + "not found!!")).getSalePrice();
-            totalPrice += salePrice;
+            totalPrice += (salePrice * item.getQuantity());
         }
 
         return totalPrice;

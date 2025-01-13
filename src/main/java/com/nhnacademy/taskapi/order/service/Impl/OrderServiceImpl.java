@@ -75,6 +75,7 @@ public class OrderServiceImpl implements OrderService {
                 totalBookSalePrice,
                 "bookTitle",
                 packaging,
+                packaging.getPrice(),
                 waitingStatus
         );
         Order saveOrder = orderRepository.save(order);
@@ -86,51 +87,6 @@ public class OrderServiceImpl implements OrderService {
         deliveryService.createDelivery(saveOrder, orderFormRequest.getDelivery());
 
         return saveOrder.getOrderId();
-    }
-
-    @Override
-    public long saveOrder(Long memberId, OrderFormRequest orderFormRequest) {
-        // 맴버
-        Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id " + memberId + " does not exist"));
-
-        // 주문 상태 default 값 대기
-        OrderStatus waitingStatus = orderStatusRepository.findByStatusName("결제대기").orElseThrow(() -> new OrderStatusNotFoundException("OrderStatus is not found; error!!"));
-
-        // 포장지 가능 여부
-        packagingValidator.validatePackaging(orderFormRequest.getPackagingId(),
-                orderFormRequest.getItems().size(),
-                packagingRepository);
-
-        // 책 불러오기
-        // 총 가격 결정
-        HashMap<Book, Integer> map = new HashMap<>();
-        int totalPrice = 0;
-        String bookTitle = null;
-        for (BookOrderRequest item : orderFormRequest.getItems()) {
-            Book book = bookRepository.findById(item.getBookId()).orElseThrow(() -> new BookNotFoundException("Book id " + item.getBookId() + " does not exist"));
-            bookTitle = book.getTitle();
-            totalPrice += book.getPrice();
-            // 전부 가져와서 조회.
-
-            map.put(book, item.getQuantity());
-        }
-
-        // 주문 만들기
-        Order order = new Order(
-                findMember,
-                orderFormRequest.getDelivery().getOrdererName(),
-                orderFormRequest.getDelivery().getOrdererPhoneNumber(),
-                LocalDateTime.now(),
-                totalPrice > 30000 ? 5000 : 0,
-                totalPrice,
-                bookTitle + "외 " + (map.size() - 1),
-                packagingRepository.findById(orderFormRequest.getPackagingId()).orElseThrow(() -> new PackagingNotFoundException(orderFormRequest.getPackagingId() + "is not found.")),
-                waitingStatus
-        );
-
-        orderRepository.save(order);
-
-        return order.getOrderId();
     }
 
     // read
@@ -164,9 +120,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderStatusResponseDto> getOrdersByStatusName(String statusName) {
-        orderStatusRepository.findByStatusName(statusName).orElseThrow(() -> new OrderStatusNotFoundException("OrderStatus is not found; error!!"));
+        OrderStatus orderStatus = orderStatusRepository.findByStatusName(statusName).orElseThrow(() -> new OrderStatusNotFoundException("OrderStatus is not found; error!!"));
 
-        List<OrderStatusResponseDto> byStatusName = orderRepository.findByStatusName(statusName).stream().map(
+        List<OrderStatusResponseDto> byStatusName = orderRepository.findByOrderStatus(orderStatus).stream().map(
                 order -> OrderStatusResponseDto.fromOrderStatus(order)
         ).toList();
         return byStatusName;
