@@ -73,7 +73,6 @@ public class Order {
         this.dateTime = dateTime;
         this.deliveryPrice = deliveryPrice;
         this.totalPrice = totalPrice;
-        this.packaging = packaging;
         this.orderName = orderName;
         this.packaging = packaging;
         this.packagingPrice = packagingPrice;

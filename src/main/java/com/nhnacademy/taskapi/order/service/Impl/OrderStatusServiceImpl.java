@@ -1,6 +1,5 @@
 package com.nhnacademy.taskapi.order.service.Impl;
 
-import com.nhnacademy.taskapi.order.dto.OrderStatusResponseDto;
 import com.nhnacademy.taskapi.order.entity.OrderStatus;
 import com.nhnacademy.taskapi.order.repository.OrderStatusRepository;
 import com.nhnacademy.taskapi.order.service.OrderStatusService;
@@ -28,7 +27,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 
         /*
         orderStatusName을 담은 객체를 넘길까? List<String>에 담아서 넘길까?
-        return orderStatusRepository.findAll().stream().map(OrderStatusResponseDto::fromOrderStatus).toList();
+        return orderStatusRepository.findAll().stream().map(OrderStatusResponse::fromOrderStatus).toList();
          */
         return orderResponseList;
     }
