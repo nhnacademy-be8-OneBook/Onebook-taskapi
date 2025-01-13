@@ -21,7 +21,6 @@ public class CouponBoxController {
     public ResponseEntity<IssuedCouponResponse> issueCouponToMember(@RequestBody IssueCouponToMemberRequest issueCouponToMemberRequest){
 
         IssuedCouponResponse issuedCouponResponse = couponBoxService.issueCouponToMember(issueCouponToMemberRequest);
-
         return ResponseEntity.ok(issuedCouponResponse);
     }
 }
