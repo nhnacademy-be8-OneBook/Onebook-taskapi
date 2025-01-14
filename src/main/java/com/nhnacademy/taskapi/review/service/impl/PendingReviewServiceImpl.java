@@ -44,15 +44,15 @@ public class PendingReviewServiceImpl implements PendingReviewService {
             return Collections.emptyList();
         }
 
-        // 3. Order 호출
-        // Payment -> Order -> OrDetailList -> Book (리뷰 안쓴 도서를 찾기위한 여정...)
+        // 3. Payment -> Order 추출
         Set<Order> orders = donePayments.stream()
                 .map(Payment::getOrder)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
-        // 4. 최종 결과를 담을 리스트
+        // 4. 최종 결과를 담을 리스트 및 중복 방지를 위한 Set
         List<BookReviewableResponse> result = new ArrayList<>();
+        Set<Long> seenBookIds = new HashSet<>();
 
         // 5. 각 Order의 OrderDetail에서 BookId를 꺼내서 리뷰 유무 확인
         for (Order order : orders) {
@@ -67,18 +67,28 @@ public class PendingReviewServiceImpl implements PendingReviewService {
                     continue;
                 }
 
+                // 이미 처리된 책인지 확인
+                if (seenBookIds.contains(book.getBookId())) {
+                    continue;
+                }
+
                 // 리뷰 작성 유무 확인
                 Optional<Review> checkReview = reviewRepository.findByMemberAndBook(member, book);
                 if (checkReview.isEmpty()) {
-                    // 리뷰를 안썼으면 BookReviewableResponse 에 담아
+                    // 리뷰를 안 썼으면 BookReviewableResponse 에 담음
                     BookReviewableResponse dto = new BookReviewableResponse(
                             book.getBookId(),
                             book.getTitle(),
                             imageService.getImage(book.getBookId()).getUrl(),
-                            order.getDateTime() // 추후 배송 완료일로 변경해도 괜찮을듯?
+                            order.getDateTime() // 추후 배송 완료일로 변경 가능
                     );
 
                     result.add(dto);
+
+                    // 똑같은 책을 2번 샀을경우
+                    // 리뷰 작성하지 않은 도서목록에
+                    // 도서가 중복으로 뜨는 현상 해결
+                    seenBookIds.add(book.getBookId());
                 }
             }
         }
