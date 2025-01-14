@@ -173,7 +173,7 @@ public class BookServiceImpl implements BookService {
     }
     @Override
     public Page<Book> newBooks(Pageable pageable) {
-        return bookRepository.findAllByOrderByPubdate(pageable);
+        return bookRepository.findAllByStatusFalseOrderByPubdate(pageable);
     }
     //책 조회
     @Override
