@@ -19,7 +19,7 @@ public class CouponBoxController {
 
     @GetMapping("/coupon/coupon-box/{member-id}")
     public ResponseEntity<Page<IssuedCouponResponse>> getIssuedCouponsByMemberId(Pageable pageable, @PathVariable(name = "member-id")Long memberId){
-        Page<IssuedCouponResponse> couponsOfMembers = couponBoxService.getIssuedCouponsByLoginId(pageable,memberId);
+        Page<IssuedCouponResponse> couponsOfMembers = couponBoxService.getIssuedCouponsByMemberId(pageable,memberId);
         return ResponseEntity.ok(couponsOfMembers);
     }
 
