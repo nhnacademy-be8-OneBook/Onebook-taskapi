@@ -10,6 +10,7 @@ import java.util.List;
 public interface OrderService {
     long processOrder(Long memberId, OrderFormRequest orderFormRequest);
     List<OrderResponse> getOrderList(Long memberId);
+    OrderResponse getOrder(Long orderId);
     OrdererResponseDto getOrderer(Long memberId);
     List<OrderStatusResponse> getOrdersByStatusName(String statusName);
     void updateOrderStatus(List<Long> orderIds, String status);

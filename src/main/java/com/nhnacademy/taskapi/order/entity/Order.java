@@ -20,7 +20,7 @@ import java.util.List;
 public class Order {
     @Id
     @Tsid
-    @Column(name = "orders_id")
+    @Column(name = "order_id")
     Long orderId;
 
     @ManyToOne
@@ -41,7 +41,7 @@ public class Order {
     int totalPrice;
 
     // 양방향
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     List<OrderDetail> orderDetailList;
 
     @OneToMany(mappedBy = "order")
@@ -54,6 +54,7 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "packaging_id")
     Packaging packaging;
+
     @Column(name = "packaging_price")
     int packagingPrice;
 
