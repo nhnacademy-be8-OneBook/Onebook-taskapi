@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.stock.service.Impl;
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.exception.BookNotFoundException;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
+import com.nhnacademy.taskapi.order.dto.BookOrderRequest;
 import com.nhnacademy.taskapi.stock.domain.Stock;
 import com.nhnacademy.taskapi.stock.dto.StockCreateUpdateDTO;
 import com.nhnacademy.taskapi.stock.exception.InvalidStockAmountException;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 
@@ -64,5 +66,19 @@ public class StockServiceImpl implements StockService {
     @Override
     public Stock getStock(long bookId) {
         return stockRepository.findByBook_bookId(bookId);
+    }
+
+    public void orderUpdateStock(List<BookOrderRequest> bookOrderRequests) {
+        for (BookOrderRequest bookOrderRequest : bookOrderRequests) {
+            bookRepository.findById(bookOrderRequest.getBookId()).orElseThrow(() -> new BookNotFoundException("Book not found"));
+            Stock stock = stockRepository.findByBook_bookId(bookOrderRequest.getBookId());
+
+            int updateStock = stock.getStock() - bookOrderRequest.getQuantity();
+            if (updateStock < 0) {
+                throw new InvalidStockAmountException("재고가 부족합니다! 주문 수량을 변경해주세요.");
+            }
+
+            stock.setStock(updateStock);
+        }
     }
 }
