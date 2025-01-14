@@ -175,6 +175,7 @@ public class CouponBoxRepositoryImpl implements  CouponBoxRepository {
         return null;
     }
 
+    @Override
     public Page<IssuedCoupon> getValidIssuedCoupon(Long memberId, CouponStatus couponStatus, Pageable pageable){
 
         QIssuedCoupon issuedCoupon = QIssuedCoupon.issuedCoupon;

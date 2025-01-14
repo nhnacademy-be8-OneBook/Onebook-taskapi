@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CouponBoxService {
 
-    private final CouponBoxRepositoryImpl couponBoxRepository;
+    private final CouponBoxRepository couponBoxRepository;
     private final CouponRepository couponRepository;
     private final MemberRepository memberRepository;
 
