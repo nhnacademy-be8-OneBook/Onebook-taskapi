@@ -18,6 +18,7 @@ import com.nhnacademy.taskapi.order.service.PricingService;
 import com.nhnacademy.taskapi.packaging.entity.Packaging;
 import com.nhnacademy.taskapi.packaging.repository.PackagingRepository;
 import com.nhnacademy.taskapi.packaging.service.PackagingValidator;
+import com.nhnacademy.taskapi.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -41,11 +42,15 @@ public class OrderServiceImpl implements OrderService {
     private final PackagingValidator packagingValidator;
     private final PricingService pricingService;
     private final OrderDetailService orderDetailService;
+    private final StockService stockService;
 
     // create
     @Transactional
     @Override
     public long processOrder(Long memberId, OrderFormRequest orderFormRequest) {
+        // 4. 재고 처리
+        stockService.orderUpdateStock(orderFormRequest.getItems());
+
         // 1. 주문 상태 확인
         Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id " + memberId + " does not exist"));
         OrderStatus waitingStatus = orderStatusRepository.findByStatusName("결제대기").orElseThrow(() -> new OrderStatusNotFoundException("OrderStatus is not found; error!!"));
