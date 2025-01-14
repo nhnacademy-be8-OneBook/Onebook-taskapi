@@ -100,6 +100,11 @@ public class OrderServiceImpl implements OrderService {
         return dtoList;
     }
 
+    public OrderResponse getOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("Order id " + orderId + " does not exist"));
+        return OrderResponse.fromOrder(order);
+    }
+
     @Override
     public OrdererResponseDto getOrderer(Long memberId) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id" + memberId + " dose not exist"));

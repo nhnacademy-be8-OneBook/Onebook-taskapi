@@ -6,8 +6,8 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class OrderResponse {
     private long orderId;
     private String orderName;
@@ -15,7 +15,9 @@ public class OrderResponse {
     private LocalDateTime dateTime;
     private int totalPrice;
     private String orderStatusName;
+    private long memberId;
 
+    // TODO 파라미터 변경으로 인해 생길 수 있는 에러 찾아야됨
     public static OrderResponse fromOrder(Order order) {
         return new OrderResponse(
                 order.getOrderId(),
@@ -23,7 +25,8 @@ public class OrderResponse {
                 order.getOrdererName(),
                 order.getDateTime(),
                 order.getTotalPrice(),
-                order.getOrderStatus().getStatusName()
+                order.getOrderStatus().getStatusName(),
+                order.getMember().getId()
         );
     }
 }
