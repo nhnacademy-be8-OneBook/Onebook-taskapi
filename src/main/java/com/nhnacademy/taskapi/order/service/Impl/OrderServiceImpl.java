@@ -108,6 +108,14 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAllByMemberId(memberId, pageable).map(OrderResponse::fromOrder);
     }
 
+    @Override
+    public Page<OrderResponse> getOrderListByStatusName(Long memberId, String statusName, Pageable pageable) {
+        memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id" + memberId + " dose not exist"));
+        OrderStatus orderStatus = orderStatusRepository.findByStatusName(statusName).orElseThrow(() -> new OrderStatusNotFoundException("OrderStatus is not found; error!!"));
+
+        return orderRepository.findByMemberIdAndOrderStatus(memberId, orderStatus, pageable).map(OrderResponse::fromOrder);
+    }
+
     public OrderResponse getOrder(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("Order id " + orderId + " does not exist"));
         return OrderResponse.fromOrder(order);

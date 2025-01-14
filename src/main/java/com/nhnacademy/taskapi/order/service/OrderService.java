@@ -12,7 +12,8 @@ import java.util.List;
 public interface OrderService {
     long processOrder(Long memberId, OrderFormRequest orderFormRequest);
     Page<OrderResponse> getOrderList(Long memberId, Pageable pageable);
-    OrdererResponseDto getOrderer(Long memberId);
+    Page<OrderResponse> getOrderListByStatusName(Long memberId, String statusName, Pageable pageable);
     List<OrderStatusResponse> getOrdersByStatusName(String statusName);
+    OrdererResponseDto getOrderer(Long memberId);
     void updateOrderStatus(List<Long> orderIds, String status);
 }

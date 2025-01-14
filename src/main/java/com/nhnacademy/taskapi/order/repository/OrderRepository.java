@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.order.repository;
 
+import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.order.entity.Order;
 import com.nhnacademy.taskapi.order.entity.OrderStatus;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Page<Order> findAllByMemberId(Long memberId, Pageable pageable);
 
     List<Order> findByOrderStatus(OrderStatus orderStatus);
+
+    Page<Order> findByMemberIdAndOrderStatus(Long memberId, OrderStatus orderStatus, Pageable pageable);
 
 //     TODO:QueryFactory 찾아보기
 //    @Query("SELECT o FROM Order o JOIN FETCH o.orderStatus WHERE o.orderStatus.statusName = :statusName") // 캐시 사용불가

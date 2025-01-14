@@ -36,6 +36,18 @@ public class OrderController {
         return ResponseEntity.ok().body(orderList);
     }
 
+    @GetMapping("/task/orders/waiting")
+    public ResponseEntity<Page<OrderResponse>> getWaitingOrders(@RequestHeader("X-MEMBER-ID") Long memberId, Pageable pageable) {
+        String statusName = "결제대기";
+        Page<OrderResponse> orderList = orderService.getOrderListByStatusName(memberId, statusName, pageable);
+
+        // TODO null일 경우 list 반환 방법
+        if (orderList == null || orderList.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(orderList);
+    }
+
     @GetMapping("/task/admin/orders")
     public ResponseEntity<List<OrderStatusResponse>> getOrdersByStatusName(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestParam String status) {
         List<OrderStatusResponse> ordersByStatusName = orderService.getOrdersByStatusName(status);
