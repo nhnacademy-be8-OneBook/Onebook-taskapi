@@ -70,24 +70,9 @@ public class CouponBoxService {
 
         CouponStatus couponStatus = couponStatusRepository.findByName("발급-삭제불가");
 
-        // 이때 갖고와지는 쿠폰은, MemberId에 속해야하고 UseDateTime이 null 이어야 하며 (사용 안한 쿠폰), CouponStatus 이름이 '발급-삭제불가'가 아니어야함 (만료 안된 쿠폰)
-        // 문제가 발생하는 부분 org.springframework.data.mapping.PropertyReferenceException: No property 'issue' found for type 'IssuedCoupon'
-//        Page<IssuedCoupon> couponsOfMember = couponBoxRepository.findByMemberAndUseDateTimeIsNullAndCoupon_CouponStatus_NameNot(member,couponStatus,pageable);
-//        return couponsOfMember.map(IssuedCouponResponse::changeEntityToDto);
         Page<IssuedCoupon> couponsOfMember = couponBoxRepository.getValidIssuedCoupon(memberId,couponStatus,pageable);
 
         return couponsOfMember.map(IssuedCouponResponse::changeEntityToDto);
     }
 
-    public Page<IssuedCouponResponse> getIssuedCouponByLoginIdAndBookId(Pageable pageable, String loginId, String bookIsbn13){
-
-        Member member = memberRepository.findByLoginId(loginId)
-                .orElseThrow(()-> new MemberNotFoundException("해당하는 로그인 아이디의 회원을 찾을 수 없습니다"));
-
-//        Page<IssuedCoupon> couponsOfMember = couponBoxRepository.findByMemberAndUseDateTimeIsNull(member,pageable);
-
-//        return couponsOfMember.map(IssuedCouponResponse::changeEntityToDto);
-
-        return null;
-    }
 }

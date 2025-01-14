@@ -143,6 +143,57 @@ public class CouponService {
         return coupons.map(CouponResponse::changeEntityToDto);
     }
 
+    public Page<CouponResponse> getRateCouponsForBook(Long policyId, Pageable pageable){
+
+        RatePolicyForBook ratePolicyForBook = ratePoliciesForBookRepository.findById(policyId)
+                .orElseThrow(()->new PolicyNotFoundException("해당하는 ID의 정책을 찾을 수 없습니다"));
+
+        CouponStatus couponStatus = couponStatusRepository.findByName("미발급");
+
+        Page<Coupon> coupons = couponRepository.findByRatePolicyForBookAndCouponStatus
+                (ratePolicyForBook,couponStatus,pageable);
+        return coupons.map(CouponResponse::changeEntityToDto);
+    }
+
+    public Page<CouponResponse> getRateCouponsForCategory(Long policyId, Pageable pageable){
+
+        RatePolicyForCategory ratePolicyForCategory = ratePoliciesForCategoryRepository.findById(policyId)
+                .orElseThrow(()->new PolicyNotFoundException("해당하는 ID의 정책을 찾을 수 없습니다"));
+
+        CouponStatus couponStatus = couponStatusRepository.findByName("미발급");
+
+        Page<Coupon> coupons = couponRepository.findByRatePolicyForCategoryAndCouponStatus
+                (ratePolicyForCategory,couponStatus,pageable);
+
+        return coupons.map(CouponResponse::changeEntityToDto);
+    }
+
+    public Page<CouponResponse> getPriceCouponsForBook(Long policyId, Pageable pageable){
+
+        PricePolicyForBook pricePolicyForBook = pricePoliciesForBookRepository.findById(policyId)
+                .orElseThrow(()->new PolicyNotFoundException("해당하는 ID의 정책을 찾을 수 없습니다"));
+
+        CouponStatus couponStatus = couponStatusRepository.findByName("미발급");
+
+        Page<Coupon> coupons = couponRepository.
+                findByPricePolicyForBookAndCouponStatus(pricePolicyForBook,couponStatus,pageable);
+
+        return coupons.map(CouponResponse::changeEntityToDto);
+    }
+
+    public Page<CouponResponse> getPriceCouponsForCategory(Long policyId, Pageable pageable){
+
+        PricePolicyForCategory pricePolicyForCategory = pricePoliciesForCategoryRepository.findById(policyId)
+                .orElseThrow(()->new PolicyNotFoundException("해당하는 ID의 정책을 찾을 수 없습니다"));
+
+        CouponStatus couponStatus = couponStatusRepository.findByName("미발급");
+
+        Page<Coupon> coupons = couponRepository
+                .findByPricePolicyForCategoryAndCouponStatus(pricePolicyForCategory,couponStatus,pageable);
+
+        return coupons.map(CouponResponse::changeEntityToDto);
+    }
+
     public CouponResponse getCouponByCouponNumber(String couponNumber){
 
         Coupon coupon = couponRepository.findByCouponNumber(couponNumber)
