@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.review.repository;
 
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
+import com.nhnacademy.taskapi.config.QuerydslConfig;
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.grade.repository.GradeRepository;
 import com.nhnacademy.taskapi.member.domain.Member;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -32,6 +34,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
+@Import(QuerydslConfig.class)
+
 class ReviewRepositoryTest {
 
     @Autowired

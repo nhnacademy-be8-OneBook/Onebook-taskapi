@@ -4,15 +4,19 @@ import com.nhnacademy.taskapi.Tag.domain.Tag;
 import com.nhnacademy.taskapi.Tag.repository.TagRepository;
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.domain.BookTag;
+import com.nhnacademy.taskapi.config.QuerydslConfig;
 import com.nhnacademy.taskapi.publisher.domain.Publisher;
 import com.nhnacademy.taskapi.publisher.repository.PublisherRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@Import(QuerydslConfig.class)
+
 public class BookTagRepositoryTest {
     @Autowired
     private BookRepository bookRepository;

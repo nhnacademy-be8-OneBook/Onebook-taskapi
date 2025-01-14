@@ -2,11 +2,13 @@ package com.nhnacademy.taskapi.book.repository;
 
 
 import com.nhnacademy.taskapi.book.domain.Book;
+import com.nhnacademy.taskapi.config.QuerydslConfig;
 import com.nhnacademy.taskapi.publisher.domain.Publisher;
 import com.nhnacademy.taskapi.publisher.repository.PublisherRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,8 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@Import(QuerydslConfig.class)
+
 public class BookRepositoryTest {
     @Autowired
     private BookRepository bookRepository;

@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.cart.repository;
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.cart.domain.Cart;
 import com.nhnacademy.taskapi.cart.domain.CartItem;
+import com.nhnacademy.taskapi.config.QuerydslConfig;
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -25,6 +27,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @DataJpaTest
+@Import(QuerydslConfig.class)
+
 public class CartRepositoryTest {
     @Autowired
     private CartRepository cartRepository;

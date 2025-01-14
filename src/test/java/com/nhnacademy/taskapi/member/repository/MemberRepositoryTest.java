@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.member.repository;
 
+import com.nhnacademy.taskapi.config.QuerydslConfig;
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.roles.domain.Role;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @DataJpaTest
+@Import(QuerydslConfig.class)
+
 public class MemberRepositoryTest {
 
     /**
