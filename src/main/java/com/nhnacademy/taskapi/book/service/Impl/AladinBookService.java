@@ -33,6 +33,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -49,7 +56,7 @@ public class AladinBookService {
     private final AuthorService authorService;
     private final CategoryService categoryService;
     private final BookAuthorService bookAuthorService;
-    private final ImageRepository imageRepository;
+    private final ImageService imageService;
     private final BookCategoryService bookCategoryService;
     private final StockService stockService;
 
@@ -57,7 +64,7 @@ public class AladinBookService {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<BookAladinDTO> saveAladin() {
         List<BookAladinDTO> dtoList = new ArrayList<>();
-        String url = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbtjswns12211534001&QueryType=Bestseller&MaxResults=20&start=1&SearchTarget=Book&output=js&Version=20131101";
+        String url = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbtjswns12211534001&QueryType=Bestseller&MaxResults=2&start=24&SearchTarget=Book&output=js&Version=20131101";
         String response = aladinApiAdapter.fetchAladinData(url);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -78,6 +85,7 @@ public class AladinBookService {
                 dto.setCategoryNames(item.path("categoryName").asText());
                 dto.setPublisherName(item.path("publisher").asText());
                 dto.setSalesPoint(item.path("salesPoint").asLong());
+                dto.setCover(item.path("cover").asText());
                 dtoList.add(dto);
             }
             return dtoList;
@@ -91,7 +99,7 @@ public class AladinBookService {
 
     //알라딘 API 베스트셀러 50개 가져오기
     @Transactional
-    public void saveBookFromAladin() {
+    public void saveBookFromAladin() throws IOException {
         List<BookAladinDTO> dtoList = saveAladin();
         for (BookAladinDTO dto : dtoList) {
             Publisher publisher = publisherService.addPublisherByAladin(dto.getPublisherName());
@@ -136,13 +144,28 @@ public class AladinBookService {
             stockService.addStock(stockCreateUpdateDTO);
 
             // 이미지 등록
-            Image image = new Image();
-            image.setBook(book);
-            image.setUrl("http://image.toast.com/aaaacmr/onebook/noImage.jpg");
-            image.setName(book.getTitle());
-            imageRepository.save(image);
+            String imageUrlString = dto.getCover();
+            URL imageUrl = new URL(imageUrlString);
+            String imageName = imageUrlString.substring(imageUrlString.lastIndexOf("/") + 1);
+            log.info("imageName: {}", imageName);
 
+            BufferedImage image = ImageIO.read(imageUrl);
+            byte[] imageInByte = null;
+            if(image != null){
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(image, "jpg", baos);
+                baos.flush();
+                imageInByte = baos.toByteArray();
+                baos.close();
+            }else{
+                log.info("이미지 읽을수없다");
+            }
 
+            ImageSaveDTO imageSaveDTO = new ImageSaveDTO();
+            imageSaveDTO.setBookId(book.getBookId());
+            imageSaveDTO.setImageBytes(imageInByte);
+            imageSaveDTO.setImageName(imageName);
+            imageService.saveImage(imageSaveDTO);
         }
     }
 }
