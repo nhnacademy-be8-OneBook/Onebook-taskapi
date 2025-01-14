@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.address.repository;
 import com.nhnacademy.taskapi.address.domain.dto.req.AddMemberAddressRequest;
 import com.nhnacademy.taskapi.address.domain.dto.req.UpdateMemberAddressRequest;
 import com.nhnacademy.taskapi.address.domain.entity.MemberAddress;
+import com.nhnacademy.taskapi.config.QuerydslConfig;
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.roles.domain.Role;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -20,6 +22,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @DataJpaTest
+@Import(QuerydslConfig.class)
 class AddressRepositoryTest {
 
     @Autowired

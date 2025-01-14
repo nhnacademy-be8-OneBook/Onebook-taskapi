@@ -1,11 +1,13 @@
 package com.nhnacademy.taskapi.roles.repository;
 
+import com.nhnacademy.taskapi.config.QuerydslConfig;
 import com.nhnacademy.taskapi.roles.domain.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import java.util.Objects;
 
@@ -13,6 +15,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
 @DataJpaTest
+@Import(QuerydslConfig.class)
 public class RoleRepositoryTest {
 
     @Autowired

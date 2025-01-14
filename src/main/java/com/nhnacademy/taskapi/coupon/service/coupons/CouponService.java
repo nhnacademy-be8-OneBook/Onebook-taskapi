@@ -143,6 +143,15 @@ public class CouponService {
         return coupons.map(CouponResponse::changeEntityToDto);
     }
 
+    public CouponResponse getCouponByCouponNumber(String couponNumber){
+
+        Coupon coupon = couponRepository.findByCouponNumber(couponNumber)
+                .orElseThrow(()->new CouponNotFoundException("해당하는 쿠폰넘버의 쿠폰이 존재하지 않습니다"));
+
+        return CouponResponse.changeEntityToDto(coupon);
+
+    }
+
     public CouponResponse deleteCoupon(String couponNumber){
         Coupon coupon = couponRepository.findByCouponNumber(couponNumber).
                 orElseThrow(()->new CouponNotFoundException("해당하는 쿠폰넘버의 쿠폰이 존재하지 않습니다"));

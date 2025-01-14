@@ -1,6 +1,7 @@
 package com.nhnacademy.taskapi.coupon.repository.policies;
 
 import com.nhnacademy.taskapi.book.domain.Book;
+import com.nhnacademy.taskapi.config.QuerydslConfig;
 import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForBook;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.PolicyStatus;
 import com.nhnacademy.taskapi.publisher.domain.Publisher;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.ReflectionUtils;
@@ -19,6 +21,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @DataJpaTest
+@Import(QuerydslConfig.class)
+
 class PricePoliciesForBookRepositoryTest {
 
     @Autowired

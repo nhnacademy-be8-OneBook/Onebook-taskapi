@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.order.repository;
 
+import com.nhnacademy.taskapi.config.QuerydslConfig;
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
@@ -20,6 +22,8 @@ import java.util.Optional;
 
 @Slf4j
 @DataJpaTest
+@Import(QuerydslConfig.class)
+
 class OrderRepositoryTest {
 
     @Autowired
