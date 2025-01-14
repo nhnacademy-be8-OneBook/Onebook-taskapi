@@ -164,7 +164,7 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("Book not found"));
 
         // 책 삭제
-        bookRepository.delete(book);
+        book.setStatus(true);
     }
     // 베스트셀러 목록 조회
     @Override
@@ -186,6 +186,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Page<Book> findAllBooks(Pageable pageable) {
-        return bookRepository.findAllByOrderByTitleAsc(pageable);
+        return bookRepository.findAllByStatusFalseOrderByTitleAsc(pageable);
     }
 }
