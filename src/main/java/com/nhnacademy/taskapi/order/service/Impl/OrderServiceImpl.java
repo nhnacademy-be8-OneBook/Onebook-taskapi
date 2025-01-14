@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.order.service.Impl;
 
+import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.delivery.service.DeliveryService;
 import com.nhnacademy.taskapi.member.domain.Member;
@@ -21,11 +22,14 @@ import com.nhnacademy.taskapi.packaging.service.PackagingValidator;
 import com.nhnacademy.taskapi.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -52,6 +56,7 @@ public class OrderServiceImpl implements OrderService {
         stockService.orderUpdateStock(orderFormRequest.getItems());
 
         // 1. 주문 상태 확인
+        // TODO 밑의 모든 로직을 service 에게 위임?
         Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id " + memberId + " does not exist"));
         OrderStatus waitingStatus = orderStatusRepository.findByStatusName("결제대기").orElseThrow(() -> new OrderStatusNotFoundException("OrderStatus is not found; error!!"));
 
@@ -64,6 +69,9 @@ public class OrderServiceImpl implements OrderService {
         int totalBookSalePrice = pricingService.calculatorToTalPriceByOrderRequest(orderFormRequest.getItems(), bookRepository);
         int DeliveryFee = pricingService.calculatorDeliveryFee(totalBookSalePrice);
 
+        // TODO 삭제 1순위!!! 책 title 알아내기
+        String bookTitle = bookRepository.findById(orderFormRequest.getItems().get(0).getBookId()).get().getTitle();
+
         // 1. 주문 저장
         Order order = new Order(
                 findMember,
@@ -72,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
                 LocalDateTime.now(),
                 DeliveryFee,
                 totalBookSalePrice,
-                "bookTitle",
+                bookTitle,
                 packaging,
                 packaging.getPrice(),
                 waitingStatus
@@ -91,13 +99,21 @@ public class OrderServiceImpl implements OrderService {
     // read
     @Transactional(readOnly = true)
     @Override
-    public List<OrderResponse> getOrderList(Long memberId) {
+    public Page<OrderResponse> getOrderList(Long memberId, Pageable pageable) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id" + memberId + " dose not exist"));
 
-        List<OrderResponse> dtoList = orderRepository.findAllByMemberId(memberId).stream()
-                .map(OrderResponse::fromOrder).toList();
+        Page<Order> allByMemberId = orderRepository.findAllByMemberId(memberId, pageable);
+        System.out.println(allByMemberId);
 
-        return dtoList;
+        return orderRepository.findAllByMemberId(memberId, pageable).map(OrderResponse::fromOrder);
+    }
+
+    @Override
+    public Page<OrderResponse> getOrderListByStatusName(Long memberId, String statusName, Pageable pageable) {
+        memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id" + memberId + " dose not exist"));
+        OrderStatus orderStatus = orderStatusRepository.findByStatusName(statusName).orElseThrow(() -> new OrderStatusNotFoundException("OrderStatus is not found; error!!"));
+
+        return orderRepository.findByMemberIdAndOrderStatus(memberId, orderStatus, pageable).map(OrderResponse::fromOrder);
     }
 
     public OrderResponse getOrder(Long orderId) {
