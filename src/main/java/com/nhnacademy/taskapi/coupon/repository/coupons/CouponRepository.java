@@ -19,8 +19,6 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
 
     Page<Coupon> findByRatePolicyForCategoryAndCouponStatus(RatePolicyForCategory ratePolicyForCategory, CouponStatus couponStatus, Pageable pageable);
 
-    Page<Coupon> findByPricePolicyForBookAndCouponStatus(PricePolicyForBook pricePolicyForBook, CouponStatus couponStatus);
-
     Page<Coupon> findByPricePolicyForBookAndCouponStatus(PricePolicyForBook pricePolicyForBook, CouponStatus couponStatus, Pageable pageable);
 
     Page<Coupon> findByPricePolicyForCategoryAndCouponStatus(PricePolicyForCategory pricePolicyForCategory, CouponStatus couponStatus, Pageable pageable);

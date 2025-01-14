@@ -64,7 +64,7 @@ public class CouponController {
             (@PathVariable(name = "policy-id") Long policyId ,Pageable pageable){
 
         Page<CouponResponse> couponResponses = couponService.getRateCouponsForCategory(policyId,pageable);
-        return null;
+        return ResponseEntity.ok(couponResponses);
 
     }
 
@@ -73,7 +73,7 @@ public class CouponController {
             (@PathVariable(name = "policy-id") Long policyId ,Pageable pageable){
 
         Page<CouponResponse> couponResponses = couponService.getPriceCouponsForBook(policyId,pageable);
-        return null;
+        return ResponseEntity.ok(couponResponses);
 
     }
 
@@ -82,7 +82,7 @@ public class CouponController {
             (@PathVariable(name = "policy-id") Long policyId ,Pageable pageable){
 
         Page<CouponResponse> couponResponses = couponService.getPriceCouponsForCategory(policyId,pageable);
-        return null;
+        return ResponseEntity.ok(couponResponses);
 
     }
 
