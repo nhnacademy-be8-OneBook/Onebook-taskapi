@@ -50,6 +50,42 @@ public class CouponController {
         return ResponseEntity.ok(couponResponses);
     }
 
+    // 해당 정책으로 생성된, 발급 가능한 쿠폰들 받아오기
+    @GetMapping("/coupon/rate-for-book/{policy-id}")
+    public ResponseEntity<Page<CouponResponse>> getRateCouponsForBookByPolicyId
+        (@PathVariable(name = "policy-id") Long policyId ,Pageable pageable){
+
+        Page<CouponResponse> couponResponses = couponService.getRateCouponsForBook(policyId,pageable);
+        return ResponseEntity.ok(couponResponses);
+    }
+
+    @GetMapping("/coupon/rate-for-category/{policy-id}")
+    public ResponseEntity<Page<CouponResponse>> getRateCouponsForCategoryByPolicyId
+            (@PathVariable(name = "policy-id") Long policyId ,Pageable pageable){
+
+        Page<CouponResponse> couponResponses = couponService.getRateCouponsForCategory(policyId,pageable);
+        return null;
+
+    }
+
+    @GetMapping("/coupon/price-for-book/{policy-id}")
+    public ResponseEntity<Page<CouponResponse>> getPriceCouponsForBookByPolicyId
+            (@PathVariable(name = "policy-id") Long policyId ,Pageable pageable){
+
+        Page<CouponResponse> couponResponses = couponService.getPriceCouponsForBook(policyId,pageable);
+        return null;
+
+    }
+
+    @GetMapping("/coupon/price-for-category/{policy-id}")
+    public ResponseEntity<Page<CouponResponse>> getPriceCouponsForCategoryByPolicyId
+            (@PathVariable(name = "policy-id") Long policyId ,Pageable pageable){
+
+        Page<CouponResponse> couponResponses = couponService.getPriceCouponsForCategory(policyId,pageable);
+        return null;
+
+    }
+
     @GetMapping("/coupon/{coupon-number}")
     public ResponseEntity<CouponResponse> getCouponByCouponNumber(@PathVariable(name = "coupon-number") String couponNumber){
 
@@ -63,6 +99,5 @@ public class CouponController {
         CouponResponse couponResponse = couponService.deleteCoupon(couponNumber);
         return ResponseEntity.ok(couponResponse);
     }
-
 
 }
