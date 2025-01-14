@@ -5,6 +5,8 @@ import com.nhnacademy.taskapi.order.dto.OrderResponse;
 import com.nhnacademy.taskapi.order.dto.OrderStatusResponse;
 import com.nhnacademy.taskapi.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,10 +25,9 @@ public class OrderController {
         return ResponseEntity.created(null).body(newOrderId);
     }
 
-    // TODO pagenamtion 해야됨
     @GetMapping("/task/orders")
-    public ResponseEntity<List<OrderResponse>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId) {
-        List<OrderResponse> orderList = orderService.getOrderList(memberId);
+    public ResponseEntity<Page<OrderResponse>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId, Pageable pageable) {
+        Page<OrderResponse> orderList = orderService.getOrderList(memberId, pageable);
 
         // TODO null일 경우 list 반환 방법
         if (orderList == null || orderList.isEmpty()) {

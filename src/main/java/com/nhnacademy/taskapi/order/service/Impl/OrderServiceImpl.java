@@ -21,6 +21,8 @@ import com.nhnacademy.taskapi.packaging.service.PackagingValidator;
 import com.nhnacademy.taskapi.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,13 +93,13 @@ public class OrderServiceImpl implements OrderService {
     // read
     @Transactional(readOnly = true)
     @Override
-    public List<OrderResponse> getOrderList(Long memberId) {
+    public Page<OrderResponse> getOrderList(Long memberId, Pageable pageable) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id" + memberId + " dose not exist"));
 
-        List<OrderResponse> dtoList = orderRepository.findAllByMemberId(memberId).stream()
-                .map(OrderResponse::fromOrder).toList();
+        Page<Order> allByMemberId = orderRepository.findAllByMemberId(memberId, pageable);
+        System.out.println(allByMemberId);
 
-        return dtoList;
+        return orderRepository.findAllByMemberId(memberId, pageable).map(OrderResponse::fromOrder);
     }
 
     public OrderResponse getOrder(Long orderId) {
