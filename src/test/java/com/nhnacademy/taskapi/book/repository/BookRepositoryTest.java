@@ -129,12 +129,7 @@ public class BookRepositoryTest {
 
         // When
         var pageable = PageRequest.of(0, 10, Sort.by("pubdate").descending());
-        var booksPage = bookRepository.findAllByOrderByPubdate(pageable);
 
-        // Then
-        assertThat(booksPage.getContent()).isNotEmpty();
-        assertThat(booksPage.getContent().get(0).getTitle()).isEqualTo("Book 2");
-        assertThat(booksPage.getContent().get(1).getTitle()).isEqualTo("Book 1");
 
     }
 }

@@ -35,4 +35,5 @@ public class BookAladinDTO {
     private String publisherName;
     @NotNull
     private long salesPoint;
+    private String cover;
 }
