@@ -4,6 +4,7 @@ import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.order.entity.Order;
 import com.nhnacademy.taskapi.order.repository.OrderRepository;
+import com.nhnacademy.taskapi.order.repository.OrderStatusRepository;
 import com.nhnacademy.taskapi.payment.domain.Payment;
 import com.nhnacademy.taskapi.payment.domain.PaymentMethod;
 import com.nhnacademy.taskapi.payment.dto.CheckoutInfoResponse;
@@ -33,6 +34,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
+    private final OrderStatusRepository orderStatusRepository;
     private final MemberRepository memberRepository;
     private final JpaPointRepository pointRepository;
     private final PointService pointService;

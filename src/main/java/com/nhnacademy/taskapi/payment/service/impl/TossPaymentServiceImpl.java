@@ -146,6 +146,10 @@ public class TossPaymentServiceImpl {
             pm.setCardApproveNo((String) cardObj.get("approveNo"));
             pm.setCardInstallmentPlanMonths((Integer) cardObj.get("installmentPlanMonths"));
         }
+
+        else {
+            pm.setCardAmount(approveAmount);
+        }
         // 여기서 paymentMethodRepository.save(pm) 안 함 → cascade=ALL
 
         // 4) 결제가 DONE이면 포인트 차감
