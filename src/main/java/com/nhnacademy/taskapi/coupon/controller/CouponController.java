@@ -51,7 +51,7 @@ public class CouponController {
     }
 
     // 해당 정책으로 생성된, 발급 가능한 쿠폰들 받아오기
-    @GetMapping("/coupon/rate-for-book/{policy-id}")
+    @GetMapping("/coupon/rate/book/{policy-id}")
     public ResponseEntity<Page<CouponResponse>> getRateCouponsForBookByPolicyId
         (@PathVariable(name = "policy-id") Long policyId ,Pageable pageable){
 
@@ -59,7 +59,7 @@ public class CouponController {
         return ResponseEntity.ok(couponResponses);
     }
 
-    @GetMapping("/coupon/rate-for-category/{policy-id}")
+    @GetMapping("/coupon/rate/category/{policy-id}")
     public ResponseEntity<Page<CouponResponse>> getRateCouponsForCategoryByPolicyId
             (@PathVariable(name = "policy-id") Long policyId ,Pageable pageable){
 
@@ -68,7 +68,7 @@ public class CouponController {
 
     }
 
-    @GetMapping("/coupon/price-for-book/{policy-id}")
+    @GetMapping("/coupon/price/book/{policy-id}")
     public ResponseEntity<Page<CouponResponse>> getPriceCouponsForBookByPolicyId
             (@PathVariable(name = "policy-id") Long policyId ,Pageable pageable){
 
@@ -77,7 +77,7 @@ public class CouponController {
 
     }
 
-    @GetMapping("/coupon/price-for-category/{policy-id}")
+    @GetMapping("/coupon/price/category/{policy-id}")
     public ResponseEntity<Page<CouponResponse>> getPriceCouponsForCategoryByPolicyId
             (@PathVariable(name = "policy-id") Long policyId ,Pageable pageable){
 
