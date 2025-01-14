@@ -61,4 +61,6 @@ public class Book {
 
     @Column(nullable = false)
     private LocalDate pubdate;
+
+    private boolean status = false;
 }
