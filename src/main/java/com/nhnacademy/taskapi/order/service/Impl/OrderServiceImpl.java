@@ -1,7 +1,5 @@
 package com.nhnacademy.taskapi.order.service.Impl;
 
-import com.nhnacademy.taskapi.book.domain.Book;
-import com.nhnacademy.taskapi.book.exception.BookNotFoundException;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.delivery.service.DeliveryService;
 import com.nhnacademy.taskapi.member.domain.Member;
@@ -9,7 +7,6 @@ import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.order.dto.*;
 import com.nhnacademy.taskapi.order.entity.Order;
-import com.nhnacademy.taskapi.order.entity.OrderDetail;
 import com.nhnacademy.taskapi.order.entity.OrderStatus;
 import com.nhnacademy.taskapi.order.exception.OrderNotFoundException;
 import com.nhnacademy.taskapi.order.exception.OrderStatusNotFoundException;
@@ -19,8 +16,6 @@ import com.nhnacademy.taskapi.order.service.OrderDetailService;
 import com.nhnacademy.taskapi.order.service.OrderService;
 import com.nhnacademy.taskapi.order.service.PricingService;
 import com.nhnacademy.taskapi.packaging.entity.Packaging;
-import com.nhnacademy.taskapi.packaging.exception.PackagingNotAvailableException;
-import com.nhnacademy.taskapi.packaging.exception.PackagingNotFoundException;
 import com.nhnacademy.taskapi.packaging.repository.PackagingRepository;
 import com.nhnacademy.taskapi.packaging.service.PackagingValidator;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -92,11 +86,11 @@ public class OrderServiceImpl implements OrderService {
     // read
     @Transactional(readOnly = true)
     @Override
-    public List<OrderResponseDto> getOrderList(Long memberId) {
+    public List<OrderResponse> getOrderList(Long memberId) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id" + memberId + " dose not exist"));
 
-        List<OrderResponseDto> dtoList = orderRepository.findAllByMemberId(memberId).stream()
-                .map(OrderResponseDto::fromOrder).toList();
+        List<OrderResponse> dtoList = orderRepository.findAllByMemberId(memberId).stream()
+                .map(OrderResponse::fromOrder).toList();
 
         return dtoList;
     }
@@ -119,11 +113,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderStatusResponseDto> getOrdersByStatusName(String statusName) {
+    public List<OrderStatusResponse> getOrdersByStatusName(String statusName) {
         OrderStatus orderStatus = orderStatusRepository.findByStatusName(statusName).orElseThrow(() -> new OrderStatusNotFoundException("OrderStatus is not found; error!!"));
 
-        List<OrderStatusResponseDto> byStatusName = orderRepository.findByOrderStatus(orderStatus).stream().map(
-                order -> OrderStatusResponseDto.fromOrderStatus(order)
+        List<OrderStatusResponse> byStatusName = orderRepository.findByOrderStatus(orderStatus).stream().map(
+                order -> OrderStatusResponse.fromOrderStatus(order)
         ).toList();
         return byStatusName;
     }

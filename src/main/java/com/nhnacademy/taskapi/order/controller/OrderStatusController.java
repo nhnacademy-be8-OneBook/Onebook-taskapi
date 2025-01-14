@@ -1,6 +1,5 @@
 package com.nhnacademy.taskapi.order.controller;
 
-import com.nhnacademy.taskapi.order.dto.OrderStatusResponseDto;
 import com.nhnacademy.taskapi.order.service.OrderStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

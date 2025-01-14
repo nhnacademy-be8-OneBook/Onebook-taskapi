@@ -1,8 +1,8 @@
 package com.nhnacademy.taskapi.order.controller;
 
 import com.nhnacademy.taskapi.order.dto.OrderFormRequest;
-import com.nhnacademy.taskapi.order.dto.OrderResponseDto;
-import com.nhnacademy.taskapi.order.dto.OrderStatusResponseDto;
+import com.nhnacademy.taskapi.order.dto.OrderResponse;
+import com.nhnacademy.taskapi.order.dto.OrderStatusResponse;
 import com.nhnacademy.taskapi.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +23,12 @@ public class OrderController {
         return ResponseEntity.created(null).body(newOrderId);
     }
 
+    // TODO pagenamtion 해야됨
     @GetMapping("/task/orders")
-    public ResponseEntity<List<OrderResponseDto>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId) {
-        List<OrderResponseDto> orderList = orderService.getOrderList(memberId);
+    public ResponseEntity<List<OrderResponse>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId) {
+        List<OrderResponse> orderList = orderService.getOrderList(memberId);
 
-        // null일 경우 list 반환 방법
+        // TODO null일 경우 list 반환 방법
         if (orderList == null || orderList.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -35,8 +36,8 @@ public class OrderController {
     }
 
     @GetMapping("/task/admin/orders")
-    public ResponseEntity<List<OrderStatusResponseDto>> getOrdersByStatusName(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestParam String status) {
-        List<OrderStatusResponseDto> ordersByStatusName = orderService.getOrdersByStatusName(status);
+    public ResponseEntity<List<OrderStatusResponse>> getOrdersByStatusName(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestParam String status) {
+        List<OrderStatusResponse> ordersByStatusName = orderService.getOrdersByStatusName(status);
         return ResponseEntity.ok(ordersByStatusName);
     }
 
