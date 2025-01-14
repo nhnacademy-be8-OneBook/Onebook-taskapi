@@ -73,6 +73,7 @@ public class ReviewServiceImpl implements ReviewService {
             throw new ImageLimitExceededException("이미지는 최대 3장까지 첨부할 수 있습니다.");
         }
 
+        // 사진 첨부 포인트 체크
         boolean isPhotoAttached = false;
 
         log.debug("Image URL count: {}", reviewRequest.getImageUrl() != null ? reviewRequest.getImageUrl().size() : 0);
@@ -110,7 +111,6 @@ public class ReviewServiceImpl implements ReviewService {
                     ReviewImage reviewImage = new ReviewImage();
                     reviewImage.setImageUrl(uploadedUrl);
                     reviewImage.setReview(review);
-                    reviewImage.setImageUrl(uploadedUrl);
                     review.getReviewImage().add(reviewImage);
 
                     log.debug("Uploaded review image URL: {}", uploadedUrl);
