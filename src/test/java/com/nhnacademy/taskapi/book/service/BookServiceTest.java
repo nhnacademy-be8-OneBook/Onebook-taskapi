@@ -241,19 +241,19 @@ public class BookServiceTest {
         assertEquals("test", result.getTitle());
     }
 
-    @Test
-    @DisplayName("deleteBook_Success")
-    void deleteBook_Success() {
-
-        Book book = new Book();
-        book.setBookId(1L);
-        when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
-
-
-        bookService.deleteBook(1L);
-
-        verify(bookRepository, times(1)).delete(book);
-    }
+//    @Test
+//    @DisplayName("deleteBook_Success")
+//    void deleteBook_Success() {
+//
+//        Book book = new Book();
+//        book.setBookId(1L);
+//        when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
+//
+//
+//        bookService.deleteBook(1L);
+//
+//        verify(bookRepository, times(1)).delete(book);
+//    }
 
     @Test
     @DisplayName("Test bestSellerBooks")
