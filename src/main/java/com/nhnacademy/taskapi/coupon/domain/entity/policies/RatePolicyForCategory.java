@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = "rate_policies_for_category")
 @Getter
 @NoArgsConstructor
-public class RatePolicyForCategory {
+public class RatePolicyForCategory implements Policy {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

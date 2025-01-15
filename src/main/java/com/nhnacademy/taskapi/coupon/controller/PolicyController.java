@@ -8,10 +8,7 @@ import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdatePr
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdatePricePolicyForCategoryRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdateRatePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdateRatePolicyForCategoryRequest;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.PricePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.PricePolicyForCategoryResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.RatePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.RatePolicyForCategoryResponse;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.*;
 import com.nhnacademy.taskapi.coupon.service.policies.PolicyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -182,6 +179,13 @@ public class PolicyController {
     public ResponseEntity<PricePolicyForCategoryResponse> deletePricePolicyForCategory(@PathVariable Long id)
     {
         PricePolicyForCategoryResponse response = policyService.deletePricePolicyForCategory(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/policies/using")
+    public ResponseEntity<List<UsingPolicyResponse>> getUsingPolicies(){
+
+        List<UsingPolicyResponse> response = policyService.getUsingPolicy();
         return ResponseEntity.ok(response);
     }
 

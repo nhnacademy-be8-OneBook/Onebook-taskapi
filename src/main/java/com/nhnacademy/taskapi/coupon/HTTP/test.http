@@ -54,3 +54,6 @@ Content-Type: application/json
   "couponNumber": "2cbc1add-ed1b-40f5-8493-4197d5f989ff",
   "memberId": 662839895941817076
 }
+
+### 사용되고 있는 정책 조회
+GET localhost:8510/task/policies/using
