@@ -10,27 +10,21 @@ import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdatePr
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdatePricePolicyForCategoryRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdateRatePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdateRatePolicyForCategoryRequest;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.PricePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.PricePolicyForCategoryResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.RatePolicyForBookResponse;
-import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.RatePolicyForCategoryResponse;
-import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForCategory;
+import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.*;
+import com.nhnacademy.taskapi.coupon.domain.entity.policies.*;
 import com.nhnacademy.taskapi.category.exception.CategoryNotFoundException;
 import com.nhnacademy.taskapi.category.repository.CategoryRepository;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddPricePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create.AddRatePolicyForCategoryRequest;
-import com.nhnacademy.taskapi.coupon.domain.entity.policies.PricePolicyForBook;
-import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForBook;
-import com.nhnacademy.taskapi.coupon.domain.entity.policies.RatePolicyForCategory;
+import com.nhnacademy.taskapi.coupon.domain.entity.status.CouponStatus;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.PolicyStatus;
 import com.nhnacademy.taskapi.coupon.exception.PolicyCannotUpdateException;
 import com.nhnacademy.taskapi.coupon.exception.PolicyNotFoundException;
 import com.nhnacademy.taskapi.coupon.exception.PolicyStatusNotFoundException;
-import com.nhnacademy.taskapi.coupon.repository.policies.PricePoliciesForBookRepository;
-import com.nhnacademy.taskapi.coupon.repository.policies.PricePoliciesForCategoryRepository;
-import com.nhnacademy.taskapi.coupon.repository.policies.RatePoliciesForBookRepository;
-import com.nhnacademy.taskapi.coupon.repository.policies.RatePoliciesForCategoryRepository;
+import com.nhnacademy.taskapi.coupon.repository.coupons.CouponQueryRepository;
+import com.nhnacademy.taskapi.coupon.repository.policies.*;
+import com.nhnacademy.taskapi.coupon.repository.status.CouponStatusRepository;
 import com.nhnacademy.taskapi.coupon.repository.status.PolicyStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -52,11 +46,16 @@ public class PolicyService {
     private final CategoryRepository categoryRepository;
     private final BookRepository bookRepository;
     private final PolicyStatusRepository policyStatusRepository;
+    private final CouponStatusRepository couponStatusRepository;
 
     private final RatePoliciesForBookRepository ratePoliciesForBookRepository;
     private final RatePoliciesForCategoryRepository ratePoliciesForCategoryRepository;
     private final PricePoliciesForBookRepository pricePoliciesForBookRepository;
     private final PricePoliciesForCategoryRepository pricePoliciesForCategoryRepository;
+
+    private final PoliciesQueryRepository policiesQueryRepository;
+    private final CouponQueryRepository couponQueryRepository;
+
 
     // 정률정책 for Book save
     public RatePolicyForBookResponse addRatePolicyForBook(AddRatePolicyForBookRequest addRatePolicyForBookRequest){
@@ -357,6 +356,65 @@ public class PolicyService {
         }
 
         return PricePolicyForCategoryResponse.changeEntityToDto(pricePolicyForCategory);
+    }
+
+    public List<UsingPolicyResponse> getUsingPolicy(){
+
+        PolicyStatus usingStatus = policyStatusRepository.findByName("사용됨");
+
+        List<UsingPolicyResponse> usingPolicyResponseList = new ArrayList<>();
+
+       List<RatePolicyForBook> usingRatePoliciesForBook = policiesQueryRepository.getUsingRatePolicyForBook(usingStatus);
+       List<RatePolicyForCategory> usingRatePoliciesForCategory= policiesQueryRepository.getUsingRatePolicyForCategory(usingStatus);
+       List<PricePolicyForBook> usingPricePoliciesForBook = policiesQueryRepository.getUsingPricePolicyForBook(usingStatus);
+       List<PricePolicyForCategory> usingPricePoliciesForCategory = policiesQueryRepository.getUsingPricePolicyForCategory(usingStatus);
+
+       CouponStatus unIssuedStatus = couponStatusRepository.findByName("미발급");
+
+        for(RatePolicyForBook policy : usingRatePoliciesForBook){
+            Long couponCount = getCouponCount(policy,unIssuedStatus);
+            UsingPolicyResponse usingPolicyResponse = UsingPolicyResponse.changePolicyToPolicyResponse(policy,couponCount);
+            usingPolicyResponseList.add(usingPolicyResponse);
+        }
+
+        for(RatePolicyForCategory policy : usingRatePoliciesForCategory){
+            Long couponCount = getCouponCount(policy,unIssuedStatus);
+            UsingPolicyResponse usingPolicyResponse = UsingPolicyResponse.changePolicyToPolicyResponse(policy,couponCount);
+            usingPolicyResponseList.add(usingPolicyResponse);
+        }
+
+        for(PricePolicyForBook policy : usingPricePoliciesForBook){
+            Long couponCount = getCouponCount(policy,unIssuedStatus);
+            UsingPolicyResponse usingPolicyResponse = UsingPolicyResponse.changePolicyToPolicyResponse(policy,couponCount);
+            usingPolicyResponseList.add(usingPolicyResponse);
+        }
+
+        for(PricePolicyForCategory policy : usingPricePoliciesForCategory){
+            Long couponCount = getCouponCount(policy,unIssuedStatus);
+            UsingPolicyResponse usingPolicyResponse = UsingPolicyResponse.changePolicyToPolicyResponse(policy,couponCount);
+            usingPolicyResponseList.add(usingPolicyResponse);
+        }
+
+        return usingPolicyResponseList;
+    }
+
+    public Long getCouponCount(Policy policy, CouponStatus couponStatus){
+
+        if(policy instanceof  RatePolicyForBook){
+            return couponQueryRepository
+                    .getValidCouponCountByPricePolicyForBook(((RatePolicyForBook) policy)
+                            .getRatePolicyForBookId(),couponStatus);
+        }else if(policy instanceof  RatePolicyForCategory){
+            return couponQueryRepository.getValidCouponCountByRatePolicyForCategory(((RatePolicyForCategory) policy)
+                    .getRatePolicyForCategoryId(),couponStatus);
+        }else if(policy instanceof  PricePolicyForBook){
+            return couponQueryRepository.getValidCouponCountByPricePolicyForBook(((PricePolicyForBook) policy)
+                    .getPricePolicyForBookId(),couponStatus);
+        }else{
+            return couponQueryRepository
+                    .getValidCouponCountByPricePolicyForCategory(((PricePolicyForCategory)policy)
+                            .getPricePolicyForCategoryId(),couponStatus);
+        }
 
     }
 
