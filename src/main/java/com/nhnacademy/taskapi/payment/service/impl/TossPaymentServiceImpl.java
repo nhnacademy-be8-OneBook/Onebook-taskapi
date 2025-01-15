@@ -13,6 +13,7 @@ import com.nhnacademy.taskapi.payment.exception.InsufficientPointException;
 import com.nhnacademy.taskapi.payment.exception.InvalidPaymentException;
 import com.nhnacademy.taskapi.payment.exception.PaymentNotFoundException;
 import com.nhnacademy.taskapi.payment.repository.PaymentRepository;
+import com.nhnacademy.taskapi.payment.service.CommonPaymentService;
 import com.nhnacademy.taskapi.point.domain.Point;
 import com.nhnacademy.taskapi.point.jpa.JpaPointRepository;
 import com.nhnacademy.taskapi.point.service.PointService;
@@ -32,7 +33,6 @@ import java.util.Map;
 
 /**
  * 결제 승인 시점(DONE)에 포인트 차감
- * PaymentMethod는 cascade=ALL 구조라서 Payment만 save 해도 자동 저장
  */
 @Service
 @RequiredArgsConstructor
@@ -47,6 +47,7 @@ public class TossPaymentServiceImpl {
     private static final String TOSS_SECRET_KEY = "test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6";
     private final PointService pointService;
     private final MemberRepository memberRepository;
+    private final CommonPaymentService commonPaymentService; // 새로 주입
 
     @Transactional
     public TossConfirmResponse confirmTossPayment(TossConfirmRequest request) {
@@ -69,6 +70,8 @@ public class TossPaymentServiceImpl {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Basic " + base64Secret);
+
+        // 응답을 영어로 받기 위해.. 한글로 받으면 깨짐
         headers.set("Accept-Language", "en-US");
 
         int approveAmount;
@@ -145,40 +148,16 @@ public class TossPaymentServiceImpl {
             pm.setCardType((String) cardObj.get("cardType"));
             pm.setCardApproveNo((String) cardObj.get("approveNo"));
             pm.setCardInstallmentPlanMonths((Integer) cardObj.get("installmentPlanMonths"));
+        } else {
+            pm.setCardAmount(approveAmount);
+            pm.setCardType("CASH");
+            pm.setCardOwnerType("PERSONAL");
         }
-        // 여기서 paymentMethodRepository.save(pm) 안 함 → cascade=ALL
+        // cascade=ALL
 
         // 4) 결제가 DONE이면 포인트 차감
         if ("DONE".equals(status)) {
-            int usedPoint = payment.getPoint();
-            Long memberId = payment.getOrder().getMember().getId();
-
-            Point userPoint = pointRepository.findByMember_Id(memberId)
-                    .orElseThrow(() -> new PaymentNotFoundException("회원 포인트를 찾을 수 없습니다."));
-
-            if (userPoint.getAmount() < usedPoint) {
-                throw new InsufficientPointException("포인트가 부족합니다.");
-            }
-//            userPoint.setAmount(userPoint.getAmount() - usedPoint);
-//            pointRepository.save(userPoint);
-            pointService.usePointsForPayment(memberId, usedPoint);
-
-            Order order = payment.getOrder();
-            // 순수 결제 금액
-            // 여기서 order.getTotalPrice()는 배송비와 포장비가 포함되지 않은 금액임.
-            int onlyBookAmount = order.getTotalPrice() - usedPoint;
-
-            // 만약 책값 18000원 + 배송비 3천원으로 총 결제금액이 21000원이 나와서
-            // 포인트로 2만원을 썼다고 가정하면
-            // 구매로 인한 적립은 "순수 도서 구매 금액"의 일정 %를 적립하기 때문에
-            // 총 결제금액 21000원 - 배송비 3천원 - 포인트 2만원 = -2000원
-            // 때문에 적립이 아니라 오히려 차감이 되어버리는 현상이 있음.
-            // 그래서 순수결제금액이 양수일때만 포인트 적립을 해야함.
-            if (onlyBookAmount > 0) {
-                Member member = memberRepository.findById(memberId)
-                        .orElseThrow(() -> new InvalidPaymentException("회원을 찾을 수 없습니다."));
-                pointService.registerPurchasePoints(member, onlyBookAmount);
-            }
+            commonPaymentService.handlePaymentCompletion(payment);
         }
 
         // 5) Payment 상태 업데이트
@@ -225,3 +204,4 @@ public class TossPaymentServiceImpl {
     }
 
 }
+
