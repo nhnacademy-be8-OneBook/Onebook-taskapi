@@ -1,25 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
-    <springProperty scope="context" name="LOG_DIR" source="log.directory"/>
-    <timestamp key="BY_DATE" datePattern="yyyy-MM-dd"/>
+    <springProperty scope="context" name="LOG_DIR" source="log.directory" />
+    <timestamp key="BY_DATE" datePattern="yyyy-MM-dd" />
 
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
 
     <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="CONSOLE" />
     </root>
 
     <springProfile name="dev">
         <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="CONSOLE" />
         </root>
     </springProfile>
 
-
-    <springProfile name="dev">
-        <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-        <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <springProfile name="prod">
+        <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
 
         <appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>${LOG_DIR}/error/error-${BY_DATE}.log</file>
@@ -37,31 +37,19 @@
             </encoder>
         </appender>
 
-        <!-- NHN Cloud LogNCrashHttpAppender  -->
-        <appender name="logNCrashHttp" class="com.toast.java.logncrash.logback.LogNCrashHttpAppender">
-            <appKey value="nMWnKdBvAFvUW8XL" />
-            <logSource value="dev" />
-            <version value="1.0.0" />
-            <logType value="1nebook-log" />
-            <debug value="true" />
-            <category value="1nebook"/>
-            <errorCodeType value="action"/>
+        <appender name="NHN_LOG_CRASH_APPENDER" class="com.nhnacademy.bookstore.global.appender.LogCrashAppender">
+            <url>https://api-logncrash.cloud.toast.com/v2/log</url>
         </appender>
 
-        <appender name="LNCS-APPENDER" class="ch.qos.logback.classic.AsyncAppender">
+        <appender name="ASYNC_NHN_LOG_CRASH_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>INFO</level>
             </filter>
-            <includeCallerData value="false"/>
-            <queueSize value="2048"/>
-            <neverBlock value="true"/>
-            <maxFlushTime value="60000"/>
-            <appender-ref ref="logNCrashHttp"/>
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %magenta([%thread]) %highlight([%-3level]) %logger{5} - %msg %n</pattern>
+            </encoder>
+            <appender-ref ref="NHN_LOG_CRASH_APPENDER"/>
         </appender>
-
-        <logger name="user-logger" additivity="false">
-            <appender-ref ref="LNCS-APPENDER"/>
-        </logger>
 
         <appender name="FILE-INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>${LOG_DIR}/info/info-${BY_DATE}.log</file>
@@ -80,11 +68,10 @@
         </appender>
 
         <root level="INFO">
-            <appender-ref ref="FILE-ERROR"/>
-            <appender-ref ref="FILE-INFO"/>
-            <appender-ref ref="ASYNC_NHN_LOG_CRASH_APPENDER"/>
-            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE-ERROR" />
+            <appender-ref ref="FILE-INFO" />
+            <appender-ref ref="ASYNC_NHN_LOG_CRASH_APPENDER" />
+            <appender-ref ref="CONSOLE" />
         </root>
     </springProfile>
-
 </configuration>

@@ -140,33 +140,6 @@
             <version>5.0.0</version>
             <classifier>jakarta</classifier>
         </dependency>
-
-        <!-- log crash -->
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20171018</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.4.11</version>
-        </dependency>
-
-        <dependency>
-   <groupId>com.toast.java.logncrash</groupId>
-   <artifactId>logncrash-java-sdk3</artifactId>
-   <version>3.x.x</version>
-   <scope>system</scope>
-   <systemPath>${project.basedir}/libs/toast-logncrash-logback-sdk-3.0.5.jar</systemPath>
-    </dependency>
-
-
     </dependencies>
 
     <dependencyManagement>
