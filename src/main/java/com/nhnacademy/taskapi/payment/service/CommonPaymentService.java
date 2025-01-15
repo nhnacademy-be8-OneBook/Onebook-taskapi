@@ -76,7 +76,6 @@ public class CommonPaymentService {
         int onlyBookAmount = payment.getOrder().getTotalPrice() - usedPoint;
 
         // order.getTotalPrice()는 배송비, 포장비 제외한 순수 도서가격이라고 가정
-        // 실제로는 프로젝트마다 로직 다를 수 있음
         if (onlyBookAmount > 0) {
             Long memberId = payment.getOrder().getMember().getId();
             Member member = memberRepository.findById(memberId)
@@ -112,6 +111,8 @@ public class CommonPaymentService {
         }
 
         // 2) 순수 도서금액(= order.totalPrice - usedPoint)이 양수일 경우 적립
+        // 음수일 경우에는 구매를 했는데 오히려 포인트가 차감되는 현상을 방지하기 위함
+        // ex) 결제금액 3만원 - 포인트사용 28000원 - 배달비 5천원 - 포장비 3천원
         Order order = payment.getOrder();
         int onlyBookAmount = order.getTotalPrice() - payment.getPoint();
         if (onlyBookAmount > 0) {
