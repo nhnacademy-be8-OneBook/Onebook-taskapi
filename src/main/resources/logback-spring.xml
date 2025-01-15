@@ -17,7 +17,7 @@
     </springProfile>
 
 
-    <springProfile name="prod">
+    <springProfile name="dev">
         <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
         <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
@@ -39,7 +39,7 @@
 
         <!-- NHN Cloud LogNCrashHttpAppender  -->
         <appender name="logNCrashHttp" class="com.toast.java.logncrash.logback.LogNCrashHttpAppender">
-            <appKey value="YnMWnKdBvAFvUW8XL" />
+            <appKey value="nMWnKdBvAFvUW8XL" />
             <logSource value="dev" />
             <version value="1.0.0" />
             <logType value="1nebook-log" />
