@@ -181,7 +181,7 @@ public class MemberServiceTest {
         Mockito.when(gradeService.getDefaultGrade()).thenReturn(gradeResponseDto);
         Mockito.when(roleService.getDefaultRole()).thenReturn(roleResponseDto);
         Mockito.when(memberRepository.save(Mockito.any())).thenReturn(member);
-        Mockito.doNothing().when(pointService).registerMemberPoints(Mockito.any());
+//        Mockito.doNothing().when(pointService).registerMemberPoints(Mockito.any());
 
        MemberResponseDto result =  memberService.registerMember(new MemberRegisterRequestDto(
                 "김주혁",

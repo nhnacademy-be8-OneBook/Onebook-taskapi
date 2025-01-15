@@ -7,8 +7,8 @@ import com.nhnacademy.taskapi.coupon.domain.entity.coupons.Coupon;
 import com.nhnacademy.taskapi.coupon.domain.entity.coupons.IssuedCoupon;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.CouponStatus;
 import com.nhnacademy.taskapi.coupon.exception.CouponNotFoundException;
+import com.nhnacademy.taskapi.coupon.repository.coupons.CouponBoxQueryRepository;
 import com.nhnacademy.taskapi.coupon.repository.coupons.CouponBoxRepository;
-import com.nhnacademy.taskapi.coupon.repository.coupons.CouponBoxRepositoryImpl;
 import com.nhnacademy.taskapi.coupon.repository.coupons.CouponRepository;
 import com.nhnacademy.taskapi.coupon.repository.status.CouponStatusRepository;
 import com.nhnacademy.taskapi.member.domain.Member;
@@ -24,7 +24,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CouponBoxService {
 
-    private final CouponBoxRepositoryImpl couponBoxRepository;
+    private final CouponBoxRepository couponBoxRepository;
+    private final CouponBoxQueryRepository couponBoxQueryRepository;
     private final CouponRepository couponRepository;
     private final MemberRepository memberRepository;
 
@@ -70,7 +71,7 @@ public class CouponBoxService {
 
         CouponStatus couponStatus = couponStatusRepository.findByName("발급-삭제불가");
 
-        Page<IssuedCoupon> couponsOfMember = couponBoxRepository.getValidIssuedCoupon(memberId,couponStatus,pageable);
+        Page<IssuedCoupon> couponsOfMember = couponBoxQueryRepository.getValidIssuedCoupon(member.getId(),couponStatus,pageable);
 
         return couponsOfMember.map(IssuedCouponResponse::changeEntityToDto);
     }
