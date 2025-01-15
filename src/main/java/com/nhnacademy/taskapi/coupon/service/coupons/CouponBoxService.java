@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -35,10 +36,12 @@ public class CouponBoxService {
 
     private final PolicyService policyService;
 
-    public IssuedCouponResponse issueCouponToMember(IssueCouponToMemberRequest issueCouponToMemberRequest){
+    @Transactional
+    public IssuedCouponResponse issueCouponToMember(Long memberId,
+                                                    IssueCouponToMemberRequest issueCouponToMemberRequest){
 
         Member member = memberRepository.
-                findById(issueCouponToMemberRequest.getMemberId()).orElseThrow
+                findById(memberId).orElseThrow
                         (()->new MemberNotFoundException("해당하는 ID의 멤버가 존재하지 않습니다"));
 
         Coupon coupon = couponRepository.findByCouponNumber(
@@ -47,9 +50,13 @@ public class CouponBoxService {
 
         IssuedCoupon issuedCoupon = couponBoxRepository.save(IssuedCoupon.createIssuedCoupon(coupon,member));
 
+        CouponStatus issuedStatus = couponStatusRepository.findByName("발급-삭제가능");
+        coupon.changeIssuedStatus(issuedStatus);
+
         return IssuedCouponResponse.changeEntityToDto(issuedCoupon);
     }
 
+    @Transactional
     public IssuedCouponResponse issueWelcomeCouponToMember(String loginId){
 
         CouponResponse couponResponse = couponService.createWelcomeCoupon();
@@ -69,6 +76,7 @@ public class CouponBoxService {
         return IssuedCouponResponse.changeEntityToDto(issuedCoupon);
     }
 
+    @Transactional
     public Page<IssuedCouponResponse> getIssuedCouponsByMemberId(Pageable pageable, Long memberId){
 
         Member member = memberRepository.findById(memberId)
