@@ -38,22 +38,30 @@
         </appender>
 
         <!-- NHN Cloud LogNCrashHttpAppender  -->
-        <appender name="LOGNCRASH_HTTP" class="com.toast.java.logncrash.logback.LogNCrashHttpAppender">
+        <appender name="logNCrashHttp" class="com.toast.java.logncrash.logback.LogNCrashHttpAppender">
             <appKey value="YnMWnKdBvAFvUW8XL" />
-            <logSource value="prod" />
+            <logSource value="dev" />
             <version value="1.0.0" />
             <logType value="1nebook-log" />
-            <debug value="false" />
+            <debug value="true" />
+            <category value="1nebook"/>
+            <errorCodeType value="action"/>
         </appender>
 
-        <appender name="ASYNC_NHN_LOG_CRASH_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
+        <appender name="LNCS-APPENDER" class="ch.qos.logback.classic.AsyncAppender">
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>INFO</level>
             </filter>
-            <queueSize>2048</queueSize>
-            <neverBlock>true</neverBlock>
-            <appender-ref ref="LOGNCRASH_HTTP"/>
+            <includeCallerData value="false"/>
+            <queueSize value="2048"/>
+            <neverBlock value="true"/>
+            <maxFlushTime value="60000"/>
+            <appender-ref ref="logNCrashHttp"/>
         </appender>
+
+        <logger name="user-logger" additivity="false">
+            <appender-ref ref="LNCS-APPENDER"/>
+        </logger>
 
         <appender name="FILE-INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>${LOG_DIR}/info/info-${BY_DATE}.log</file>
