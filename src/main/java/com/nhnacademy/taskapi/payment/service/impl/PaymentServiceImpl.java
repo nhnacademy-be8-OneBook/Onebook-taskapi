@@ -14,6 +14,7 @@ import com.nhnacademy.taskapi.payment.exception.InsufficientPointException;
 import com.nhnacademy.taskapi.payment.exception.InvalidPaymentException;
 import com.nhnacademy.taskapi.payment.exception.PaymentNotFoundException;
 import com.nhnacademy.taskapi.payment.repository.PaymentRepository;
+import com.nhnacademy.taskapi.payment.service.CommonPaymentService;
 import com.nhnacademy.taskapi.payment.service.PaymentService;
 import com.nhnacademy.taskapi.point.domain.Point;
 import com.nhnacademy.taskapi.point.jpa.JpaPointRepository;
@@ -38,6 +39,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final MemberRepository memberRepository;
     private final JpaPointRepository pointRepository;
     private final PointService pointService;
+    private final CommonPaymentService commonPaymentService; // 새로 주입
 
     @Override
     @Transactional
@@ -61,7 +63,8 @@ public class PaymentServiceImpl implements PaymentService {
                 // 만약 newFinalPayAmount == 0 이면 => 전액 포인트 결제
                 if (newFinalPayAmount == 0) {
                     // 즉시 DONE 처리
-                    handleFullPointPayment(existingPayment, memberId);
+                    // 기존 handleFullPointPayment() 대신 commonPaymentService 호출
+                    commonPaymentService.handleFullPointPayment(existingPayment, memberId);
                 }
 
                 paymentRepository.save(existingPayment);
@@ -102,7 +105,7 @@ public class PaymentServiceImpl implements PaymentService {
         if (finalPayAmount == 0) {
             // 전액 포인트 결제 → 즉시 DONE 처리
             newPayment.setStatus("DONE");
-            handleFullPointPayment(newPayment, memberId);
+            commonPaymentService.handleFullPointPayment(newPayment, memberId);
         } else {
             // 토스/외부결제 진행을 위해 READY
             newPayment.setStatus("READY");
@@ -111,57 +114,6 @@ public class PaymentServiceImpl implements PaymentService {
         Payment saved = paymentRepository.save(newPayment);
         return buildPaymentResponse(saved, orderIdStr);
     }
-
-
-    /**
-     * 전액 포인트 결제 시, Payment 상태=Done & 포인트 차감, PaymentMethod 생성
-     */
-    private void handleFullPointPayment(Payment payment, Long memberId) {
-        // 1) 회원 포인트 충분한지 체크
-        Point userPoint = pointRepository.findByMember_Id(memberId)
-                .orElseThrow(() -> new InvalidPaymentException("포인트 정보가 없습니다."));
-        int usedPoint = payment.getPoint();
-        if (userPoint.getAmount() < usedPoint) {
-            throw new InsufficientPointException("보유 포인트가 부족하여 전액 포인트 결제를 진행할 수 없습니다.");
-        }
-
-        // 2) 포인트 차감
-//        userPoint.setAmount(userPoint.getAmount() - usedPoint);
-//        pointRepository.save(userPoint);
-        pointService.usePointsForPayment(memberId, usedPoint);
-
-        // 3) PaymentMethod를 "POINT" 방식으로 생성 (cascade=ALL 가정)
-        PaymentMethod pm = payment.getPaymentMethod();
-        if (pm == null) {
-            pm = new PaymentMethod();
-            payment.setPaymentMethod(pm);
-        }
-
-        pm.setType("POINT");
-        pm.setMethod("POINT");
-
-        // paymentKey 예) "POINT_20250108_1610_abcdef"
-        String randomSuffix = generateRandomString(6);
-        String formattedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-        String pointPaymentKey = "POINT_" + formattedDate + "_" + randomSuffix;
-        pm.setPaymentKey(pointPaymentKey);
-
-        // Payment이 즉시 결제완료가 되므로 approvedAt도 지금 시각
-        payment.setApprovedAt(LocalDateTime.now());
-        payment.setStatus("DONE");
-    }
-
-    // 랜덤 문자열 생성 유틸
-    private String generateRandomString(int length) {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
-        StringBuilder sb = new StringBuilder();
-        Random rnd = new Random();
-        for(int i = 0; i < length; i++) {
-            sb.append(chars.charAt(rnd.nextInt(chars.length())));
-        }
-        return sb.toString();
-    }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -251,3 +203,4 @@ public class PaymentServiceImpl implements PaymentService {
                 .build();
     }
 }
+
