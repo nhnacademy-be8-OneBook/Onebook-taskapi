@@ -11,6 +11,7 @@ import com.nhnacademy.taskapi.coupon.repository.coupons.CouponBoxQueryRepository
 import com.nhnacademy.taskapi.coupon.repository.coupons.CouponBoxRepository;
 import com.nhnacademy.taskapi.coupon.repository.coupons.CouponRepository;
 import com.nhnacademy.taskapi.coupon.repository.status.CouponStatusRepository;
+import com.nhnacademy.taskapi.coupon.service.policies.PolicyService;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
@@ -31,6 +32,8 @@ public class CouponBoxService {
 
     private final CouponService couponService;
     private final CouponStatusRepository couponStatusRepository;
+
+    private final PolicyService policyService;
 
     public IssuedCouponResponse issueCouponToMember(IssueCouponToMemberRequest issueCouponToMemberRequest){
 
@@ -60,6 +63,8 @@ public class CouponBoxService {
 
         IssuedCoupon issuedCoupon =
                 couponBoxRepository.save(IssuedCoupon.createIssuedCoupon(welcomeCoupon,newMember));
+
+        policyService.deleteRatePolicyForCategory(welcomeCoupon.getRatePolicyForCategory().getRatePolicyForCategoryId());
 
         return IssuedCouponResponse.changeEntityToDto(issuedCoupon);
     }

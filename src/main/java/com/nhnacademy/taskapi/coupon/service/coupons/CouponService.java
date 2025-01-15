@@ -219,7 +219,7 @@ public class CouponService {
 
         LocalDateTime startDate = LocalDateTime.now();
         LocalDateTime endDate = startDate.plusDays(30);
-        PolicyStatus policyStatus = policyStatusRepository.findByName("미사용");
+        PolicyStatus policyStatus = policyStatusRepository.findByName("사용됨");
         CouponStatus couponStatus = couponStatusRepository.findByName("발급-삭제가능");
         Category category = categoryRepository.findByName("전체");
 
