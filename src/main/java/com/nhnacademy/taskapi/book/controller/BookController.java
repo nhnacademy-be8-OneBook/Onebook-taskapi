@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/task/book")
@@ -52,6 +54,12 @@ public class BookController {
     @GetMapping("/newbooks")
     public ResponseEntity<Page<Book>> newbooksBook(Pageable pageable){
         Page<Book> books = bookService.newBooks(pageable);
+        return ResponseEntity.ok().body(books);
+    }
+
+    @GetMapping("/newbooks/top4")
+    public ResponseEntity<List<Book>> top4Books(){
+        List<Book> books = bookService.newBooksTop4();
         return ResponseEntity.ok().body(books);
     }
 

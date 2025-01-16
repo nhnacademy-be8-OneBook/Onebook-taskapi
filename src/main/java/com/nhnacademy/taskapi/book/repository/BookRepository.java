@@ -17,7 +17,13 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("select b from Book b order by b.amount desc ")
     Page<Book> findAllByOrderByAmount(Pageable pageable);
 
-    Page<Book> findAllByStatusFalseOrderByPubdate(Pageable pageable);
+
+    List<Book> findTop4ByStatusFalseOrderByPubdateAsc();
 
     Page<Book> findAllByStatusFalseOrderByTitleAsc(Pageable pageable);
+    //인기순 책 리스트
+    Page<Book> findAllByStatusFalseOrderByAmountDesc(Pageable pageable);
+    //신간 책 리스트
+    Page<Book> findAllByStatusFalseOrderByPubdateDesc(Pageable pageable);
+
 }
