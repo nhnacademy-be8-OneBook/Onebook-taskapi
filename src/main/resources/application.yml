@@ -9,16 +9,10 @@ spring:
     cache-duration: 3600
     always-use-message-format: true
 
-  datasource:
-    url: jdbc:mysql://133.186.241.167:3306/nhn_academy_9?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: nhn_academy_9
-    password: iRz&E!F&XxG4d?kP
-
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
