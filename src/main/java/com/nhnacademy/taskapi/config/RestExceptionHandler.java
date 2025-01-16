@@ -1,19 +1,14 @@
 package com.nhnacademy.taskapi.config;
 
+import com.nhnacademy.taskapi.cart.exception.CartIllegalArgumentException;
+import com.nhnacademy.taskapi.cart.exception.CartNotFoundException;
 import com.nhnacademy.taskapi.exception.dto.ErrorResponse;
-import com.nhnacademy.taskapi.grade.exception.GradeAlreadyExistsException;
-import com.nhnacademy.taskapi.grade.exception.GradeDataIntegrityViolationException;
 import com.nhnacademy.taskapi.grade.exception.GradeIllegalArgumentException;
 import com.nhnacademy.taskapi.grade.exception.GradeNotFoundException;
-import com.nhnacademy.taskapi.member.exception.MemberAlreadyExistsException;
-import com.nhnacademy.taskapi.member.exception.MemberDataIntegrityViolationException;
 import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
-import com.nhnacademy.taskapi.roles.exception.RoleAlreadyExistsException;
-import com.nhnacademy.taskapi.roles.exception.RoleDataIntegrityViolationException;
 import com.nhnacademy.taskapi.roles.exception.RoleIllegalArgumentException;
 import com.nhnacademy.taskapi.roles.exception.RoleNotFoundException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +24,7 @@ public class RestExceptionHandler {
             MemberNotFoundException.class,
             GradeNotFoundException.class,
             RoleNotFoundException.class,
+            CartNotFoundException.class
     })
     public ResponseEntity<ErrorResponse> handleNotFoundException(ChangeSetPersister.NotFoundException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.NOT_FOUND.value());
@@ -40,9 +36,7 @@ public class RestExceptionHandler {
             MemberIllegalArgumentException.class,
             GradeIllegalArgumentException.class,
             RoleIllegalArgumentException.class,
-            MemberAlreadyExistsException.class,
-            GradeAlreadyExistsException.class,
-            RoleAlreadyExistsException.class,
+            CartIllegalArgumentException.class,
     })
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
@@ -56,15 +50,5 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
-    // DataIntegrityViolationException
-    @ExceptionHandler({
-            MemberDataIntegrityViolationException.class,
-            GradeDataIntegrityViolationException.class,
-            RoleDataIntegrityViolationException.class,
-    })
-    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
-        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
 
 }

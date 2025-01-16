@@ -11,14 +11,14 @@ public interface PointPolicyService {
     PointPolicyResponse createPointPolicy(CreatePointPolicyRequest policyRequest);
 
     // 포인트 정책 단건 조회
-    PointPolicyResponse findPointPolicyById(String pointPolicyId);
+    PointPolicyResponse findPointPolicyById(Long pointPolicyId);
 
     // 포인트 정책 목록 조회
     Page<PointPolicyResponse> findAllPointPolicies(Pageable pageable);
 
-    // 포인트 정책 수정 (적립 금액)
-    PointPolicyResponse updatePointPolicyById(String pointPolicyId, PointPolicyRequest policyRequest);
+    // 포인트 정책 수정
+    PointPolicyResponse updatePointPolicyById(Long pointPolicyId, PointPolicyRequest policyRequest);
 
     // 포인트 정책 삭제
-    void deletePointPolicyById(String pointPolicyId);
+    void deletePointPolicyById(Long pointPolicyId);
 }

@@ -29,6 +29,7 @@ public class Member {
     @JoinColumn(name="grade_id", nullable=false)
     private Grade grade;
 
+    @Setter
     @ManyToOne
     @JoinColumn(name="role_id", nullable=false)
     private Role role;
@@ -52,11 +53,11 @@ public class Member {
 
     @Email
     @NotBlank
-    @Column(name="email", unique=true)
+    @Column(name="email")
     private String email;
 
     @NotBlank
-    @Column(name="phone_number", unique = true)
+    @Column(name="phone_number")
     private String phoneNumber;
 
     @Setter
@@ -64,7 +65,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Status status; // default: ACTIVE
 
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @Setter
@@ -90,7 +91,7 @@ public class Member {
         return new Member(grade, name, loginId, password, dateOfBirth, gender, email, phoneNumber, role, status, createdAt, lastLoginAt);
     }
 
-    // 멤버 수정 - MemberModifyDto 참고.
+    // 멤버 수정 - MemberModifyRequestDto 참고.
     public void modifyMember(String name, String password, String email, String phoneNumber) {
         this.name = name;
         this.password = password;

@@ -22,9 +22,11 @@ public class Like {
 
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 }

@@ -20,12 +20,15 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int categoryId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "category_parent_id")
     private Category parentCategory;
 
 
     @NotBlank
     @Length(max = 20)
+    @Column(nullable = false)
     private String name;
+
+    private boolean status = false;
 }

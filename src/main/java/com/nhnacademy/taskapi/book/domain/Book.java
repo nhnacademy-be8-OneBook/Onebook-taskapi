@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.book.domain;
 
 import com.nhnacademy.taskapi.publisher.domain.Publisher;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -27,42 +28,39 @@ public class Book {
 
     // 출판사 - 책 단방향 다대일
     @ManyToOne(optional = false)
+    @JoinColumn(name = "publisher_id", nullable = false)
     private Publisher publisher;
 
-    @NotBlank
-    @Length(max = 100)
+
+    @Column(nullable = false)
     private String title;
 
-    @NotBlank
-    @Length(max = 100)
     private String content;
 
-    @NotBlank
+    @Column(nullable = false)
     private String description;
 
     @NotBlank
     @Length(max = 20)
+    @Column(nullable = false)
     private String isbn13;
 
     @NotNull
+    @Column(nullable = false)
+    @Min(0)
     private int price;
 
     @NotNull
+    @Column(nullable = false)
+    @Min(0)
     private int salePrice;
-
 
     private long amount;
 
-
     private long views;
 
-
-
+    @Column(nullable = false)
     private LocalDate pubdate;
 
-
-
-
-
-
+    private boolean status = false;
 }

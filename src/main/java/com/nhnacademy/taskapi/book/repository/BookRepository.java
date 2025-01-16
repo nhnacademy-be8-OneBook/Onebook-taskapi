@@ -15,5 +15,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     //베스트셀러 목록 조회( 판매량 )
     @Query("select b from Book b order by b.amount desc ")
-    Page<Book> findTop50ByAmount(Pageable pageable);
+    Page<Book> findAllByOrderByAmount(Pageable pageable);
+
+    Page<Book> findAllByStatusFalseOrderByPubdate(Pageable pageable);
+
+    Page<Book> findAllByStatusFalseOrderByTitleAsc(Pageable pageable);
 }

@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.review.domain;
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.member.domain.Member;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class Review {
     @Column(nullable = false)
     private int grade = 5; // default
 
-    @Column(nullable = false, length = 255)
+    @NotBlank
     private String description;
 
     @Column(nullable = false)
