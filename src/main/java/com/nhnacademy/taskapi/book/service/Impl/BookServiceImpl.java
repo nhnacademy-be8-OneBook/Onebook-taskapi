@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -169,11 +170,11 @@ public class BookServiceImpl implements BookService {
     // 베스트셀러 목록 조회
     @Override
     public Page<Book> bestSellerBooks(Pageable pageable) {
-        return bookRepository.findAllByOrderByAmount(pageable);
+        return bookRepository.findAllByStatusFalseOrderByAmountDesc(pageable);
     }
     @Override
     public Page<Book> newBooks(Pageable pageable) {
-        return bookRepository.findAllByStatusFalseOrderByPubdate(pageable);
+        return bookRepository.findAllByStatusFalseOrderByPubdateDesc(pageable);
     }
     //책 조회
     @Override
@@ -188,4 +189,11 @@ public class BookServiceImpl implements BookService {
     public Page<Book> findAllBooks(Pageable pageable) {
         return bookRepository.findAllByStatusFalseOrderByTitleAsc(pageable);
     }
+
+    @Override
+    public List<Book> newBooksTop4() {
+        return bookRepository.findTop4ByStatusFalseOrderByPubdateAsc();
+    }
+
+
 }
