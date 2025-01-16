@@ -1,22 +1,14 @@
 package com.nhnacademy.taskapi.payment.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.taskapi.member.domain.Member;
-import com.nhnacademy.taskapi.member.repository.MemberRepository;
-import com.nhnacademy.taskapi.order.entity.Order;
-import com.nhnacademy.taskapi.order.repository.OrderRepository;
 import com.nhnacademy.taskapi.payment.domain.Payment;
 import com.nhnacademy.taskapi.payment.domain.PaymentMethod;
 import com.nhnacademy.taskapi.payment.dto.toss.TossConfirmRequest;
 import com.nhnacademy.taskapi.payment.dto.toss.TossConfirmResponse;
-import com.nhnacademy.taskapi.payment.exception.InsufficientPointException;
-import com.nhnacademy.taskapi.payment.exception.InvalidPaymentException;
 import com.nhnacademy.taskapi.payment.exception.PaymentNotFoundException;
 import com.nhnacademy.taskapi.payment.repository.PaymentRepository;
 import com.nhnacademy.taskapi.payment.service.CommonPaymentService;
-import com.nhnacademy.taskapi.point.domain.Point;
 import com.nhnacademy.taskapi.point.jpa.JpaPointRepository;
-import com.nhnacademy.taskapi.point.service.PointService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -45,8 +37,6 @@ public class TossPaymentServiceImpl {
     // 이를 Map<String, Object>로 변환하여 쉽게 접근할 수 있도록 함
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final String TOSS_SECRET_KEY = "test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6";
-    private final PointService pointService;
-    private final MemberRepository memberRepository;
     private final CommonPaymentService commonPaymentService; // 새로 주입
 
     @Transactional
@@ -155,9 +145,10 @@ public class TossPaymentServiceImpl {
         }
         // cascade=ALL
 
-        // 4) 결제가 DONE이면 포인트 차감
+        // 4) 결제가 DONE이면 포인트 차감, 적립
         if ("DONE".equals(status)) {
-            commonPaymentService.handlePaymentCompletion(payment);
+            commonPaymentService.usedPurchasePoint(payment); // 차감
+            commonPaymentService.accumulationPurchasePoints(payment); // 적립
         }
 
         // 5) Payment 상태 업데이트

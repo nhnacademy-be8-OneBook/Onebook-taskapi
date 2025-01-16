@@ -117,7 +117,7 @@ public class MemberServiceImpl implements MemberService {
         try {
 
             Member result = memberRepository.save(member);
-//            pointService.registerMemberPoints(result);
+            pointService.registerMemberPoints(result);
             return MemberResponseDto.from(result);
 
         }catch(DataIntegrityViolationException e) {
