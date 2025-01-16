@@ -10,16 +10,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CouponRepository extends JpaRepository<Coupon, Long> {
     Optional<Coupon> findByCouponNumber(String couponNumber);
 
-    Page<Coupon> findByRatePolicyForBookAndCouponStatus(RatePolicyForBook ratePolicyForBook, CouponStatus couponStatus, Pageable pageable);
+    List<Coupon> findByRatePolicyForBookAndCouponStatus(RatePolicyForBook ratePolicyForBook, CouponStatus couponStatus);
 
-    Page<Coupon> findByRatePolicyForCategoryAndCouponStatus(RatePolicyForCategory ratePolicyForCategory, CouponStatus couponStatus, Pageable pageable);
+    List<Coupon> findByRatePolicyForCategoryAndCouponStatus(RatePolicyForCategory ratePolicyForCategory, CouponStatus couponStatus);
 
-    Page<Coupon> findByPricePolicyForBookAndCouponStatus(PricePolicyForBook pricePolicyForBook, CouponStatus couponStatus, Pageable pageable);
+    List<Coupon> findByPricePolicyForBookAndCouponStatus(PricePolicyForBook pricePolicyForBook, CouponStatus couponStatus);
 
-    Page<Coupon> findByPricePolicyForCategoryAndCouponStatus(PricePolicyForCategory pricePolicyForCategory, CouponStatus couponStatus, Pageable pageable);
+    List<Coupon> findByPricePolicyForCategoryAndCouponStatus(PricePolicyForCategory pricePolicyForCategory, CouponStatus couponStatus);
 }
