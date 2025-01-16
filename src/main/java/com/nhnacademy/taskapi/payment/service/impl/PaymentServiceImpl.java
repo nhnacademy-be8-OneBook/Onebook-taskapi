@@ -25,8 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -51,14 +49,24 @@ public class PaymentServiceImpl implements PaymentService {
         if (existingPayment != null) {
             // 이미 Payment가 존재하는 상황
             if ("READY".equals(existingPayment.getStatus())) {
+                // 전체 결제 금액
                 int orderTotalAmount = existingPayment.getOrder().getTotalPrice() + existingPayment.getOrder().getDeliveryPrice() + existingPayment.getOrder().getPackagingPrice();
                 int newUsedPoint = paymentRequest.getUsedPoint();
                 int newFinalPayAmount = orderTotalAmount - newUsedPoint;
+
+                // 순수 결제 금액
+                int newOnlyBookAmount = existingPayment.getOrder().getTotalPrice() - newUsedPoint;
+
+                if (newOnlyBookAmount < 0) {
+                    newOnlyBookAmount = 0;
+                }
+
                 if (newFinalPayAmount < 0) {
                     throw new InvalidPaymentException("포인트 사용액이 주문 금액을 초과합니다.");
                 }
                 existingPayment.setPoint(newUsedPoint);
                 existingPayment.setTotalAmount(newFinalPayAmount);
+                existingPayment.setOnlyBookAmount(newOnlyBookAmount);
 
                 // 만약 newFinalPayAmount == 0 이면 => 전액 포인트 결제
                 if (newFinalPayAmount == 0) {
@@ -89,9 +97,14 @@ public class PaymentServiceImpl implements PaymentService {
 
         // 최종 결제금액
         int usedPoint = paymentRequest.getUsedPoint();
-        int finalPayAmount = order.getTotalPrice() + order.getDeliveryPrice() + order.getPackagingPrice() - usedPoint;
+        int onlyBookAmount = order.getTotalPrice() - usedPoint;
+        int finalPayAmount = order.getTotalPrice() + order.getDeliveryPrice() + order.getPackagingPrice() - usedPoint  ;
         if (finalPayAmount < 0) {
             throw new InvalidPaymentException("포인트 사용액이 주문 금액을 초과합니다.");
+        }
+
+        if (onlyBookAmount < 0 ) {
+            onlyBookAmount = 0;
         }
 
         // Payment 생성
@@ -100,6 +113,7 @@ public class PaymentServiceImpl implements PaymentService {
         newPayment.setRequestedAt(LocalDateTime.now());
         newPayment.setPoint(usedPoint);
         newPayment.setTotalAmount(finalPayAmount);
+        newPayment.setOnlyBookAmount(onlyBookAmount);
         newPayment.setCurrency((paymentRequest.getCurrency() != null) ? paymentRequest.getCurrency() : "KRW");
 
         if (finalPayAmount == 0) {
@@ -131,6 +145,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .requestedAt(payment.getRequestedAt())
                 .approvedAt(payment.getApprovedAt())
                 .usePoint(payment.getPoint())
+                .onlyBookAmount(payment.getOnlyBookAmount())
                 .build();
     }
 
@@ -200,6 +215,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .requestedAt(payment.getRequestedAt())
                 .approvedAt(payment.getApprovedAt())
                 .usePoint(payment.getPoint())
+                .onlyBookAmount(payment.getOnlyBookAmount())
                 .build();
     }
 }
