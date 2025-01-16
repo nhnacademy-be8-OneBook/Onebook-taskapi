@@ -29,6 +29,8 @@ public class TagServiceImpl implements TagService {
     private final JpaTagRepository jpaTagRepository;
     private final JpaBookTagRepository jpaBookTagRepository;
 
+    static String exceptionTitle = "요청 값이 비어있습니다.";
+
     @Override
     @Transactional
     public Tag addTag(String tagName) {
@@ -45,7 +47,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagResponse createTag(CreateTagRequest createTagRequest) {
         if (Objects.isNull(createTagRequest)) {
-            throw new ApplicationException("요청 값이 비어있습니다.", 400);  // ApplicationException 사용
+            throw new ApplicationException(exceptionTitle, 400);  // ApplicationException 사용
         }
 
         return TagResponse.fromEntity(jpaTagRepository.save(createTagRequest.toEntity()));
@@ -54,7 +56,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagResponse getTag(Long tagId) {
         if (Objects.isNull(tagId)) {
-            throw new ApplicationException("요청 값이 비어있습니다.", 400);  // ApplicationException 사용
+            throw new ApplicationException(exceptionTitle, 400);  // ApplicationException 사용
         }
 
         Tag tag = jpaTagRepository.findById(tagId)
@@ -81,7 +83,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagResponse updateTag(UpdateTagRequest updateTagRequest) {
         if (Objects.isNull(updateTagRequest)) {
-            throw new ApplicationException("요청 값이 비어있습니다.", 400);  // ApplicationException 사용
+            throw new ApplicationException(exceptionTitle, 400);  // ApplicationException 사용
         }
 
         if (!jpaTagRepository.existsById(updateTagRequest.tagId())) {
