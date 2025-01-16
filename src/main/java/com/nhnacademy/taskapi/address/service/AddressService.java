@@ -7,6 +7,7 @@ import com.nhnacademy.taskapi.address.domain.dto.resp.MemberAddressResponse;
 import com.nhnacademy.taskapi.address.domain.entity.MemberAddress;
 import com.nhnacademy.taskapi.address.exception.AddressRegisterLimitException;
 import com.nhnacademy.taskapi.address.exception.InvalidMemberAddressException;
+import com.nhnacademy.taskapi.address.exception.MemberAddressLimitExceededException;
 import com.nhnacademy.taskapi.address.exception.MemberAddressNotFoundException;
 import com.nhnacademy.taskapi.address.repository.AddressRepository;
 import com.nhnacademy.taskapi.member.domain.Member;
@@ -42,9 +43,8 @@ public class AddressService {
         Member member = memberRepository.findById(memberId).orElseThrow(()-> new MemberNotFoundException("Member Not Found by " + memberId));
         MemberAddress memberAddress = MemberAddress.createMemberAddress(member, memberAddressRequest);
 
-        Long addressCount = addressRepository.findMemberAddressByMember(member).stream().count();
-        if(addressCount  > 10){
-            throw new AddressRegisterLimitException("배송지는 최대 10개까지 등록 가능합니다.");
+        if(getMemberAddressesCount(member.getId()) > 10){
+            throw new MemberAddressLimitExceededException("배송지는 최대 10개까지 등록 가능합니다.");
         }
 
         addressRepository.save(memberAddress);
@@ -109,6 +109,15 @@ public class AddressService {
 
         addressRepository.delete(memberAddress);
         return MemberAddressResponse.changeEntityToDto(memberAddress);
+
+    }
+
+    public Long getMemberAddressesCount(Long memberId){
+
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                ()-> new MemberNotFoundException("Member Not Found by " + memberId));
+
+         return addressRepository.findMemberAddressByMember(member).stream().count();
 
     }
 
