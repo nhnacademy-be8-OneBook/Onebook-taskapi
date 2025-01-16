@@ -24,9 +24,10 @@ public class CouponBoxController {
     }
 
     @PostMapping("/coupon/issue")
-    public ResponseEntity<IssuedCouponResponse> issueCouponToMember(@RequestBody IssueCouponToMemberRequest issueCouponToMemberRequest){
+    public ResponseEntity<IssuedCouponResponse> issueCouponToMember(@RequestHeader("X-MEMBER-ID") Long memberId,
+                                                                    @RequestBody IssueCouponToMemberRequest issueCouponToMemberRequest){
 
-        IssuedCouponResponse issuedCouponResponse = couponBoxService.issueCouponToMember(issueCouponToMemberRequest);
+        IssuedCouponResponse issuedCouponResponse = couponBoxService.issueCouponToMember(memberId,issueCouponToMemberRequest);
         return ResponseEntity.ok(issuedCouponResponse);
     }
 

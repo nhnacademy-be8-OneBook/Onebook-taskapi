@@ -6,6 +6,5 @@ import lombok.Getter;
 public class IssueCouponToMemberRequest {
 
     private String couponNumber;
-    private Long memberId;
-    
+
 }

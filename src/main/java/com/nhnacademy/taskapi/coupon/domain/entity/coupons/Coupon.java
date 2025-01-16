@@ -111,4 +111,8 @@ public class Coupon {
                 creationTime
         );
     }
+
+    public void changeIssuedStatus(CouponStatus issued){
+        this.couponStatus = issued;
+    }
 }
