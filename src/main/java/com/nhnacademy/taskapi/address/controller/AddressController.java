@@ -55,4 +55,12 @@ public class AddressController {
         return new ResponseEntity<>(resp,HttpStatus.OK);
     }
 
+    @GetMapping("/addresses/count")
+    public ResponseEntity<Long> getAddressesCount(@RequestHeader("X-MEMBER-ID") Long memberId){
+
+        Long addressCount = addressService.getMemberAddressesCount(memberId);
+        return ResponseEntity.ok(addressCount);
+    }
+
+
 }

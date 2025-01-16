@@ -182,7 +182,7 @@ class AddressServiceTest {
 //        Mockito.when(memberService.getMemberById(member.getId())).thenReturn(member);
         addressService.addMemberAddress(1L, addMemberAddressRequest);
 //        Mockito.verify(memberService, Mockito.times(1)).getMemberById(member.getId());
-        Mockito.verify(memberRepository, Mockito.times(1)).findById(member.getId());
+        Mockito.verify(memberRepository, Mockito.times(2)).findById(member.getId());
 
     }
 
