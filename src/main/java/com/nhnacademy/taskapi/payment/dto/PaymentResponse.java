@@ -24,4 +24,5 @@ public class PaymentResponse {
     private LocalDateTime requestedAt;
     private LocalDateTime approvedAt;
     private int usePoint;
+    private int onlyBookAmount;
 }

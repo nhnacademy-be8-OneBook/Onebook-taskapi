@@ -41,6 +41,13 @@ public class Payment {
     @Column(length = 10)
     private String currency = "KRW"; // default
 
+    // 순수 결제 금액
+    // 총 결제비용 - 쿠폰 - 배송비 - 포인트 - 포장비
+    // 포인트를 많이쓰면 순수 결제금액이 음수가 될 가능성이 있음
+    // if 이 값이 음수면 0으로 저장
+    @NotNull
+    private int onlyBookAmount = 0; // default
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "payment_key", referencedColumnName = "paymentKey")
     private PaymentMethod paymentMethod;

@@ -68,22 +68,6 @@ public class CommonPaymentService {
         payment.setStatus("DONE");
     }
 
-    /**
-     * 책 구매 시 포인트 적립 (순수 도서금액이 양수일 때만)
-     */
-    public void registerPurchasePointsIfNeeded(Payment payment) {
-        int usedPoint = payment.getPoint();
-        int onlyBookAmount = payment.getOrder().getTotalPrice() - usedPoint;
-
-        // order.getTotalPrice()는 배송비, 포장비 제외한 순수 도서가격이라고 가정
-        if (onlyBookAmount > 0) {
-            Long memberId = payment.getOrder().getMember().getId();
-            Member member = memberRepository.findById(memberId)
-                    .orElseThrow(() -> new InvalidPaymentException("회원을 찾을 수 없습니다."));
-            pointService.registerPurchasePoints(member, onlyBookAmount);
-        }
-    }
-
     // 랜덤 문자열 생성 유틸
     private String generateRandomString(int length) {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
@@ -95,6 +79,7 @@ public class CommonPaymentService {
         return sb.toString();
     }
 
+    // 포인트 적립과 차감
     public void handlePaymentCompletion(Payment payment) {
         // 1) 사용된 포인트 확인
         int usedPoint = payment.getPoint();
@@ -110,7 +95,7 @@ public class CommonPaymentService {
             pointService.usePointsForPayment(memberId, usedPoint);
         }
 
-        // 2) 순수 도서금액(= order.totalPrice - usedPoint)이 양수일 경우 적립
+        // 2) 순수 도서금액(= order.totalPrice - usedPurchasePoint)이 양수일 경우 적립
         // 음수일 경우에는 구매를 했는데 오히려 포인트가 차감되는 현상을 방지하기 위함
         // ex) 결제금액 3만원 - 포인트사용 28000원 - 배달비 5천원 - 포장비 3천원
         Order order = payment.getOrder();
@@ -120,6 +105,39 @@ public class CommonPaymentService {
             Member member = memberRepository.findById(memberId)
                     .orElseThrow(() -> new InvalidPaymentException("회원을 찾을 수 없습니다."));
             pointService.registerPurchasePoints(member, onlyBookAmount);
+        }
+    }
+
+    /**
+     * 책 구매 시 포인트 적립 (순수 도서금액이 양수일 때만)
+     */
+    public void accumulationPurchasePoints(Payment payment) {
+        int usedPoint = payment.getPoint();
+        int onlyBookAmount = payment.getOrder().getTotalPrice() - usedPoint;
+
+        // order.getTotalPrice()는 배송비, 포장비 제외한 순수 도서가격이라고 가정
+        if (onlyBookAmount > 0) {
+            Long memberId = payment.getOrder().getMember().getId();
+            Member member = memberRepository.findById(memberId)
+                    .orElseThrow(() -> new InvalidPaymentException("회원을 찾을 수 없습니다."));
+            pointService.registerPurchasePoints(member, onlyBookAmount);
+        }
+    }
+
+    // 포인트 차감
+    public void usedPurchasePoint(Payment payment) {
+        // 1) 사용된 포인트 확인
+        int usedPoint = payment.getPoint();
+        if (usedPoint > 0) {
+            Long memberId = payment.getOrder().getMember().getId();
+            // 포인트 부족 체크
+            Point userPoint = pointRepository.findByMember_Id(memberId)
+                    .orElseThrow(() -> new PaymentNotFoundException("회원 포인트를 찾을 수 없습니다."));
+            if (userPoint.getAmount() < usedPoint) {
+                throw new InsufficientPointException("포인트가 부족합니다.");
+            }
+            // 포인트 차감
+            pointService.usePointsForPayment(memberId, usedPoint);
         }
     }
 }
