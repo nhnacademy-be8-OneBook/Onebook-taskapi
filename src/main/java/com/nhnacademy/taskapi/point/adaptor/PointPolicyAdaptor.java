@@ -1,7 +1,7 @@
 package com.nhnacademy.taskapi.point.adaptor;
 
-import com.nhnacademy.taskapi.point.request.PointPolicyRequest;
-import com.nhnacademy.taskapi.point.response.PointPolicyResponse;
+import com.nhnacademy.taskapi.point.dto.PointPolicyRequest;
+import com.nhnacademy.taskapi.point.dto.PointPolicyResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

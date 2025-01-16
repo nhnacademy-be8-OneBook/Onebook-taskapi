@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.point.response;
+package com.nhnacademy.taskapi.point.dto;
 
 public record ApiResponse<T>(T body, int status, String message) {
     // 성공 응답을 생성하는 정적 메서드

@@ -2,7 +2,7 @@ package com.nhnacademy.taskapi.point.service.impl;
 
 import com.nhnacademy.taskapi.point.domain.PointLog;
 import com.nhnacademy.taskapi.point.repository.PointLogRepository;
-import com.nhnacademy.taskapi.point.response.PointLogResponse;
+import com.nhnacademy.taskapi.point.dto.PointLogResponse;
 import com.nhnacademy.taskapi.point.service.PointLogService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
