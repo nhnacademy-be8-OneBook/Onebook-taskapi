@@ -1,7 +1,9 @@
 package com.nhnacademy.taskapi.coupon.repository.coupons;
 
+import com.nhnacademy.taskapi.coupon.domain.entity.coupons.Coupon;
 import com.nhnacademy.taskapi.coupon.domain.entity.coupons.IssuedCoupon;
 import com.nhnacademy.taskapi.coupon.domain.entity.coupons.QIssuedCoupon;
+import com.nhnacademy.taskapi.coupon.domain.entity.policies.*;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.CouponStatus;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -45,5 +47,65 @@ public class CouponBoxQueryRepository {
                 .stream().count();
 
         return new PageImpl<>(content,pageable,total);
+    }
+
+    public boolean checkDuplicatedIssueRateCouponForBook(Member member , Policy policy){
+
+        QIssuedCoupon issuedCoupon = QIssuedCoupon.issuedCoupon;
+
+        long count = jpaQueryFactory
+                .selectFrom(issuedCoupon)
+                .where(
+                        issuedCoupon.member.eq(member),
+                        issuedCoupon.coupon.ratePolicyForBook.isNotNull(),
+                        issuedCoupon.coupon.ratePolicyForBook.eq((RatePolicyForBook) policy)
+                ).stream().count();
+
+        return count <= 0 ;
+    }
+
+    public boolean checkDuplicatedIssueRateCouponForCategory(Member member , Policy policy){
+
+        QIssuedCoupon issuedCoupon = QIssuedCoupon.issuedCoupon;
+
+        long count = jpaQueryFactory
+                .selectFrom(issuedCoupon)
+                .where(
+                        issuedCoupon.member.eq(member),
+                        issuedCoupon.coupon.ratePolicyForCategory.isNotNull(),
+                        issuedCoupon.coupon.ratePolicyForCategory.eq((RatePolicyForCategory) policy)
+                ).stream().count();
+
+        return count <= 0 ;
+    }
+
+    public boolean checkDuplicatedIssuePriceCouponForBook(Member member , Policy policy){
+
+        QIssuedCoupon issuedCoupon = QIssuedCoupon.issuedCoupon;
+
+        long count = jpaQueryFactory
+                .selectFrom(issuedCoupon)
+                .where(
+                        issuedCoupon.member.eq(member),
+                        issuedCoupon.coupon.pricePolicyForBook.isNotNull(),
+                        issuedCoupon.coupon.pricePolicyForBook.eq((PricePolicyForBook) policy)
+                ).stream().count();
+
+        return count <= 0 ;
+    }
+
+    public boolean checkDuplicatedIssuePriceCouponForCategory(Member member , Policy policy){
+
+        QIssuedCoupon issuedCoupon = QIssuedCoupon.issuedCoupon;
+
+        long count = jpaQueryFactory
+                .selectFrom(issuedCoupon)
+                .where(
+                        issuedCoupon.member.eq(member),
+                        issuedCoupon.coupon.pricePolicyForCategory.isNotNull(),
+                        issuedCoupon.coupon.pricePolicyForCategory.eq((PricePolicyForCategory) policy)
+                ).stream().count();
+
+        return count <= 0 ;
     }
 }
