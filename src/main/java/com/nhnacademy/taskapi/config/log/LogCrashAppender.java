@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.logcrash;
+package com.nhnacademy.taskapi.config.log;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
@@ -25,7 +25,7 @@ public class LogCrashAppender extends AppenderBase<ILoggingEvent> {
         LogCrashRequest request = new LogCrashRequest(iLoggingEvent.getFormattedMessage());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);  // MediaType을 사용
+        headers.setContentType(MediaType.APPLICATION_JSON);
         try {
             String str = objectMapper.writeValueAsString(request);
             HttpEntity<String> body = new HttpEntity<>(str, headers);
