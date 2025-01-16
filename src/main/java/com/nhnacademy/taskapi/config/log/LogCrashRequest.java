@@ -25,6 +25,7 @@ public class LogCrashRequest {
     private static final String DEFAULT_LOG_SOURCE = "1nebook-task";
     private static final String DEFAULT_LOG_TYPE = "log";
     private static final String DEFAULT_HOST = "1nebook";
+    private static final String DEFAULT_CATEGORY = "1nebook.shop";
 
     public LogCrashRequest(String body) {
         this.body = body;
@@ -35,5 +36,6 @@ public class LogCrashRequest {
         this.logType = DEFAULT_LOG_TYPE;
         this.host = DEFAULT_HOST;
         this.logLevel = DEFAULT_LOG_LEVEL;
+        this.category = DEFAULT_CATEGORY;
     }
 }
