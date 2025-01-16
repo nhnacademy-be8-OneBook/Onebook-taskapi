@@ -61,7 +61,7 @@ public class CouponBoxQueryRepository {
                         issuedCoupon.coupon.ratePolicyForBook.eq((RatePolicyForBook) policy)
                 ).stream().count();
 
-        return count <= 0 ;
+        return count > 0 ;
     }
 
     public boolean checkDuplicatedIssueRateCouponForCategory(Member member , Policy policy){
@@ -76,7 +76,7 @@ public class CouponBoxQueryRepository {
                         issuedCoupon.coupon.ratePolicyForCategory.eq((RatePolicyForCategory) policy)
                 ).stream().count();
 
-        return count <= 0 ;
+        return count > 0 ;
     }
 
     public boolean checkDuplicatedIssuePriceCouponForBook(Member member , Policy policy){
@@ -91,7 +91,7 @@ public class CouponBoxQueryRepository {
                         issuedCoupon.coupon.pricePolicyForBook.eq((PricePolicyForBook) policy)
                 ).stream().count();
 
-        return count <= 0 ;
+        return count > 0 ;
     }
 
     public boolean checkDuplicatedIssuePriceCouponForCategory(Member member , Policy policy){
@@ -106,6 +106,6 @@ public class CouponBoxQueryRepository {
                         issuedCoupon.coupon.pricePolicyForCategory.eq((PricePolicyForCategory) policy)
                 ).stream().count();
 
-        return count <= 0 ;
+        return count > 0 ;
     }
 }

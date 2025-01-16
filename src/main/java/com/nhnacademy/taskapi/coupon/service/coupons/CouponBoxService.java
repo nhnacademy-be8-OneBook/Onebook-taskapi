@@ -51,13 +51,13 @@ public class CouponBoxService {
                 .orElseThrow(()->new CouponNotFoundException("해당하는 번호의 쿠폰을 찾을 수 없습니다"));
 
         if(checkDuplicatedIssue(coupon,member)){
+            throw new AlreadyIssuedCouponException("해당 사용자는 이미 동일한 정책의 쿠폰을 발급받았습니다");
+        }
+        else{
             IssuedCoupon issuedCoupon = couponBoxRepository.save(IssuedCoupon.createIssuedCoupon(coupon,member));
             CouponStatus issuedStatus = couponStatusRepository.findByName("발급-삭제가능");
             coupon.changeIssuedStatus(issuedStatus);
             return IssuedCouponResponse.changeEntityToDto(issuedCoupon);
-        }
-        else{
-            throw new AlreadyIssuedCouponException("해당 사용자는 이미 동일한 정책의 쿠폰을 발급받았습니다");
         }
     }
 
