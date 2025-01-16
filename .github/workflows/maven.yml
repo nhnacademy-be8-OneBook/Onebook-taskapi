@@ -47,7 +47,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: "target/*.jar"
-          target: "~/onebook/dev/"
+          target: "~/onebook/develop/"
           rm: false
 
       # 서버에서 배포 스크립트 실행
@@ -59,7 +59,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
-          script: /home/nhnacademy/onebook/dev/startup/task_startup.sh
+          script: /home/nhnacademy/onebook/develop/startup/task_startup.sh
 
       # sonarQube 실행
       - name: Run SonarQube
