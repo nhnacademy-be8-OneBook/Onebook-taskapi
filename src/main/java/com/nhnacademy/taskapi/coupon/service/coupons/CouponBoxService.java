@@ -6,6 +6,8 @@ import com.nhnacademy.taskapi.coupon.domain.dto.coupons.response.IssuedCouponRes
 import com.nhnacademy.taskapi.coupon.domain.entity.coupons.Coupon;
 import com.nhnacademy.taskapi.coupon.domain.entity.coupons.IssuedCoupon;
 import com.nhnacademy.taskapi.coupon.domain.entity.status.CouponStatus;
+import com.nhnacademy.taskapi.coupon.exception.AlreadyIssuedCouponException;
+import com.nhnacademy.taskapi.coupon.exception.CouponHasNoPolicyExceptioin;
 import com.nhnacademy.taskapi.coupon.exception.CouponNotFoundException;
 import com.nhnacademy.taskapi.coupon.repository.coupons.CouponBoxQueryRepository;
 import com.nhnacademy.taskapi.coupon.repository.coupons.CouponBoxRepository;
@@ -48,12 +50,15 @@ public class CouponBoxService {
                 issueCouponToMemberRequest.getCouponNumber())
                 .orElseThrow(()->new CouponNotFoundException("해당하는 번호의 쿠폰을 찾을 수 없습니다"));
 
-        IssuedCoupon issuedCoupon = couponBoxRepository.save(IssuedCoupon.createIssuedCoupon(coupon,member));
-
-        CouponStatus issuedStatus = couponStatusRepository.findByName("발급-삭제가능");
-        coupon.changeIssuedStatus(issuedStatus);
-
-        return IssuedCouponResponse.changeEntityToDto(issuedCoupon);
+        if(checkDuplicatedIssue(coupon,member)){
+            IssuedCoupon issuedCoupon = couponBoxRepository.save(IssuedCoupon.createIssuedCoupon(coupon,member));
+            CouponStatus issuedStatus = couponStatusRepository.findByName("발급-삭제가능");
+            coupon.changeIssuedStatus(issuedStatus);
+            return IssuedCouponResponse.changeEntityToDto(issuedCoupon);
+        }
+        else{
+            throw new AlreadyIssuedCouponException("해당 사용자는 이미 동일한 정책의 쿠폰을 발급받았습니다");
+        }
     }
 
     @Transactional
@@ -89,4 +94,20 @@ public class CouponBoxService {
         return couponsOfMember.map(IssuedCouponResponse::changeEntityToDto);
     }
 
+    private boolean checkDuplicatedIssue(Coupon coupon, Member member){
+        if(coupon.getRatePolicyForBook() != null){
+           return couponBoxQueryRepository.checkDuplicatedIssueRateCouponForBook(member,coupon.getRatePolicyForBook());
+        }
+        if(coupon.getRatePolicyForCategory() != null){
+            return couponBoxQueryRepository.checkDuplicatedIssueRateCouponForCategory(member,coupon.getRatePolicyForCategory());
+        }
+        if(coupon.getPricePolicyForBook() != null){
+            return couponBoxQueryRepository.checkDuplicatedIssuePriceCouponForBook(member,coupon.getPricePolicyForBook());
+        }
+        if(coupon.getPricePolicyForCategory() != null){
+            couponBoxQueryRepository.checkDuplicatedIssuePriceCouponForCategory(member,coupon.getPricePolicyForCategory());
+        }
+
+        throw new CouponHasNoPolicyExceptioin("쿠폰이 어떠한 정책도 가지고 있지 않습니다, 잘못된 쿠폰입니다");
+    }
 }
