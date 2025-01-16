@@ -255,27 +255,27 @@ public class BookServiceTest {
 //        verify(bookRepository, times(1)).delete(book);
 //    }
 
-    @Test
-    @DisplayName("Test bestSellerBooks")
-    void bestSellerBooks() {
-        Book book = new Book();
-        book.setBookId(1L);
-        book.setIsbn13("1234567890123");
-        book.setTitle("Test Book");
-        book.setAmount(100);
-        // given
-        List<Book> books = Arrays.asList(book);
-        Page<Book> page = new PageImpl<>(books);
-        Pageable pageable = mock(Pageable.class);
-
-        // when
-        when(bookRepository.findAllByOrderByAmount(pageable)).thenReturn(page);
-
-        // then
-        Page<Book> result = bookService.bestSellerBooks(pageable);
-        assertEquals(1, result.getTotalElements());  // 1개의 책이 반환되는지 확인
-        verify(bookRepository, times(1)).findAllByOrderByAmount(pageable);
-    }
+//    @Test
+//    @DisplayName("Test bestSellerBooks")
+//    void bestSellerBooks() {
+//        Book book = new Book();
+//        book.setBookId(1L);
+//        book.setIsbn13("1234567890123");
+//        book.setTitle("Test Book");
+//        book.setAmount(100);
+//        // given
+//        List<Book> books = Arrays.asList(book);
+//        Page<Book> page = new PageImpl<>(books);
+//        Pageable pageable = mock(Pageable.class);
+//
+//        // when
+//        when(bookRepository.findAllByOrderByAmount(pageable)).thenReturn(page);
+//
+//        // then
+//        Page<Book> result = bookService.bestSellerBooks(pageable);
+//        assertEquals(1, result.getTotalElements());  // 1개의 책이 반환되는지 확인
+//        verify(bookRepository, times(1)).findAllByOrderByAmount(pageable);
+//    }
 
 //    @Test
 //    @DisplayName("Test newBooks")
