@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.point.request;
+package com.nhnacademy.taskapi.point.dto;
 
 import com.nhnacademy.taskapi.point.domain.PointPolicy;
 import lombok.Builder;

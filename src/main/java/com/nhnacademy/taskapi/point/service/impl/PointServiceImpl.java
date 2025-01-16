@@ -6,6 +6,7 @@ import com.nhnacademy.taskapi.point.domain.Point;
 import com.nhnacademy.taskapi.point.domain.PointLog;
 import com.nhnacademy.taskapi.point.domain.PointLogUpdatedType;
 import com.nhnacademy.taskapi.point.domain.PointPolicy;
+import com.nhnacademy.taskapi.point.dto.ApiResponse;
 import com.nhnacademy.taskapi.point.exception.PointPolicyException;
 import com.nhnacademy.taskapi.point.jpa.JpaPointRepository;
 import com.nhnacademy.taskapi.point.jpa.JpaPointPolicyRepository;
@@ -253,5 +254,28 @@ public class PointServiceImpl implements PointService {
         Point point = optionalPoint.orElseThrow(() -> new PointPolicyException("회원 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
         point.setAmount(updatedAmount);  // 포인트 갱신
         pointRepository.save(point);     // 변경 사항 저장
+    }
+
+    // 포인트 추가 기능
+    @Override
+    public ApiResponse<String> addPoints(Long memberId, int amount, PointLogUpdatedType updatedTypeEnum) {
+        // 1. 회원 포인트 조회
+        Optional<Point> optionalPoint = pointRepository.findByMember_Id(memberId);
+        Point point = optionalPoint.orElseThrow(() -> new PointPolicyException("회원 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
+
+        // 2. 포인트 갱신
+        int updatedAmount = point.getAmount() + amount;  // 기존 포인트에 새로운 포인트 추가
+        point.setAmount(updatedAmount);
+        pointRepository.save(point);
+
+        // 3. 포인트 로그 기록
+        PointLog pointLog = PointLog.builder()
+                .pointLogUpdatedAt(LocalDateTime.now())
+                .pointLogUpdatedType(updatedTypeEnum)  // 주어진 업데이트 타입
+                .pointLogAmount(amount)
+                .point(point)
+                .build();
+        pointLogRepository.save(pointLog);
+        return null;
     }
 }

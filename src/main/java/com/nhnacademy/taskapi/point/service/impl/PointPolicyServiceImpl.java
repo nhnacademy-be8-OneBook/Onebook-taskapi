@@ -1,35 +1,37 @@
 package com.nhnacademy.taskapi.point.service.impl;
 
 import com.nhnacademy.taskapi.point.domain.PointPolicy;
+import com.nhnacademy.taskapi.point.dto.CreatePointPolicyRequest;
+import com.nhnacademy.taskapi.point.dto.PointPolicyRequest;
+import com.nhnacademy.taskapi.point.dto.PointPolicyResponse;
 import com.nhnacademy.taskapi.point.repository.PointPolicyRepository;
-import com.nhnacademy.taskapi.point.request.CreatePointPolicyRequest;
-import com.nhnacademy.taskapi.point.request.PointPolicyRequest;
-import com.nhnacademy.taskapi.point.response.PointPolicyResponse;
 import com.nhnacademy.taskapi.point.service.PointPolicyService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class PointPolicyServiceImpl implements PointPolicyService {
 
     private final PointPolicyRepository pointPolicyRepository;
 
-    @Autowired
-    public PointPolicyServiceImpl(PointPolicyRepository pointPolicyRepository) {
-        this.pointPolicyRepository = pointPolicyRepository;
-    }
-
     @Override
     public PointPolicyResponse createPointPolicy(CreatePointPolicyRequest policyRequest) {
-        // CreatePointPolicyRequest에서 필요한 필드를 받아 PointPolicy Entity로 변환
-        PointPolicy pointPolicy = policyRequest.toEntity();
-        pointPolicy.updatePointPolicyCreatedAt(LocalDateTime.now()); // 생성일을 현재 시간으로 설정
-        pointPolicy.updatePointPolicyState(true); // 기본적으로 활성 상태 설정
-        pointPolicyRepository.save(pointPolicy); // DB에 저장
+        // 포인트 정책 생성 로직
+        PointPolicy pointPolicy = PointPolicy.builder()
+                .pointPolicyName(policyRequest.getPointPolicyName())
+                .pointPolicyRate(policyRequest.getPointPolicyRate())
+                .pointPolicyConditionAmount(policyRequest.getPointPolicyConditionAmount())
+                .pointPolicyCondition(policyRequest.getPointPolicyCondition())
+                .pointPolicyApplyAmount(policyRequest.getPointPolicyApplyAmount())
+                .pointPolicyApplyType(policyRequest.isPointPolicyApplyType())
+                .pointPolicyState(true) // 기본값을 활성화 상태로 설정
+                .build();
+
+        pointPolicyRepository.save(pointPolicy);
 
         return PointPolicyResponse.builder()
                 .pointPolicyId(pointPolicy.getPointPolicyId())
@@ -42,13 +44,14 @@ public class PointPolicyServiceImpl implements PointPolicyService {
                 .pointPolicyCreatedAt(pointPolicy.getPointPolicyCreatedAt())
                 .pointPolicyUpdatedAt(pointPolicy.getPointPolicyUpdatedAt())
                 .pointPolicyState(pointPolicy.isPointPolicyState())
-                .build();  // Response로 변환하여 반환
+                .build();
     }
 
     @Override
     public PointPolicyResponse findPointPolicyById(Long pointPolicyId) {
+        // 포인트 정책 조회
         PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid point policy id: " + pointPolicyId));
+                .orElseThrow(() -> new IllegalArgumentException("PointPolicy not found"));
 
         return PointPolicyResponse.builder()
                 .pointPolicyId(pointPolicy.getPointPolicyId())
@@ -61,41 +64,41 @@ public class PointPolicyServiceImpl implements PointPolicyService {
                 .pointPolicyCreatedAt(pointPolicy.getPointPolicyCreatedAt())
                 .pointPolicyUpdatedAt(pointPolicy.getPointPolicyUpdatedAt())
                 .pointPolicyState(pointPolicy.isPointPolicyState())
-                .build();  // Response로 변환하여 반환
+                .build();
     }
 
     @Override
     public Page<PointPolicyResponse> findAllPointPolicies(Pageable pageable) {
-        return pointPolicyRepository.findAll(pageable).map(pointPolicy -> PointPolicyResponse.builder()
-                .pointPolicyId(pointPolicy.getPointPolicyId())
-                .pointPolicyName(pointPolicy.getPointPolicyName())
-                .pointPolicyConditionAmount(pointPolicy.getPointPolicyConditionAmount())
-                .pointPolicyRate(pointPolicy.getPointPolicyRate())
-                .pointPolicyApplyAmount(pointPolicy.getPointPolicyApplyAmount())
-                .pointPolicyCondition(pointPolicy.getPointPolicyCondition())
-                .pointPolicyApplyType(pointPolicy.isPointPolicyApplyType())
-                .pointPolicyCreatedAt(pointPolicy.getPointPolicyCreatedAt())
-                .pointPolicyUpdatedAt(pointPolicy.getPointPolicyUpdatedAt())
-                .pointPolicyState(pointPolicy.isPointPolicyState())
-                .build());
+        // 포인트 정책 목록 조회
+        return pointPolicyRepository.findAll(pageable)
+                .map(pointPolicy -> PointPolicyResponse.builder()
+                        .pointPolicyId(pointPolicy.getPointPolicyId())
+                        .pointPolicyName(pointPolicy.getPointPolicyName())
+                        .pointPolicyConditionAmount(pointPolicy.getPointPolicyConditionAmount())
+                        .pointPolicyRate(pointPolicy.getPointPolicyRate())
+                        .pointPolicyApplyAmount(pointPolicy.getPointPolicyApplyAmount())
+                        .pointPolicyCondition(pointPolicy.getPointPolicyCondition())
+                        .pointPolicyApplyType(pointPolicy.isPointPolicyApplyType())
+                        .pointPolicyCreatedAt(pointPolicy.getPointPolicyCreatedAt())
+                        .pointPolicyUpdatedAt(pointPolicy.getPointPolicyUpdatedAt())
+                        .pointPolicyState(pointPolicy.isPointPolicyState())
+                        .build());
     }
 
     @Override
     public PointPolicyResponse updatePointPolicyById(Long pointPolicyId, PointPolicyRequest policyRequest) {
+        // 포인트 정책 수정 로직
         PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid point policy id: " + pointPolicyId));
+                .orElseThrow(() -> new IllegalArgumentException("PointPolicy not found"));
 
-        // PointPolicy 업데이트
-        pointPolicy.updatePointPolicyName(policyRequest.pointPolicyName());  // record 필드로 접근
-        pointPolicy.updatePointPolicyConditionAmount(policyRequest.pointPolicyConditionAmount());
-        pointPolicy.updatePointPolicyApplyAmount(policyRequest.pointPolicyApplyAmount());
-        pointPolicy.updatePointPolicyRate(policyRequest.pointPolicyRate());
-        pointPolicy.updatePointPolicyCondition(policyRequest.pointPolicyCondition());
-        pointPolicy.updatePointPolicyApplyType(policyRequest.pointPolicyApplyType());
-        pointPolicy.updatePointPolicyState(true);  // 상태를 true로 설정 (위에서 조건에 맞는 값을 넣을 수 있음)
-        // pointPolicy.updatePointPolicyUpdatedAt(); // 이 부분을 제거합니다. @PreUpdate로 자동 처리됩니다.
+        pointPolicy.updatePointPolicyName(policyRequest.getPointPolicyName());
+        pointPolicy.updatePointPolicyConditionAmount(policyRequest.getPointPolicyConditionAmount());
+        pointPolicy.updatePointPolicyApplyAmount(policyRequest.getPointPolicyApplyAmount());
+        pointPolicy.updatePointPolicyRate(policyRequest.getPointPolicyRate());
+        pointPolicy.updatePointPolicyCondition(policyRequest.getPointPolicyCondition());
+        pointPolicy.updatePointPolicyApplyType(policyRequest.isPointPolicyApplyType());
 
-        pointPolicyRepository.save(pointPolicy); // 업데이트된 정보 저장
+        pointPolicyRepository.save(pointPolicy);
 
         return PointPolicyResponse.builder()
                 .pointPolicyId(pointPolicy.getPointPolicyId())
@@ -108,10 +111,30 @@ public class PointPolicyServiceImpl implements PointPolicyService {
                 .pointPolicyCreatedAt(pointPolicy.getPointPolicyCreatedAt())
                 .pointPolicyUpdatedAt(pointPolicy.getPointPolicyUpdatedAt())
                 .pointPolicyState(pointPolicy.isPointPolicyState())
-                .build();  // Response로 변환하여 반환
+                .build();
     }
+
     @Override
-    public void deletePointPolicyById(Long pointPolicyId) {
-        pointPolicyRepository.deleteById(pointPolicyId);
+    public void updatePointPolicyState(Long pointPolicyId, boolean isActive) {
+        // 포인트 정책 상태 업데이트
+        PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId)
+                .orElseThrow(() -> new IllegalArgumentException("PointPolicy not found"));
+
+        pointPolicy.updatePointPolicyState(isActive);  // 상태 변경 메서드 호출
+        pointPolicyRepository.save(pointPolicy);
+    }
+
+    @Override
+    @Transactional
+    public void deactivatePointPolicy(Long pointPolicyId) {
+        // 포인트 정책 비활성화
+        updatePointPolicyState(pointPolicyId, false); // 상태를 false로 설정하여 비활성화
+    }
+
+    @Transactional
+    @Override
+    public void activatePointPolicy(Long pointPolicyId) {
+        // 포인트 정책 활성화
+        updatePointPolicyState(pointPolicyId, true);  // 상태를 true로 설정하여 활성화
     }
 }

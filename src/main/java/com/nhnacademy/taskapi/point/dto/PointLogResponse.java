@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.point.response;
+package com.nhnacademy.taskapi.point.dto;
 
 import lombok.Builder;
 
