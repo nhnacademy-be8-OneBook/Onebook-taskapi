@@ -5,7 +5,6 @@ import com.nhnacademy.taskapi.address.domain.dto.req.DeleteMemberAddressRequest;
 import com.nhnacademy.taskapi.address.domain.dto.req.UpdateMemberAddressRequest;
 import com.nhnacademy.taskapi.address.domain.dto.resp.MemberAddressResponse;
 import com.nhnacademy.taskapi.address.domain.entity.MemberAddress;
-import com.nhnacademy.taskapi.address.exception.AddressRegisterLimitException;
 import com.nhnacademy.taskapi.address.exception.InvalidMemberAddressException;
 import com.nhnacademy.taskapi.address.exception.MemberAddressLimitExceededException;
 import com.nhnacademy.taskapi.address.exception.MemberAddressNotFoundException;
