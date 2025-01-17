@@ -11,12 +11,12 @@ import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.member.service.impl.MemberServiceImpl;
+import com.nhnacademy.taskapi.member.repository.MemberQueryDslRepository;
 import com.nhnacademy.taskapi.point.service.impl.PointServiceImpl;
 import com.nhnacademy.taskapi.roles.domain.Role;
 import com.nhnacademy.taskapi.roles.dto.RoleResponseDto;
 import com.nhnacademy.taskapi.roles.service.impl.RoleServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,10 +51,11 @@ public class MemberServiceTest {
     @Mock
     private MemberRepository memberRepository;
 
+    @Mock
+    private MemberQueryDslRepository memberQueryDslRepository;
+
     @InjectMocks
     private MemberServiceImpl memberService;
-
-    // TODO 쿠폰, 포인트 완성 시 회원가입 테스트 코드 수정 필요.
 
     @Test
     @DisplayName("Get All Members Successfully")

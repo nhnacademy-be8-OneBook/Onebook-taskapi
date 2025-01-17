@@ -85,11 +85,18 @@ public class MemberController {
 
     // 회원 여부 조회.
     @PostMapping("/membership")
-    public ResponseEntity<MembershipCheckResponseDto> checkMembership(
+    public ResponseEntity<MembershipCheckResponseDto> checkMembership (
             @RequestHeader("X-MEMBER-ID") Long memberId,
             @RequestBody MembershipCheckRequestDto membershipCheckRequestDto) {
         MembershipCheckResponseDto membershipCheckResponseDto = memberService.validateMembership(memberId, membershipCheckRequestDto);
         return ResponseEntity.ok(membershipCheckResponseDto);
+    }
+
+    // 멤버 순수 금액 조회 및 등급 업데이트
+    @GetMapping("/payments/net-amount")
+    public ResponseEntity<Integer> memberNetAmountPayments(@RequestHeader("X-MEMBER-ID") Long memberId) {
+        Integer totalAmount = memberService.memberNetPaymentAmount(memberId);
+        return ResponseEntity.ok(totalAmount);
     }
 
     /**
@@ -115,14 +122,6 @@ public class MemberController {
     public ResponseEntity<String> getMemberIdByLoginId(@RequestHeader("X-MEMBER-ID") Long memberId) {
         String loginId = memberService.getLoginIdById(memberId);
         return ResponseEntity.ok().body(loginId);
-    }
-
-    /**
-     * 테스트용 member 다 가져오기.
-     */
-    @GetMapping("/test/{loginId}")
-    public Member getMemberForTest(@PathVariable("loginId") String loginId) {
-        return memberService.getMemberByLoginId(loginId);
     }
 
 }
