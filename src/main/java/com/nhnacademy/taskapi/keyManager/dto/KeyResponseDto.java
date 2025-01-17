@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
+@Slf4j
 @Getter
 @Setter
 public class KeyResponseDto {
@@ -28,7 +30,7 @@ public class KeyResponseDto {
                 });
                 // 데이터 처리
             } catch (JsonProcessingException e) {
-                System.err.println("JSON 파싱 실패: " + e.getMessage());
+                log.debug("JSON 파싱 실패: {}", e.getMessage());
                 throw new RuntimeException("Invalid JSON format", e);
             }
             return map;
