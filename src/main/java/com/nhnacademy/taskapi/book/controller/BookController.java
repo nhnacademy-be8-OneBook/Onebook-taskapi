@@ -63,6 +63,12 @@ public class BookController {
         return ResponseEntity.ok().body(books);
     }
 
+    @GetMapping("/bestsellers/top4")
+    public ResponseEntity<List<Book>> bestsellersTop4(){
+        List<Book> books = bookService.bestSellersTop4();
+        return ResponseEntity.ok().body(books);
+    }
+
     @GetMapping("{bookId}")
     public ResponseEntity<Book> getBook(@PathVariable long bookId){
         Book book = bookService.getBook(bookId);
