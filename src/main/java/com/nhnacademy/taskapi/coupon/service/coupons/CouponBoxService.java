@@ -105,7 +105,7 @@ public class CouponBoxService {
             return couponBoxQueryRepository.checkDuplicatedIssuePriceCouponForBook(member,coupon.getPricePolicyForBook());
         }
         if(coupon.getPricePolicyForCategory() != null){
-            couponBoxQueryRepository.checkDuplicatedIssuePriceCouponForCategory(member,coupon.getPricePolicyForCategory());
+            return couponBoxQueryRepository.checkDuplicatedIssuePriceCouponForCategory(member,coupon.getPricePolicyForCategory());
         }
 
         throw new CouponHasNoPolicyExceptioin("쿠폰이 어떠한 정책도 가지고 있지 않습니다, 잘못된 쿠폰입니다");
