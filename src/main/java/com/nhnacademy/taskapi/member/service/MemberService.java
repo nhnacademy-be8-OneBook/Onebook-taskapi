@@ -17,6 +17,7 @@ public interface MemberService {
     void changeStatusToActivation(String loginId);
     void updateMemberLoginId(String loginId);
     MembershipCheckResponseDto validateMembership(Long memberId, MembershipCheckRequestDto membershipCheckRequestDto);
+    Integer memberNetPaymentAmount(Long memberId);
     MemberLoginDto validateLogin(MemberLoginDto memberLoginDto);
     String getLoginIdById(Long id);
 
