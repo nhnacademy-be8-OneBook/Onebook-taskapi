@@ -27,6 +27,7 @@ public interface BookService {
     Page<Book> newBooks(Pageable pageable);
 
     List<Book> newBooksTop4();
+    List<Book> bestSellersTop4();
 
     // 책 존재여부
     Book getBook(long bookId);
