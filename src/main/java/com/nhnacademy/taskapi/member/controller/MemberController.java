@@ -93,8 +93,8 @@ public class MemberController {
     }
 
     // 멤버 순수 금액 조회 및 등급 업데이트
-    @GetMapping("/payments/net-amount")
-    public ResponseEntity<Integer> memberNetAmountPayments(@RequestHeader("X-MEMBER-ID") Long memberId) {
+    @GetMapping("/{member-id}/payments/net-amount")
+    public ResponseEntity<Integer> memberNetAmountPayments(@PathVariable("member-id") Long memberId) {
         Integer totalAmount = memberService.memberNetPaymentAmount(memberId);
         return ResponseEntity.ok(totalAmount);
     }
