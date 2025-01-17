@@ -159,6 +159,11 @@
             <!-- 버전 바꿈 -->
         </dependency>
 
+
+        <!-- <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency> -->
     </dependencies>
 
     <dependencyManagement>
