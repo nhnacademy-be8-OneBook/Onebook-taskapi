@@ -1,9 +1,6 @@
 package com.nhnacademy.taskapi.order.service;
 
-import com.nhnacademy.taskapi.order.dto.OrderFormRequest;
-import com.nhnacademy.taskapi.order.dto.OrderResponse;
-import com.nhnacademy.taskapi.order.dto.OrderStatusResponse;
-import com.nhnacademy.taskapi.order.dto.OrdererResponseDto;
+import com.nhnacademy.taskapi.order.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,4 +13,5 @@ public interface OrderService {
     List<OrderStatusResponse> getOrdersByStatusName(String statusName);
     OrdererResponseDto getOrderer(Long memberId);
     void updateOrderStatus(List<Long> orderIds, String status);
+    public OrderMemberResponse getOrder(Long orderId);
 }
