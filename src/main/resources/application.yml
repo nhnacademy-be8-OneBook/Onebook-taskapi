@@ -49,3 +49,12 @@ nhnKey:
   keyPath: 1nebook.p12
   password: 1nebook
   keyId: 7b34378ad2034b71b2037ca9b1538d41
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  info:
+    env:
+      enabled: true

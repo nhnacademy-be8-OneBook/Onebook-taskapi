@@ -159,11 +159,11 @@
             <!-- 버전 바꿈 -->
         </dependency>
 
-
-        <!-- <dependency>
+        <!-- 무중단배포를 위한 앤드포인트 활성화-->
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency> -->
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

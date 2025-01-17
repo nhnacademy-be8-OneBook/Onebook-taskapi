@@ -29,10 +29,6 @@ public class OrderController {
     public ResponseEntity<Page<OrderResponse>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId, Pageable pageable) {
         Page<OrderResponse> orderList = orderService.getOrderList(memberId, pageable);
 
-        // TODO null일 경우 list 반환 방법
-        if (orderList == null || orderList.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
         return ResponseEntity.ok().body(orderList);
     }
 

@@ -102,9 +102,6 @@ public class OrderServiceImpl implements OrderService {
     public Page<OrderResponse> getOrderList(Long memberId, Pageable pageable) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id" + memberId + " dose not exist"));
 
-        Page<Order> allByMemberId = orderRepository.findAllByMemberId(memberId, pageable);
-        System.out.println(allByMemberId);
-
         return orderRepository.findAllByMemberId(memberId, pageable).map(OrderResponse::fromOrder);
     }
 
