@@ -1,6 +1,5 @@
 package com.nhnacademy.taskapi.order.service.Impl;
 
-import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.delivery.service.DeliveryService;
 import com.nhnacademy.taskapi.member.domain.Member;
@@ -29,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -102,7 +100,7 @@ public class OrderServiceImpl implements OrderService {
     public Page<OrderResponse> getOrderList(Long memberId, Pageable pageable) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id" + memberId + " dose not exist"));
 
-        return orderRepository.findAllByMemberId(memberId, pageable).map(OrderResponse::fromOrder);
+        return orderRepository.findByMemberId(memberId, pageable).map(OrderResponse::fromOrder);
     }
 
     @Override
@@ -111,6 +109,21 @@ public class OrderServiceImpl implements OrderService {
         OrderStatus orderStatus = orderStatusRepository.findByStatusName(statusName).orElseThrow(() -> new OrderStatusNotFoundException("OrderStatus is not found; error!!"));
 
         return orderRepository.findByMemberIdAndOrderStatus(memberId, orderStatus, pageable).map(OrderResponse::fromOrder);
+    }
+
+    @Override
+    public Page<OrderMemberResponse> getOrders(Long memberId, String statusName, Pageable pageable) {
+        memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id" + memberId + " dose not exist"));
+
+        Page<Order> orders;
+        if (statusName == null || statusName.isBlank()) {
+            orders = orderRepository.findByMemberId(memberId, pageable);
+        } else {
+            OrderStatus orderStatus = orderStatusRepository.findByStatusName(statusName).orElseThrow(() -> new OrderStatusNotFoundException("OrderStatus is not found; error!!"));
+            orders = orderRepository.findByMemberIdAndOrderStatus(memberId, orderStatus, pageable);
+        }
+
+        return orders.map(OrderMemberResponse::fromOrder);
     }
 
     public OrderMemberResponse getOrder(Long orderId) {

@@ -5,7 +5,6 @@ import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.order.entity.Order;
-import com.nhnacademy.taskapi.order.repository.OrderRepository;
 import com.nhnacademy.taskapi.roles.domain.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -80,7 +78,7 @@ class OrderRepositoryTest {
         Order saveOrder = orderRepository.save(order);
 
         // when
-        List<Order> allByMemberId = orderRepository.findAllByMemberId(this.member.getId());
+        List<Order> allByMemberId = orderRepository.findByMemberId(this.member.getId());
 
         // then
 
@@ -96,7 +94,7 @@ class OrderRepositoryTest {
         // given
         Order order = new Order(this.member, "김선준", "010-9999-9999", LocalDateTime.now(), 3000, 25000);
         Order saveOrder = orderRepository.save(order);
-        List<Order> allByMemberId = orderRepository.findAllByMemberId(this.member.getId());
+        List<Order> allByMemberId = orderRepository.findByMemberId(this.member.getId());
         Long orderId = allByMemberId.get(0).getOrderId();
 
         // when
@@ -115,12 +113,12 @@ class OrderRepositoryTest {
         // given
         Order order = new Order(this.member, "김선준", "010-9999-9999", LocalDateTime.now(), 3000, 25000);
         Order saveOrder = orderRepository.save(order);
-        List<Order> allByMemberId = orderRepository.findAllByMemberId(this.member.getId());
+        List<Order> allByMemberId = orderRepository.findByMemberId(this.member.getId());
         Long orderId = allByMemberId.get(0).getOrderId();
 
         // when
         orderRepository.deleteById(orderId);
-        List<Order> allByMemberId1 = orderRepository.findAllByMemberId(this.member.getId());
+        List<Order> allByMemberId1 = orderRepository.findByMemberId(this.member.getId());
 
         // then
         Assertions.assertEquals(0, allByMemberId1.size());

@@ -27,26 +27,20 @@ public class OrderController {
     }
 
     @GetMapping("/task/orders")
-    public ResponseEntity<Page<OrderResponse>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId, Pageable pageable) {
-        Page<OrderResponse> orderList = orderService.getOrderList(memberId, pageable);
+    public ResponseEntity<Page<OrderResponse>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestParam(required = false) String statusName, Pageable pageable) {
+        Page<OrderResponse> orderList;
 
-        return ResponseEntity.ok().body(orderList);
-    }
-
-    @GetMapping("/task/orders/waiting")
-    public ResponseEntity<Page<OrderResponse>> getWaitingOrders(@RequestHeader("X-MEMBER-ID") Long memberId, Pageable pageable) {
-        String statusName = "결제대기";
-        Page<OrderResponse> orderList = orderService.getOrderListByStatusName(memberId, statusName, pageable);
-
-        // TODO null일 경우 list 반환 방법
-        if (orderList == null || orderList.isEmpty()) {
-            return ResponseEntity.noContent().build();
+        if (statusName == null || statusName.isBlank()) {
+            orderList = orderService.getOrderList(memberId, pageable);
+        } else {
+            orderList = orderService.getOrderListByStatusName(memberId, statusName, pageable);
         }
+
         return ResponseEntity.ok().body(orderList);
     }
 
     @GetMapping("/task/admin/orders")
-    public ResponseEntity<List<OrderStatusResponse>> getOrdersByStatusName(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestParam String status) {
+    public ResponseEntity<List<OrderStatusResponse>> getOrdersByStatusName(@RequestParam String status) {
         List<OrderStatusResponse> ordersByStatusName = orderService.getOrdersByStatusName(status);
         return ResponseEntity.ok(ordersByStatusName);
     }
