@@ -1,6 +1,7 @@
 package com.nhnacademy.taskapi.order.controller;
 
 import com.nhnacademy.taskapi.order.dto.OrderFormRequest;
+import com.nhnacademy.taskapi.order.dto.OrderMemberResponse;
 import com.nhnacademy.taskapi.order.dto.OrderResponse;
 import com.nhnacademy.taskapi.order.dto.OrderStatusResponse;
 import com.nhnacademy.taskapi.order.service.OrderService;
@@ -29,10 +30,6 @@ public class OrderController {
     public ResponseEntity<Page<OrderResponse>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId, Pageable pageable) {
         Page<OrderResponse> orderList = orderService.getOrderList(memberId, pageable);
 
-        // TODO null일 경우 list 반환 방법
-        if (orderList == null || orderList.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
         return ResponseEntity.ok().body(orderList);
     }
 
@@ -57,10 +54,14 @@ public class OrderController {
     // 주문 상태 변경하기
     @PutMapping("/task/admin/orders")
     public void updateOrderStatus(@RequestBody List<Long> orderIds, @RequestParam String status) {
-        System.out.println(orderIds);
-        System.out.println(status);
-
         orderService.updateOrderStatus(orderIds, status);
+    }
+
+    @GetMapping("/task/orders/{order-id}")
+    public ResponseEntity<OrderMemberResponse> getOrder(@PathVariable("order-id") Long orderId) {
+        OrderMemberResponse orderMmeberResponse = orderService.getOrder(orderId);
+
+        return ResponseEntity.ok(orderMmeberResponse);
     }
 
 }

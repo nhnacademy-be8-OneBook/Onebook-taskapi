@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface BookRepository extends JpaRepository<Book, Long> {
+public interface BookRepository extends JpaRepository<Book, Long>, BookRepositoryCustom {
     Book findByIsbn13(String isbn);
 
 
@@ -26,5 +26,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Page<Book> findAllByStatusFalseOrderByAmountDesc(Pageable pageable);
     //신간 책 리스트
     Page<Book> findAllByStatusFalseOrderByPubdateDesc(Pageable pageable);
+
 
 }

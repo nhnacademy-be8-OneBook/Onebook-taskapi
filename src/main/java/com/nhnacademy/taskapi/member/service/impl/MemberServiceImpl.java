@@ -1,6 +1,8 @@
 package com.nhnacademy.taskapi.member.service.impl;
 
 import com.nhnacademy.taskapi.grade.domain.Grade;
+import com.nhnacademy.taskapi.grade.exception.GradeNotFoundException;
+import com.nhnacademy.taskapi.grade.repository.GradeRepository;
 import com.nhnacademy.taskapi.grade.service.GradeService;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.dto.*;
@@ -9,6 +11,7 @@ import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.member.service.MemberService;
 
+import com.nhnacademy.taskapi.member.repository.MemberQueryDslRepository;
 import com.nhnacademy.taskapi.point.service.PointService;
 import com.nhnacademy.taskapi.roles.domain.Role;
 import com.nhnacademy.taskapi.roles.service.RoleService;
@@ -21,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Transactional
@@ -31,8 +36,8 @@ public class MemberServiceImpl implements MemberService {
     private final GradeService gradeService;
     private final RoleService roleService;
     private final PointService pointService;
-
-    // TODO 쿠폰, 포인트 완성 시 회원가입 수정 필요.
+    private final MemberQueryDslRepository memberQueryDslRepository;
+    private final GradeRepository gradeRepository;
 
     /**
      * 로그인, 로그아웃 기능 보류.
@@ -41,9 +46,9 @@ public class MemberServiceImpl implements MemberService {
    // 전체 멤버 반환에 Pagenation 적용.
     @Transactional(readOnly = true)
     @Override
-    public Page<MemberResponseDto> getAllMembers(Pageable pageable) {
+    public Page<MemberResponse> getAllMembers(Pageable pageable) {
         Page<Member> memberPage = memberRepository.findAll(pageable);
-        Page<MemberResponseDto> result = memberPage.map(MemberResponseDto::from);
+        Page<MemberResponse> result = memberPage.map(MemberResponse::from);
 
         return result;
     }
@@ -152,7 +157,7 @@ public class MemberServiceImpl implements MemberService {
        return MemberResponseDto.from(member);
     }
 
-    // 회원 탈퇴 - 상태만 'DELETED' 로 변경.
+    // 회원 탈퇴 - 상태를 'DELETED' 로 변경.
     @Override
     public void removeMember(Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(()-> new MemberIllegalArgumentException("Member Not Found by " + memberId));
@@ -186,7 +191,48 @@ public class MemberServiceImpl implements MemberService {
         return new MembershipCheckResponseDto(false);
     }
 
+    // 멤버 순수 금액 조회 (+등급 업데이트)
+    @Override
+    public Integer memberNetPaymentAmount(Long memberId) {
+        try {
+            // memberId로 순수 결제 금액 조회.
+            List<Integer> memberNetPaymentAmounts = memberQueryDslRepository.getMemberNetPaymentAmounts(memberId);
 
+            // 순수 결제 금액 계산과 그에 따른 등급.
+            Integer total = 0;
+            String grade;
+
+            for(Integer i : memberNetPaymentAmounts) {
+                if(Objects.nonNull(i)) {
+                    total += i;
+                }
+            }
+
+            if(total >= 300000) {
+                grade = "플래티넘";
+            } else if (total >= 200000) {
+                grade = "골드";
+            } else if(total >= 100000) {
+                grade = "로얄";
+            } else {
+                grade = "일반";
+            }
+
+            // 멤버 조회.
+            Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member Not Found by " + memberId));
+
+            // 멤버의 등급과 순수 결제 금액에 따른 등급 비교 후 다르면 grade update.
+            if (!member.getGrade().getName().equals(grade)) {
+                Grade newGrade = gradeRepository.findGradeByName(grade).orElseThrow(() -> new GradeNotFoundException("Grade Not Found by " + grade));
+                member.setGrade(newGrade);
+            }
+
+            return total;
+
+        }catch(Exception e) {
+            throw new RuntimeException("회원 순수 구매 금액 조회 및 등급 업데이트 오류");
+        }
+    }
 
     // 로그인
     @Override

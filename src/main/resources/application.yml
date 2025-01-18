@@ -8,7 +8,6 @@ spring:
     fallback-to-system-locale: false
     cache-duration: 3600
     always-use-message-format: true
-
   jpa:
     show-sql: true
     hibernate:
@@ -19,6 +18,7 @@ spring:
 
 server:
   port: 8500  # 프로덕션 환경에서 사용할 포트
+  shutdown: graceful
 
 # eureka 설정
 eureka:
@@ -49,3 +49,12 @@ nhnKey:
   keyPath: 1nebook.p12
   password: 1nebook
   keyId: 7b34378ad2034b71b2037ca9b1538d41
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  info:
+    env:
+      enabled: true

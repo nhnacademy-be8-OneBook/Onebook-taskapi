@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.book.controller;
 
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.dto.BookSaveDTO;
+import com.nhnacademy.taskapi.book.dto.BookSearchAllResponse;
 import com.nhnacademy.taskapi.book.dto.BookUpdateDTO;
 import com.nhnacademy.taskapi.book.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -78,6 +79,12 @@ public class BookController {
     @GetMapping("/book-list")
     public ResponseEntity<Page<Book>> getBookList(Pageable pageable){
         Page<Book> books = bookService.findAllBooks(pageable);
+        return ResponseEntity.ok().body(books);
+    }
+
+    @GetMapping("/search/all")
+    public ResponseEntity<List<BookSearchAllResponse>> searchBooks(@RequestParam("searchString") String searchString){
+        List<BookSearchAllResponse> books = bookService.searchBookAll(searchString);
         return ResponseEntity.ok().body(books);
     }
 

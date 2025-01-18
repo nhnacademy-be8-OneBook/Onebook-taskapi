@@ -102,9 +102,6 @@ public class OrderServiceImpl implements OrderService {
     public Page<OrderResponse> getOrderList(Long memberId, Pageable pageable) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id" + memberId + " dose not exist"));
 
-        Page<Order> allByMemberId = orderRepository.findAllByMemberId(memberId, pageable);
-        System.out.println(allByMemberId);
-
         return orderRepository.findAllByMemberId(memberId, pageable).map(OrderResponse::fromOrder);
     }
 
@@ -116,9 +113,10 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findByMemberIdAndOrderStatus(memberId, orderStatus, pageable).map(OrderResponse::fromOrder);
     }
 
-    public OrderResponse getOrder(Long orderId) {
+    public OrderMemberResponse getOrder(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("Order id " + orderId + " does not exist"));
-        return OrderResponse.fromOrder(order);
+        OrderMemberResponse orderMemberResponse = OrderMemberResponse.fromOrder(order);
+        return orderMemberResponse;
     }
 
     @Override
@@ -157,9 +155,4 @@ public class OrderServiceImpl implements OrderService {
             newOrder.setOrderStatus(newOrderStatus);
         }
     }
-
-    //    public List<OrderDetail> getOrderDetailList(Long orderId) {
-//        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("Order id " + orderId + " does not exist"));
-//        return order.getOrderDetailList();
-//    }
 }
