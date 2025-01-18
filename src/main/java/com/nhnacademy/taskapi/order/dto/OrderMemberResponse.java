@@ -9,16 +9,16 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class OrderMemberResponse {
-    Long orderId;
-    Long memberId;
-    String orderName;
-    String ordererName;
-    String ordererPhoneNumber;
-    LocalDateTime dateTime;
-    int deliveryPrice;
-    int totalPrice;
-    String statusName;
-    int packagingPrice;
+    private Long orderId;
+    private Long memberId;
+    private String orderName;
+    private String ordererName;
+    private String ordererPhoneNumber;
+    private LocalDateTime dateTime;
+    private int deliveryPrice;
+    private int totalPrice;
+    private String statusName;
+    private int packagingPrice;
 
    public static OrderMemberResponse fromOrder(Order order) {
        return new OrderMemberResponse(
