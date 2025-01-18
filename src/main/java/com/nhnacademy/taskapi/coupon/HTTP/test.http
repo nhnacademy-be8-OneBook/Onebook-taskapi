@@ -57,3 +57,8 @@ Content-Type: application/json
 
 ### 사용되고 있는 정책 조회
 GET localhost:8510/task/policies/using
+
+### 특정 책에 적용할 사용자의 모든 쿠폰 조회
+GET localhost:8510/task/coupon/apply/107
+X-MEMBER-ID: 667977927739216529
+

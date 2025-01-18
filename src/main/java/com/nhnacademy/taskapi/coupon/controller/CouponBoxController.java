@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/task")
@@ -22,6 +24,16 @@ public class CouponBoxController {
         Page<IssuedCouponResponse> couponsOfMembers = couponBoxService.getIssuedCouponsByMemberId(pageable,memberId);
         return ResponseEntity.ok(couponsOfMembers);
     }
+
+    @GetMapping("/coupon/apply/{book-id}")
+    public ResponseEntity<List<IssuedCouponResponse>> getIssuedCouponsValidForBookByMemberId
+            (@RequestHeader("X-MEMBER-ID") Long memberId, @PathVariable(name = "book-id") Long bookId){
+
+        List<IssuedCouponResponse> couponOfMembersValidForBook =
+                couponBoxService.getIssuedCouponsValidForBookByMemberId(memberId,bookId);
+        return ResponseEntity.ok(couponOfMembersValidForBook);
+    }
+
 
     @PostMapping("/coupon/issue")
     public ResponseEntity<IssuedCouponResponse> issueCouponToMember(@RequestHeader("X-MEMBER-ID") Long memberId,
