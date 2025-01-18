@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.book.service;
 import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.dto.BookAladinDTO;
 import com.nhnacademy.taskapi.book.dto.BookSaveDTO;
+import com.nhnacademy.taskapi.book.dto.BookSearchAllResponse;
 import com.nhnacademy.taskapi.book.dto.BookUpdateDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,4 +34,7 @@ public interface BookService {
     Book getBook(long bookId);
 
     Page<Book> findAllBooks(Pageable pageable);
+
+    //통합검색
+    List<BookSearchAllResponse> searchBookAll(String searchString);
 }
