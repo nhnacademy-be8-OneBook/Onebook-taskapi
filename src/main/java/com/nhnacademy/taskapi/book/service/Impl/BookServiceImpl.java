@@ -201,4 +201,10 @@ public class BookServiceImpl implements BookService {
     }
 
 
+    @Override
+    public List<BookSearchAllResponse> searchBookAll(String searchString){
+        return bookRepository.findBookByTitle(searchString);
+    }
+
+
 }
