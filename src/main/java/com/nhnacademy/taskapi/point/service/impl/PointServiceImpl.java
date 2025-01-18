@@ -57,6 +57,7 @@ public class PointServiceImpl implements PointService {
                 .pointLogUpdatedType(PointLogUpdatedType.REGISTRATION)  // 회원가입으로 적립
                 .pointLogAmount(5000)
                 .point(point)
+                .afterPointAmount(point.getPointCurrent())
                 .build();
 
         pointLogRepository.save(pointLog);
@@ -82,6 +83,7 @@ public class PointServiceImpl implements PointService {
                 .pointLogUpdatedType(PointLogUpdatedType.REVIEW)  // 리뷰 작성으로 적립
                 .pointLogAmount(pointAmount)
                 .point(point)
+                .afterPointAmount(point.getPointCurrent())
                 .build();
 
         pointLogRepository.save(pointLog);
@@ -112,6 +114,7 @@ public class PointServiceImpl implements PointService {
                 .pointLogUpdatedType(PointLogUpdatedType.PURCHASE)  // 도서 구매로 적립
                 .pointLogAmount(earnedPoints)
                 .point(point)
+                .afterPointAmount(point.getPointCurrent())
                 .build();
 
         // 포인트 로그 저장
@@ -161,6 +164,7 @@ public class PointServiceImpl implements PointService {
                 .pointLogUpdatedType(PointLogUpdatedType.PAYMENT)  // 결제 타입
                 .pointLogAmount(-paymentAmount)  // 차감된 포인트는 마이너스
                 .point(point)
+                .afterPointAmount(point.getPointCurrent())
                 .build();
 
         // 포인트 로그 저장
@@ -193,6 +197,7 @@ public class PointServiceImpl implements PointService {
                 .pointLogUpdatedType(PointLogUpdatedType.REFUND)  // 환불 타입
                 .pointLogAmount(refundAmount)  // 환불된 포인트
                 .point(point)
+                .afterPointAmount(point.getPointCurrent())
                 .build();
 
         // 포인트 로그 저장
@@ -274,6 +279,7 @@ public class PointServiceImpl implements PointService {
                 .pointLogUpdatedType(updatedTypeEnum)  // 주어진 업데이트 타입
                 .pointLogAmount(amount)
                 .point(point)
+                .afterPointAmount(point.getPointCurrent())
                 .build();
         pointLogRepository.save(pointLog);
         return null;
