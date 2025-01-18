@@ -6,6 +6,7 @@ import com.nhnacademy.taskapi.grade.service.impl.GradeServiceImpl;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.dto.MemberModifyRequestDto;
 import com.nhnacademy.taskapi.member.dto.MemberRegisterRequestDto;
+import com.nhnacademy.taskapi.member.dto.MemberResponse;
 import com.nhnacademy.taskapi.member.dto.MemberResponseDto;
 import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
@@ -69,7 +70,7 @@ public class MemberServiceTest {
         Page<Member> memberPage = new PageImpl<>(memberList, pageable, memberList.size());
         Mockito.when(memberRepository.findAll(pageable)).thenReturn(memberPage);
 
-        Page<MemberResponseDto> result = memberService.getAllMembers(pageable);
+        Page<MemberResponse> result = memberService.getAllMembers(pageable);
 
         Mockito.verify(memberRepository, Mockito.times(1)).findAll(pageable);
         assertThat(result.getPageable().getPageSize()).isEqualTo(10);

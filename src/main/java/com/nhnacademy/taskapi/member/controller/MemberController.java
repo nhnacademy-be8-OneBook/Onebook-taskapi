@@ -20,13 +20,6 @@ public class MemberController {
     private final MemberService memberService;
     private final GradeService gradeService;
 
-    // 전체 멤버 조회
-    @GetMapping("/list")
-    public ResponseEntity<Page<MemberResponseDto>> getMembers(Pageable pageable) {
-        Page<MemberResponseDto> memberResponseDtoPage = memberService.getAllMembers(pageable);
-        return ResponseEntity.ok().body(memberResponseDtoPage);
-    }
-
     /**
      * Auth 서버에서 사용.
      * memberID로 member 정보 return.
@@ -93,8 +86,8 @@ public class MemberController {
     }
 
     // 멤버 순수 금액 조회 및 등급 업데이트
-    @GetMapping("/{member-id}/payments/net-amount")
-    public ResponseEntity<Integer> memberNetAmountPayments(@PathVariable("member-id") Long memberId) {
+    @GetMapping("/payments/net-amount")
+    public ResponseEntity<Integer> memberNetAmountPayments(@RequestHeader("X-MEMBER-ID") Long memberId) {
         Integer totalAmount = memberService.memberNetPaymentAmount(memberId);
         return ResponseEntity.ok(totalAmount);
     }

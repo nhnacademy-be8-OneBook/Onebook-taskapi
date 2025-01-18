@@ -46,9 +46,9 @@ public class MemberServiceImpl implements MemberService {
    // 전체 멤버 반환에 Pagenation 적용.
     @Transactional(readOnly = true)
     @Override
-    public Page<MemberResponseDto> getAllMembers(Pageable pageable) {
+    public Page<MemberResponse> getAllMembers(Pageable pageable) {
         Page<Member> memberPage = memberRepository.findAll(pageable);
-        Page<MemberResponseDto> result = memberPage.map(MemberResponseDto::from);
+        Page<MemberResponse> result = memberPage.map(MemberResponse::from);
 
         return result;
     }
