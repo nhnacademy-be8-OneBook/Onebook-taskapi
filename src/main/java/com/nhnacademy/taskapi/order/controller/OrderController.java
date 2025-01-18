@@ -27,7 +27,7 @@ public class OrderController {
     }
 
     @GetMapping("/task/orders")
-    public ResponseEntity<Page<OrderResponse>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestParam(required = false) String statusName, Pageable pageable) {
+    public ResponseEntity<Page<OrderResponse>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestParam(name = "order-status", required = false) String statusName, Pageable pageable) {
         Page<OrderResponse> orderList;
 
         if (statusName == null || statusName.isBlank()) {
