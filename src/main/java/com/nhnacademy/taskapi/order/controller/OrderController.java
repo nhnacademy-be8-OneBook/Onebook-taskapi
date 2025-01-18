@@ -46,7 +46,7 @@ public class OrderController {
     }
 
     // 주문 상태 변경하기
-    @PutMapping("/task/admin/orders")
+    @PutMapping("/task/orders")
     public void updateOrderStatus(@RequestBody List<Long> orderIds, @RequestParam String status) {
         orderService.updateOrderStatus(orderIds, status);
     }
