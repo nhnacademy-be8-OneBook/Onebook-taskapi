@@ -29,14 +29,14 @@ public class PointController {
     }
 
     // PointController.java
-    @GetMapping("/myPoint")
+    @GetMapping("/my/point")
     public ModelAndView getUserPointHistories(HttpSession session) {
         // 로그인 체크
         if (session.getAttribute("user") == null) {
             return new ModelAndView("redirect:/login");
         }
 
-        ModelAndView modelAndView = new ModelAndView("mypage/mypagePoint");
+        ModelAndView modelAndView = new ModelAndView("my/point/point");
 
         try {
             List<PointLog> pointLogs = pointService.getPointLogsByMember((Long) session.getAttribute("userId"));
