@@ -31,10 +31,9 @@ public class LoginController {
         return ResponseEntity.ok().body( result != null );
     }
 
-    // 로그인 시(UserDetailsService) 호출: Authentication에 들어갈 내용들인듯.
+    // 로그인 시(UserDetailsService) 호출 - Authentication에 들어갈 내용
     @GetMapping("/task/auth/members/{loginId}")
     public ResponseEntity<MemberLoginResponseDto> loadByMemberId(@PathVariable(name = "loginId") String loginId){
-        log.info("call load ");
         Member member = memberService.getMemberByLoginId(loginId);
 
         if(member != null){
