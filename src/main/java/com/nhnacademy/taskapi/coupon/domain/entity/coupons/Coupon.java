@@ -115,4 +115,9 @@ public class Coupon {
     public void changeIssuedStatus(CouponStatus issued){
         this.couponStatus = issued;
     }
+
+    //TODO 쿠폰이 사용되었다고 상태를 변경해주는 메서드 , 쿠폰이 사용되면 CouponStatsus 리포에서 findBy 메서드로 '발급-삭제불가' 상태를 찾아서, 파라미터로 넣어주면됨
+    public void couponStatusChangeToUsed(CouponStatus used){
+        this.couponStatus = used;
+    }
 }
