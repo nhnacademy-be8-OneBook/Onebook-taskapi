@@ -17,7 +17,7 @@ public class IssuedCoupon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long issuedCouponId;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "coupon_id",nullable = false)
     private Coupon coupon;
 
