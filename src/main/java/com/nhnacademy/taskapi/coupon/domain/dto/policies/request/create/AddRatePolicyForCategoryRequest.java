@@ -1,9 +1,6 @@
 package com.nhnacademy.taskapi.coupon.domain.dto.policies.request.create;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +30,7 @@ public class AddRatePolicyForCategoryRequest {
     private LocalDateTime expirationPeriodEnd;
 
     @NotBlank(message = "정책의 이름이 비어있을 수 없습니다")
+    @Size(max=100)
     private String name;
 
     private String description;

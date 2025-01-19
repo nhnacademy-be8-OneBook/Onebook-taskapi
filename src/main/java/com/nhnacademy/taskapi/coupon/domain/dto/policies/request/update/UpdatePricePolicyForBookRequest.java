@@ -22,6 +22,7 @@ public class UpdatePricePolicyForBookRequest {
     @NotNull(message = "유효기간 end, 비어있을 수 없습니다")
     private LocalDateTime expirationPeriodEnd;
     @NotBlank(message = "정책의 이름이 비어있을 수 없습니다")
+    @Size(max=100)
     private String name;
     private String description;
     @NotBlank(message = "대상 도서의 isbn13이 비어있을 수 없습니다")

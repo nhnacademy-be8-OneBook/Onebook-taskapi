@@ -28,6 +28,7 @@ public class AddRatePolicyForBookRequest {
     private LocalDateTime expirationPeriodEnd;
 
     @NotBlank(message = "정책의 이름이 비어있을 수 없습니다")
+    @Size(max=100)
     private String name;
 
     private String description;

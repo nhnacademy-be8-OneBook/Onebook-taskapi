@@ -25,8 +25,8 @@ public class UpdateRatePolicyForCategoryRequest {
     @NotNull(message = "유효기간 end, 비어있을 수 없습니다")
     private LocalDateTime expirationPeriodEnd;
     @NotBlank(message = "정책의 이름이 비어있을 수 없습니다")
+    @Size(max=100)
     private String name;
-    @NotNull
     private String description;
     @NotNull(message = "대상 카테고리의 id를 입력하세요")
     private Integer categoryId;
