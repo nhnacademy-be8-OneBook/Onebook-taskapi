@@ -31,6 +31,7 @@ public class AddRatePolicyForBookRequest {
     @Size(max=100)
     private String name;
 
+    @Size(max=200)
     private String description;
 
     @NotBlank(message = "대상 도서의 isbn13이 비어있을 수 없습니다")

@@ -33,6 +33,7 @@ public class AddRatePolicyForCategoryRequest {
     @Size(max=100)
     private String name;
 
+    @Size(max=200)
     private String description;
 
     @NotNull(message = "대상 카테고리의 id를 입력하세요")

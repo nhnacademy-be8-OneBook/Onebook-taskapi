@@ -27,6 +27,8 @@ public class UpdateRatePolicyForCategoryRequest {
     @NotBlank(message = "정책의 이름이 비어있을 수 없습니다")
     @Size(max=100)
     private String name;
+
+    @Size(max=200)
     private String description;
     @NotNull(message = "대상 카테고리의 id를 입력하세요")
     private Integer categoryId;
