@@ -33,11 +33,9 @@ public class AddMemberAddressRequest{
     @Size(max = 100,message = "도로명 주소는 100자 이내만 가능합니다.")
     private String roadNameAddress;
 
-    @NotBlank(message = "지번주소를 입력해주세요")
     @Size(max = 100,message = "지번주소는 100자 이내만 가능합니다.")
     private String numberAddress;
 
-    @NotBlank
     @Size(max = 100)
     private String notes;
 
