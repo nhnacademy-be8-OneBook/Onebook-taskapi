@@ -27,7 +27,7 @@ public class OrderController {
     }
 
     @GetMapping("/task/orders")
-    public ResponseEntity<Page<OrderResponse>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestParam(required = false) String statusName, Pageable pageable) {
+    public ResponseEntity<Page<OrderResponse>> getOrders(@RequestHeader("X-MEMBER-ID") Long memberId, @RequestParam(name = "order-status", required = false) String statusName, Pageable pageable) {
         Page<OrderResponse> orderList;
 
         if (statusName == null || statusName.isBlank()) {
@@ -46,7 +46,7 @@ public class OrderController {
     }
 
     // 주문 상태 변경하기
-    @PutMapping("/task/admin/orders")
+    @PutMapping("/task/orders")
     public void updateOrderStatus(@RequestBody List<Long> orderIds, @RequestParam String status) {
         orderService.updateOrderStatus(orderIds, status);
     }
