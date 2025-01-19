@@ -68,7 +68,7 @@ class AddressControllerTest {
                 LocalDate.now(),
                 Member.Gender.M,
                 "test123@nhn.com",
-                "010-2222-2222",
+                "01022222222",
                 Role.createRole("테스트 권한","테스트 권한")
         );
 
@@ -83,7 +83,7 @@ class AddressControllerTest {
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("name"),
                     addMemberAddressRequest,"테스트");
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("phoneNumber"),
-                    addMemberAddressRequest,"010-9999-9999");
+                    addMemberAddressRequest,"01099999999");
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("alias"),
                     addMemberAddressRequest,"테스트");
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("requestedTerm"),
@@ -118,7 +118,7 @@ class AddressControllerTest {
             ReflectionUtils.setField(updateMemberAddressRequest.getClass().getDeclaredField("name"),
                     updateMemberAddressRequest,"수정 테스트" );
             ReflectionUtils.setField(updateMemberAddressRequest.getClass().getDeclaredField("phoneNumber"),
-                    updateMemberAddressRequest,"010-3333-3333" );
+                    updateMemberAddressRequest,"01033333333" );
             ReflectionUtils.setField(updateMemberAddressRequest.getClass().getDeclaredField("alias"),
                     updateMemberAddressRequest,"수정 테스트" );
             ReflectionUtils.setField(updateMemberAddressRequest.getClass().getDeclaredField("requestedTerm"),
@@ -194,7 +194,7 @@ class AddressControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(req))
                 .andExpect(jsonPath("$.name").value("테스트"))
-                .andExpect(jsonPath("$.phoneNumber").value("010-9999-9999"))
+                .andExpect(jsonPath("$.phoneNumber").value("01099999999"))
                 .andExpect(jsonPath("$.alias").value("테스트"))
                 .andExpect(jsonPath("$.requestedTerm").value("테스트용입니다"))
                 .andExpect(jsonPath("$.zipCode").value("99999"))
@@ -217,7 +217,7 @@ class AddressControllerTest {
                         .header("X-MEMBER-ID",1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].name").value("테스트"))
-                .andExpect(jsonPath("$[0].phoneNumber").value("010-9999-9999"))
+                .andExpect(jsonPath("$[0].phoneNumber").value("01099999999"))
                 .andExpect(jsonPath("$[0].alias").value("테스트"))
                 .andExpect(jsonPath("$[0].requestedTerm").value("테스트용입니다"))
                 .andExpect(jsonPath("$[0].zipCode").value("99999"))
@@ -241,7 +241,7 @@ class AddressControllerTest {
                         .header("X-MEMBER-ID",1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("테스트"))
-                .andExpect(jsonPath("$.phoneNumber").value("010-9999-9999"))
+                .andExpect(jsonPath("$.phoneNumber").value("01099999999"))
                 .andExpect(jsonPath("$.alias").value("테스트"))
                 .andExpect(jsonPath("$.requestedTerm").value("테스트용입니다"))
                 .andExpect(jsonPath("$.zipCode").value("99999"))
@@ -269,7 +269,7 @@ class AddressControllerTest {
                 )
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("수정 테스트"))
-                .andExpect(jsonPath("$.phoneNumber").value("010-3333-3333"))
+                .andExpect(jsonPath("$.phoneNumber").value("01033333333"))
                 .andExpect(jsonPath("$.alias").value("수정 테스트"))
                 .andExpect(jsonPath("$.requestedTerm").value("수정 테스트"))
                 .andExpect(jsonPath("$.zipCode").value("21121"))
