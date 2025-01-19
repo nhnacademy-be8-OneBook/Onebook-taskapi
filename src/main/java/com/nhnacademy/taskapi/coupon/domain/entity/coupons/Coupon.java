@@ -48,6 +48,9 @@ public class Coupon {
     @JoinColumn(name = "coupon_status_id", nullable = false)
     private CouponStatus couponStatus;
 
+    @OneToOne(mappedBy = "coupon", cascade = CascadeType.REMOVE)
+    private IssuedCoupon issuedCoupon;
+
     public Coupon(String couponNumber, RatePolicyForBook ratePolicyForBook, CouponStatus couponStatus, LocalDateTime creationTime) {
         this.couponNumber = couponNumber;
         this.ratePolicyForBook = ratePolicyForBook;
