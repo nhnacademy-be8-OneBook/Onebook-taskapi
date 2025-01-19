@@ -9,10 +9,10 @@ import lombok.Getter;
 @Getter
 public enum PointLogUpdatedType {
     REGISTRATION("회원 가입"),
-    PAYMENT("포인트 결제"),
-    REFUND("포인트 환불"),
+    PAYMENT("포인트 사용"),
+    REFUND("환불"),
     REVIEW("리뷰 작성"),
-    PURCHASE("도서 구매");
+    PURCHASE("포인트 적립");
 
     private final String description;
 

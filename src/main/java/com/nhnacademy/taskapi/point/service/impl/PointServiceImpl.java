@@ -219,13 +219,13 @@ public class PointServiceImpl implements PointService {
     @Override
     public List<PointLog> getPointLogsByMember(Long member_id) {
         // 모든 포인트 로그를 반환 (페이징 없는 메서드 사용)
-        return pointLogRepository.findByPoint_Member_Id(member_id);
+        return pointLogRepository.findByPoint_Member_IdOrderByPointLogUpdatedAtDesc(member_id);
     }
 
     @Override
     public List<PointLog> getPointLogsByMember(Long member_id, Pageable pageable) {
         // 페이징 처리된 포인트 로그 반환
-        Page<PointLog> pointLogPage = pointLogRepository.findByPoint_Member_Id(member_id, pageable);
+        Page<PointLog> pointLogPage = pointLogRepository.findByPoint_Member_IdOrderByPointLogUpdatedAtDesc(member_id, pageable);
         return pointLogPage.getContent();  // 페이징된 결과 리스트 반환
     }
 
