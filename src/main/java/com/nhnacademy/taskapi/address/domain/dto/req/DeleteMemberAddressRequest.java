@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class DeleteMemberAddressRequest {
 
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message = "id가 비어있습니다")
+    @PositiveOrZero(message = "id는 0보다 작을 수 없습니다")
     private Long id;
 }
