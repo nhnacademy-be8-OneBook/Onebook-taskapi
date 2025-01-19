@@ -9,16 +9,12 @@ import com.nhnacademy.taskapi.point.repository.PointLogRepository;
 import com.nhnacademy.taskapi.point.dto.PointLogResponse;
 import com.nhnacademy.taskapi.point.repository.PointRepository;
 import com.nhnacademy.taskapi.point.service.PointLogService;
-import com.nhnacademy.taskapi.review.exception.InvalidReviewException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collection;
-import java.util.List;
 
 @Service
 @Transactional
@@ -42,7 +38,7 @@ public class PointLogServiceImpl implements PointLogService {
                 .orElseThrow(() -> new ApplicationException("포인트 정보가 없는 회원입니다."));
 
         // 3. 포인트 로그 조회
-        Page<PointLog> pointLogPage = pointLogRepository.findByPoint_Member_Id(memberId, pageable);
+        Page<PointLog> pointLogPage = pointLogRepository.findByPoint_Member_IdOrderByPointLogUpdatedAtDesc(memberId, pageable);
 
         // 4. PointLogResponse 반환
         return pointLogPage.map(PointLogResponse::fromEntity);

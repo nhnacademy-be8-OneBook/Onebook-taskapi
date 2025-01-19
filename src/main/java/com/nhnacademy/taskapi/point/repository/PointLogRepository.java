@@ -11,12 +11,11 @@ import java.util.List;
 
 public interface PointLogRepository extends JpaRepository<PointLog, Long> {
     // 기존의 페이지네이션 지원 메서드
-    @Query("SELECT pl FROM PointLog pl WHERE pl.point.member.id = :member_id")
-    Page<PointLog> findByPoint_Member_Id(@Param("member_id") Long member_id, Pageable pageable);
+    Page<PointLog> findByPoint_Member_IdOrderByPointLogUpdatedAtDesc(@Param("member_id") Long member_id, Pageable pageable);
 
     // 페이징 없이 모든 로그를 반환하는 메서드 추가
     @Query("SELECT pl FROM PointLog pl WHERE pl.point.member.id = :member_id")
-    List<PointLog> findByPoint_Member_Id(@Param("member_id") Long member_id);
+    List<PointLog> findByPoint_Member_IdOrderByPointLogUpdatedAtDesc(@Param("member_id") Long member_id);
 }
 
 

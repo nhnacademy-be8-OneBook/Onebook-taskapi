@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class PointLogResponse {
         private Long pointLogId;                 // 로그 PK
         private LocalDateTime pointLogUpdatedAt; // 포인트 변경일
-        private PointLogUpdatedType updatedType; // 포인트 변경 타입
+        private String updatedType; // 포인트 변경 타입
         private int amount;                      // 포인트 갱신액
         private int currentPoint;                // 변경 후 현재 포인트
         private Long memberId;                   // 회원 식별자
@@ -24,7 +24,7 @@ public class PointLogResponse {
                 return PointLogResponse.builder()
                         .pointLogId(pointLog.getPointLogId())
                         .pointLogUpdatedAt(pointLog.getPointLogUpdatedAt())
-                        .updatedType(pointLog.getPointLogUpdatedType())
+                        .updatedType(pointLog.getPointLogUpdatedType().getDescription())
                         .amount(pointLog.getPointLogAmount())
                         .currentPoint(pointLog.getAfterPointAmount())
                         .memberId(pointLog.getPoint().getMember().getId())
