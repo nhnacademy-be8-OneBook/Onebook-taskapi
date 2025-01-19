@@ -9,11 +9,14 @@ import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdatePr
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdateRatePolicyForBookRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdateRatePolicyForCategoryRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.*;
+import com.nhnacademy.taskapi.coupon.exception.CouponPolicyIllegalArgumentException;
 import com.nhnacademy.taskapi.coupon.service.policies.PolicyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +31,11 @@ public class PolicyController {
     // Create
     @PostMapping("/policies/rate/book")
     public ResponseEntity<RatePolicyForBookResponse> addRatePolicyForBook
-            (@RequestBody AddRatePolicyForBookRequest addRatePolicyForBookRequest){
+            (@Valid @RequestBody AddRatePolicyForBookRequest addRatePolicyForBookRequest, BindingResult bindingResult){
+
+        if(bindingResult.hasErrors()){
+            throw new CouponPolicyIllegalArgumentException(bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        }
 
         RatePolicyForBookResponse  addRatePolicyForBookResponse =
                 policyService.addRatePolicyForBook(addRatePolicyForBookRequest);
@@ -37,7 +44,11 @@ public class PolicyController {
 
     @PostMapping("/policies/rate/category")
     public ResponseEntity<RatePolicyForCategoryResponse> addRatePolicyForCategory
-            (@RequestBody AddRatePolicyForCategoryRequest addRatePolicyForCategoryRequest){
+            (@Valid @RequestBody AddRatePolicyForCategoryRequest addRatePolicyForCategoryRequest, BindingResult bindingResult){
+
+        if(bindingResult.hasErrors()){
+            throw new CouponPolicyIllegalArgumentException(bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        }
 
         RatePolicyForCategoryResponse addRatePolicyForCategoryResponse =
                 policyService.addRatePolicyForCategory(addRatePolicyForCategoryRequest);
@@ -46,7 +57,11 @@ public class PolicyController {
 
     @PostMapping("/policies/price/book")
     public ResponseEntity<PricePolicyForBookResponse> addPricePolicyForBook
-            (@RequestBody AddPricePolicyForBookRequest addPricePolicyForBookRequest){
+            (@Valid @RequestBody AddPricePolicyForBookRequest addPricePolicyForBookRequest, BindingResult bindingResult){
+
+        if(bindingResult.hasErrors()){
+            throw new CouponPolicyIllegalArgumentException(bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        }
 
         PricePolicyForBookResponse addPricePolicyForBookResponse =
                 policyService.addPricePolicyForBook(addPricePolicyForBookRequest);
@@ -55,7 +70,11 @@ public class PolicyController {
 
     @PostMapping("/policies/price/category")
     public ResponseEntity<PricePolicyForCategoryResponse> addPricePolicyForCategory
-            (@RequestBody AddPricePolicyForCategoryRequest addPricePolicyForCategoryRequest){
+            (@Valid @RequestBody AddPricePolicyForCategoryRequest addPricePolicyForCategoryRequest, BindingResult bindingResult){
+
+        if(bindingResult.hasErrors()){
+            throw new CouponPolicyIllegalArgumentException(bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        }
 
         PricePolicyForCategoryResponse addPricePolicyForCategoryResponse =
                 policyService.addPricePolicyForCategory(addPricePolicyForCategoryRequest);
@@ -127,28 +146,48 @@ public class PolicyController {
     // Update
     @PutMapping("/policies/rate/book")
     public ResponseEntity<RatePolicyForBookResponse> updateRatePolicyForBook
-        (@RequestBody UpdateRatePolicyForBookRequest updateRatePolicyForBookRequest){
+        (@Valid @RequestBody UpdateRatePolicyForBookRequest updateRatePolicyForBookRequest, BindingResult bindingResult){
+
+        if(bindingResult.hasErrors()){
+            throw new CouponPolicyIllegalArgumentException(bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        }
+
         RatePolicyForBookResponse response = policyService.updateRatePolicyForBook(updateRatePolicyForBookRequest);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/policies/rate/category")
     public ResponseEntity<RatePolicyForCategoryResponse> updateRatePolicyForCategory
-            (@RequestBody UpdateRatePolicyForCategoryRequest updateRatePolicyForCategoryRequest){
+            (@Valid @RequestBody UpdateRatePolicyForCategoryRequest updateRatePolicyForCategoryRequest, BindingResult bindingResult){
+
+        if(bindingResult.hasErrors()){
+            throw new CouponPolicyIllegalArgumentException(bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        }
+
         RatePolicyForCategoryResponse response = policyService.updateRatePolicyForCategory(updateRatePolicyForCategoryRequest);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/policies/price/book")
     public ResponseEntity<PricePolicyForBookResponse> updatePricePolicyForBook
-            (@RequestBody UpdatePricePolicyForBookRequest updatePricePolicyForBookRequest){
+            (@Valid @RequestBody UpdatePricePolicyForBookRequest updatePricePolicyForBookRequest, BindingResult bindingResult){
+
+        if(bindingResult.hasErrors()){
+            throw new CouponPolicyIllegalArgumentException(bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        }
+
         PricePolicyForBookResponse response = policyService.updatePricePolicyForBook(updatePricePolicyForBookRequest);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/policies/price/category")
     public ResponseEntity<PricePolicyForCategoryResponse> updatePricePolicyForCategory
-            (@RequestBody UpdatePricePolicyForCategoryRequest updatePricePolicyForCategoryRequest){
+            (@Valid @RequestBody UpdatePricePolicyForCategoryRequest updatePricePolicyForCategoryRequest, BindingResult bindingResult){
+
+        if(bindingResult.hasErrors()){
+            throw new CouponPolicyIllegalArgumentException(bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        }
+
         PricePolicyForCategoryResponse response = policyService.updatePricePolicyForCategory(updatePricePolicyForCategoryRequest);
         return ResponseEntity.ok(response);
     }
