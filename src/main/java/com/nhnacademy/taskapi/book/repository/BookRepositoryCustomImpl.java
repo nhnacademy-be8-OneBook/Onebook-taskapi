@@ -6,8 +6,11 @@ import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.domain.QBook;
 import com.nhnacademy.taskapi.book.domain.QBookAuthor;
 import com.nhnacademy.taskapi.book.domain.QBookTag;
+import com.nhnacademy.taskapi.book.dto.BookRecommendDto;
 import com.nhnacademy.taskapi.book.dto.BookSearchAllResponse;
+import com.nhnacademy.taskapi.like.domain.QLike;
 import com.nhnacademy.taskapi.publisher.domain.QPublisher;
+import com.nhnacademy.taskapi.review.domain.QReview;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
@@ -30,11 +33,14 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
     QBookTag bookTag = QBookTag.bookTag;
     QTag tag = QTag.tag;
     QPublisher publisher = QPublisher.publisher;
+    QLike like = QLike.like;
+    QReview review = QReview.review;
 
     @Override
     public List<BookSearchAllResponse> findBookByTitle(String searchString) {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(book.title.containsIgnoreCase(searchString));
+        builder.or(book.description.containsIgnoreCase(searchString));
         builder.or(bookAuthor.author.name.containsIgnoreCase(searchString));
         builder.or(bookTag.tag.name.containsIgnoreCase(searchString));
         builder.or(publisher.name.containsIgnoreCase(searchString));
@@ -45,6 +51,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                         book.bookId,
                         book.title,
                         book.publisher.name,
+                        book.description,
                         book.price,
                         book.salePrice,
                         book.amount,
@@ -60,5 +67,24 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                 .where(builder)
                 .fetch();
 
+    }
+
+    @Override
+    public List<BookRecommendDto> reconmmendBooks() {
+        return queryFactory.select(Projections.constructor(
+                BookRecommendDto.class,
+                book.bookId,
+                book.title
+                ))
+                .from(book)
+                .leftJoin(like).on(like.book.eq(book))
+                .leftJoin(review).on(review.book.eq(book))
+                .groupBy(book.bookId)
+                .orderBy(
+                        like.count().desc(),
+                        review.count().desc()
+                )
+                .limit(4)
+                .fetch();
     }
 }

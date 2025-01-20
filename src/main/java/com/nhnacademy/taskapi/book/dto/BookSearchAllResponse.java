@@ -15,6 +15,7 @@ public class BookSearchAllResponse {
     private long bookId;
     private String title;
     private String publisherName;
+    private String description;
     private int price;
     private int salePrice;
     private long amount;

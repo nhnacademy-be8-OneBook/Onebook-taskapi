@@ -206,5 +206,10 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findBookByTitle(searchString);
     }
 
+    @Override
+    public List<BookRecommendDto> recommendBooks(){
+        return bookRepository.reconmmendBooks();
+    }
+
 
 }
