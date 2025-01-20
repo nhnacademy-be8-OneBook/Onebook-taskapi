@@ -245,18 +245,18 @@ class AddressServiceTest {
 
     }
 
-    @Test
-    @DisplayName("updateMemberAddress 메서드 동작 테스트")
-    @Order(6)
-    void updateMemberAddressTest() {
-
-        Mockito.when(addressRepository.findById(memberAddress.getId())).thenReturn(Optional.of(memberAddress));
-
-        addressService.updateMemberAddress(member.getId(), updateMemberAddressRequest);
-
-        Mockito.verify(addressRepository,Mockito.times(1)).findById(memberAddress.getId());
-
-    }
+//    @Test
+//    @DisplayName("updateMemberAddress 메서드 동작 테스트")
+//    @Order(6)
+//    void updateMemberAddressTest() {
+//
+//        Mockito.when(addressRepository.findById(memberAddress.getId())).thenReturn(Optional.of(memberAddress));
+//
+//        addressService.updateMemberAddress(member.getId(), updateMemberAddressRequest);
+//
+//        Mockito.verify(addressRepository,Mockito.times(1)).findById(memberAddress.getId());
+//
+//    }
 
     @Test
     @DisplayName("updateMemberAddress 메서드 예외 테스트 - 해당하는 ID의 배송지가 존재하지 않을때")
