@@ -9,14 +9,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findByOrdererPhoneNumber(String s);
-    // TODO Pageable을 적용하면서 생긴 에러?
     List<Order> findByMemberId(Long memberId);
     Page<Order> findByMemberId(Long memberId, Pageable pageable);
 
     List<Order> findByOrderStatus(OrderStatus orderStatus);
 
     Page<Order> findByMemberIdAndOrderStatus(Long memberId, OrderStatus orderStatus, Pageable pageable);
+
+    Page<Order> findByMemberIdAndOrderStatusNot(Long memberId, OrderStatus orderStatus, Pageable pageable);
 
     Page<Order> findByMemberIdAndOrderStatusStatusNameOrOrderStatusIsNull(Long memberId, OrderStatus orderStatus, Pageable pageable);
 

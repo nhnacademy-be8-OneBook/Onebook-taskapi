@@ -11,6 +11,7 @@ public interface OrderService {
 
     Page<OrderResponse> getOrderList(Long memberId, Pageable pageable);
     Page<OrderResponse> getOrderListByStatusName(Long memberId, String statusName, Pageable pageable);
+    Page<OrderResponse> getOrderListExcludePending(Long memberId, String statusName, Pageable pageable);
     Page<OrderMemberResponse> getOrders(Long memberId, String statusName, Pageable pageable);
 
     List<OrderStatusResponse> getOrdersByStatusName(String statusName);
