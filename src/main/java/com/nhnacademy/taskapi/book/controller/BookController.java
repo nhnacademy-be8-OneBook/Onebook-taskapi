@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.book.controller;
 
 
 import com.nhnacademy.taskapi.book.domain.Book;
+import com.nhnacademy.taskapi.book.dto.BookRecommendDto;
 import com.nhnacademy.taskapi.book.dto.BookSaveDTO;
 import com.nhnacademy.taskapi.book.dto.BookSearchAllResponse;
 import com.nhnacademy.taskapi.book.dto.BookUpdateDTO;
@@ -86,6 +87,11 @@ public class BookController {
     public ResponseEntity<List<BookSearchAllResponse>> searchBooks(@RequestParam("searchString") String searchString){
         List<BookSearchAllResponse> books = bookService.searchBookAll(searchString);
         return ResponseEntity.ok().body(books);
+    }
+
+    @GetMapping("/recommend")
+    public ResponseEntity<List<BookRecommendDto>> recommendBooks(){
+        return ResponseEntity.ok().body(bookService.recommendBooks());
     }
 
 }
