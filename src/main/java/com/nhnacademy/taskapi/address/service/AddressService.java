@@ -5,6 +5,7 @@ import com.nhnacademy.taskapi.address.domain.dto.req.DeleteMemberAddressRequest;
 import com.nhnacademy.taskapi.address.domain.dto.req.UpdateMemberAddressRequest;
 import com.nhnacademy.taskapi.address.domain.dto.resp.MemberAddressResponse;
 import com.nhnacademy.taskapi.address.domain.entity.MemberAddress;
+import com.nhnacademy.taskapi.address.exception.DefaultAddressCannotRemoveException;
 import com.nhnacademy.taskapi.address.exception.InvalidMemberAddressException;
 import com.nhnacademy.taskapi.address.exception.MemberAddressLimitExceededException;
 import com.nhnacademy.taskapi.address.exception.MemberAddressNotFoundException;
@@ -42,6 +43,17 @@ public class AddressService {
         Member member = memberRepository.findById(memberId).orElseThrow(()-> new MemberNotFoundException("Member Not Found by " + memberId));
         MemberAddress memberAddress = MemberAddress.createMemberAddress(member, memberAddressRequest);
 
+        // 사용자의 이전에 등록한 다른 배송지가 없다면, 이 배송지는 자동으로 기본배송지가 됩니다
+        if(getMemberAddressesCount(memberId) < 1){
+            memberAddress.setDefaultLocation();
+        }
+
+        //새로 생성된 memberAddress가 defaultLocation 이라면 기존의 defaultLocation은 디폴트 해제
+        if(memberAddress.isDefaultLocation()){
+            unsetAnotherDefaultAddress(memberAddress);
+        }
+
+        // 사용자의 배송지가 10개를 넘지는 않는지 확인합니다
         if(getMemberAddressesCount(member.getId()) > 10){
             throw new MemberAddressLimitExceededException("배송지는 최대 10개까지 등록 가능합니다.");
         }
@@ -92,7 +104,18 @@ public class AddressService {
             throw new InvalidMemberAddressException("해당 ID 배송지의 member ID와 요청한 member ID가 일치하지 않습니다.");
         }
 
+
+        //수정된 memberAddress가 defaultLocation 이라면 기존의 defaultLocation은 디폴트 해제
+        if(updateMemberAddressRequest.isDefaultLocation()){
+            unsetAnotherDefaultAddress(memberAddress);
+        }
+
         memberAddress.updateMemberAddress(updateMemberAddressRequest);
+
+        // 사용자의 이전에 등록한 다른 배송지가 없다면, 이 배송지는 자동으로 기본배송지가 됩니다
+        if(getMemberAddressesCount(memberId) <= 1){
+            memberAddress.setDefaultLocation();
+        }
 
         return MemberAddressResponse.changeEntityToDto(memberAddress);
     }
@@ -104,6 +127,10 @@ public class AddressService {
 
         if (!Objects.equals(memberAddress.getMember().getId(), memberId)){
             throw new InvalidMemberAddressException("해당 ID 배송지의 member ID와 요청한 member ID가 일치하지 않습니다.");
+        }
+
+        if(memberAddress.isDefaultLocation()){
+            throw new DefaultAddressCannotRemoveException("기본배송지는 삭제할 수 없습니다");
         }
 
         addressRepository.delete(memberAddress);
@@ -118,6 +145,37 @@ public class AddressService {
 
          return addressRepository.findMemberAddressByMember(member).stream().count();
 
+    }
+
+    @Transactional
+    public void unsetAnotherDefaultAddress(MemberAddress memberAddress){
+
+       List<MemberAddress> addresses = addressRepository.findMemberAddressByMember(memberAddress.getMember());
+       for(MemberAddress element : addresses){
+
+           if(element.isDefaultLocation()){
+               element.unsetDefaultLocation();
+           }
+
+       }
+
+    }
+
+    @Transactional
+    public MemberAddressResponse setDefaultAddress(Long memberId,Long memberAddressId){
+
+        MemberAddress memberAddress = addressRepository.findById(memberAddressId).orElseThrow(
+                () -> new MemberAddressNotFoundException("해당하는 ID의 배송지를 찾을 수 없습니다")
+        );
+
+        if(!memberId.equals(memberAddress.getMember().getId())){
+            throw new InvalidMemberAddressException("해당 ID 배송지의 member ID와 요청한 member ID가 일치하지 않습니다.");
+        }
+
+        unsetAnotherDefaultAddress(memberAddress);
+        memberAddress.setDefaultLocation();
+
+        return MemberAddressResponse.changeEntityToDto(memberAddress);
     }
 
 }
