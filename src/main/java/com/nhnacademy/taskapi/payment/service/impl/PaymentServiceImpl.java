@@ -5,6 +5,7 @@ import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.order.entity.Order;
 import com.nhnacademy.taskapi.order.repository.OrderRepository;
 import com.nhnacademy.taskapi.order.repository.OrderStatusRepository;
+import com.nhnacademy.taskapi.order.service.OrderService;
 import com.nhnacademy.taskapi.payment.domain.Payment;
 import com.nhnacademy.taskapi.payment.domain.PaymentMethod;
 import com.nhnacademy.taskapi.payment.dto.CheckoutInfoResponse;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +38,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final OrderStatusRepository orderStatusRepository;
     private final MemberRepository memberRepository;
     private final JpaPointRepository pointRepository;
-    private final PointService pointService;
     private final CommonPaymentService commonPaymentService; // 새로 주입
+    private final OrderService orderService;
 
     @Override
     @Transactional
@@ -90,8 +92,7 @@ public class PaymentServiceImpl implements PaymentService {
             throw new InvalidPaymentException("본인 주문이 아닙니다.");
         }
 
-        // orderStatusRepository.findByStatusName("결제대기").getOrderStatusId
-        if(order.getOrderStatus().getOrderStatusId() != 1) {
+        if(order.getOrderStatus().getOrderStatusId() != orderStatusRepository.findByStatusName("결제대기").get().getOrderStatusId()) {
             throw new InvalidPaymentException("결제 대기중인 상품이 아닙니다.");
         }
 
@@ -119,6 +120,7 @@ public class PaymentServiceImpl implements PaymentService {
         if (finalPayAmount == 0) {
             // 전액 포인트 결제 → 즉시 DONE 처리
             newPayment.setStatus("DONE");
+            orderService.updateOrderStatus(List.of(realOrderId), "배송전");
             commonPaymentService.handleFullPointPayment(newPayment, memberId);
         } else {
             // 토스/외부결제 진행을 위해 READY

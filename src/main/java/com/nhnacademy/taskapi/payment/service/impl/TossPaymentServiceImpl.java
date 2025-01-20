@@ -1,6 +1,7 @@
 package com.nhnacademy.taskapi.payment.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhnacademy.taskapi.order.service.OrderService;
 import com.nhnacademy.taskapi.payment.domain.Payment;
 import com.nhnacademy.taskapi.payment.domain.PaymentMethod;
 import com.nhnacademy.taskapi.payment.dto.toss.TossConfirmRequest;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,7 +33,7 @@ import java.util.Map;
 @Slf4j
 public class TossPaymentServiceImpl {
     private final PaymentRepository paymentRepository;
-    private final JpaPointRepository pointRepository;
+    private final OrderService orderService;
 
     // 토스 결제 승인시 응답을 JSON 문자열로 받고
     // 이를 Map<String, Object>로 변환하여 쉽게 접근할 수 있도록 함
@@ -149,6 +151,7 @@ public class TossPaymentServiceImpl {
         if ("DONE".equals(status)) {
             commonPaymentService.usedPurchasePoint(payment); // 차감
             commonPaymentService.accumulationPurchasePoints(payment); // 적립
+            orderService.updateOrderStatus(List.of(realOrderId), "배송전"); // 주문 상태 변경
         }
 
         // 5) Payment 상태 업데이트
