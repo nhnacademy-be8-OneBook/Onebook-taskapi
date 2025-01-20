@@ -11,10 +11,10 @@ eureka:
   instance:
     prefer-ip-address: true
 
-# spring batch
-spring:
-  batch:
-    job:
-      name: inactiveMemberJob
-    jdbc:
-      initialize-schema: never
+## spring batch
+#spring:
+#  batch:
+#    job:
+#      name: inactiveMemberJob
+#    jdbc:
+#      initialize-schema: never
