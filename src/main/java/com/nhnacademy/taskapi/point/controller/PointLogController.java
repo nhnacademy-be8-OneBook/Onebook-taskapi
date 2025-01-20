@@ -1,10 +1,13 @@
 package com.nhnacademy.taskapi.point.controller;
 
+import com.nhnacademy.taskapi.point.domain.Point;
+import com.nhnacademy.taskapi.point.domain.PointLog;
 import com.nhnacademy.taskapi.point.dto.PointLogPageResponseDto;
 import com.nhnacademy.taskapi.point.dto.PointLogResponse;
 import com.nhnacademy.taskapi.point.service.PointLogService;
 import com.nhnacademy.taskapi.member.domain.Member;
 
+import com.nhnacademy.taskapi.point.service.PointService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PointLogController {
 
     private final PointLogService pointLogService;
+    private final PointService pointService;
 
     @GetMapping("/point-logs")
     public ResponseEntity<PointLogPageResponseDto> getPointLogs(
@@ -33,5 +37,15 @@ public class PointLogController {
 
         return ResponseEntity.ok(responseDto);
     }
+
+    @GetMapping("/current-point")
+    public int getUserPoint(
+            @RequestHeader("X-MEMBER-ID") Long memberId) {
+
+        Point point = pointService.getMemberPoints(memberId);
+
+        return point.getPointCurrent();
+    }
+
 
 }
