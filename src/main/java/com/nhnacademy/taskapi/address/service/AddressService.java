@@ -54,7 +54,7 @@ public class AddressService {
         }
 
         // 사용자의 배송지가 10개를 넘지는 않는지 확인합니다
-        if(getMemberAddressesCount(member.getId()) > 10){
+        if(getMemberAddressesCount(member.getId()) >= 10){
             throw new MemberAddressLimitExceededException("배송지는 최대 10개까지 등록 가능합니다.");
         }
 
