@@ -1,5 +1,7 @@
 package com.nhnacademy.taskapi.member.repository;
 
+import com.nhnacademy.taskapi.member.domain.Member;
+import com.nhnacademy.taskapi.member.domain.QMember;
 import com.nhnacademy.taskapi.order.entity.QOrder;
 import com.nhnacademy.taskapi.order.entity.QOrderStatus;
 import com.nhnacademy.taskapi.payment.domain.QPayment;
@@ -36,4 +38,15 @@ public class MemberQueryDslRepository {
                         .and(order.dateTime.goe(threeMonthsAgo))) // 최근 3개월 조건
                 .fetch(); // onlyBookAmount 컬럼 값 리스트로 반환
     }
+
+    // 최근 로그인한 날짜를 기준으로 3달 이전 멤버 불러오기. (lastLoginAt이 null 인 멤버는 적용 X)
+    public List<Member> getAllMemberByBatch() {
+        QMember member = QMember.member;
+        LocalDateTime threeMonthsAgo = LocalDateTime.now().minusMonths(3);
+        return jpaQueryFactory.select(member)
+                .from(member)
+                .where(member.lastLoginAt.goe(threeMonthsAgo))
+                .fetch();
+    }
+
 }
