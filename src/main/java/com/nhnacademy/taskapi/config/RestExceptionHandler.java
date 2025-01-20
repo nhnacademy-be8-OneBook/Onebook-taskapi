@@ -52,10 +52,10 @@ public class RestExceptionHandler {
     }
 
     // 같은 쿠폰 중복 발급 요청시 발생하는 exception
-    @ExceptionHandler(AlreadyIssuedCouponException.class)
-    public ResponseEntity<ErrorResponse> handleAlreadyIssuedCouponException(AlreadyIssuedCouponException e){
-        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
+//    @ExceptionHandler(AlreadyIssuedCouponException.class)
+//    public ResponseEntity<ErrorResponse> handleAlreadyIssuedCouponException(AlreadyIssuedCouponException e){
+//        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+//    }
 
 }

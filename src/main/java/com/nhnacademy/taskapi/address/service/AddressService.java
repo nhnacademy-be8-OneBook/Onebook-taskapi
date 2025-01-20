@@ -42,6 +42,11 @@ public class AddressService {
         Member member = memberRepository.findById(memberId).orElseThrow(()-> new MemberNotFoundException("Member Not Found by " + memberId));
         MemberAddress memberAddress = MemberAddress.createMemberAddress(member, memberAddressRequest);
 
+        //새로 생성된 memberAddress가 defaultLocation 이라면 기존의 defaultLocation은 디폴트 해제
+        if(memberAddress.isDefaultLocation()){
+            unsetAnotherDefaultAddress(memberAddress);
+        }
+
         if(getMemberAddressesCount(member.getId()) > 10){
             throw new MemberAddressLimitExceededException("배송지는 최대 10개까지 등록 가능합니다.");
         }
@@ -118,6 +123,37 @@ public class AddressService {
 
          return addressRepository.findMemberAddressByMember(member).stream().count();
 
+    }
+
+    @Transactional
+    public void unsetAnotherDefaultAddress(MemberAddress memberAddress){
+
+       List<MemberAddress> addresses = addressRepository.findMemberAddressByMember(memberAddress.getMember());
+       for(MemberAddress element : addresses){
+
+           if(element.isDefaultLocation()){
+               element.unsetDefaultLocation();
+           }
+
+       }
+
+    }
+
+    @Transactional
+    public MemberAddressResponse setDefaultAddress(Long memberId,Long memberAddressId){
+
+        MemberAddress memberAddress = addressRepository.findById(memberAddressId).orElseThrow(
+                () -> new MemberAddressNotFoundException("해당하는 ID의 배송지를 찾을 수 없습니다")
+        );
+
+        if(!memberId.equals(memberAddress.getMember().getId())){
+            throw new InvalidMemberAddressException("해당 ID 배송지의 member ID와 요청한 member ID가 일치하지 않습니다.");
+        }
+
+        unsetAnotherDefaultAddress(memberAddress);
+        memberAddress.setDefaultLocation();
+
+        return MemberAddressResponse.changeEntityToDto(memberAddress);
     }
 
 }

@@ -96,4 +96,12 @@ public class MemberAddress {
         this.detailAddress = updateMemberAddressRequest.getDetailAddress();
         this.defaultLocation = updateMemberAddressRequest.isDefaultLocation();
     }
+
+    public void setDefaultLocation(){
+        this.defaultLocation = true;
+    }
+
+    public void unsetDefaultLocation(){
+        this.defaultLocation =false;
+    }
 }
