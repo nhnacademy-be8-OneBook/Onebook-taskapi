@@ -35,6 +35,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
     public List<BookSearchAllResponse> findBookByTitle(String searchString) {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(book.title.containsIgnoreCase(searchString));
+        builder.or(book.description.containsIgnoreCase(searchString));
         builder.or(bookAuthor.author.name.containsIgnoreCase(searchString));
         builder.or(bookTag.tag.name.containsIgnoreCase(searchString));
         builder.or(publisher.name.containsIgnoreCase(searchString));
@@ -45,6 +46,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                         book.bookId,
                         book.title,
                         book.publisher.name,
+                        book.description,
                         book.price,
                         book.salePrice,
                         book.amount,
