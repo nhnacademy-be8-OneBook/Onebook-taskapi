@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "order_details")
 public class OrderDetail {
     @Id
+    @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_detail_id")
     Long orderDetailId;

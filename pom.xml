@@ -159,6 +159,18 @@
             <!-- 버전 바꿈 -->
         </dependency>
 
+        <!-- 무중단배포를 위한 앤드포인트 활성화-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- 배치 의존성 추가 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-batch</artifactId>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>

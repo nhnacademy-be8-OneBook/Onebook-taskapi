@@ -175,5 +175,17 @@ public class MemberRepositoryTest {
         assertThat(target).isEqualTo(true);
     }
 
+    @Test
+    @DisplayName("Get MemberNetPaymentAmount")
+    void memberNetPaymentAmountTest() {
+        Grade grade = Grade.create("ROYAL", 10, "일반 등급");
+        Role role = Role.createRole("MEMBER", "일반 회원");
+
+        Grade savedGrade = entityManager.persist(grade);
+        Role savedRole = entityManager.persist(role);
+        Member member = Member.createNewMember(savedGrade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "01011111111", savedRole);
+
+    }
+
 
 }

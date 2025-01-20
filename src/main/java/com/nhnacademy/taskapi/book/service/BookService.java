@@ -1,9 +1,7 @@
 package com.nhnacademy.taskapi.book.service;
 
 import com.nhnacademy.taskapi.book.domain.Book;
-import com.nhnacademy.taskapi.book.dto.BookAladinDTO;
-import com.nhnacademy.taskapi.book.dto.BookSaveDTO;
-import com.nhnacademy.taskapi.book.dto.BookUpdateDTO;
+import com.nhnacademy.taskapi.book.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,9 +25,14 @@ public interface BookService {
     Page<Book> newBooks(Pageable pageable);
 
     List<Book> newBooksTop4();
+    List<Book> bestSellersTop4();
 
     // 책 존재여부
     Book getBook(long bookId);
 
     Page<Book> findAllBooks(Pageable pageable);
+
+    //통합검색
+    List<BookSearchAllResponse> searchBookAll(String searchString);
+    List<BookRecommendDto> recommendBooks();
 }

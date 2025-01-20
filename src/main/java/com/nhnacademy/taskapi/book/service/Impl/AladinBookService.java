@@ -64,7 +64,7 @@ public class AladinBookService {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<BookAladinDTO> saveAladin() {
         List<BookAladinDTO> dtoList = new ArrayList<>();
-        String url = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbtjswns12211534001&QueryType=Bestseller&MaxResults=2&start=24&SearchTarget=Book&output=js&Version=20131101";
+        String url = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbtjswns12211534001&QueryType=Bestseller&MaxResults=50&start=1&SearchTarget=Book&output=js&Version=20131101";
         String response = aladinApiAdapter.fetchAladinData(url);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -145,6 +145,7 @@ public class AladinBookService {
 
             // 이미지 등록
             String imageUrlString = dto.getCover();
+            imageUrlString = imageUrlString.replace("coversum", "cover500");
             URL imageUrl = new URL(imageUrlString);
             String imageName = imageUrlString.substring(imageUrlString.lastIndexOf("/") + 1);
             log.info("imageName: {}", imageName);

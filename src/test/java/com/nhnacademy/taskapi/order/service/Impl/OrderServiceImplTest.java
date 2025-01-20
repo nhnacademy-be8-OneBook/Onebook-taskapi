@@ -91,13 +91,13 @@
 //        Long memberId = 1L;
 //        OrderFormRequest orderFormRequest = new OrderFormRequest("김선준", "010-9999-9999", LocalDateTime.now(), 3000, 25000);
 //        when(memberRepository.findById(memberId)).thenReturn(Optional.of(mockMember()));
-//        when(orderRepository.findAllByMemberId(memberId)).thenReturn(mockOrderList());
+//        when(orderRepository.findByMemberId(memberId)).thenReturn(mockOrderList());
 //
 //        // when
 //        orderService.getOrderList(memberId);
 //
 //        // then
-//        verify(orderRepository, times(1)).findAllByMemberId(memberId);
+//        verify(orderRepository, times(1)).findByMemberId(memberId);
 //
 //    }
 //

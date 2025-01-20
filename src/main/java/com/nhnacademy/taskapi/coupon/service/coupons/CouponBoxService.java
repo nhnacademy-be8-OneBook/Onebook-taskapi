@@ -1,5 +1,8 @@
 package com.nhnacademy.taskapi.coupon.service.coupons;
 
+import com.nhnacademy.taskapi.book.domain.Book;
+import com.nhnacademy.taskapi.book.exception.BookNotFoundException;
+import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.coupon.domain.dto.coupons.request.IssueCouponToMemberRequest;
 import com.nhnacademy.taskapi.coupon.domain.dto.coupons.response.CouponResponse;
 import com.nhnacademy.taskapi.coupon.domain.dto.coupons.response.IssuedCouponResponse;
@@ -23,6 +26,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +42,7 @@ public class CouponBoxService {
     private final CouponStatusRepository couponStatusRepository;
 
     private final PolicyService policyService;
+    private final BookRepository bookRepository;
 
     @Transactional
     public IssuedCouponResponse issueCouponToMember(Long memberId,
@@ -94,6 +100,24 @@ public class CouponBoxService {
         return couponsOfMember.map(IssuedCouponResponse::changeEntityToDto);
     }
 
+    @Transactional
+    public List<IssuedCouponResponse> getIssuedCouponsValidForBookByMemberId(Long memberId, Long bookId){
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(()-> new MemberNotFoundException("해당하는 로그인 아이디의 회원을 찾을 수 없습니다"));
+
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException("해당하는 아이디의 book을 찾을 수 없습니다"));
+
+        CouponStatus couponStatus = couponStatusRepository.findByName("발급-삭제가능");
+
+        List<IssuedCoupon> couponsValidForBookOfMember
+                = couponBoxQueryRepository.getIssuedCouponForValidForBookByMemberId(member,book,couponStatus);
+
+        return couponsValidForBookOfMember.stream().map(IssuedCouponResponse::changeEntityToDto).toList();
+
+    }
+
     private boolean checkDuplicatedIssue(Coupon coupon, Member member){
         if(coupon.getRatePolicyForBook() != null){
            return couponBoxQueryRepository.checkDuplicatedIssueRateCouponForBook(member,coupon.getRatePolicyForBook());
@@ -105,7 +129,7 @@ public class CouponBoxService {
             return couponBoxQueryRepository.checkDuplicatedIssuePriceCouponForBook(member,coupon.getPricePolicyForBook());
         }
         if(coupon.getPricePolicyForCategory() != null){
-            couponBoxQueryRepository.checkDuplicatedIssuePriceCouponForCategory(member,coupon.getPricePolicyForCategory());
+            return couponBoxQueryRepository.checkDuplicatedIssuePriceCouponForCategory(member,coupon.getPricePolicyForCategory());
         }
 
         throw new CouponHasNoPolicyExceptioin("쿠폰이 어떠한 정책도 가지고 있지 않습니다, 잘못된 쿠폰입니다");

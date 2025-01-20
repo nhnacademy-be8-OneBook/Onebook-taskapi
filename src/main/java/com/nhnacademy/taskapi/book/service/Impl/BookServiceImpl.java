@@ -192,7 +192,23 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> newBooksTop4() {
-        return bookRepository.findTop4ByStatusFalseOrderByPubdateAsc();
+        return bookRepository.findTop4ByStatusFalseOrderByPubdateDesc();
+    }
+
+    @Override
+    public List<Book> bestSellersTop4(){
+        return bookRepository.findTop4ByStatusFalseOrderByAmountDesc();
+    }
+
+
+    @Override
+    public List<BookSearchAllResponse> searchBookAll(String searchString){
+        return bookRepository.findBookByTitle(searchString);
+    }
+
+    @Override
+    public List<BookRecommendDto> recommendBooks(){
+        return bookRepository.reconmmendBooks();
     }
 
 

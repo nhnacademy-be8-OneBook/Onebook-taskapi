@@ -2,7 +2,9 @@ package com.nhnacademy.taskapi.book.controller;
 
 
 import com.nhnacademy.taskapi.book.domain.Book;
+import com.nhnacademy.taskapi.book.dto.BookRecommendDto;
 import com.nhnacademy.taskapi.book.dto.BookSaveDTO;
+import com.nhnacademy.taskapi.book.dto.BookSearchAllResponse;
 import com.nhnacademy.taskapi.book.dto.BookUpdateDTO;
 import com.nhnacademy.taskapi.book.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +65,12 @@ public class BookController {
         return ResponseEntity.ok().body(books);
     }
 
+    @GetMapping("/bestsellers/top4")
+    public ResponseEntity<List<Book>> bestsellersTop4(){
+        List<Book> books = bookService.bestSellersTop4();
+        return ResponseEntity.ok().body(books);
+    }
+
     @GetMapping("{bookId}")
     public ResponseEntity<Book> getBook(@PathVariable long bookId){
         Book book = bookService.getBook(bookId);
@@ -73,6 +81,17 @@ public class BookController {
     public ResponseEntity<Page<Book>> getBookList(Pageable pageable){
         Page<Book> books = bookService.findAllBooks(pageable);
         return ResponseEntity.ok().body(books);
+    }
+
+    @GetMapping("/search/all")
+    public ResponseEntity<List<BookSearchAllResponse>> searchBooks(@RequestParam("searchString") String searchString){
+        List<BookSearchAllResponse> books = bookService.searchBookAll(searchString);
+        return ResponseEntity.ok().body(books);
+    }
+
+    @GetMapping("/recommend")
+    public ResponseEntity<List<BookRecommendDto>> recommendBooks(){
+        return ResponseEntity.ok().body(bookService.recommendBooks());
     }
 
 }

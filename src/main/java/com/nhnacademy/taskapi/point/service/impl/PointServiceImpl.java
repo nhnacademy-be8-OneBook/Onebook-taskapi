@@ -6,6 +6,7 @@ import com.nhnacademy.taskapi.point.domain.Point;
 import com.nhnacademy.taskapi.point.domain.PointLog;
 import com.nhnacademy.taskapi.point.domain.PointLogUpdatedType;
 import com.nhnacademy.taskapi.point.domain.PointPolicy;
+import com.nhnacademy.taskapi.point.dto.ApiResponse;
 import com.nhnacademy.taskapi.point.exception.PointPolicyException;
 import com.nhnacademy.taskapi.point.jpa.JpaPointRepository;
 import com.nhnacademy.taskapi.point.jpa.JpaPointPolicyRepository;
@@ -56,6 +57,7 @@ public class PointServiceImpl implements PointService {
                 .pointLogUpdatedType(PointLogUpdatedType.REGISTRATION)  // 회원가입으로 적립
                 .pointLogAmount(5000)
                 .point(point)
+                .afterPointAmount(point.getPointCurrent())
                 .build();
 
         pointLogRepository.save(pointLog);
@@ -81,6 +83,7 @@ public class PointServiceImpl implements PointService {
                 .pointLogUpdatedType(PointLogUpdatedType.REVIEW)  // 리뷰 작성으로 적립
                 .pointLogAmount(pointAmount)
                 .point(point)
+                .afterPointAmount(point.getPointCurrent())
                 .build();
 
         pointLogRepository.save(pointLog);
@@ -111,6 +114,7 @@ public class PointServiceImpl implements PointService {
                 .pointLogUpdatedType(PointLogUpdatedType.PURCHASE)  // 도서 구매로 적립
                 .pointLogAmount(earnedPoints)
                 .point(point)
+                .afterPointAmount(point.getPointCurrent())
                 .build();
 
         // 포인트 로그 저장
@@ -160,6 +164,7 @@ public class PointServiceImpl implements PointService {
                 .pointLogUpdatedType(PointLogUpdatedType.PAYMENT)  // 결제 타입
                 .pointLogAmount(-paymentAmount)  // 차감된 포인트는 마이너스
                 .point(point)
+                .afterPointAmount(point.getPointCurrent())
                 .build();
 
         // 포인트 로그 저장
@@ -192,6 +197,7 @@ public class PointServiceImpl implements PointService {
                 .pointLogUpdatedType(PointLogUpdatedType.REFUND)  // 환불 타입
                 .pointLogAmount(refundAmount)  // 환불된 포인트
                 .point(point)
+                .afterPointAmount(point.getPointCurrent())
                 .build();
 
         // 포인트 로그 저장
@@ -213,13 +219,13 @@ public class PointServiceImpl implements PointService {
     @Override
     public List<PointLog> getPointLogsByMember(Long member_id) {
         // 모든 포인트 로그를 반환 (페이징 없는 메서드 사용)
-        return pointLogRepository.findByPoint_Member_Id(member_id);
+        return pointLogRepository.findByPoint_Member_IdOrderByPointLogUpdatedAtDesc(member_id);
     }
 
     @Override
     public List<PointLog> getPointLogsByMember(Long member_id, Pageable pageable) {
         // 페이징 처리된 포인트 로그 반환
-        Page<PointLog> pointLogPage = pointLogRepository.findByPoint_Member_Id(member_id, pageable);
+        Page<PointLog> pointLogPage = pointLogRepository.findByPoint_Member_IdOrderByPointLogUpdatedAtDesc(member_id, pageable);
         return pointLogPage.getContent();  // 페이징된 결과 리스트 반환
     }
 
@@ -253,5 +259,29 @@ public class PointServiceImpl implements PointService {
         Point point = optionalPoint.orElseThrow(() -> new PointPolicyException("회원 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
         point.setAmount(updatedAmount);  // 포인트 갱신
         pointRepository.save(point);     // 변경 사항 저장
+    }
+
+    // 포인트 추가 기능
+    @Override
+    public ApiResponse<String> addPoints(Long memberId, int amount, PointLogUpdatedType updatedTypeEnum) {
+        // 1. 회원 포인트 조회
+        Optional<Point> optionalPoint = pointRepository.findByMember_Id(memberId);
+        Point point = optionalPoint.orElseThrow(() -> new PointPolicyException("회원 포인트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
+
+        // 2. 포인트 갱신
+        int updatedAmount = point.getAmount() + amount;  // 기존 포인트에 새로운 포인트 추가
+        point.setAmount(updatedAmount);
+        pointRepository.save(point);
+
+        // 3. 포인트 로그 기록
+        PointLog pointLog = PointLog.builder()
+                .pointLogUpdatedAt(LocalDateTime.now())
+                .pointLogUpdatedType(updatedTypeEnum)  // 주어진 업데이트 타입
+                .pointLogAmount(amount)
+                .point(point)
+                .afterPointAmount(point.getPointCurrent())
+                .build();
+        pointLogRepository.save(pointLog);
+        return null;
     }
 }

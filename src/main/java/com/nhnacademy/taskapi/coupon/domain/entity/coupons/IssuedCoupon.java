@@ -17,7 +17,7 @@ public class IssuedCoupon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long issuedCouponId;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "coupon_id",nullable = false)
     private Coupon coupon;
 
@@ -38,5 +38,10 @@ public class IssuedCoupon {
     public static IssuedCoupon createIssuedCoupon(Coupon coupon, Member member){
 
         return new IssuedCoupon(coupon,member,LocalDateTime.now());
+    }
+
+    // TODO 쿠폰이 사용되었을때 , 사용된 시간을 기록해주는 메서드
+    public void addUseDateTime(){
+        this.useDateTime = LocalDateTime.now();
     }
 }

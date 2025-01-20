@@ -1,28 +1,45 @@
 package com.nhnacademy.taskapi.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nhnacademy.taskapi.keyManager.dto.KeyResponseDto;
 import com.nhnacademy.taskapi.keyManager.exception.KeyManagerException;
 import com.nhnacademy.taskapi.keyManager.service.KeyFactoryManager;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
+@Slf4j
 @Configuration
 public class CustomDataSourceConfig {
 
-    @Autowired
-    private KeyFactoryManager keyFactoryManager;
+    public CustomDataSourceConfig(KeyFactoryManager keyFactoryManager) {
+        this.keyFactoryManager = keyFactoryManager;
+    }
 
+    private KeyFactoryManager keyFactoryManager;
+    private static final String URL = "jdbc:mysql://%s:%s/%s";
+
+    @Value("${nhnKey.keyId}")
+    private String keyId;
+
+    @Bean
     public DataSource ServerDataSource() {
-        Map<String, String> secretMap;
+        Map<String, String> secretMap = new HashMap<>();
         try {
-            secretMap = keyFactoryManager.keyInit().getHeaders().toSingleValueMap();
-        } catch (KeyManagerException e) {
-            throw new RuntimeException(e);
+            KeyResponseDto body = keyFactoryManager.keyInit(keyId);
+            if (Objects.isNull(body)) {
+                throw new KeyManagerException("Key init body failed");
+            }
+            secretMap = body.getBody().getSecretAsMap();
+        } catch (JsonProcessingException | KeyManagerException e) {
+            log.debug("Key init failed", e);
         }
 
         // 데이터 베이스 연결 정보 추출
@@ -35,8 +52,7 @@ public class CustomDataSourceConfig {
         // DataSource 설정 (Apache Commons DBCP2 사용)
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        System.out.println("jdbc:mysql://%s:%s/%s".formatted(ip, port, dbName));
-        dataSource.setUrl("jdbc:mysql://%s:%s/%s".formatted(ip, port, dbName));
+        dataSource.setUrl(URL.formatted(ip, port, dbName));
         dataSource.setUsername(userName);
         dataSource.setPassword(password);
         /*
@@ -46,29 +62,7 @@ public class CustomDataSourceConfig {
         dataSource.setMinIdle(2); // 최소 유휴 커넥션 수; default=0
          */
 
-        return dataSource;
-    }
-
-    @Bean
-    public DataSource DevDataSource() {
-        String ip = "133.186.241.167";
-        String port = "3306";
-        String dbName = "nhn_academy_9";
-        String userName = "nhn_academy_9";
-        String password = "iRz&E!F&XxG4d?kP";
-
-        // DataSource 설정 (Apache Commons DBCP2 사용)
-        BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://%s:%s/%s".formatted(ip, port, dbName));
-        dataSource.setUsername(userName);
-        dataSource.setPassword(password);
-        /*
-        dataSource.setInitialSize(5); // 초기 커넥션 수; default=0
-        dataSource.setMaxTotal(10); // 최대 커넥션 수; default=8
-        dataSource.setMaxIdle(5); // 최대 유휴 커넥션 수; default=8
-        dataSource.setMinIdle(2); // 최소 유휴 커넥션 수; default=0
-         */
+        log.info(URL.formatted(ip, port, dbName));
 
         return dataSource;
     }

@@ -32,16 +32,20 @@ public class PointLog {
     @Column(nullable = false, precision = 10, scale = 2)
     private int pointLogAmount;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     @JoinColumn(nullable = false, name = "point_id")
     private Point point;
 
+    // 변경 후 포인트를 나타내기 위해 새로 추가함
+    private int afterPointAmount;
+
     @Builder
-    public PointLog(Long pointLogId, LocalDateTime pointLogUpdatedAt, PointLogUpdatedType pointLogUpdatedType, int pointLogAmount, Point point) {
+    public PointLog(Long pointLogId, LocalDateTime pointLogUpdatedAt, PointLogUpdatedType pointLogUpdatedType, int pointLogAmount, Point point, int afterPointAmount) {
         this.pointLogId = pointLogId;
         this.pointLogUpdatedAt = pointLogUpdatedAt;
         this.pointLogUpdatedType = pointLogUpdatedType;
         this.pointLogAmount = pointLogAmount;
         this.point = point;
+        this.afterPointAmount = afterPointAmount;
     }
 }

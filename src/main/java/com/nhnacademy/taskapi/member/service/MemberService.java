@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface MemberService {
-    Page<MemberResponseDto> getAllMembers(Pageable pageable);
+    Page<MemberResponse> getAllMembers(Pageable pageable);
     MemberResponseDto getMemberById(Long id);
     Member getMemberByLoginId(String loginId);
     boolean existsById(Long id);
@@ -17,6 +17,7 @@ public interface MemberService {
     void changeStatusToActivation(String loginId);
     void updateMemberLoginId(String loginId);
     MembershipCheckResponseDto validateMembership(Long memberId, MembershipCheckRequestDto membershipCheckRequestDto);
+    Integer memberNetPaymentAmount(Long memberId);
     MemberLoginDto validateLogin(MemberLoginDto memberLoginDto);
     String getLoginIdById(Long id);
 

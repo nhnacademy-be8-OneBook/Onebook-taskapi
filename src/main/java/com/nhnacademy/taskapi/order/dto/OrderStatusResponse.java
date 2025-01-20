@@ -33,7 +33,6 @@ public class OrderStatusResponse {
     // 주문금액
     int totalPrice;
 
-    // TODO memberId 적용하기
     public static OrderStatusResponse fromOrderStatus(Order order) {
         return new OrderStatusResponse(
                 order.getOrderId(),

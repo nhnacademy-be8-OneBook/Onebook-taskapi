@@ -2,7 +2,7 @@ package com.nhnacademy.taskapi.keyManager.service;
 
 import com.nhnacademy.taskapi.keyManager.dto.KeyResponseDto;
 import com.nhnacademy.taskapi.keyManager.exception.KeyManagerException;
-import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.BasicHttpClientConnectionManager;
@@ -16,13 +16,11 @@ import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.net.ssl.SSLContext;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -31,6 +29,7 @@ import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 public class KeyFactoryManager {
     @Value(value = "${nhnKey.url}")
@@ -45,14 +44,10 @@ public class KeyFactoryManager {
     @Value("${nhnKey.password}")
     private String password;
 
-    @Value("${nhnKey.keyId}")
-    private String keyId;
 
-
-//    @PostConstruct
-    public ResponseEntity<KeyResponseDto> keyInit() throws KeyManagerException {
+    public KeyResponseDto keyInit(String keyId) throws KeyManagerException {
         final String apiPath = String.format("/keymanager/v1.0/appkey/%s/secrets/%s", appKey, keyId);
-        System.out.println(apiPath);
+        log.info(apiPath);
 
         try {
             // keyStore
@@ -90,7 +85,7 @@ public class KeyFactoryManager {
                     .build();
              */
 
-            Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory> create()
+            Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
                     .register("https", sslConnectionSocketFactory) // https 등록
                     .register("http", new PlainConnectionSocketFactory()) // http 등록
                     .build();
@@ -117,14 +112,11 @@ public class KeyFactoryManager {
                     .toUri();
 //            ResponseEntity<KeyResponseDto> exchange =
 
-            ResponseEntity<KeyResponseDto> exchange = Objects.requireNonNull(restTemplate.exchange(uri,
+            return Objects.requireNonNull(restTemplate.exchange(uri,
                     HttpMethod.GET,
                     new HttpEntity<>(headers),
-                    KeyResponseDto.class));
+                    KeyResponseDto.class)).getBody();
 
-            return exchange;
-
-//            return exchange.getBody().getBody().getSecret();
         } catch (KeyStoreException | IOException | CertificateException
                  | NoSuchAlgorithmException
                  | UnrecoverableKeyException

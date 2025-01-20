@@ -1,8 +1,8 @@
 package com.nhnacademy.taskapi.pointTest.request;
 
 import com.nhnacademy.taskapi.point.domain.PointPolicy;
-import com.nhnacademy.taskapi.point.request.CreatePointPolicyRequest;
-import com.nhnacademy.taskapi.point.request.PointPolicyRequest;
+import com.nhnacademy.taskapi.point.dto.CreatePointPolicyRequest;
+import com.nhnacademy.taskapi.point.dto.PointPolicyRequest;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

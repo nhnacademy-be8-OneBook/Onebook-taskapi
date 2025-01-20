@@ -21,7 +21,7 @@ public class Point {
     @Column(nullable = false, precision = 10, scale = 2)
     private int pointCurrent;  // 현재 포인트
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     @JoinColumn(nullable = false, name = "member_id")
     private Member member;
 

@@ -1,9 +1,16 @@
 package com.nhnacademy.taskapi.point.service.impl;
 
+import com.nhnacademy.taskapi.member.domain.Member;
+import com.nhnacademy.taskapi.member.repository.MemberRepository;
+import com.nhnacademy.taskapi.point.domain.Point;
 import com.nhnacademy.taskapi.point.domain.PointLog;
+import com.nhnacademy.taskapi.point.exception.ApplicationException;
 import com.nhnacademy.taskapi.point.repository.PointLogRepository;
-import com.nhnacademy.taskapi.point.response.PointLogResponse;
+import com.nhnacademy.taskapi.point.dto.PointLogResponse;
+import com.nhnacademy.taskapi.point.repository.PointRepository;
 import com.nhnacademy.taskapi.point.service.PointLogService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,33 +18,29 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
+@Slf4j
 public class PointLogServiceImpl implements PointLogService {
 
     private final PointLogRepository pointLogRepository;
+    private final MemberRepository memberRepository;
+    private final PointRepository pointRepository;
 
-    // 생성자 주입을 통해 PointLogRepository를 의존성으로 받습니다.
-    public PointLogServiceImpl(PointLogRepository pointLogRepository) {
-        this.pointLogRepository = pointLogRepository;
-    }
-
-    /**
-     * 회원 ID에 해당하는 포인트 로그를 페이지네이션으로 조회
-     *
-     * @param member_id - 회원 ID
-     * @param pageable  - 페이징 정보 (page size, page number 등)
-     * @return Page<PointLogResponse> - 포인트 로그 응답 객체
-     */
     @Override
-    public Page<PointLogResponse> findAllPointLogsByMemberId(Long member_id, Pageable pageable) {
-        // memberId에 해당하는 포인트 로그를 Pageable 형식으로 조회
-        Page<PointLog> pointLogs = pointLogRepository.findByPoint_Member_Id(member_id, pageable);
+    public Page<PointLogResponse> findAllPointLogsByMemberId(Long memberId, Pageable pageable) {
 
-        // PointLog 엔티티를 PointLogResponse DTO로 변환하여 반환
-        return pointLogs.map(pointLog -> PointLogResponse.builder()
-                .pointCurrent(pointLog.getPoint().getAmount()) // 해당 포인트의 현재 금액
-                .pointLogUpdatedType(String.valueOf(pointLog.getPointLogUpdatedType()))
-                .pointLogAmount(pointLog.getPointLogAmount())
-                .pointLogUpdatedAt(pointLog.getPointLogUpdatedAt())
-                .build());
+        // 1. 회원 검증
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ApplicationException("존재하지 않는 회원입니다."));
+
+        // 2. 포인트 검증
+        Point point = pointRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new ApplicationException("포인트 정보가 없는 회원입니다."));
+
+        // 3. 포인트 로그 조회
+        Page<PointLog> pointLogPage = pointLogRepository.findByPoint_Member_IdOrderByPointLogUpdatedAtDesc(memberId, pageable);
+
+        // 4. PointLogResponse 반환
+        return pointLogPage.map(PointLogResponse::fromEntity);
     }
 }

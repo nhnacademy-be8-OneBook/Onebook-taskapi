@@ -3,7 +3,9 @@ package com.nhnacademy.taskapi.point.service;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.point.domain.Point;
 import com.nhnacademy.taskapi.point.domain.PointLog;
+import com.nhnacademy.taskapi.point.domain.PointLogUpdatedType;
 import com.nhnacademy.taskapi.point.domain.PointPolicy;
+import com.nhnacademy.taskapi.point.dto.ApiResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -42,6 +44,9 @@ public interface PointService {
 
     // 활성화된 포인트 정책을 가져옵니다. (전체 리스트)
     List<PointPolicy> getActivePointPolicies();
+
+    // 포인트 추가 기능
+    ApiResponse<String> addPoints(Long memberId, int amount, PointLogUpdatedType updatedTypeEnum);
 }
 
 

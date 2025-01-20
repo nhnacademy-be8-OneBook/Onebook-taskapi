@@ -402,7 +402,7 @@ public class PolicyService {
 
         if(policy instanceof  RatePolicyForBook){
             return couponQueryRepository
-                    .getValidCouponCountByPricePolicyForBook(((RatePolicyForBook) policy)
+                    .getValidCouponCountByRatePolicyForBook(((RatePolicyForBook) policy)
                             .getRatePolicyForBookId(),couponStatus);
         }else if(policy instanceof  RatePolicyForCategory){
             return couponQueryRepository.getValidCouponCountByRatePolicyForCategory(((RatePolicyForCategory) policy)

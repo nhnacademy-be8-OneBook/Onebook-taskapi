@@ -231,3 +231,11 @@ Content-type: application/json
   "loginId": "aaa",
   "password": "ooj"
 }
+
+### 멤버 순수 구매 금액 조회
+GET http://localhost:8510/task/members/payments/net-amount
+X-MEMBER-ID: 667888669764456953
+
+### 멤버 조회
+GET http://localhost:8510/task/members
+X-MEMBER-ID: 667888669764456953

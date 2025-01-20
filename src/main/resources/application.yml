@@ -8,23 +8,23 @@ spring:
     fallback-to-system-locale: false
     cache-duration: 3600
     always-use-message-format: true
-
-  datasource:
-    url: jdbc:mysql://133.186.241.167:3306/nhn_academy_9?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: nhn_academy_9
-    password: iRz&E!F&XxG4d?kP
-
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+  # spring batch
+  batch:
+    job:
+      name: inactiveMemberJob
+    jdbc:
+      initialize-schema: never
 
 server:
   port: 8500  # 프로덕션 환경에서 사용할 포트
+  shutdown: graceful
 
 # eureka 설정
 eureka:
@@ -55,3 +55,13 @@ nhnKey:
   keyPath: 1nebook.p12
   password: 1nebook
   keyId: 7b34378ad2034b71b2037ca9b1538d41
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  info:
+    env:
+      enabled: true
+

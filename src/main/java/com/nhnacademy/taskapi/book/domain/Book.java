@@ -34,10 +34,10 @@ public class Book {
 
     @Column(nullable = false)
     private String title;
-
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String content;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @NotBlank
