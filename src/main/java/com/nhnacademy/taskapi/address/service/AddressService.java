@@ -105,7 +105,7 @@ public class AddressService {
         }
 
         //수정된 memberAddress가 defaultLocation 이라면 기존의 defaultLocation은 디폴트 해제
-        if(memberAddress.isDefaultLocation()){
+        if(updateMemberAddressRequest.isDefaultLocation()){
             unsetAnotherDefaultAddress(memberAddress);
         }
 
