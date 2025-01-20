@@ -104,11 +104,6 @@ public class AddressService {
             throw new InvalidMemberAddressException("해당 ID 배송지의 member ID와 요청한 member ID가 일치하지 않습니다.");
         }
 
-        // 사용자의 이전에 등록한 다른 배송지가 없다면, 이 배송지는 자동으로 기본배송지가 됩니다
-        if(getMemberAddressesCount(memberId) < 1){
-            memberAddress.setDefaultLocation();
-        }
-
 
         //수정된 memberAddress가 defaultLocation 이라면 기존의 defaultLocation은 디폴트 해제
         if(updateMemberAddressRequest.isDefaultLocation()){
@@ -116,6 +111,11 @@ public class AddressService {
         }
 
         memberAddress.updateMemberAddress(updateMemberAddressRequest);
+
+        // 사용자의 이전에 등록한 다른 배송지가 없다면, 이 배송지는 자동으로 기본배송지가 됩니다
+        if(getMemberAddressesCount(memberId) <= 1){
+            memberAddress.setDefaultLocation();
+        }
 
         return MemberAddressResponse.changeEntityToDto(memberAddress);
     }
