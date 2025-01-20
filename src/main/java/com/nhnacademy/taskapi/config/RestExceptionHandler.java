@@ -1,5 +1,7 @@
 package com.nhnacademy.taskapi.config;
 
+import com.nhnacademy.taskapi.address.exception.DefaultAddressCannotRemoveException;
+import com.nhnacademy.taskapi.address.exception.MemberAddressLimitExceededException;
 import com.nhnacademy.taskapi.cart.exception.CartIllegalArgumentException;
 import com.nhnacademy.taskapi.cart.exception.CartNotFoundException;
 import com.nhnacademy.taskapi.coupon.exception.AlreadyIssuedCouponException;
@@ -52,10 +54,24 @@ public class RestExceptionHandler {
     }
 
     // 같은 쿠폰 중복 발급 요청시 발생하는 exception
-//    @ExceptionHandler(AlreadyIssuedCouponException.class)
-//    public ResponseEntity<ErrorResponse> handleAlreadyIssuedCouponException(AlreadyIssuedCouponException e){
-//        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-//    }
+    @ExceptionHandler(AlreadyIssuedCouponException.class)
+    public ResponseEntity<ErrorResponse> handleAlreadyIssuedCouponException(AlreadyIssuedCouponException e){
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    // 기본 배송지를 삭제할때 발생하는 exception
+    @ExceptionHandler(DefaultAddressCannotRemoveException.class)
+    public ResponseEntity<ErrorResponse> handleDefaultAddressCannotRemoveException(DefaultAddressCannotRemoveException e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    // 배송지를 10개 이상 등록하려고 할때 발생하는 exception
+    @ExceptionHandler(MemberAddressLimitExceededException.class)
+    public ResponseEntity<ErrorResponse> handleMemberAddressLimitExceededException(MemberAddressLimitExceededException e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
 
 }
