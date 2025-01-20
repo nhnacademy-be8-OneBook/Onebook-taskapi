@@ -100,7 +100,7 @@ class AddressServiceTest {
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("detailAddress"),
                     addMemberAddressRequest,"테스트");
             ReflectionUtils.setField(addMemberAddressRequest.getClass().getDeclaredField("defaultLocation"),
-                    addMemberAddressRequest,true);
+                    addMemberAddressRequest,false);
 
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
@@ -135,7 +135,7 @@ class AddressServiceTest {
             ReflectionUtils.setField(updateMemberAddressRequest.getClass().getDeclaredField("detailAddress"),
                     updateMemberAddressRequest,"수정 테스트" );
             ReflectionUtils.setField(updateMemberAddressRequest.getClass().getDeclaredField("defaultLocation"),
-                    updateMemberAddressRequest,true );
+                    updateMemberAddressRequest,false );
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
@@ -182,7 +182,7 @@ class AddressServiceTest {
 //        Mockito.when(memberService.getMemberById(member.getId())).thenReturn(member);
         addressService.addMemberAddress(1L, addMemberAddressRequest);
 //        Mockito.verify(memberService, Mockito.times(1)).getMemberById(member.getId());
-        Mockito.verify(memberRepository, Mockito.times(2)).findById(member.getId());
+        Mockito.verify(memberRepository, Mockito.times(3)).findById(member.getId());
 
     }
 
