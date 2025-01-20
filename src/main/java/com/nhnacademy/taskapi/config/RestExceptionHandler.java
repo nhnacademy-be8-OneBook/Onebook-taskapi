@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.config;
 
 import com.nhnacademy.taskapi.cart.exception.CartIllegalArgumentException;
 import com.nhnacademy.taskapi.cart.exception.CartNotFoundException;
+import com.nhnacademy.taskapi.coupon.exception.AlreadyIssuedCouponException;
 import com.nhnacademy.taskapi.exception.dto.ErrorResponse;
 import com.nhnacademy.taskapi.grade.exception.GradeIllegalArgumentException;
 import com.nhnacademy.taskapi.grade.exception.GradeNotFoundException;
@@ -50,5 +51,11 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
+    // 같은 쿠폰 중복 발급 요청시 발생하는 exception
+    @ExceptionHandler(AlreadyIssuedCouponException.class)
+    public ResponseEntity<ErrorResponse> handleAlreadyIssuedCouponException(AlreadyIssuedCouponException e){
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
 
 }
