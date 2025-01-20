@@ -32,6 +32,9 @@ public class OrderController {
 
         if (statusName == null || statusName.isBlank()) {
             orderList = orderService.getOrderList(memberId, pageable);
+        }
+        else if (statusName.equals("결제대기제외")) {
+            orderList = orderService.getOrderListExcludePending(memberId, "결제대기", pageable);
         } else {
             orderList = orderService.getOrderListByStatusName(memberId, statusName, pageable);
         }

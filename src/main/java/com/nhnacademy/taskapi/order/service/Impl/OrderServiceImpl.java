@@ -112,6 +112,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Page<OrderResponse> getOrderListExcludePending(Long memberId, String statusName, Pageable pageable) {
+        memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id" + memberId + " dose not exist"));
+        OrderStatus orderStatus = orderStatusRepository.findByStatusName(statusName).orElseThrow(() -> new OrderStatusNotFoundException("OrderStatus is not found; error!!"));
+
+        return orderRepository.findByMemberIdAndOrderStatusNot(memberId, orderStatus, pageable).map(OrderResponse::fromOrder);
+    }
+
+    @Override
     public Page<OrderMemberResponse> getOrders(Long memberId, String statusName, Pageable pageable) {
         memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id" + memberId + " dose not exist"));
 
