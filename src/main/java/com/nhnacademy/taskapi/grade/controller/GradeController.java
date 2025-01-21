@@ -29,6 +29,13 @@ public class GradeController {
         return ResponseEntity.ok().body(gradeResponseDtoList);
     }
 
+    // 등급 조회 - 페이지네이션
+    @GetMapping("/task/admin/grades/list")
+    public ResponseEntity<Page<GradeResponseDto>> getAllGrades(Pageable pageable) {
+        Page<GradeResponseDto> allGradesForAdmin = gradeService.getAllGradesForAdmin(pageable);
+        return ResponseEntity.ok(allGradesForAdmin);
+    }
+
     // 인조키(id)로 단일 등급 조회 - url에 id 명시. for 관리자.
     @GetMapping("/task/admin/grades/{id}")
     public ResponseEntity<GradeResponseDto> getGradeById(@PathVariable Integer id) {
@@ -64,11 +71,5 @@ public class GradeController {
         return ResponseEntity.noContent().build();
     }
 
-    // 등급 조회 - 페이지네이션
-    @GetMapping("/task/admin/grades/list")
-    public ResponseEntity<Page<GradeResponseDto>> getAllGrades(Pageable pageable) {
-        Page<GradeResponseDto> allGradesForAdmin = gradeService.getAllGradesForAdmin(pageable);
-        return ResponseEntity.ok(allGradesForAdmin);
-    }
 
 }
