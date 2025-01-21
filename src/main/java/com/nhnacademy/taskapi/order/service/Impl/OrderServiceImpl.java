@@ -1,6 +1,8 @@
 package com.nhnacademy.taskapi.order.service.Impl;
 
 import com.nhnacademy.taskapi.book.repository.BookRepository;
+import com.nhnacademy.taskapi.coupon.service.coupons.CouponBoxService;
+import com.nhnacademy.taskapi.coupon.service.coupons.CouponService;
 import com.nhnacademy.taskapi.delivery.service.DeliveryService;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
@@ -34,27 +36,46 @@ import java.util.List;
 @Transactional
 @Service
 public class OrderServiceImpl implements OrderService {
-    private final OrderRepository orderRepository;
+    // 회원 관련 service
     private final MemberRepository memberRepository;
+
+    // 주문 관련 service
+    private final OrderRepository orderRepository;
     private final OrderStatusRepository orderStatusRepository;
-    private final BookRepository bookRepository;
     private final PackagingRepository packagingRepository;
     private final DeliveryService deliveryService;
+    private final OrderDetailService orderDetailService;
 
+    // 책 관련 service
+    private final BookRepository bookRepository;
+    private final StockService stockService;
+
+    // 쿠폰 사용 service
+    private final CouponBoxService couponBoxService;
+    private final CouponService couponService;
+
+    // 역할 수행 service
     private final PackagingValidator packagingValidator;
     private final PricingService pricingService;
-    private final OrderDetailService orderDetailService;
-    private final StockService stockService;
 
     // create
     @Transactional
     @Override
     public long processOrder(Long memberId, OrderFormRequest orderFormRequest) {
-        // 4. 재고 처리
+        // 1. 재고 처리
         stockService.orderUpdateStock(orderFormRequest.getItems());
 
+        // 2. 쿠폰 사용
+        for (BookOrderRequest item : orderFormRequest.getItems()) {
+            if (item.getCouponNumber() != null) {
+                // 개인 쿠폰 사용시간 설정
+                couponBoxService.updateIssuedCoupon(item.getCouponNumber());
+                // 전체 쿠폰 사용상태 변경
+                couponService.updateCoupon(item.getCouponNumber());
+            }
+        }
+
         // 1. 주문 상태 확인
-        // TODO 밑의 모든 로직을 service 에게 위임?
         Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("Member id " + memberId + " does not exist"));
         OrderStatus waitingStatus = orderStatusRepository.findByStatusName("결제대기").orElseThrow(() -> new OrderStatusNotFoundException("OrderStatus is not found; error!!"));
 
