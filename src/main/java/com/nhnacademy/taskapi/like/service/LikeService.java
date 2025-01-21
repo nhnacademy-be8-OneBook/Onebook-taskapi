@@ -11,5 +11,6 @@ public interface LikeService {
 
     void minusLike(LikePlusMinusDTO dto);
     LikeReponse getLikeByBook(long bookId);
-    LikeReponse getLikeByLoginId(String loginId);
+    boolean toggleLike(long bookId, long memberId);
+    boolean checkLike(long bookId, long memberId);
 }
