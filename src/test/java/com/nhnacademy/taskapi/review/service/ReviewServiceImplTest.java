@@ -10,10 +10,6 @@ import com.nhnacademy.taskapi.member.domain.Member.Status;
 import com.nhnacademy.taskapi.point.service.PointService;
 import com.nhnacademy.taskapi.review.exception.InvalidReviewException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
-import com.nhnacademy.taskapi.point.domain.Point;
-import com.nhnacademy.taskapi.point.domain.PointLog;
-import com.nhnacademy.taskapi.point.jpa.JpaPointRepository;
-import com.nhnacademy.taskapi.point.repository.PointLogRepository;
 import com.nhnacademy.taskapi.review.domain.Review;
 import com.nhnacademy.taskapi.review.dto.ReviewRequest;
 import com.nhnacademy.taskapi.review.dto.ReviewResponse;
@@ -21,8 +17,8 @@ import com.nhnacademy.taskapi.review.exception.ImageLimitExceededException;
 import com.nhnacademy.taskapi.review.exception.ReviewAlreadyExistsException;
 import com.nhnacademy.taskapi.review.repository.ReviewImageRepository;
 import com.nhnacademy.taskapi.review.repository.ReviewRepository;
-import com.nhnacademy.taskapi.review.service.impl.LocalImageUploadService;
-import com.nhnacademy.taskapi.review.service.impl.NhnImageUploadService;
+import com.nhnacademy.taskapi.review.service.impl.LocalImageUploadServiceImpl;
+import com.nhnacademy.taskapi.review.service.impl.NhnImageUploadServiceImpl;
 import com.nhnacademy.taskapi.review.service.impl.ReviewServiceImpl;
 import com.nhnacademy.taskapi.roles.domain.Role;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,9 +63,9 @@ class ReviewServiceImplTest {
     private NhnImageManagerAdapter nhnImageManagerAdapter;
 
     @Mock
-    private NhnImageUploadService nhnImageUploadService;
+    private NhnImageUploadServiceImpl nhnImageUploadService;
     @Mock
-    private LocalImageUploadService localImageUploadService;
+    private LocalImageUploadServiceImpl localImageUploadService;
 
     private Member member;       // 일반 사용자
     private Member adminMember;  // 관리자
@@ -522,5 +518,59 @@ class ReviewServiceImplTest {
         assertEquals("리뷰가 해당 도서에 속하지 않습니다.", exception.getMessage());
     }
 
+
+    // 작성된 리뷰의 개수를 구하는 테스트
+    @Test
+    void testGetReviewCount() {
+        // Given
+        long bookId = 1L;
+        int reviewCount = 5;
+        given(reviewRepository.countByBookBookId(bookId)).willReturn(reviewCount);
+
+        // When
+        int result = reviewService.getReviewCount(bookId);
+
+        // Then
+        assertEquals(reviewCount, result);
+        verify(reviewRepository, times(1)).countByBookBookId(bookId);
+    }
+
+
+    // 존재하는 리뷰 조회
+    @Test
+    void testGetReviewByIdSuccess() {
+        // Given
+        long memberId = 1L;
+        long reviewId = 10L;
+
+        given(reviewRepository.findById(reviewId)).willReturn(Optional.of(review));
+
+        // When
+        ReviewResponse response = reviewService.getReviewById(memberId, reviewId);
+
+        // Then
+        assertNotNull(response);
+        assertEquals(reviewId, response.getReviewId());
+        assertEquals(memberId, response.getMemberId());
+        assertEquals(review.getBook().getBookId(), response.getBookId());
+        assertEquals(review.getDescription(), response.getDescription());
+    }
+
+
+    // 존재하지 않는 리뷰 조회
+    @Test
+    void testGetReviewByIdNotFound() {
+        // Given
+        long memberId = 1L;
+        long reviewId = 999L;
+
+        given(reviewRepository.findById(reviewId)).willReturn(Optional.empty());
+
+        // When & Then
+        InvalidReviewException exception = assertThrows(InvalidReviewException.class,
+                () -> reviewService.getReviewById(memberId, reviewId));
+
+        assertEquals("리뷰를 찾을 수 없습니다.", exception.getMessage());
+    }
 }
 

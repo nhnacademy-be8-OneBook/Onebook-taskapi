@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-public class NhnImageUploadService implements ImageUploadService {
+public class NhnImageUploadServiceImpl implements ImageUploadService {
     private final NhnImageManagerAdapter nhnImageManagerAdapter;
 
-    public NhnImageUploadService(NhnImageManagerAdapter nhnImageManagerAdapter) {
+    public NhnImageUploadServiceImpl(NhnImageManagerAdapter nhnImageManagerAdapter) {
         this.nhnImageManagerAdapter = nhnImageManagerAdapter;
     }
 

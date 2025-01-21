@@ -14,7 +14,6 @@ import com.nhnacademy.taskapi.review.exception.ImageLimitExceededException;
 import com.nhnacademy.taskapi.review.exception.InvalidReviewException;
 import com.nhnacademy.taskapi.review.exception.ReviewAlreadyExistsException;
 import com.nhnacademy.taskapi.review.repository.ReviewRepository;
-import com.nhnacademy.taskapi.review.repository.ReviewImageRepository;
 import com.nhnacademy.taskapi.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +40,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final BookRepository bookRepository;
     private final PointService pointService;
-    private final NhnImageUploadService nhnImageUploadService;
-    private final LocalImageUploadService localImageUploadService;
+    private final NhnImageUploadServiceImpl nhnImageUploadService;
+    private final LocalImageUploadServiceImpl localImageUploadService;
 
     private final NhnImageManagerAdapter nhnImageManagerAdapter;
 
