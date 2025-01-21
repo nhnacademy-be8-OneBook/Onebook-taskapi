@@ -15,12 +15,17 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-  # spring batch
-  batch:
-    job:
-      name: inactiveMemberJob
-    jdbc:
-      initialize-schema: never
+#  # spring batch
+#  batch:
+#    job:
+#      name: inactiveMemberJob
+#    jdbc:
+#      initialize-schema: never
+  datasource:
+    url: jdbc:mysql://10.116.64.14:13306/project_be8_onebook_db?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: project_be8_onebook
+    password: vH6NDX810*pgNQqs
+
 
 server:
   port: 8500  # 프로덕션 환경에서 사용할 포트
@@ -48,7 +53,6 @@ servlet:
     max-request-size: 10MB  # 최대 요청 크기
     enabled: true
 
-
 nhnKey:
   url: https://api-keymanager.nhncloudservice.com
   appKey: qTQNj7LyHhdAazH3
@@ -64,4 +68,11 @@ management:
   info:
     env:
       enabled: true
+
+db:
+  ip: 10.116.64.14
+  port: 13306
+  dbName: project_be8_onebook_db
+  userName: project_be8_onebook
+  password: vH6NDX810*pgNQqs
 
