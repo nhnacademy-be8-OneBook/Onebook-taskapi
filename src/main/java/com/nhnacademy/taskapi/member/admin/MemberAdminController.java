@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/task/admin/members")
-public class AdminMemberController {
+public class MemberAdminController {
     private final MemberService memberService;
 
     @GetMapping("/list")

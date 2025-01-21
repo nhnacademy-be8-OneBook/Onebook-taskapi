@@ -1,6 +1,6 @@
 package com.nhnacademy.taskapi.member.service;
 
-import com.nhnacademy.taskapi.book.domain.Book;
+import com.nhnacademy.taskapi.member.dto.MemberResponse;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.dto.*;
 import org.springframework.data.domain.Page;

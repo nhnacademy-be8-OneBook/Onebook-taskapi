@@ -1,6 +1,5 @@
 package com.nhnacademy.taskapi.member.service.impl;
 
-import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.grade.exception.GradeNotFoundException;
@@ -10,6 +9,7 @@ import com.nhnacademy.taskapi.image.domain.Image;
 import com.nhnacademy.taskapi.image.repository.ImageRepository;
 import com.nhnacademy.taskapi.like.domain.Like;
 import com.nhnacademy.taskapi.like.repository.LikeRepository;
+import com.nhnacademy.taskapi.member.dto.MemberResponse;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.dto.*;
 import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
@@ -53,7 +53,7 @@ public class MemberServiceImpl implements MemberService {
      * 로그인, 로그아웃 기능 보류.
      */
 
-   // 전체 멤버 반환에 Pagenation 적용.
+   // 관리자 - 전체 멤버 반환에 Pagenation 적용.
     @Transactional(readOnly = true)
     @Override
     public Page<MemberResponse> getAllMembers(Pageable pageable) {

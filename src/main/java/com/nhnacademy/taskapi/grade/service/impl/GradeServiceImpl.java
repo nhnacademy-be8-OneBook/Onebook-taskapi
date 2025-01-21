@@ -10,9 +10,10 @@ import com.nhnacademy.taskapi.grade.repository.GradeRepository;
 import com.nhnacademy.taskapi.grade.service.GradeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,15 @@ public class GradeServiceImpl implements GradeService {
         }
 
         return gradeResponseDtoList;
+    }
+
+    // 관리자 - 모든 등급 조회
+    @Transactional(readOnly = true)
+    @Override
+    public Page<GradeResponseDto> getAllGradesForAdmin(Pageable pageable) {
+        Page<Grade> grades = gradeRepository.findAll(pageable);
+
+        return grades.map(GradeResponseDto::from);
     }
 
     // 인조키(id)로 등급 조회

@@ -16,10 +16,10 @@ public class Grade {
 
     /**
      * 등급 ID
-     * 1: REGULAR
-     * 2: ROYAL
-     * 3: GOLD
-     * 4: PLATINUM
+     * 1: 일반
+     * 2: 로얄
+     * 3: 골드
+     * 4: 플래티넘
      */
 
     @Id
