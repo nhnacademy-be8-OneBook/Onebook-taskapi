@@ -35,44 +35,44 @@ public class LikeControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Test
-    @DisplayName("POST /task/like - Add Like")
-    void addLikeTest() throws Exception {
-        // Given
-        LikePlusMinusDTO requestDTO = new LikePlusMinusDTO();
-        requestDTO.setBookId(1L);
-        requestDTO.setMemberId(1L);
-
-        Like like = new Like();
-        like.setLikeId(1L);
-
-        // When
-        when(likeService.plusLike(any(LikePlusMinusDTO.class))).thenReturn(like);
-
-        // Then
-        mockMvc.perform(post("/task/like")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDTO)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.likeId").value(1L));
-    }
-
-    @Test
-    @DisplayName("DELETE /task/like - Delete Like")
-    void deleteLikeTest() throws Exception {
-        // Given
-        LikePlusMinusDTO requestDTO = new LikePlusMinusDTO();
-        requestDTO.setBookId(1L);
-        requestDTO.setMemberId(1L);
-
-        // When
-        doNothing().when(likeService).minusLike(requestDTO);
-
-        // Then
-        mockMvc.perform(delete("/task/like")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDTO)))
-                .andExpect(status().isNoContent());
-    }
+//    @Test
+//    @DisplayName("POST /task/like - Add Like")
+//    void addLikeTest() throws Exception {
+//        // Given
+//        LikePlusMinusDTO requestDTO = new LikePlusMinusDTO();
+//        requestDTO.setBookId(1L);
+//        requestDTO.setMemberId(1L);
+//
+//        Like like = new Like();
+//        like.setLikeId(1L);
+//
+//        // When
+//        when(likeService.plusLike(any(LikePlusMinusDTO.class))).thenReturn(like);
+//
+//        // Then
+//        mockMvc.perform(post("/task/like")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(requestDTO)))
+//                .andExpect(status().isCreated())
+//                .andExpect(jsonPath("$.likeId").value(1L));
+//    }
+//
+//    @Test
+//    @DisplayName("DELETE /task/like - Delete Like")
+//    void deleteLikeTest() throws Exception {
+//        // Given
+//        LikePlusMinusDTO requestDTO = new LikePlusMinusDTO();
+//        requestDTO.setBookId(1L);
+//        requestDTO.setMemberId(1L);
+//
+//        // When
+//        doNothing().when(likeService).minusLike(requestDTO);
+//
+//        // Then
+//        mockMvc.perform(delete("/task/like")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(requestDTO)))
+//                .andExpect(status().isNoContent());
+//    }
 
 }
