@@ -16,21 +16,38 @@ import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-@Configuration
+//@Configuration
 public class CustomDataSourceConfig {
 
     public CustomDataSourceConfig(KeyFactoryManager keyFactoryManager) {
-        this.keyFactoryManager = keyFactoryManager;
+//        this.keyFactoryManager = keyFactoryManager;
     }
 
-    private KeyFactoryManager keyFactoryManager;
+//    private KeyFactoryManager keyFactoryManager;
     private static final String URL = "jdbc:mysql://%s:%s/%s";
 
     @Value("${nhnKey.keyId}")
     private String keyId;
 
-    @Bean
+    @Value("${db.ip}")
+    private String ip;
+
+    @Value("${db.port}")
+    private int port;
+
+    @Value("${db.dbName}")
+    private String dbName;
+
+    @Value("${db.userName}")
+    private String userName;
+
+    @Value("${db.password}")
+    private String password;
+
+
+//    @Bean
     public DataSource ServerDataSource() {
+        /* key 매니저 지원중단으로 인한 주석
         Map<String, String> secretMap = new HashMap<>();
         try {
             KeyResponseDto body = keyFactoryManager.keyInit(keyId);
@@ -48,6 +65,7 @@ public class CustomDataSourceConfig {
         String dbName = secretMap.get("dbName");
         String userName = secretMap.get("userName");
         String password = secretMap.get("password");
+        */
 
         // DataSource 설정 (Apache Commons DBCP2 사용)
         BasicDataSource dataSource = new BasicDataSource();
