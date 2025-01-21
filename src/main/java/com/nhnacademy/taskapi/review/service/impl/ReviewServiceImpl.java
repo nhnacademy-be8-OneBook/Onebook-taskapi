@@ -37,11 +37,12 @@ import java.util.stream.Collectors;
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final ReviewImageRepository reviewImageRepository;
     private final MemberRepository memberRepository;
 
     private final BookRepository bookRepository;
     private final PointService pointService;
+    private final NhnImageUploadService nhnImageUploadService;
+    private final LocalImageUploadService localImageUploadService;
 
     private final NhnImageManagerAdapter nhnImageManagerAdapter;
 
@@ -100,14 +101,16 @@ public class ReviewServiceImpl implements ReviewService {
                     String fileName = "review_" + memberId + "_" + System.currentTimeMillis() + "_" + counter + ".jpg";
                     counter++;
 
-                    // bookId와 loginId 가져오기
                     long bookIdValue = book.getBookId();
                     String loginId = member.getLoginId();
 
-                    // 리뷰 이미지 업로드 (새로 추가한 메서드 사용)
-                    String uploadedUrl = nhnImageManagerAdapter.uploadReviewImage(imageBytes, fileName, bookIdValue, loginId);
+                    // NHN 이미지 업로드
+//                    String uploadedUrl = nhnImageManagerAdapter.uploadReviewImage(imageBytes, fileName, bookIdValue, loginId);
+//                    nhnImageUploadService.uploadImage(imageBytes, fileName, bookIdValue, loginId);
 
-                    // ReviewImage 생성 및 설정
+                    // 로컬 이미지 업로드
+                    String uploadedUrl = localImageUploadService.uploadImage(imageBytes, fileName, bookIdValue, loginId);
+
                     ReviewImage reviewImage = new ReviewImage();
                     reviewImage.setImageUrl(uploadedUrl);
                     reviewImage.setReview(review);
@@ -118,7 +121,7 @@ public class ReviewServiceImpl implements ReviewService {
                     log.error("이미지 업로드 실패", e);
                 }
             }
-        }
+}
 
         // 리뷰 저장
         Review savedReview = reviewRepository.save(review);

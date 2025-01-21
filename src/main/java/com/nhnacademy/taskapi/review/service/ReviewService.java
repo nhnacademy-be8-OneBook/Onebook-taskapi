@@ -4,8 +4,10 @@ import com.nhnacademy.taskapi.review.dto.ReviewRequest;
 import com.nhnacademy.taskapi.review.dto.ReviewResponse;
 import org.springframework.data.domain.Page;
 
+import java.io.IOException;
+
 public interface ReviewService {
-    ReviewResponse registerReview(long bookId, Long memberId, ReviewRequest reviewRequest); // 리뷰 등록
+    ReviewResponse registerReview(long bookId, Long memberId, ReviewRequest reviewRequest) throws IOException; // 리뷰 등록
 
     double getReviewGradeAverage(long bookId); // 리뷰 평점 평균
 

@@ -165,6 +165,12 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+<!--        &lt;!&ndash; 배치 의존성 추가 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-batch</artifactId>-->
+<!--        </dependency>-->
+
     </dependencies>
 
     <dependencyManagement>
