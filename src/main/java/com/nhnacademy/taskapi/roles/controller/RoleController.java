@@ -7,6 +7,8 @@ import com.nhnacademy.taskapi.roles.dto.RoleResponseDto;
 import com.nhnacademy.taskapi.roles.service.RoleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,41 +17,47 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/task/roles")
 public class RoleController {
 
     private final RoleService roleService;
 
     // 전체 role 조회
-    @GetMapping
+    @GetMapping("/task/roles")
     public ResponseEntity<List<RoleResponseDto>> getRoles() {
         List<RoleResponseDto> roleResponseDtoList = roleService.getAllRoles();
         return ResponseEntity.ok().body(roleResponseDtoList);
     }
 
+    // role 조회 - 페이지네이션
+    @GetMapping("/task/admin/roles")
+    public ResponseEntity<Page<RoleResponseDto>> getAllRoles(Pageable pageable) {
+        Page<RoleResponseDto> roleResponseDtos = roleService.getRolesPagination(pageable);
+        return ResponseEntity.ok(roleResponseDtos);
+    }
+
     // 단일 role 조회
-    @GetMapping("/{id}")
+    @GetMapping("/task/admin/roles/{id}")
     public ResponseEntity<RoleResponseDto> getRoleById(@PathVariable Integer id) {
         RoleResponseDto roleResponseDto = roleService.getRoleById(id);
         return ResponseEntity.ok().body(roleResponseDto);
     }
 
     // role 등록
-    @PostMapping
+    @PostMapping("/task/admin/roles")
     public ResponseEntity<RoleResponseDto> createRole(@RequestBody @Valid RoleRegisterRequestDto roleRegisterRequestDto) {
         RoleResponseDto roleResponseDto = roleService.registerRole(roleRegisterRequestDto);
         return ResponseEntity.ok().body(roleResponseDto);
     }
 
     // role 수정
-    @PutMapping("/{id}")
+    @PutMapping("/task/admin/roles/{id}")
     public ResponseEntity<RoleResponseDto> updateRole(@PathVariable Integer id, @RequestBody @Valid RoleModifyRequestDto roleModifyRequestDto) {
         RoleResponseDto roleResponseDto = roleService.modifyRole(id, roleModifyRequestDto);
         return ResponseEntity.ok().body(roleResponseDto);
     }
 
     // role 삭제
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/task/admin/roles/{id}")
     public ResponseEntity<String> deleteRole(@PathVariable Integer id) {
         roleService.deleteRole(id);
         return ResponseEntity.noContent().build();
