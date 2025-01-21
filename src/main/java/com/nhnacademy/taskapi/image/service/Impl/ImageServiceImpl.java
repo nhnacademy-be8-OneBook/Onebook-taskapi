@@ -16,9 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +30,10 @@ public class ImageServiceImpl implements ImageService {
     private final BookRepository bookRepository;
     private final ImageRepository imageRepository;
 
+    private static final String UPLOAD_DIR = "/Users/lds/images";
 
+
+    //이미지매니저 - 이미지 저장
     @Transactional
     @Override
     public Image saveImage(ImageSaveDTO dto) {
@@ -59,6 +64,38 @@ public class ImageServiceImpl implements ImageService {
         image.setUrl(imageUrl);
 
         return imageRepository.save(image);
+    }
+
+    @Transactional
+    @Override
+    public Image saveImage(MultipartFile file, Book book) throws IOException {
+
+        File dir = new File(UPLOAD_DIR);
+
+        if(!dir.exists()) {
+            dir.mkdir();
+        }
+
+        String originalFileName = file.getOriginalFilename();
+        String uniqueFileName = UUID.randomUUID().toString() + "_" + originalFileName;
+
+
+        String filePath = UPLOAD_DIR + File.separator + uniqueFileName;
+
+
+        File dest = new File(filePath);
+        file.transferTo(dest);
+
+        String fileUrl = "/images/" + uniqueFileName;
+
+
+        Image image = new Image();
+        image.setBook(book);
+        image.setUrl(fileUrl);
+        image.setName(originalFileName);
+
+        return imageRepository.save(image);
+
     }
 
     @Transactional

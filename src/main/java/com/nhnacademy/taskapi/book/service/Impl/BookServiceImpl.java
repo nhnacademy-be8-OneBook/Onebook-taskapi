@@ -120,17 +120,22 @@ public class BookServiceImpl implements BookService {
 
         stockService.addStock(stockCreateUpdateDTO);
 
-        // 이미지 등록
-        if(Objects.nonNull(imageFile) && !imageFile.isEmpty()){
-            ImageSaveDTO imageSaveDTO = new ImageSaveDTO();
-            imageSaveDTO.setBookId(book.getBookId());
-            try {
-                imageSaveDTO.setImageBytes(imageFile.getBytes());
-                imageSaveDTO.setImageName(imageFile.getOriginalFilename());
-                imageService.saveImage(imageSaveDTO);
-            } catch (IOException e) {
-                throw new ImageUploadException("Image upload failed!");
-            }
+        // 이미지 등록 - 이미지매니저
+//        if(Objects.nonNull(imageFile) && !imageFile.isEmpty()){
+//            ImageSaveDTO imageSaveDTO = new ImageSaveDTO();
+//            imageSaveDTO.setBookId(book.getBookId());
+//            try {
+//                imageSaveDTO.setImageBytes(imageFile.getBytes());
+//                imageSaveDTO.setImageName(imageFile.getOriginalFilename());
+//                imageService.saveImage(imageSaveDTO);
+//            } catch (IOException e) {
+//                throw new ImageUploadException("Image upload failed!");
+//            }
+//        }
+        try {
+            imageService.saveImage(imageFile, book);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return book;
     }
