@@ -3,10 +3,12 @@ package com.nhnacademy.taskapi.order.dto;
 import com.nhnacademy.taskapi.order.entity.Order;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class OrderResponse {
     private long orderId;
