@@ -6,11 +6,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-  batch:
-    jdbc:
-      initialize-schema: always
-    job:
-      name: inactiveMemberJob
+# DB
   datasource:
     url: jdbc:mysql://10.116.64.14:13306/project_be8_onebook_db?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
     username: project_be8_onebook
