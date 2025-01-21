@@ -52,7 +52,7 @@ public class GradeControllerTest {
 
         Mockito.when(gradeService.getGradeById(Mockito.anyInt())).thenReturn(gradeResponseDto);
 
-        mockMvc.perform(get("/task/grades/{id}", 1))
+        mockMvc.perform(get("/task/admin/grades/{id}", 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("REGULAR"))
                 .andExpect(jsonPath("$.accumulationRate").value(1))
@@ -66,7 +66,7 @@ public class GradeControllerTest {
 
         Mockito.when(gradeService.registerGrade(Mockito.any())).thenReturn(gradeResponseDto);
 
-        mockMvc.perform(post("/task/grades")
+        mockMvc.perform(post("/task/admin/grades")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"REGULAR\", \"accumulationRate\": 1, \"description\": \"test\"}"))
                 .andExpect(status().isOk())
@@ -82,7 +82,7 @@ public class GradeControllerTest {
 
         Mockito.when(gradeService.modifyGrade(1, new GradeModifyRequestDto("TEST", 2, "TEST"))).thenReturn(gradeResponseDto);
 
-        mockMvc.perform(put("/task/grades/{id}",1)
+        mockMvc.perform(put("/task/admin/grades/{id}",1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"TEST\", \"accumulationRate\": 2, \"description\": \"TEST\"}"))
                 .andExpect(status().isOk())
@@ -94,7 +94,7 @@ public class GradeControllerTest {
     @Test
     @DisplayName("DELETE Grade")
     void deleteTest() throws Exception {
-        mockMvc.perform(delete("/task/grades/{id}", 1))
+        mockMvc.perform(delete("/task/admin/grades/{id}", 1))
                 .andExpect(status().is2xxSuccessful());
     }
 }
