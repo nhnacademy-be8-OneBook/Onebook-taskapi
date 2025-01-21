@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.member.controller;
 
+import com.nhnacademy.taskapi.book.domain.Book;
 import com.nhnacademy.taskapi.grade.dto.GradeResponseDto;
 import com.nhnacademy.taskapi.grade.service.GradeService;
 import com.nhnacademy.taskapi.member.domain.Member;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -90,6 +93,13 @@ public class MemberController {
     public ResponseEntity<Integer> memberNetAmountPayments(@RequestHeader("X-MEMBER-ID") Long memberId) {
         Integer totalAmount = memberService.memberNetPaymentAmount(memberId);
         return ResponseEntity.ok(totalAmount);
+    }
+
+    // 멤버 좋아요 상품 불러오기
+    @GetMapping("/likes/books")
+    public ResponseEntity<List<MemberLikeViewDto>> getListBooksForMember(@RequestHeader("X-MEMBER-ID") Long memberId) {
+        List<MemberLikeViewDto> likeBooksByMemberId = memberService.getLikeBooksByMemberId(memberId);
+        return ResponseEntity.ok(likeBooksByMemberId);
     }
 
     /**
