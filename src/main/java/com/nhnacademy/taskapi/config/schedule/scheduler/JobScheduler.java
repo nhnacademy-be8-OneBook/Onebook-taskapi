@@ -21,7 +21,7 @@
 //    private final PlatformTransactionManager transactionManager;
 //    private final JobRepository jobRepository;
 //
-//    @Scheduled(cron="0 0 4 * * *")
+//    @Scheduled(cron = "0 * * * * *")
 //    public void run() {
 //        log.info("휴면 멤버 전환 스케줄러 동작");
 //        try {
