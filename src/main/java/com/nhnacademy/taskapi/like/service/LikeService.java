@@ -2,11 +2,14 @@ package com.nhnacademy.taskapi.like.service;
 
 import com.nhnacademy.taskapi.like.domain.Like;
 import com.nhnacademy.taskapi.like.dto.LikePlusMinusDTO;
+import com.nhnacademy.taskapi.like.dto.LikeReponse;
 import com.nhnacademy.taskapi.member.domain.Member;
 
 public interface LikeService {
 
-    Like plusLike(LikePlusMinusDTO dto);
+    LikeReponse plusLike(long bookId, long memberId);
 
     void minusLike(LikePlusMinusDTO dto);
+    LikeReponse getLikeByBook(long bookId);
+    LikeReponse getLikeByLoginId(String loginId);
 }
