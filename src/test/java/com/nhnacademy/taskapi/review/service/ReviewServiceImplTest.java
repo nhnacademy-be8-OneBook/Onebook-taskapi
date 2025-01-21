@@ -21,6 +21,8 @@ import com.nhnacademy.taskapi.review.exception.ImageLimitExceededException;
 import com.nhnacademy.taskapi.review.exception.ReviewAlreadyExistsException;
 import com.nhnacademy.taskapi.review.repository.ReviewImageRepository;
 import com.nhnacademy.taskapi.review.repository.ReviewRepository;
+import com.nhnacademy.taskapi.review.service.impl.LocalImageUploadService;
+import com.nhnacademy.taskapi.review.service.impl.NhnImageUploadService;
 import com.nhnacademy.taskapi.review.service.impl.ReviewServiceImpl;
 import com.nhnacademy.taskapi.roles.domain.Role;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,6 +65,11 @@ class ReviewServiceImplTest {
 
     @Mock
     private NhnImageManagerAdapter nhnImageManagerAdapter;
+
+    @Mock
+    private NhnImageUploadService nhnImageUploadService;
+    @Mock
+    private LocalImageUploadService localImageUploadService;
 
     private Member member;       // 일반 사용자
     private Member adminMember;  // 관리자
@@ -167,10 +174,13 @@ class ReviewServiceImplTest {
             return saved;
         });
 
-        given(nhnImageManagerAdapter.uploadReviewImage(any(byte[].class), anyString(), anyLong(), anyString()))
+//        given(nhnImageManagerAdapter.uploadReviewImage(any(byte[].class), anyString(), anyLong(), anyString()))
+//                .willReturn("img1", "img2");
+
+//        // localImageUploadService
+        given(localImageUploadService.uploadImage(any(byte[].class), anyString(), anyLong(), anyString()))
                 .willReturn("img1", "img2");
 
-        // 포인트 관련 객체 설정 및 예상
         doNothing().when(pointService).registerReviewPoints(member, true);
 
         // When
@@ -185,7 +195,6 @@ class ReviewServiceImplTest {
         assertTrue(response.getImageUrl().contains("img1"));
         assertTrue(response.getImageUrl().contains("img2"));
 
-        // 포인트 관련 service 메서드 호출 검증
         verify(pointService, times(1)).registerReviewPoints(member, true);
     }
 
