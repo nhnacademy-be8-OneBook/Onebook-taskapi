@@ -29,7 +29,7 @@ class NhnImageUploadServiceTest {
 
     @BeforeEach
     void setUp() {
-        imageBytes = "test_image".getBytes();  // 실제로는 Base64 디코딩된 이미지 바이트
+        imageBytes = "test_image".getBytes();
         fileName = "test_image.jpg";
         bookId = 123L;
         loginId = "testUser";

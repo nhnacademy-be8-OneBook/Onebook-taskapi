@@ -59,7 +59,6 @@ class PendingReviewServiceImplTest {
     private Payment paymentDone;
 
     private Role memberRole;
-    private Role adminRole;
     private Grade grade;
 
     @BeforeEach
@@ -73,11 +72,6 @@ class PendingReviewServiceImplTest {
         Field memberRoleIdField = Role.class.getDeclaredField("id");
         memberRoleIdField.setAccessible(true);
         memberRoleIdField.set(memberRole, 1);
-
-        // ADMIN Role 생성
-        adminRole = Role.createRole("ADMIN", "Administrator role");
-        Field adminRoleIdField = Role.class.getDeclaredField("id");
-        adminRoleIdField.setAccessible(true);
 
         // 1) Member 생성
 

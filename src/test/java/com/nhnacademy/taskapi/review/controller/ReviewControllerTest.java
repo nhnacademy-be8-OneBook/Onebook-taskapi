@@ -10,18 +10,12 @@ import com.nhnacademy.taskapi.review.service.PendingReviewService;
 import com.nhnacademy.taskapi.review.service.ReviewService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -51,16 +45,18 @@ class ReviewControllerTest {
     @MockBean
     MyReviewService myReviewService;
 
-    private ReviewResponse mockReviewResponse;
-    private ReviewRequest mockReviewRequest;
+    private ReviewResponse testReviewResponse
+            ;
+    private ReviewRequest testReviewRequest;
 
     @BeforeEach
     void setUp() {
         // 테스트 ReviewRequest
-        mockReviewRequest = new ReviewRequest(5, "test description", List.of("image1", "image2"));
+        testReviewRequest = new ReviewRequest(5, "test description", List.of("image1", "image2"));
 
         // 테스트 ReviewResponse
-        mockReviewResponse = ReviewResponse.builder()
+        testReviewResponse
+                = ReviewResponse.builder()
                 .reviewId(100L)
                 .grade(5)
                 .description("test description")
@@ -81,13 +77,14 @@ class ReviewControllerTest {
     void testRegisterReview() throws Exception {
         // given
         given(reviewService.registerReview(eq(1L), eq(1L), any(ReviewRequest.class)))
-                .willReturn(mockReviewResponse);
+                .willReturn(testReviewResponse
+                );
 
         // when & then
         mockMvc.perform(post("/task/reviews/books/{bookId}", 1)
                         .header("X-MEMBER-ID", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(mockReviewRequest)))
+                        .content(objectMapper.writeValueAsString(testReviewRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.reviewId").value(100L))
                 .andExpect(jsonPath("$.grade").value(5))
@@ -123,7 +120,8 @@ class ReviewControllerTest {
     @Test
     void testGetReviewsByBook() throws Exception {
         // given
-        List<ReviewResponse> mockList = List.of(mockReviewResponse);
+        List<ReviewResponse> mockList = List.of(testReviewResponse
+        );
         Page<ReviewResponse> mockPage = new PageImpl<>(mockList, PageRequest.of(0, 10), 1);
         given(reviewService.getReviewByBook(1L, 0, 10)).willReturn(mockPage);
 
@@ -165,16 +163,18 @@ class ReviewControllerTest {
     void testUpdateReview() throws Exception {
         // given
         given(reviewService.updateReview(eq(1L), eq(100L), eq(2L), any(ReviewRequest.class)))
-                .willReturn(mockReviewResponse);
+                .willReturn(testReviewResponse
+                );
 
         // when & then
         mockMvc.perform(put("/task/reviews/{reviewId}/books/{bookId}", 100, 1)
                         .header("X-MEMBER-ID", 2L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(mockReviewRequest)))
+                        .content(objectMapper.writeValueAsString(testReviewRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.reviewId").value(100L))
-                .andExpect(jsonPath("$.memberId").value(1L)); // mockReviewResponse에 memberId=1L로 설정됨
+                .andExpect(jsonPath("$.memberId").value(1L)); // testReviewResponse
+        // memberId=1L로 설정
 
         verify(reviewService, times(1))
                 .updateReview(eq(1L), eq(100L), eq(2L), any(ReviewRequest.class));
@@ -188,7 +188,8 @@ class ReviewControllerTest {
     void testDeleteReview() throws Exception {
         // given
         given(reviewService.deleteReview(eq(1L), eq(100L), eq(2L)))
-                .willReturn(mockReviewResponse);
+                .willReturn(testReviewResponse
+                );
 
         // when & then
         mockMvc.perform(delete("/task/reviews/{reviewId}/books/{bookId}", 100, 1)
@@ -256,7 +257,8 @@ class ReviewControllerTest {
     void testGetReview() throws Exception {
         // given
         given(reviewService.getReviewById(2L, 999L))
-                .willReturn(mockReviewResponse);
+                .willReturn(testReviewResponse
+                );
 
         // when & then
         mockMvc.perform(get("/task/reviews/{reviewId}", 999)

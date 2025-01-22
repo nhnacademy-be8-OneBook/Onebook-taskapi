@@ -128,7 +128,7 @@ class MyReviewServiceImplTest {
         // 리뷰가 2개 있다고 가정
         given(reviewRepository.findByMemberId(memberId)).willReturn(List.of(review1, review2));
 
-        // imageService: 각 도서ID에 대응되는 Image url
+        // imageService: 각 도서ID 에 대응되는 Image url
         var mockImageA = new Image();
         mockImageA.setUrl("http://image.com/bookA.jpg");
 
