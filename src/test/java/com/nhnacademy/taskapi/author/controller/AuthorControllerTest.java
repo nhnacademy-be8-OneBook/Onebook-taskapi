@@ -14,13 +14,19 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -129,6 +135,34 @@ class AuthorControllerTest {
                 .andExpect(jsonPath("$.content[0].name").value("testAuthor"));
 
         verify(authorService).getAuthorList(pageable, name);
+    }
+
+    @Test
+    void testGetAuthorList() throws Exception {
+        // Given
+        Author author1 = new Author();
+        author1.setAuthorId(1);
+        author1.setName("Author One");
+        Author author2 = new Author();
+        author2.setAuthorId(2);
+        author2.setName("Author Two");
+
+        List<Author> authors = Arrays.asList(author1, author2);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Author> authorPage = new PageImpl<>(authors, pageable, authors.size());
+
+        when(authorService.getAllAuthorList(pageable)).thenReturn(authorPage);
+
+        // When & Then
+        mockMvc.perform(get("/task/author/list")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].authorId").value(1L))
+                .andExpect(jsonPath("$.content[0].name").value("Author One"))
+                .andExpect(jsonPath("$.content[1].authorId").value(2L))
+                .andExpect(jsonPath("$.content[1].name").value("Author Two"));
     }
 
 

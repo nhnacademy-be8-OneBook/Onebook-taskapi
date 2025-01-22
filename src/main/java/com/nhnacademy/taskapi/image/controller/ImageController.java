@@ -20,13 +20,13 @@ public class ImageController {
     @PostMapping
     public ResponseEntity<Image> uploadImage(@RequestParam("image") MultipartFile imageFile,
                                              @RequestParam("bookId") long bookId,
-                                             @RequestParam("imageName") String imageName) {
+                                             @RequestParam("imageName") String imageName) throws IOException {
         if(imageFile.isEmpty()) {
             return ResponseEntity.badRequest().body(null);
         }
 
 
-        try {
+
             ImageSaveDTO imageSaveDTO = new ImageSaveDTO();
             imageSaveDTO.setBookId(bookId);
             imageSaveDTO.setImageName(imageName);
@@ -34,14 +34,7 @@ public class ImageController {
 
             Image image = imageService.saveImage(imageSaveDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(image);
-        } catch (IOException e) {
-            // 예외 처리
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
-        }
-
     }
-
     @DeleteMapping("/{imageId}")
     public ResponseEntity<Void> deleteImage(@PathVariable("imageId") long imageId) {
         imageService.deleteImage(imageId);
