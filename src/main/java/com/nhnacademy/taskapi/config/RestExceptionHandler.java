@@ -10,6 +10,7 @@ import com.nhnacademy.taskapi.grade.exception.GradeIllegalArgumentException;
 import com.nhnacademy.taskapi.grade.exception.GradeNotFoundException;
 import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
+import com.nhnacademy.taskapi.payment.exception.PaymentNotFoundException;
 import com.nhnacademy.taskapi.roles.exception.RoleIllegalArgumentException;
 import com.nhnacademy.taskapi.roles.exception.RoleNotFoundException;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -72,6 +73,11 @@ public class RestExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMemberAddressLimitExceededException(MemberAddressLimitExceededException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(PaymentNotFoundException.class)
+    public ResponseEntity<String> handlePaymentNotFoundException(PaymentNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
 }

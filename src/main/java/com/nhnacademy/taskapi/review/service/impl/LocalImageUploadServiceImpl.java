@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 @Service
-public class LocalImageUploadService implements ImageUploadService {
+public class LocalImageUploadServiceImpl implements ImageUploadService {
 
     @Override
     public String uploadImage(byte[] imageBytes, String fileName, long bookId, String loginId) throws IOException {
