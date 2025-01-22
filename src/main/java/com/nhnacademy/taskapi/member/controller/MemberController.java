@@ -6,6 +6,7 @@ import com.nhnacademy.taskapi.grade.service.GradeService;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.dto.*;
 import com.nhnacademy.taskapi.member.service.MemberService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/task/members")
+@Tag(name = "Member", description = "회원 가입, 조회, 수정, 탈퇴등 각종 회원 관리기능")  // API 그룹 설명 추가
 public class MemberController {
 
     private final MemberService memberService;

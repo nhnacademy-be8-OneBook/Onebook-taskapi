@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.image.controller;
 import com.nhnacademy.taskapi.image.domain.Image;
 import com.nhnacademy.taskapi.image.dto.ImageSaveDTO;
 import com.nhnacademy.taskapi.image.service.ImageService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/task/image")
+@Tag(name = "Image", description = "도서의 이미지를 등록, 삭제, 조회")
 public class ImageController {
     private final ImageService imageService;
 

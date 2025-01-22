@@ -5,6 +5,7 @@ import com.nhnacademy.taskapi.category.domain.Category;
 import com.nhnacademy.taskapi.category.dto.CategoryCreateDTO;
 import com.nhnacademy.taskapi.category.dto.CategoryUpdateDTO;
 import com.nhnacademy.taskapi.category.service.CategoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/task/categories")
+@Tag(name = "Category", description = "카테고리를 생성, 수정, 삭제, 조회")  // API 그룹 설명 추가
 public class CategoryController {
     private final CategoryService categoryService;
 

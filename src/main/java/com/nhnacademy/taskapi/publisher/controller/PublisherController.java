@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.publisher.controller;
 import com.nhnacademy.taskapi.publisher.domain.Publisher;
 import com.nhnacademy.taskapi.publisher.dto.PublisherUpdateDTO;
 import com.nhnacademy.taskapi.publisher.service.PublisherService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/task/publisher")
+@Tag(name = "Publisher", description = "출판사를 등록, 조회, 수정, 삭제")
 public class PublisherController {
     private final PublisherService publisherService;
 

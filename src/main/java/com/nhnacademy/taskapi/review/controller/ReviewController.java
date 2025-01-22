@@ -7,6 +7,7 @@ import com.nhnacademy.taskapi.review.dto.ReviewResponse;
 import com.nhnacademy.taskapi.review.service.MyReviewService;
 import com.nhnacademy.taskapi.review.service.PendingReviewService;
 import com.nhnacademy.taskapi.review.service.ReviewService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/task")
 @RequiredArgsConstructor
+@Tag(name = "Review", description = "리뷰 등록, 조회, 수정, 삭제 등 리뷰 관련 기능")
 public class ReviewController {
 
     private final ReviewService reviewService;

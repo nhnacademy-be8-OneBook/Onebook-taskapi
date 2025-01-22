@@ -71,3 +71,12 @@ db:
   userName: project_be8_onebook
   password: vH6NDX810*pgNQqs
 
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    groups-order: DESC
+    operations-sorter: method
+    disable-swagger-default-url: true
+  packages-to-scan: com.nhnacademy.taskapi  # 컨트롤러 패키지 경로 지정

@@ -7,6 +7,7 @@ import com.nhnacademy.taskapi.book.dto.BookSaveDTO;
 import com.nhnacademy.taskapi.book.dto.BookSearchAllResponse;
 import com.nhnacademy.taskapi.book.dto.BookUpdateDTO;
 import com.nhnacademy.taskapi.book.service.BookService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/task/book")
 @Slf4j
+@Tag(name = "Book", description = "도서를 생성, 수정, 삭제, 조회, 관리등 각종 도서 관련 기능")
 public class BookController {
     private final BookService bookService;
 

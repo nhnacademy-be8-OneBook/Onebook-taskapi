@@ -5,6 +5,7 @@ import com.nhnacademy.taskapi.point.domain.PointLogUpdatedType;
 import com.nhnacademy.taskapi.point.service.PointService;
 import com.nhnacademy.taskapi.point.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/task/member/admin")
+@Tag(name = "Point", description = "주문에 있는 각 주문상세내역을 조회")
 public class PointController {
 
     private final PointService pointService;

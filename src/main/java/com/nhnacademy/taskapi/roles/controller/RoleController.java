@@ -5,6 +5,7 @@ import com.nhnacademy.taskapi.roles.dto.RoleModifyRequestDto;
 import com.nhnacademy.taskapi.roles.dto.RoleRegisterRequestDto;
 import com.nhnacademy.taskapi.roles.dto.RoleResponseDto;
 import com.nhnacademy.taskapi.roles.service.RoleService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "role", description = "'관리자', '사용자'와같은 사용자의 권한을 등록, 수정, 삭제, 조회")
 public class RoleController {
 
     private final RoleService roleService;

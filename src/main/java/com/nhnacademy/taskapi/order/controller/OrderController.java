@@ -5,6 +5,7 @@ import com.nhnacademy.taskapi.order.dto.OrderMemberResponse;
 import com.nhnacademy.taskapi.order.dto.OrderResponse;
 import com.nhnacademy.taskapi.order.dto.OrderStatusResponse;
 import com.nhnacademy.taskapi.order.service.OrderService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "Order", description = "주문 생성, 주문 조회, 주문 관리등 주문 관련 기능")
 public class OrderController {
 
     private final OrderService orderService;

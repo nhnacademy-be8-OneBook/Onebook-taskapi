@@ -5,6 +5,7 @@ import com.nhnacademy.taskapi.like.domain.Like;
 import com.nhnacademy.taskapi.like.dto.LikePlusMinusDTO;
 import com.nhnacademy.taskapi.like.dto.LikeReponse;
 import com.nhnacademy.taskapi.like.service.LikeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/task/like")
 @Slf4j
+@Tag(name = "Like", description = "도서에 대한 사용자의 좋아요를 등록, 삭제, 조회")  // API 그룹 설명 추가
 public class LikeController {
     private final LikeService likeService;
 
