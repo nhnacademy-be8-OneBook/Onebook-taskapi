@@ -11,22 +11,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PointPolicyRequest {
-    private Long pointPolicyId;
+    private Long pointPolicyId;  // Long 타입
     private String pointPolicyName;
-    private Integer pointPolicyConditionAmount;
-    private Integer pointPolicyRate;
-    private Integer pointPolicyApplyAmount;
+    private Integer pointPolicyConditionAmount;  // Integer 타입
+    private Integer pointPolicyRate;  // Integer 타입
+    private Integer pointPolicyApplyAmount;  // Integer 타입
     private String pointPolicyCondition;
     private boolean pointPolicyApplyType;
     private boolean pointPolicyState;
 
+    // CreatePointPolicyRequest로 변환하는 메서드
     public CreatePointPolicyRequest toCreatePointPolicyRequest() {
         return new CreatePointPolicyRequest(
-                this.pointPolicyId,  // ID 추가
+                this.pointPolicyId,  // Long 타입
                 this.pointPolicyName,
-                this.getPointPolicyConditionAmount(),
-                this.getPointPolicyRate(),
-                this.getPointPolicyApplyAmount(),
+                this.getPointPolicyConditionAmount(),  // Integer 타입
+                this.getPointPolicyRate(),  // Integer 타입
+                this.getPointPolicyApplyAmount(),  // Integer 타입
                 this.pointPolicyCondition,
                 this.pointPolicyApplyType,
                 this.pointPolicyState
