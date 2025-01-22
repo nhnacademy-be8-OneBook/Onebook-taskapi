@@ -20,15 +20,6 @@ import org.springframework.web.bind.annotation.*;
 public class LikeController {
     private final LikeService likeService;
 
-
-//    @PostMapping("/{bookId}")
-//    public ResponseEntity<LikeReponse> addLike(@PathVariable long bookId,
-//                                               @RequestHeader("X-MEMBER-ID") long memberId) {
-//        log.info("memberId={}", memberId);
-//
-//        LikeReponse like = likeService.plusLike(bookId, memberId);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(like);
-//    }
     @PostMapping("/{bookId}")
     public ResponseEntity<Boolean> toggleLike(
             @PathVariable long bookId,
@@ -40,25 +31,16 @@ public class LikeController {
     }
 
 
-
-    @DeleteMapping
-    public ResponseEntity<Void> deleteLike(@RequestBody LikePlusMinusDTO likePlusMinusDTO) {
-        likeService.minusLike(likePlusMinusDTO);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
     @GetMapping("/{bookId}")
     public ResponseEntity<LikeReponse> getLike(@PathVariable("bookId") long bookId) {
         LikeReponse like = likeService.getLikeByBook(bookId);
         return ResponseEntity.status(HttpStatus.OK).body(like);
     }
-
     @GetMapping("/{bookId}/check")
     public ResponseEntity<Boolean> checkLike(@PathVariable("bookId") long bookId,
                                              @RequestHeader("X-MEMBER-ID") long memberId) {
         boolean isLiked = likeService.checkLike(bookId, memberId);
         return ResponseEntity.status(HttpStatus.OK).body(isLiked);
     }
-
 
 }

@@ -8,5 +8,5 @@ import java.util.List;
 public interface PricingService {
     int calculatorToTalPriceByOrderRequest(List<BookOrderRequest> items, BookRepository bookRepository);
 
-    int calculatorDeliveryFee(int totalBookPrice);
+    int calculatorDeliveryFee(List<BookOrderRequest> items);
 }

@@ -9,8 +9,6 @@ import com.nhnacademy.taskapi.member.service.MemberService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,18 +22,6 @@ public class MemberController {
 
     private final MemberService memberService;
     private final GradeService gradeService;
-
-    /**
-     * Auth 서버에서 사용.
-     * memberID로 member 정보 return.
-     * @param memberId
-     * @return MemberResponseDto
-     */
-    @GetMapping("/{memberId}")
-    public ResponseEntity<MemberResponseDto> getMemberByParameterId(@PathVariable("memberId") Long memberId) {
-        MemberResponseDto result = memberService.getMemberById(memberId);
-        return ResponseEntity.ok(result);
-    }
 
     // request header의 인조키(id)로 멤버 조회
     @GetMapping
@@ -105,6 +91,27 @@ public class MemberController {
     }
 
     /**
+     * 회원 ID로 loginId 가져오기.
+     */
+    @GetMapping("/loginId")
+    public ResponseEntity<String> getMemberIdByLoginId(@RequestHeader("X-MEMBER-ID") Long memberId) {
+        String loginId = memberService.getLoginIdById(memberId);
+        return ResponseEntity.ok().body(loginId);
+    }
+
+    /**
+     * Auth 서버에서 사용.
+     * memberID로 member 정보 return.
+     * @param memberId
+     * @return MemberResponseDto
+     */
+    @GetMapping("/{memberId}")
+    public ResponseEntity<MemberResponseDto> getMemberByParameterId(@PathVariable("memberId") Long memberId) {
+        MemberResponseDto result = memberService.getMemberById(memberId);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
      * Auth api 에서 사용.
      * 멤버 정보 리턴 for JWT
      */
@@ -118,15 +125,6 @@ public class MemberController {
         jwtMemberDto.setRole(member.getRole().getName());
 
         return ResponseEntity.ok().body(jwtMemberDto);
-    }
-
-    /**
-     * 회원 ID로 loginId 가져오기.
-     */
-    @GetMapping("/loginId")
-    public ResponseEntity<String> getMemberIdByLoginId(@RequestHeader("X-MEMBER-ID") Long memberId) {
-        String loginId = memberService.getLoginIdById(memberId);
-        return ResponseEntity.ok().body(loginId);
     }
 
 }

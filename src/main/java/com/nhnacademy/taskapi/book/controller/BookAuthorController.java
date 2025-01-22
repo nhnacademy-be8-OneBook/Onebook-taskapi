@@ -26,10 +26,8 @@ public class BookAuthorController {
     }
 
     @GetMapping("/{bookId}")
-    public ResponseEntity<?> getBookAuthor(@PathVariable("bookId") Long bookId) {
+    public ResponseEntity<BookAuthor> getBookAuthor(@PathVariable("bookId") Long bookId) {
         BookAuthor bookAuthor = bookAuthorService.getBookAuthorByBookId(bookId);
-        log.info("BookAuhor_authorId: {}", bookAuthor.getAuthor().getAuthorId());
         return ResponseEntity.ok().body(bookAuthor);
     }
-
 }

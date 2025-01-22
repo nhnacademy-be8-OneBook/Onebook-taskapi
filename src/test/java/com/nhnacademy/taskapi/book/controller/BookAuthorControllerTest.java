@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,9 +57,37 @@ public class BookAuthorControllerTest {
                 .andExpect(jsonPath("$.book.bookId").value(1))
                 .andExpect(jsonPath("$.author.authorId").value(1));
         verify(bookAuthorService).createBookAuthor(ArgumentMatchers.any(BookAuthorCreateDTO.class));
+    }
+
+    @Test
+    void testGetBookAuthor() throws Exception {
+        Book book = new Book();
+        book.setBookId(1L);
+        book.setTitle("Test Book");
+
+        Author author = new Author();
+        author.setAuthorId(1);
+        author.setName("Test Author");
 
 
 
+        BookAuthor bookAuthor;
+        bookAuthor = new BookAuthor();
+        bookAuthor.setBookAuthorId(1);
+        bookAuthor.setBook(book);  // 가정된 Book 객체
+        bookAuthor.setAuthor(author);
+        // Given
+        given(bookAuthorService.getBookAuthorByBookId(1L)).willReturn(bookAuthor);
+
+        // When & Then
+        mockMvc.perform(get("/task/book/author/1")  // bookId가 1인 경우
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.bookAuthorId").value(1))
+                .andExpect(jsonPath("$.book.bookId").value(1))
+                .andExpect(jsonPath("$.book.title").value("Test Book"))
+                .andExpect(jsonPath("$.author.authorId").value(1))
+                .andExpect(jsonPath("$.author.name").value("Test Author"));
     }
 
 }
