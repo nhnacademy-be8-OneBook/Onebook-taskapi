@@ -16,16 +16,26 @@ public class PricingServiceImpl implements PricingService {
     public int calculatorToTalPriceByOrderRequest(List<BookOrderRequest> items, BookRepository bookRepository) {
         int totalPrice = 0;
         for (BookOrderRequest item : items) {
-            int salePrice = bookRepository.findById(item.getBookId())
-                    .orElseThrow(() -> new BookNotFoundException("Book id " + item.getBookId() + "not found!!")).getSalePrice();
-            totalPrice += (salePrice * item.getQuantity());
+//            int salePrice = bookRepository.findById(item.getBookId())
+//                    .orElseThrow(() -> new BookNotFoundException("Book id " + item.getBookId() + "not found!!")).getSalePrice();
+
+            if (item.getDiscountAmount() == 0) {
+                totalPrice += item.getPrice();
+            } else {
+                totalPrice += item.getDiscountedPrice();
+            }
         }
 
         return totalPrice;
     }
 
     @Override
-    public int calculatorDeliveryFee(int totalBookPrice) {
-        return totalBookPrice < 30000 ? 5000 : 0;
+    public int calculatorDeliveryFee(List<BookOrderRequest> items) {
+        int totalOriginalPrice = 0;
+        for (BookOrderRequest item : items) {
+            totalOriginalPrice += item.getPrice();
+        }
+
+        return totalOriginalPrice < 30000 ? 5000 : 0;
     }
 }

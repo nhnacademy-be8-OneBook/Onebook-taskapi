@@ -4,6 +4,7 @@ import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.dto.MemberLoginDto;
 import com.nhnacademy.taskapi.member.dto.MemberLoginResponseDto;
 import com.nhnacademy.taskapi.member.service.MemberService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
+@Tag(name = "Login", description = "로그인 검증, 로그인 회원 정보 조회, 로그인 기록 업데이트")  // API 그룹 설명 추가
 public class LoginController {
 
     private final MemberService memberService;

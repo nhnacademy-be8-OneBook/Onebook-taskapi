@@ -67,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 2. 쿠폰 사용
         for (BookOrderRequest item : orderFormRequest.getItems()) {
-            if (item.getCouponNumber() != null) {
+            if (!item.getCouponNumber().isBlank()) {
                 // 개인 쿠폰 사용시간 설정
                 couponBoxService.updateIssuedCoupon(item.getCouponNumber());
                 // 전체 쿠폰 사용상태 변경
@@ -86,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 3. 가격 계산
         int totalBookSalePrice = pricingService.calculatorToTalPriceByOrderRequest(orderFormRequest.getItems(), bookRepository);
-        int DeliveryFee = pricingService.calculatorDeliveryFee(totalBookSalePrice);
+        int DeliveryFee = pricingService.calculatorDeliveryFee(orderFormRequest.getItems());
 
         // TODO 삭제 1순위!!! 책 title 알아내기
         String bookTitle = bookRepository.findById(orderFormRequest.getItems().get(0).getBookId()).get().getTitle();

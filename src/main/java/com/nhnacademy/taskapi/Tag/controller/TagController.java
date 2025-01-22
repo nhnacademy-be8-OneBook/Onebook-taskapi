@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "태그 API", description = "태그 관리 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/task/tags")
+@Tag(name = "Tag", description = "태그를 등록, 조회, 수정, 삭제")
 public class TagController {
 
     private final TagService tagService;

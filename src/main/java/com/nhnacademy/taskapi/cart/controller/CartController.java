@@ -4,6 +4,7 @@ import com.nhnacademy.taskapi.cart.dto.CartRequestDto;
 import com.nhnacademy.taskapi.cart.dto.CartResponseDto;
 import com.nhnacademy.taskapi.cart.exception.CartIllegalArgumentException;
 import com.nhnacademy.taskapi.cart.service.CartService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/task/carts")
+@Tag(name = "Cart", description = "장바구니 생성, 조회, 등록, 수정")  // API 그룹 설명 추가
 public class CartController {
 
     private final CartService cartService;

@@ -11,6 +11,7 @@ import com.nhnacademy.taskapi.coupon.domain.dto.policies.request.update.UpdateRa
 import com.nhnacademy.taskapi.coupon.domain.dto.policies.response.*;
 import com.nhnacademy.taskapi.coupon.exception.CouponPolicyIllegalArgumentException;
 import com.nhnacademy.taskapi.coupon.service.policies.PolicyService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/task")
+@Tag(name = "Policy", description = "쿠폰 정책을 생성, 조회, 수정, 삭제")  // API 그룹 설명 추가
 public class PolicyController {
 
     private final PolicyService policyService;

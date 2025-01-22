@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.packaging.controller;
 import com.nhnacademy.taskapi.packaging.dto.PackagingRequestDto;
 import com.nhnacademy.taskapi.packaging.dto.PackagingResponseDto;
 import com.nhnacademy.taskapi.packaging.service.PackagingService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "Packaging", description = "포장지 등록, 조회")
 public class PackagingController {
 
     private final PackagingService packagingService;

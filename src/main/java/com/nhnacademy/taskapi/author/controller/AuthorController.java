@@ -4,6 +4,7 @@ package com.nhnacademy.taskapi.author.controller;
 import com.nhnacademy.taskapi.author.domain.Author;
 import com.nhnacademy.taskapi.author.dto.AuthorUpdateDTO;
 import com.nhnacademy.taskapi.author.service.AuthorService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/task/author")
+@Tag(name = "Author", description = "작가를 생성,수정,조회,삭제")  // API 그룹 설명 추가
 public class AuthorController {
     private final AuthorService authorService;
 

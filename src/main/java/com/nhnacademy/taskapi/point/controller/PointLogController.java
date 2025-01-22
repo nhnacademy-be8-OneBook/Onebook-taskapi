@@ -8,6 +8,7 @@ import com.nhnacademy.taskapi.point.service.PointLogService;
 import com.nhnacademy.taskapi.member.domain.Member;
 
 import com.nhnacademy.taskapi.point.service.PointService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/task/member")
+@Tag(name = "PointLog", description = "포인트 사용기록과 사용자의 현재 포인트를 조회")
 public class PointLogController {
 
     private final PointLogService pointLogService;
