@@ -88,4 +88,35 @@ class LocalImageUploadServiceImplTest {
             System.out.println("Uploaded path = " + path);
         });
     }
+
+    @Test
+    @DisplayName("이미 존재하는 디렉토리에 이미지 업로드")
+    void testUploadImageWhenDirectoryAlreadyExists() throws IOException {
+        // given
+        byte[] imageBytes = "another_test_image".getBytes();
+        String fileName = "another_image.png";
+        long bookId = 456L;
+        String loginId = "existingUser";
+
+        // 먼저 디렉토리를 미리 생성해둡니다.
+        Path preCreatedDir = tempDir
+                .resolve("1nebook/taskapi/images/review")
+                .resolve(String.valueOf(bookId))
+                .resolve(loginId);
+        Files.createDirectories(preCreatedDir);
+
+        // when
+        String returnedPath = localImageUploadService.uploadImage(imageBytes, fileName, bookId, loginId);
+
+        // then
+        String expectedPath = "/images/review/456/existingUser/another_image.png";
+        assertEquals(expectedPath, returnedPath);
+
+        Path actualFilePath = preCreatedDir.resolve(fileName);
+        assertTrue(Files.exists(actualFilePath), "업로드된 파일이 실제로 존재해야 합니다.");
+
+        byte[] actualContent = Files.readAllBytes(actualFilePath);
+        assertArrayEquals(imageBytes, actualContent, "파일 내용이 업로드된 바이트와 같아야 합니다.");
+    }
+
 }

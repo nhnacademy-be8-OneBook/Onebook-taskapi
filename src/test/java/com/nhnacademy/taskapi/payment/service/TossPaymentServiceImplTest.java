@@ -7,6 +7,7 @@ import com.nhnacademy.taskapi.order.entity.OrderStatus;
 import com.nhnacademy.taskapi.order.repository.OrderStatusRepository;
 import com.nhnacademy.taskapi.order.service.OrderService;
 import com.nhnacademy.taskapi.payment.domain.Payment;
+import com.nhnacademy.taskapi.payment.domain.PaymentMethod;
 import com.nhnacademy.taskapi.payment.dto.toss.TossConfirmRequest;
 import com.nhnacademy.taskapi.payment.dto.toss.TossConfirmResponse;
 import com.nhnacademy.taskapi.payment.exception.PaymentNotFoundException;
@@ -28,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -295,6 +297,187 @@ class TossPaymentServiceImplTest {
         assertThatThrownBy(() -> tossPaymentService.parseOrderId("집에가고싶습니다_IWantGoHome"))
                 .isInstanceOf(PaymentNotFoundException.class)
                 .hasMessageContaining("유효하지 않은 orderId 형식입니다.");
+    }
+
+    @Test
+    @DisplayName("토스 API 응답 상태 코드 2xx가 아닌 경우 RuntimeException 발생")
+    void testConfirmTossPayment_apiNon2xxResponse_thenThrow() {
+        // GIVEN
+        TossConfirmRequest req = new TossConfirmRequest();
+        req.setOrderId("600");
+        req.setPaymentKey("PK_non2xx");
+        req.setAmount("3000");
+
+        Payment payment = new Payment();
+        payment.setStatus("READY");
+        payment.setTotalAmount(3000);
+        payment.setOrder(testOrder);
+
+        given(paymentRepository.findByOrder_OrderId(600L)).willReturn(payment);
+
+        // Toss API 응답 상태 코드가 실패일 때 모킹
+        ResponseEntity<String> responseEntity = new ResponseEntity<>("Error Response", HttpStatus.BAD_REQUEST);
+        given(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(String.class)))
+                .willReturn(responseEntity);
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> tossPaymentService.confirmTossPayment(req))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("토스 결제승인 실패");
+    }
+
+    @Test
+    @DisplayName("응답 JSON 파싱 오류 발생 시 RuntimeException 발생")
+    void testConfirmTossPayment_jsonParsingError_thenThrow() {
+        // GIVEN
+        TossConfirmRequest req = new TossConfirmRequest();
+        req.setOrderId("700");
+        req.setPaymentKey("PK_parseError");
+        req.setAmount("4000");
+
+        Payment payment = new Payment();
+        payment.setStatus("READY");
+        payment.setTotalAmount(4000);
+        payment.setOrder(testOrder);
+
+        given(paymentRepository.findByOrder_OrderId(700L)).willReturn(payment);
+
+        // 올바르지 않은 JSON 형식 반환
+        String invalidJsonResponse = "Invalid JSON";
+        ResponseEntity<String> responseEntity = new ResponseEntity<>(invalidJsonResponse, HttpStatus.OK);
+        given(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(String.class)))
+                .willReturn(responseEntity);
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> tossPaymentService.confirmTossPayment(req))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("응답 JSON 파싱 오류");
+    }
+
+    @Test
+    @DisplayName("PaymentMethod가 존재하고 다른 paymentKey를 가진 경우 IllegalStateException 발생")
+    void testConfirmTossPayment_existingPaymentMethodDifferentKey_thenThrow() {
+        // GIVEN
+        TossConfirmRequest req = new TossConfirmRequest();
+        req.setOrderId("800");
+        req.setPaymentKey("PK_new");
+        req.setAmount("6000");
+
+        Payment payment = new Payment();
+        payment.setStatus("READY");
+        payment.setTotalAmount(6000);
+        payment.setOrder(testOrder);
+
+        PaymentMethod existingPm = new PaymentMethod();
+        existingPm.setPaymentKey("PK_old");
+        payment.setPaymentMethod(existingPm);
+
+        given(paymentRepository.findByOrder_OrderId(800L)).willReturn(payment);
+
+        String jsonResponse = "{"
+                + "\"status\":\"DONE\","
+                + "\"approvedAt\":\"2023-01-01T10:00:00\","
+                + "\"method\":\"CARD\","
+                + "\"card\":{"
+                + "    \"ownerType\":\"PERSONAL\","
+                + "    \"number\":\"1234-****-****-5678\","
+                + "    \"amount\":6000,"
+                + "    \"issuerCode\":\"ABC\","
+                + "    \"acquirerCode\":\"XYZ\","
+                + "    \"isInterestFree\":true,"
+                + "    \"cardType\":\"VISA\","
+                + "    \"approveNo\":\"APPROVE123\","
+                + "    \"installmentPlanMonths\":0"
+                + "}"
+                + "}";
+        ResponseEntity<String> responseEntity = new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+        given(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(String.class)))
+                .willReturn(responseEntity);
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> tossPaymentService.confirmTossPayment(req))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("기존 PaymentMethod와 다른 paymentKey가 들어왔습니다.");
+    }
+
+
+    @Test
+    @DisplayName("Toss 응답 cardObj가 null일 경우 PaymentMethod 업데이트")
+    void testConfirmTossPayment_whenCardObjNull_thenSetCashType() throws Exception {
+        // GIVEN
+        TossConfirmRequest req = new TossConfirmRequest();
+        req.setOrderId("900");
+        req.setPaymentKey("PK_cash");
+        req.setAmount("7000");
+
+        Payment payment = new Payment();
+        payment.setStatus("READY");
+        payment.setTotalAmount(7000);
+        payment.setOrder(testOrder);
+
+        given(paymentRepository.findByOrder_OrderId(900L)).willReturn(payment);
+
+        // cardObj를 null로 설정한 JSON 응답 구성
+        String jsonResponse = "{"
+                + "\"status\":\"DONE\","
+                + "\"approvedAt\":\"2023-02-01T10:00:00\","
+                + "\"method\":\"CASH\""
+                + "}";
+
+        ResponseEntity<String> responseEntity = new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+        given(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(String.class)))
+                .willReturn(responseEntity);
+
+        // WHEN
+        TossConfirmResponse response = tossPaymentService.confirmTossPayment(req);
+
+        // THEN
+        // PaymentMethod가 CASH 타입으로 설정되었는지 확인
+        PaymentMethod pm = payment.getPaymentMethod();
+        assertThat(pm).isNotNull();
+        assertThat(pm.getCardType()).isEqualTo("CASH");
+        assertThat(pm.getCardOwnerType()).isEqualTo("PERSONAL");
+
+        // SUCCESS 응답 검증
+        assertThat(response.getStatus()).isEqualTo("DONE");
+    }
+
+
+    @Test
+    @DisplayName("approvedAt 날짜 파싱 실패 시 현재 시간 사용")
+    void testConfirmTossPayment_dateTimeParseException_thenUseNow() throws Exception {
+        // GIVEN
+        TossConfirmRequest req = new TossConfirmRequest();
+        req.setOrderId("1000");
+        req.setPaymentKey("PK_dateError");
+        req.setAmount("8000");
+
+        Payment payment = new Payment();
+        payment.setStatus("READY");
+        payment.setTotalAmount(8000);
+        payment.setOrder(testOrder);
+
+        given(paymentRepository.findByOrder_OrderId(1000L)).willReturn(payment);
+
+        // 잘못된 approvedAt 값을 가지는 JSON 응답
+        String jsonResponse = "{"
+                + "\"status\":\"DONE\","
+                + "\"approvedAt\":\"invalid-date-format\","
+                + "\"method\":\"CARD\","
+                + "\"card\":null"
+                + "}";
+
+        ResponseEntity<String> responseEntity = new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+        given(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(String.class)))
+                .willReturn(responseEntity);
+
+        // WHEN
+        TossConfirmResponse response = tossPaymentService.confirmTossPayment(req);
+
+        // THEN
+        // approvedAt가 현재 시간 근처로 설정되었는지 확인 (테스트는 오차 허용)
+        LocalDateTime now = LocalDateTime.now();
+        assertThat(response.getApprovedAt()).isCloseTo(now,within(5, ChronoUnit.SECONDS));
     }
 
 }
