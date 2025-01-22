@@ -4,6 +4,7 @@ import com.nhnacademy.taskapi.coupon.domain.dto.coupons.request.CreateCouponRequ
 import com.nhnacademy.taskapi.coupon.domain.dto.coupons.response.CouponResponse;
 import com.nhnacademy.taskapi.coupon.service.coupons.CouponService;
 import feign.Response;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/task")
+@Tag(name = "Coupon", description = "쿠폰을 생성, 조회, 삭제")  // API 그룹 설명 추가
 public class CouponController {
 
     private final CouponService couponService;

@@ -6,6 +6,7 @@ import com.nhnacademy.taskapi.grade.dto.GradeRegisterRequestDto;
 import com.nhnacademy.taskapi.grade.dto.GradeResponseDto;
 import com.nhnacademy.taskapi.grade.service.GradeService;
 import com.nhnacademy.taskapi.member.service.MemberService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "Grade", description = "등급을 생성, 조회, 수정, 삭제")
 public class GradeController {
 
     private final GradeService gradeService;

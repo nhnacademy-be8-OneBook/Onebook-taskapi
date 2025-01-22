@@ -7,6 +7,8 @@ import com.nhnacademy.taskapi.address.domain.dto.resp.MemberAddressResponse;
 import com.nhnacademy.taskapi.address.domain.entity.MemberAddress;
 import com.nhnacademy.taskapi.address.exception.AddressIllegalArgumentException;
 import com.nhnacademy.taskapi.address.service.AddressService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/task")
+@Tag(name = "Address", description = "사용자의 배송지를 생성,수정,조회,삭제")  // API 그룹 설명 추가
 public class AddressController {
 
     private final AddressService addressService;

@@ -4,6 +4,7 @@ package com.nhnacademy.taskapi.stock.controller;
 import com.nhnacademy.taskapi.stock.domain.Stock;
 import com.nhnacademy.taskapi.stock.dto.StockCreateUpdateDTO;
 import com.nhnacademy.taskapi.stock.service.StockService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/task/stock")
+@Tag(name = "stock", description = "도서의 재고를 등록, 수정, 조회")
 public class StockController {
     private final StockService stockService;
 
