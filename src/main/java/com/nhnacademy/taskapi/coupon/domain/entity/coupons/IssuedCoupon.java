@@ -4,6 +4,7 @@ import com.nhnacademy.taskapi.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -27,6 +28,7 @@ public class IssuedCoupon {
 
     @Column(nullable = false)
     private LocalDateTime issueDateTime;
+    @Setter
     private LocalDateTime useDateTime;
 
     public IssuedCoupon(Coupon coupon, Member member, LocalDateTime issueDateTime) {
