@@ -1,31 +1,32 @@
 package com.nhnacademy.taskapi.point.dto;
 
 import com.nhnacademy.taskapi.point.domain.PointPolicy;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Getter
-@Builder
+@AllArgsConstructor
 public class CreatePointPolicyRequest {
+    private Long pointPolicyId;  // Long 타입
     private String pointPolicyName;
-    private int pointPolicyRate;
-    private Integer pointPolicyConditionAmount;  // Integer로 변경(null O)
-    private Integer pointPolicyApplyAmount;      // Integer로 변경(null O)
+    private Integer pointPolicyConditionAmount;  // Integer 타입
+    private Integer pointPolicyRate;  // Integer 타입
+    private Integer pointPolicyApplyAmount;  // Integer 타입
     private String pointPolicyCondition;
     private boolean pointPolicyApplyType;
+    private boolean pointPolicyState;
 
+    // 엔티티 변환 메서드
     public PointPolicy toEntity() {
         return PointPolicy.builder()
+                .pointPolicyId(this.pointPolicyId)
                 .pointPolicyName(this.pointPolicyName)
                 .pointPolicyConditionAmount(this.pointPolicyConditionAmount)
                 .pointPolicyRate(this.pointPolicyRate)
                 .pointPolicyApplyAmount(this.pointPolicyApplyAmount)
                 .pointPolicyCondition(this.pointPolicyCondition)
                 .pointPolicyApplyType(this.pointPolicyApplyType)
-                .pointPolicyCreatedAt(LocalDateTime.now()) // 생성일 현재 시간
-                .pointPolicyState(true) // 기본적으로 활성 상태
+                .pointPolicyState(this.pointPolicyState)
                 .build();
     }
 }
