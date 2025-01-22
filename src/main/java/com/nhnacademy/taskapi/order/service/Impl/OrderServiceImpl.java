@@ -86,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 3. 가격 계산
         int totalBookSalePrice = pricingService.calculatorToTalPriceByOrderRequest(orderFormRequest.getItems(), bookRepository);
-        int DeliveryFee = pricingService.calculatorDeliveryFee(totalBookSalePrice);
+        int DeliveryFee = pricingService.calculatorDeliveryFee(orderFormRequest.getItems());
 
         // TODO 삭제 1순위!!! 책 title 알아내기
         String bookTitle = bookRepository.findById(orderFormRequest.getItems().get(0).getBookId()).get().getTitle();
