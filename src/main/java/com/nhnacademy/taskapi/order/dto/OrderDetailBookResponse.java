@@ -15,6 +15,7 @@ public class OrderDetailBookResponse {
     private String bookTitle;
     private int quantity;
     private int price;
+    private int discountAmount;
 
     public static OrderDetailBookResponse fromOrderDetail(OrderDetail orderDetail) {
         return new OrderDetailBookResponse(
@@ -22,7 +23,8 @@ public class OrderDetailBookResponse {
                 orderDetail.getBook().getBookId(),
                 orderDetail.getBook().getTitle(),
                 orderDetail.getQuantity(),
-                orderDetail.getBookPrice()
+                orderDetail.getBookPrice(),
+                orderDetail.getDiscountAmount()
         );
     }
 }

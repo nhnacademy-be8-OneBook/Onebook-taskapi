@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class OrderResponse {
     private long orderId;
     private String orderName;
-    private String orderer;
+    private String ordererName;
     private LocalDateTime dateTime;
     private int totalPrice;
     private String orderStatusName;
