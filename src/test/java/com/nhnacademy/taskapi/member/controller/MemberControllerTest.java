@@ -3,7 +3,6 @@ package com.nhnacademy.taskapi.member.controller;
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.grade.service.GradeService;
 import com.nhnacademy.taskapi.member.domain.Member;
-import com.nhnacademy.taskapi.member.dto.MemberResponse;
 import com.nhnacademy.taskapi.member.dto.MemberResponseDto;
 import com.nhnacademy.taskapi.member.service.MemberService;
 import com.nhnacademy.taskapi.roles.domain.Role;
@@ -13,10 +12,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,7 +20,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @MockBean(JpaMetamodelMappingContext.class)
 @WebMvcTest(controllers = MemberController.class)

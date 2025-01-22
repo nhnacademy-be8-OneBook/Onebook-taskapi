@@ -10,10 +10,6 @@ import com.nhnacademy.taskapi.member.domain.Member.Status;
 import com.nhnacademy.taskapi.point.service.PointService;
 import com.nhnacademy.taskapi.review.exception.InvalidReviewException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
-import com.nhnacademy.taskapi.point.domain.Point;
-import com.nhnacademy.taskapi.point.domain.PointLog;
-import com.nhnacademy.taskapi.point.jpa.JpaPointRepository;
-import com.nhnacademy.taskapi.point.repository.PointLogRepository;
 import com.nhnacademy.taskapi.review.domain.Review;
 import com.nhnacademy.taskapi.review.dto.ReviewRequest;
 import com.nhnacademy.taskapi.review.dto.ReviewResponse;
@@ -21,9 +17,12 @@ import com.nhnacademy.taskapi.review.exception.ImageLimitExceededException;
 import com.nhnacademy.taskapi.review.exception.ReviewAlreadyExistsException;
 import com.nhnacademy.taskapi.review.repository.ReviewImageRepository;
 import com.nhnacademy.taskapi.review.repository.ReviewRepository;
+import com.nhnacademy.taskapi.review.service.impl.LocalImageUploadServiceImpl;
+import com.nhnacademy.taskapi.review.service.impl.NhnImageUploadServiceImpl;
 import com.nhnacademy.taskapi.review.service.impl.ReviewServiceImpl;
 import com.nhnacademy.taskapi.roles.domain.Role;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -63,6 +62,11 @@ class ReviewServiceImplTest {
 
     @Mock
     private NhnImageManagerAdapter nhnImageManagerAdapter;
+
+    @Mock
+    private NhnImageUploadServiceImpl nhnImageUploadService;
+    @Mock
+    private LocalImageUploadServiceImpl localImageUploadService;
 
     private Member member;       // 일반 사용자
     private Member adminMember;  // 관리자
@@ -167,10 +171,13 @@ class ReviewServiceImplTest {
             return saved;
         });
 
-        given(nhnImageManagerAdapter.uploadReviewImage(any(byte[].class), anyString(), anyLong(), anyString()))
+//        given(nhnImageManagerAdapter.uploadReviewImage(any(byte[].class), anyString(), anyLong(), anyString()))
+//                .willReturn("img1", "img2");
+
+//        // localImageUploadService
+        given(localImageUploadService.uploadImage(any(byte[].class), anyString(), anyLong(), anyString()))
                 .willReturn("img1", "img2");
 
-        // 포인트 관련 객체 설정 및 예상
         doNothing().when(pointService).registerReviewPoints(member, true);
 
         // When
@@ -185,7 +192,6 @@ class ReviewServiceImplTest {
         assertTrue(response.getImageUrl().contains("img1"));
         assertTrue(response.getImageUrl().contains("img2"));
 
-        // 포인트 관련 service 메서드 호출 검증
         verify(pointService, times(1)).registerReviewPoints(member, true);
     }
 
@@ -511,6 +517,172 @@ class ReviewServiceImplTest {
             reviewService.deleteReview(1L, 10L, 2L); // memberId=2L (관리자) 전달
         });
         assertEquals("리뷰가 해당 도서에 속하지 않습니다.", exception.getMessage());
+    }
+
+
+    // 작성된 리뷰의 개수를 구하는 테스트
+    @Test
+    void testGetReviewCount() {
+        // Given
+        long bookId = 1L;
+        int reviewCount = 5;
+        given(reviewRepository.countByBookBookId(bookId)).willReturn(reviewCount);
+
+        // When
+        int result = reviewService.getReviewCount(bookId);
+
+        // Then
+        assertEquals(reviewCount, result);
+        verify(reviewRepository, times(1)).countByBookBookId(bookId);
+    }
+
+
+    // 존재하는 리뷰 조회
+    @Test
+    void testGetReviewByIdSuccess() {
+        // Given
+        long memberId = 1L;
+        long reviewId = 10L;
+
+        given(reviewRepository.findById(reviewId)).willReturn(Optional.of(review));
+
+        // When
+        ReviewResponse response = reviewService.getReviewById(memberId, reviewId);
+
+        // Then
+        assertNotNull(response);
+        assertEquals(reviewId, response.getReviewId());
+        assertEquals(memberId, response.getMemberId());
+        assertEquals(review.getBook().getBookId(), response.getBookId());
+        assertEquals(review.getDescription(), response.getDescription());
+    }
+
+
+    // 존재하지 않는 리뷰 조회
+    @Test
+    void testGetReviewByIdNotFound() {
+        // Given
+        long memberId = 1L;
+        long reviewId = 999L;
+
+        given(reviewRepository.findById(reviewId)).willReturn(Optional.empty());
+
+        // When & Then
+        InvalidReviewException exception = assertThrows(InvalidReviewException.class,
+                () -> reviewService.getReviewById(memberId, reviewId));
+
+        assertEquals("리뷰를 찾을 수 없습니다.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("수정 시 리뷰가 존재하지 않을 경우 InvalidReviewException 발생")
+    void testUpdateReviewNotFound() {
+        // Given
+        ReviewRequest request = new ReviewRequest(4, "수정 내용", null);
+        given(reviewRepository.findById(999L)).willReturn(Optional.empty());
+
+        // When & Then
+        InvalidReviewException exception = assertThrows(InvalidReviewException.class, () ->
+                reviewService.updateReview(1L, 999L, 1L, request)
+        );
+        assertEquals("Invalid review ID", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 시 이미지 목록 null 처리")
+    void testUpdateReviewWithNullImageList() {
+        // Given
+        ReviewRequest request = new ReviewRequest(4, "새로운 설명", null);
+        given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
+        given(reviewRepository.save(any(Review.class))).willAnswer(invocation -> invocation.getArgument(0));
+
+        // When
+        ReviewResponse response = reviewService.updateReview(1L, 10L, 1L, request);
+
+        // Then
+        assertEquals(10L, response.getReviewId());
+        assertEquals("새로운 설명", response.getDescription());
+        assertEquals(4, response.getGrade());
+        // 이미지 목록이 비어있음을 확인
+        assertTrue(response.getImageUrl().isEmpty());
+    }
+
+    @Test
+    @DisplayName("일반 회원이 리뷰 삭제 시도하여 권한 없음 예외 발생")
+    void testDeleteReviewByNonAdminAlternate() {
+        // Given
+        given(memberRepository.findById(1L)).willReturn(Optional.of(member));
+        given(reviewRepository.findById(10L)).willReturn(Optional.of(review));
+
+        // When & Then
+        InvalidReviewException exception = assertThrows(InvalidReviewException.class, () ->
+                reviewService.deleteReview(1L, 10L, 1L)
+        );
+        assertEquals("해당 리뷰를 삭제할 권한이 없습니다.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("도서 리뷰 페이징 조회 시 정렬 및 페이지 처리")
+    void testGetReviewByBookPagingAndSorting() {
+        // Given
+        Review review2 = new Review();
+        review2.setReviewId(11L);
+        review2.setMember(member);
+        review2.setBook(book);
+        review2.setGrade(5);
+        review2.setDescription("두번째 리뷰");
+        review2.setCreatedAt(LocalDateTime.now().minusDays(1));
+
+        Page<Review> reviewPage = new PageImpl<>(List.of(review, review2));
+        given(reviewRepository.findByBookBookId(eq(1L), any(Pageable.class))).willReturn(reviewPage);
+
+        // When
+        Page<ReviewResponse> responsePage = reviewService.getReviewByBook(1L, 0, 10);
+
+        // Then
+        assertEquals(2, responsePage.getTotalElements());
+        // 최신순 정렬 확인 (createdAt 내림차순)
+        ReviewResponse firstResponse = responsePage.getContent().get(0);
+        ReviewResponse secondResponse = responsePage.getContent().get(1);
+        assertTrue(firstResponse.getCreatedAt().isAfter(secondResponse.getCreatedAt())
+                || firstResponse.getCreatedAt().isEqual(secondResponse.getCreatedAt()));
+    }
+
+
+    @Test
+    @DisplayName("이미지 업로드 실패 시 IOException을 처리하고 리뷰 등록 계속")
+    void testRegisterReviewImageUploadFailure() throws IOException {
+        // Given
+        // 이미지 데이터 없이 이미지 업로드 시 IOException 유도
+        // Base64 디코딩이 필요해서 해당 문자열을 제공하기위해 더미를 만듦
+        String dummyBase64 = Base64.getEncoder().encodeToString("dummy".getBytes());
+        String validBase64Image = "data:image/jpeg;base64," + dummyBase64;
+        ReviewRequest request = new ReviewRequest(5, "내 리뷰", List.of(validBase64Image));
+
+
+        given(memberRepository.findById(1L)).willReturn(Optional.of(member));
+        given(bookRepository.findById(1L)).willReturn(Optional.of(book));
+        given(reviewRepository.findByMemberAndBook(member, book)).willReturn(Optional.empty());
+        given(reviewRepository.save(any(Review.class))).willAnswer(invocation -> {
+            Review saved = invocation.getArgument(0);
+            saved.setReviewId(101L);
+            return saved;
+        });
+
+        // uploadImage 호출 시 IOException 발생시키기
+        given(localImageUploadService.uploadImage(any(byte[].class), anyString(), anyLong(), anyString()))
+                .willThrow(new IOException("업로드 실패"));
+
+        doNothing().when(pointService).registerReviewPoints(member, false);
+
+        // When
+        ReviewResponse response = reviewService.registerReview(1L, 1L, request);
+
+        // Then
+        // IOException이 발생해도 리뷰 등록은 성공하고 이미지 URL 목록은 비어있음
+        assertEquals(101L, response.getReviewId());
+        assertEquals("내 리뷰", response.getDescription());
+        assertTrue(response.getImageUrl().isEmpty(), "이미지 업로드 실패 시 이미지 목록은 비어 있어야 합니다.");
     }
 
 }

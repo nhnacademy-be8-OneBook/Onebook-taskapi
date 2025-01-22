@@ -10,6 +10,8 @@ import com.nhnacademy.taskapi.roles.repository.RoleRepository;
 import com.nhnacademy.taskapi.roles.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +41,14 @@ public class RoleServiceImpl implements RoleService {
             result.add(rr);
         }
         return result;
+    }
+
+    // 모든 role 조회 - 페이지네이션
+    @Transactional(readOnly = true)
+    @Override
+    public Page<RoleResponseDto> getRolesPagination(Pageable pageable) {
+        Page<Role> roleResponseDtos = roleRepository.findAll(pageable);
+        return roleResponseDtos.map(RoleResponseDto::from);
     }
 
     // 단일 role 조회
