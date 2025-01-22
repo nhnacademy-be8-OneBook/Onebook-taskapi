@@ -10,6 +10,7 @@ import com.nhnacademy.taskapi.grade.exception.GradeIllegalArgumentException;
 import com.nhnacademy.taskapi.grade.exception.GradeNotFoundException;
 import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
+import com.nhnacademy.taskapi.order.exception.OrderNotFoundException;
 import com.nhnacademy.taskapi.payment.exception.PaymentNotFoundException;
 import com.nhnacademy.taskapi.roles.exception.RoleIllegalArgumentException;
 import com.nhnacademy.taskapi.roles.exception.RoleNotFoundException;
@@ -28,7 +29,8 @@ public class RestExceptionHandler {
             MemberNotFoundException.class,
             GradeNotFoundException.class,
             RoleNotFoundException.class,
-            CartNotFoundException.class
+            CartNotFoundException.class,
+            OrderNotFoundException.class
     })
     public ResponseEntity<ErrorResponse> handleNotFoundException(ChangeSetPersister.NotFoundException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.NOT_FOUND.value());
