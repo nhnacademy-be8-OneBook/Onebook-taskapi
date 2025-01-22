@@ -35,7 +35,10 @@ public class OrderDetailServiceImpl implements OrderDetailService {
             OrderDetail orderDetail = new OrderDetail(
                     order,
                     book,
-                    book.getSalePrice()
+                    book.getSalePrice(),
+                    item.getQuantity(),
+                    item.getDiscountAmount(),
+                    item.getDiscountedPrice()
             );
             orderDetailRepository.save(orderDetail);
         }
