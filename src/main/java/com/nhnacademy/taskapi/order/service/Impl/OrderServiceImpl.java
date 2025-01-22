@@ -67,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 2. 쿠폰 사용
         for (BookOrderRequest item : orderFormRequest.getItems()) {
-            if (item.getCouponNumber() != null) {
+            if (!item.getCouponNumber().isBlank()) {
                 // 개인 쿠폰 사용시간 설정
                 couponBoxService.updateIssuedCoupon(item.getCouponNumber());
                 // 전체 쿠폰 사용상태 변경
