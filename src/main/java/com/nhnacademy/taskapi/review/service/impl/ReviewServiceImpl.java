@@ -118,6 +118,7 @@ public class ReviewServiceImpl implements ReviewService {
                     log.debug("Uploaded review image URL: {}", uploadedUrl);
                 } catch (IOException e) {
                     log.error("이미지 업로드 실패", e);
+                    isPhotoAttached = false;
                 }
             }
 }
