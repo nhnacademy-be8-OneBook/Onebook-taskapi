@@ -239,7 +239,6 @@ public class CouponService {
                 );
 
 
-
         Coupon welcomeCoupon = couponRepository.save(Coupon.createRateCouponForCategory(
                 ratePolicyForCategory,
                 couponStatus,
@@ -248,4 +247,19 @@ public class CouponService {
 
         return CouponResponse.changeEntityToDto(welcomeCoupon);
     }
+
+    /**
+     * 수정자 : 김선준
+     * 수정일 : 2025.01.22(수)
+     * 수정내용 : 쿠폰 사용 시 쿠폰 상태 변경하는 기능 추가
+     */
+    public void updateCoupon(String couponNumber) {
+        CouponStatus couponStatus = couponStatusRepository.findByName("발급-삭제불가");
+
+        Coupon coupon = couponRepository.findByCouponNumber(couponNumber)
+                .orElseThrow(() -> new CouponNotFoundException(couponNumber));
+
+        coupon.couponStatusChangeToUsed(couponStatus);
+    }
+
 }

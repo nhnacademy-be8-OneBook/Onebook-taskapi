@@ -48,7 +48,6 @@ public class OrderDetailServiceImpl implements OrderDetailService {
         OrderDetailBookResponse.fromOrderDetail(orderDetailList.get(0));
 
         List<OrderDetailBookResponse> items = orderDetailList.stream().map(OrderDetailBookResponse::fromOrderDetail).toList();
-//        List<OrderDetailBookResponse> items = orderDetailRepository.findByOrder_OrderId(orderId).stream().map(OrderDetailBookResponse::fromOrderDetail).toList();
 
         OrderResponse orderResponse = OrderResponse.fromOrder(orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order id " + orderId + " does not exist")

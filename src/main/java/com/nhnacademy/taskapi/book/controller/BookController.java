@@ -30,7 +30,6 @@ public class BookController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Book> addBook(@RequestPart(value = "dto") BookSaveDTO dto,
                                         @RequestPart(value = "image") MultipartFile image){
-        log.info("imageName: {}", image.getOriginalFilename());
         Book book = bookService.saveBook(dto, image);
         return ResponseEntity.status(HttpStatus.CREATED).body(book);
     }

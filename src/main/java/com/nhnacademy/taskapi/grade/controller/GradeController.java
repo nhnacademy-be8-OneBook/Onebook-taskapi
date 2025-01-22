@@ -8,6 +8,8 @@ import com.nhnacademy.taskapi.grade.service.GradeService;
 import com.nhnacademy.taskapi.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,20 +18,26 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/task/grades")
 public class GradeController {
 
     private final GradeService gradeService;
 
     // 전체 등급 조회
-    @GetMapping("/list")
+    @GetMapping("/task/grades/list")
     public ResponseEntity<List<GradeResponseDto>> getGrades() {
         List<GradeResponseDto> gradeResponseDtoList = gradeService.getAllGrades();
         return ResponseEntity.ok().body(gradeResponseDtoList);
     }
 
+    // 등급 조회 - 페이지네이션
+    @GetMapping("/task/admin/grades/list")
+    public ResponseEntity<Page<GradeResponseDto>> getAllGrades(Pageable pageable) {
+        Page<GradeResponseDto> allGradesForAdmin = gradeService.getAllGradesForAdmin(pageable);
+        return ResponseEntity.ok(allGradesForAdmin);
+    }
+
     // 인조키(id)로 단일 등급 조회 - url에 id 명시. for 관리자.
-    @GetMapping("/{id}")
+    @GetMapping("/task/admin/grades/{id}")
     public ResponseEntity<GradeResponseDto> getGradeById(@PathVariable Integer id) {
         GradeResponseDto gradeResponseDto = gradeService.getGradeById(id);
         return ResponseEntity.ok().body(gradeResponseDto);
@@ -43,24 +51,25 @@ public class GradeController {
 //    }
 
     // 등급 등록
-    @PostMapping
+    @PostMapping("/task/admin/grades")
     public ResponseEntity<GradeResponseDto> createGrade(@RequestBody @Valid GradeRegisterRequestDto gradeRegisterRequestDto) {
         GradeResponseDto gradeResponseDto = gradeService.registerGrade(gradeRegisterRequestDto);
         return ResponseEntity.ok().body(gradeResponseDto);
     }
 
     // 등급 수정
-    @PutMapping("/{id}")
+    @PutMapping("/task/admin/grades/{id}")
     public ResponseEntity<GradeResponseDto> updateGrade(@PathVariable Integer id, @RequestBody @Valid GradeModifyRequestDto gradeModifyRequestDto) {
         GradeResponseDto gradeResponseDto = gradeService.modifyGrade(id, gradeModifyRequestDto);
         return ResponseEntity.ok().body(gradeResponseDto);
     }
 
     // 등급 삭제
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/task/admin/grades/{id}")
     public ResponseEntity<String> deleteGrade(@PathVariable Integer id) {
         gradeService.removeGrade(id);
         return ResponseEntity.noContent().build();
     }
+
 
 }

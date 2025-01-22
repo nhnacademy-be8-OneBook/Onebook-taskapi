@@ -1,9 +1,15 @@
 package com.nhnacademy.taskapi.member.service.impl;
 
+import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.grade.exception.GradeNotFoundException;
 import com.nhnacademy.taskapi.grade.repository.GradeRepository;
 import com.nhnacademy.taskapi.grade.service.GradeService;
+import com.nhnacademy.taskapi.image.domain.Image;
+import com.nhnacademy.taskapi.image.repository.ImageRepository;
+import com.nhnacademy.taskapi.like.domain.Like;
+import com.nhnacademy.taskapi.like.repository.LikeRepository;
+import com.nhnacademy.taskapi.member.dto.MemberResponse;
 import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.dto.*;
 import com.nhnacademy.taskapi.member.exception.MemberIllegalArgumentException;
@@ -24,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,12 +45,15 @@ public class MemberServiceImpl implements MemberService {
     private final PointService pointService;
     private final MemberQueryDslRepository memberQueryDslRepository;
     private final GradeRepository gradeRepository;
+    private final LikeRepository likeRepository;
+    private final BookRepository bookRepository;
+    private final ImageRepository imageRepository;
 
     /**
      * 로그인, 로그아웃 기능 보류.
      */
 
-   // 전체 멤버 반환에 Pagenation 적용.
+   // 관리자 - 전체 멤버 반환에 Pagenation 적용.
     @Transactional(readOnly = true)
     @Override
     public Page<MemberResponse> getAllMembers(Pageable pageable) {
@@ -232,6 +242,18 @@ public class MemberServiceImpl implements MemberService {
         }catch(Exception e) {
             throw new RuntimeException("회원 순수 구매 금액 조회 및 등급 업데이트 오류");
         }
+    }
+
+    // 멤버 좋아요 상품 불러오기
+    @Override
+    public List<MemberLikeViewDto> getLikeBooksByMemberId(Long memberId) {
+        List<Like> allLikesByMemberId = likeRepository.findAllByMember_Id(memberId);
+        List<MemberLikeViewDto> likeViewDtos = new ArrayList<>();
+        for(Like l : allLikesByMemberId) {
+            Image image = imageRepository.findByBook(l.getBook()).orElse(null);
+            likeViewDtos.add(new MemberLikeViewDto( l.getBook(), image));
+        }
+        return likeViewDtos;
     }
 
     // 로그인

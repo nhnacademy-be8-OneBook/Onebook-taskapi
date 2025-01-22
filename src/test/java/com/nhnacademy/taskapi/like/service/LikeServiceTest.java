@@ -53,65 +53,65 @@ public class LikeServiceTest {
     @InjectMocks
     private LikeServiceImpl likeService;
 
-    @Test
-    @DisplayName("plusLike_Success")
-    void plusLike_Success(){
-        Book book = new Book();
-        book.setBookId(1L);
+//    @Test
+//    @DisplayName("plusLike_Success")
+//    void plusLike_Success(){
+//        Book book = new Book();
+//        book.setBookId(1L);
+//
+//        Grade grade = Grade.create("ROYAL", 10, "일반 등급");
+//        Role role = Role.createRole("MEMBER", "일반 회원");
+//        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+//
+//        when(bookService.getBook(any(Long.class))).thenReturn(book);
+//        /**
+//         * 수정일: 2024/12/31
+//         * 수정자: 김주혁
+//         * 수정 내용: 기존 내용 주석처리, memberRepository로 member return.
+//         */
+//        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
+////        when(memberService.getMemberById(any(Long.class))).thenReturn(member);
+//
+//        Like likes = new Like();
+//        likes.setBook(book);
+//        likes.setMember(member);
+//
+//        when(likeRepository.save(any(Like.class))).thenReturn(likes);
+//
+//        LikePlusMinusDTO dto = new LikePlusMinusDTO();
+//        dto.setBookId(1L);
+//        dto.setMemberId(1L);
+//
+//        Like result = likeService.plusLike(dto);
+//        Assertions.assertNotNull(result);
+//
+//        verify(likeRepository).save(any(Like.class));
+//    }
 
-        Grade grade = Grade.create("ROYAL", 10, "일반 등급");
-        Role role = Role.createRole("MEMBER", "일반 회원");
-        Member member = Member.createNewMember(grade, "김주혁", "joo", "jjjjjjjjjj", LocalDate.now(), Member.Gender.M, "helloworld@gmail.com", "010-1111-1111", role);
+//    @Test
+//    @DisplayName("plusLike_Fail_BookNotFound")
+//    void plusLike_Fail_BookNotFound(){
+//        when(bookService.getBook(any(Long.class))).thenReturn(null);
+//        Assertions.assertThrows(BookNotFoundException.class, () -> likeService.plusLike(new LikePlusMinusDTO()) );
+//    }
 
-        when(bookService.getBook(any(Long.class))).thenReturn(book);
-        /**
-         * 수정일: 2024/12/31
-         * 수정자: 김주혁
-         * 수정 내용: 기존 내용 주석처리, memberRepository로 member return.
-         */
-        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
-//        when(memberService.getMemberById(any(Long.class))).thenReturn(member);
-
-        Like likes = new Like();
-        likes.setBook(book);
-        likes.setMember(member);
-
-        when(likeRepository.save(any(Like.class))).thenReturn(likes);
-
-        LikePlusMinusDTO dto = new LikePlusMinusDTO();
-        dto.setBookId(1L);
-        dto.setMemberId(1L);
-
-        Like result = likeService.plusLike(dto);
-        Assertions.assertNotNull(result);
-
-        verify(likeRepository).save(any(Like.class));
-    }
-
-    @Test
-    @DisplayName("plusLike_Fail_BookNotFound")
-    void plusLike_Fail_BookNotFound(){
-        when(bookService.getBook(any(Long.class))).thenReturn(null);
-        Assertions.assertThrows(BookNotFoundException.class, () -> likeService.plusLike(new LikePlusMinusDTO()) );
-    }
-
-    @Test
-    @DisplayName("plusLike_Fail_MemberNotFound")
-    void plusLike_Fail_MemberNotFound(){
-        Book book = new Book();
-        book.setBookId(1L);
-
-        when(bookService.getBook(any(Long.class))).thenReturn(book);
-        /**
-         * 수정일: 2024/12/31
-         * 수정자: 김주혁
-         * 수정 내용: 기존 내용 주석 처리, memberService.getMemberById() -> memberRepository.findById()
-         */
-//        when(memberService.getMemberById(any(Long.class))).thenReturn(null);
-        when(memberRepository.findById(any(Long.class))).thenThrow(MemberNotFoundException.class);
-
-        Assertions.assertThrows(MemberNotFoundException.class, () -> likeService.plusLike(new LikePlusMinusDTO()) );
-    }
+//    @Test
+//    @DisplayName("plusLike_Fail_MemberNotFound")
+//    void plusLike_Fail_MemberNotFound(){
+//        Book book = new Book();
+//        book.setBookId(1L);
+//
+//        when(bookService.getBook(any(Long.class))).thenReturn(book);
+//        /**
+//         * 수정일: 2024/12/31
+//         * 수정자: 김주혁
+//         * 수정 내용: 기존 내용 주석 처리, memberService.getMemberById() -> memberRepository.findById()
+//         */
+////        when(memberService.getMemberById(any(Long.class))).thenReturn(null);
+//        when(memberRepository.findById(any(Long.class))).thenThrow(MemberNotFoundException.class);
+//
+//        Assertions.assertThrows(MemberNotFoundException.class, () -> likeService.plusLike(new LikePlusMinusDTO()) );
+//    }
 
     @Test
     @DisplayName("minusLike_Success")

@@ -11,6 +11,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -50,13 +54,19 @@ public class RoleControllerTest {
     }
 
     @Test
+    @DisplayName("GET All Roles to Pagination")
+    void getAllToPaginationTest() throws Exception {
+//        Page<RoleResponseDto> roleResponseDtos = PageRequest.of(0, 10, Sort.by("id"));
+    }
+
+    @Test
     @DisplayName("GET One Role")
     void getOneTest() throws Exception {
         RoleResponseDto roleResponseDto = new RoleResponseDto(1, "MEMBER", "일반 회원");
 
         Mockito.when(roleService.getRoleById(1)).thenReturn(roleResponseDto);
 
-        mockMvc.perform(get("/task/roles/{id}",1))
+        mockMvc.perform(get("/task/admin/roles/{id}",1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("MEMBER"))
                 .andExpect(jsonPath("$.description").value("일반 회원"));
@@ -69,7 +79,7 @@ public class RoleControllerTest {
 
         Mockito.when(roleService.registerRole(new RoleRegisterRequestDto("MEMBER", "일반 회원"))).thenReturn(roleResponseDto);
 
-        mockMvc.perform(post("/task/roles")
+        mockMvc.perform(post("/task/admin/roles")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"MEMBER\",\"description\":\"일반 회원\"}"))
                 .andExpect(status().isOk())
@@ -84,7 +94,7 @@ public class RoleControllerTest {
 
         Mockito.when(roleService.modifyRole(1, new RoleModifyRequestDto("ADMIN", "관리자"))).thenReturn(roleResponseDto);
 
-        mockMvc.perform(put("/task/roles/{id}",1)
+        mockMvc.perform(put("/task/admin/roles/{id}",1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"ADMIN\", \"description\": \"관리자\"}"))
                 .andExpect(status().isOk())
@@ -95,7 +105,7 @@ public class RoleControllerTest {
     @Test
     @DisplayName("DELETE Role")
     void deleteTest() throws Exception {
-        mockMvc.perform(delete("/task/roles/{id}",1))
+        mockMvc.perform(delete("/task/admin/roles/{id}",1))
                 .andExpect(status().is2xxSuccessful());
     }
 

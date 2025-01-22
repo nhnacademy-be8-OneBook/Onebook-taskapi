@@ -17,11 +17,14 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @MockBean(JpaMetamodelMappingContext.class)
@@ -75,6 +78,40 @@ public class ImageControllerTest {
         mockMvc.perform(delete("/task/image/{imageId}", imageId))
                 .andExpect(status().isNoContent());
     }
+
+    @Test
+    void testGetImage() throws Exception {
+        // Given
+        long bookId = 1L;
+        Image image = new Image(1L, "http://example.com/image.jpg", null, "Book Image");
+
+        when(imageService.getImage(bookId)).thenReturn(image);
+
+        // When & Then
+        mockMvc.perform(get("/task/image/{bookId}", bookId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.imageId").value(1L))
+                .andExpect(jsonPath("$.url").value("http://example.com/image.jpg"))
+                .andExpect(jsonPath("$.name").value("Book Image"));
+    }
+
+    @Test
+    void testUploadImageEmptyFile() throws Exception {
+        // Given
+        MockMultipartFile emptyFile = new MockMultipartFile("image", "", "image/jpeg", new byte[0]);
+        long bookId = 1L;
+        String imageName = "Test Image";
+
+        // When & Then
+        mockMvc.perform(multipart("/task/image")
+                        .file(emptyFile)
+                        .param("bookId", String.valueOf(bookId))
+                        .param("imageName", imageName))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+
 
 
 

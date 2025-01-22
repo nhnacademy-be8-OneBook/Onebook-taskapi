@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.like.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.taskapi.like.domain.Like;
 import com.nhnacademy.taskapi.like.dto.LikePlusMinusDTO;
+import com.nhnacademy.taskapi.like.dto.LikeReponse;
 import com.nhnacademy.taskapi.like.service.LikeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,10 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @MockBean(JpaMetamodelMappingContext.class)
 @WebMvcTest(controllers = LikeController.class)
@@ -30,49 +29,58 @@ public class LikeControllerTest {
     @MockBean
     private LikeService likeService;
 
-
-
     @Autowired
     private ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("POST /task/like - Add Like")
-    void addLikeTest() throws Exception {
-        // Given
-        LikePlusMinusDTO requestDTO = new LikePlusMinusDTO();
-        requestDTO.setBookId(1L);
-        requestDTO.setMemberId(1L);
+    @DisplayName("Toggle Like - 성공 시 좋아요 상태 토글")
+    void testToggleLike() throws Exception {
+        long bookId = 1L;
+        long memberId = 1L;
 
-        Like like = new Like();
-        like.setLikeId(1L);
+        // 좋아요 상태 토글 시 true 반환
+        when(likeService.toggleLike(bookId, memberId)).thenReturn(true);
 
-        // When
-        when(likeService.plusLike(any(LikePlusMinusDTO.class))).thenReturn(like);
-
-        // Then
-        mockMvc.perform(post("/task/like")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDTO)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.likeId").value(1L));
+        // When & Then
+        mockMvc.perform(post("/task/like/{bookId}", bookId)
+                        .header("X-MEMBER-ID", memberId))
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));  // 좋아요 활성화 상태 확인
     }
 
     @Test
-    @DisplayName("DELETE /task/like - Delete Like")
-    void deleteLikeTest() throws Exception {
-        // Given
-        LikePlusMinusDTO requestDTO = new LikePlusMinusDTO();
-        requestDTO.setBookId(1L);
-        requestDTO.setMemberId(1L);
+    @DisplayName("Get Like By Book - 좋아요 정보 조회")
+    void testGetLikeByBook() throws Exception {
+        long bookId = 1L;
 
-        // When
-        doNothing().when(likeService).minusLike(requestDTO);
+        // 좋아요 정보 반환
+        LikeReponse likeReponse = new LikeReponse(bookId, 1L);
+        when(likeService.getLikeByBook(bookId)).thenReturn(likeReponse);
 
-        // Then
-        mockMvc.perform(delete("/task/like")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDTO)))
-                .andExpect(status().isNoContent());
+        // When & Then
+        mockMvc.perform(get("/task/like/{bookId}", bookId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.bookId").value(bookId))
+                .andExpect(jsonPath("$.memberId").value(1L));
     }
+
+    @Test
+    @DisplayName("Check Like - 좋아요 상태 확인")
+    void testCheckLike() throws Exception {
+        long bookId = 1L;
+        long memberId = 1L;
+
+        // 좋아요 상태 확인 시 true 반환
+        when(likeService.checkLike(bookId, memberId)).thenReturn(true);
+
+        // When & Then
+        mockMvc.perform(get("/task/like/{bookId}/check", bookId)
+                        .header("X-MEMBER-ID", memberId))
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));  // 좋아요 상태 확인
+    }
+
+
+
 
 }

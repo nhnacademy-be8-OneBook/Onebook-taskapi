@@ -7,11 +7,13 @@ import com.nhnacademy.taskapi.order.entity.QOrderStatus;
 import com.nhnacademy.taskapi.payment.domain.QPayment;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class MemberQueryDslRepository {
@@ -43,9 +45,11 @@ public class MemberQueryDslRepository {
     public List<Member> getAllMemberByBatch() {
         QMember member = QMember.member;
         LocalDateTime threeMonthsAgo = LocalDateTime.now().minusMonths(3);
+        log.info("threeMonthsAgo:{}", threeMonthsAgo.toString());
         return jpaQueryFactory.select(member)
                 .from(member)
-                .where(member.lastLoginAt.goe(threeMonthsAgo))
+                .where(member.lastLoginAt.lt(threeMonthsAgo)
+                        .and(member.lastLoginAt.isNotNull())) // 현재 시점에서 3개월 이전
                 .fetch();
     }
 

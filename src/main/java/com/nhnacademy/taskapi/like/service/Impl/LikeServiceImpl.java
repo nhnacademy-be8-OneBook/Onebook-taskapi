@@ -6,6 +6,7 @@ import com.nhnacademy.taskapi.book.repository.BookRepository;
 import com.nhnacademy.taskapi.book.service.BookService;
 import com.nhnacademy.taskapi.like.domain.Like;
 import com.nhnacademy.taskapi.like.dto.LikePlusMinusDTO;
+import com.nhnacademy.taskapi.like.dto.LikeReponse;
 import com.nhnacademy.taskapi.like.exception.LikeNotFoundException;
 import com.nhnacademy.taskapi.like.repository.LikeRepository;
 import com.nhnacademy.taskapi.like.service.LikeService;
@@ -13,6 +14,9 @@ import com.nhnacademy.taskapi.member.domain.Member;
 import com.nhnacademy.taskapi.member.exception.MemberNotFoundException;
 import com.nhnacademy.taskapi.member.repository.MemberRepository;
 import com.nhnacademy.taskapi.member.service.MemberService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,22 +24,24 @@ import java.util.Objects;
 
 @Transactional(readOnly = true)
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class LikeServiceImpl implements LikeService {
-    private LikeRepository likeRepository;
+    private final LikeRepository likeRepository;
     /**
      * 수정일: 2024/12/31
      * 수정자: 김주혁
      * 수정 내용: memberRepository 추가.
      */
-    private MemberRepository memberRepository;
-    private MemberService memberService;
-    private BookService bookService;
+    private final MemberRepository memberRepository;
+    private final MemberService memberService;
+    private final BookService bookService;
 
 
     @Transactional
     @Override
-    public Like plusLike(LikePlusMinusDTO dto) {
-        Book book = bookService.getBook(dto.getBookId());
+    public LikeReponse plusLike(long bookId, long memberId) {
+        Book book = bookService.getBook(bookId);
         if(Objects.isNull(book)){
             throw new BookNotFoundException("Book Not Found");
         }
@@ -51,14 +57,18 @@ public class LikeServiceImpl implements LikeService {
 //        if(Objects.isNull(member)){
 //            throw new MemberNotFoundException("Member Not Found");
 //        }
-        Member member = memberRepository.findById(dto.getMemberId()).orElseThrow(
-                ()-> new MemberNotFoundException("Member Not Found by " + dto.getMemberId())
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                ()-> new MemberNotFoundException("Member Not Found by " + memberId)
         );
+        log.info("like -> bookId:{}, loginId:{}", book.getBookId(), member.getLoginId());
 
         Like likes = new Like();
         likes.setBook(book);
         likes.setMember(member);
-        return likeRepository.save(likes);
+        likeRepository.save(likes);
+
+        LikeReponse likeReponse = new LikeReponse(book.getBookId(), member.getId());
+        return likeReponse;
     }
 
     @Transactional
@@ -75,5 +85,36 @@ public class LikeServiceImpl implements LikeService {
         likeRepository.delete(likes);
 
 
+    }
+
+    @Override
+    public LikeReponse getLikeByBook(long bookId){
+        Like like = likeRepository.findByBook_BookId(bookId);
+        LikeReponse likeReponse = new LikeReponse(bookId, like.getMember().getId());
+        return likeReponse;
+    }
+
+    @Transactional
+    public boolean toggleLike(long bookId, long memberId) {
+        if (likeRepository.existsByBook_BookIdAndMember_Id(bookId, memberId)) {
+            // 좋아요 상태라면 삭제
+            likeRepository.deleteByBook_BookIdAndMember_Id(bookId, memberId);
+            return false; // 좋아요 취소 상태
+        } else {
+            // 좋아요 상태가 아니라면 추가
+            Book book = bookService.getBook(bookId);
+            Member member = memberRepository.findById(memberId)
+                    .orElseThrow(() -> new MemberNotFoundException("Member not found"));
+            Like like = new Like();
+            like.setBook(book);
+            like.setMember(member);
+            likeRepository.save(like);
+            return true; // 좋아요 활성화 상태
+        }
+    }
+
+    @Override
+    public boolean checkLike(long bookId, long memberId){
+        return likeRepository.existsByBook_BookIdAndMember_Id(bookId, memberId);
     }
 }

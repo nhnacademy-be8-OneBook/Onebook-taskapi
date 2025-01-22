@@ -34,6 +34,7 @@ import java.util.Map;
 public class TossPaymentServiceImpl {
     private final PaymentRepository paymentRepository;
     private final OrderService orderService;
+    private final RestTemplate restTemplate;
 
     // 토스 결제 승인시 응답을 JSON 문자열로 받고
     // 이를 Map<String, Object>로 변환하여 쉽게 접근할 수 있도록 함
@@ -82,7 +83,7 @@ public class TossPaymentServiceImpl {
         body.put("orderId", request.getOrderId());
         body.put("amount", approveAmount);
 
-        RestTemplate restTemplate = new RestTemplate();
+        //RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> responseEntity;
         try {
             responseEntity = restTemplate.postForEntity(
@@ -177,7 +178,7 @@ public class TossPaymentServiceImpl {
         return result;
     }
 
-    private Long parseOrderId(String orderIdStr) {
+    public Long parseOrderId(String orderIdStr) {
         if (orderIdStr == null) {
             throw new PaymentNotFoundException("orderId is null");
         }

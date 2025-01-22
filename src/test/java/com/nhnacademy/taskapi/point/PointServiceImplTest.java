@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.pointTest.service;
+package com.nhnacademy.taskapi.point;
 
 import com.nhnacademy.taskapi.grade.domain.Grade;
 import com.nhnacademy.taskapi.member.domain.Member;

@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -30,7 +31,7 @@ public class ReviewController {
     public ResponseEntity<ReviewResponse> registerReview(
             @PathVariable long bookId,
             @RequestHeader("X-MEMBER-ID") Long memberId,
-            @Validated @RequestBody ReviewRequest reviewRequest) {
+            @Validated @RequestBody ReviewRequest reviewRequest) throws IOException {
         ReviewResponse response = reviewService.registerReview(bookId, memberId, reviewRequest);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

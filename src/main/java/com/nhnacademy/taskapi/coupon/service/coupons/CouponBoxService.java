@@ -26,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -133,5 +134,17 @@ public class CouponBoxService {
         }
 
         throw new CouponHasNoPolicyExceptioin("쿠폰이 어떠한 정책도 가지고 있지 않습니다, 잘못된 쿠폰입니다");
+    }
+
+    /**
+     * 수정자 : 김선준
+     * 수정일 : 2025.01.21(화)
+     * 수정내용 : IssuedCoupon 에 setter 추가.
+     *          updateIssuedCoupon 메서드 추가.
+    */
+    @Transactional
+    public void updateIssuedCoupon(String couponNumber){
+        IssuedCoupon issuedCoupon = couponBoxRepository.findByCoupon_CouponNumber(couponNumber);
+        issuedCoupon.setUseDateTime(LocalDateTime.now());
     }
 }

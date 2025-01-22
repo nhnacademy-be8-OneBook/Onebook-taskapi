@@ -11,15 +11,21 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @MockBean(JpaMetamodelMappingContext.class)
 @WebMvcTest(CategoryController.class)
@@ -98,4 +104,81 @@ public class CategoryControllerTest {
                 .andExpect(status().isOk()) // 상태 코드 200 OK
                 .andExpect(content().json("{\"categoryId\": 1, \"name\": \"Fiction\"}")); // 카테고리 정보 확인
     }
+
+    @Test
+    void testGetCategories() throws Exception {
+        // Given
+        Category category1 = new Category(1, null, "Category 1", false);
+        Category category2 = new Category(2, null, "Category 2", false);
+        List<Category> categories = Arrays.asList(category1, category2);
+
+        when(categoryService.getAllCategories()).thenReturn(categories);
+
+        // When & Then
+        mockMvc.perform(get("/task/categories")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$[0].name").value("Category 1"))
+                .andExpect(jsonPath("$[1].name").value("Category 2"));
+    }
+
+    @Test
+    void testGetTopCategories() throws Exception {
+        // Given
+        Category category1 = new Category(1, null, "Top Category 1", false);
+        Category category2 = new Category(2, null, "Top Category 2", false);
+        List<Category> topCategories = Arrays.asList(category1, category2);
+
+        when(categoryService.getTopLevelCategories()).thenReturn(topCategories);
+
+        // When & Then
+        mockMvc.perform(get("/task/categories/topCategories")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$[0].name").value("Top Category 1"))
+                .andExpect(jsonPath("$[1].name").value("Top Category 2"));
+    }
+
+    @Test
+    void testGetSubCategories() throws Exception {
+        // Given
+        Category subCategory1 = new Category(1, null, "Sub Category 1", false);
+        Category subCategory2 = new Category(2, null, "Sub Category 2", false);
+        List<Category> subCategories = Arrays.asList(subCategory1, subCategory2);
+
+        when(categoryService.getSubCategories(1)).thenReturn(subCategories);
+
+        // When & Then
+        mockMvc.perform(get("/task/categories/subCategories/{categoryId}", 1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$[0].name").value("Sub Category 1"))
+                .andExpect(jsonPath("$[1].name").value("Sub Category 2"));
+    }
+
+    @Test
+    void testGetAllCategoriesByPaging() throws Exception {
+        // Given
+        Category category1 = new Category(1, null, "Category 1", false);
+        Category category2 = new Category(2, null, "Category 2", false);
+        List<Category> categories = Arrays.asList(category1, category2);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Category> categoryPage = new PageImpl<>(categories, pageable, categories.size());
+
+        when(categoryService.getAllCategoriesByPaging(pageable)).thenReturn(categoryPage);
+
+        // When & Then
+        mockMvc.perform(get("/task/categories/list")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.size()").value(2))
+                .andExpect(jsonPath("$.content[0].name").value("Category 1"))
+                .andExpect(jsonPath("$.content[1].name").value("Category 2"));
+    }
+
 }

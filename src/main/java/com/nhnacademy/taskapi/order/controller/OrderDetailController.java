@@ -14,9 +14,7 @@ public class OrderDetailController {
 
     @GetMapping("/task/order-detail/{orderId}")
     public ResponseEntity<OrderDetailResponse> getOrderDetail(@RequestHeader("X-MEMBER-ID") Long memberId, @PathVariable("orderId") Long orderId) {
-        OrderDetailResponse orderDetailResponse = orderDetailService.getOrderDetail(memberId, orderId);
-
-        return ResponseEntity.ok(orderDetailResponse);
+        return ResponseEntity.ok(orderDetailService.getOrderDetail(memberId, orderId));
     }
 
 }

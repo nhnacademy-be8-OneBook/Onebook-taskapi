@@ -14,7 +14,6 @@ import com.nhnacademy.taskapi.review.exception.ImageLimitExceededException;
 import com.nhnacademy.taskapi.review.exception.InvalidReviewException;
 import com.nhnacademy.taskapi.review.exception.ReviewAlreadyExistsException;
 import com.nhnacademy.taskapi.review.repository.ReviewRepository;
-import com.nhnacademy.taskapi.review.repository.ReviewImageRepository;
 import com.nhnacademy.taskapi.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,11 +36,12 @@ import java.util.stream.Collectors;
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final ReviewImageRepository reviewImageRepository;
     private final MemberRepository memberRepository;
 
     private final BookRepository bookRepository;
     private final PointService pointService;
+    private final NhnImageUploadServiceImpl nhnImageUploadService;
+    private final LocalImageUploadServiceImpl localImageUploadService;
 
     private final NhnImageManagerAdapter nhnImageManagerAdapter;
 
@@ -100,14 +100,16 @@ public class ReviewServiceImpl implements ReviewService {
                     String fileName = "review_" + memberId + "_" + System.currentTimeMillis() + "_" + counter + ".jpg";
                     counter++;
 
-                    // bookId와 loginId 가져오기
                     long bookIdValue = book.getBookId();
                     String loginId = member.getLoginId();
 
-                    // 리뷰 이미지 업로드 (새로 추가한 메서드 사용)
-                    String uploadedUrl = nhnImageManagerAdapter.uploadReviewImage(imageBytes, fileName, bookIdValue, loginId);
+                    // NHN 이미지 업로드
+//                    String uploadedUrl = nhnImageManagerAdapter.uploadReviewImage(imageBytes, fileName, bookIdValue, loginId);
+//                    nhnImageUploadService.uploadImage(imageBytes, fileName, bookIdValue, loginId);
 
-                    // ReviewImage 생성 및 설정
+                    // 로컬 이미지 업로드
+                    String uploadedUrl = localImageUploadService.uploadImage(imageBytes, fileName, bookIdValue, loginId);
+
                     ReviewImage reviewImage = new ReviewImage();
                     reviewImage.setImageUrl(uploadedUrl);
                     reviewImage.setReview(review);
@@ -116,9 +118,10 @@ public class ReviewServiceImpl implements ReviewService {
                     log.debug("Uploaded review image URL: {}", uploadedUrl);
                 } catch (IOException e) {
                     log.error("이미지 업로드 실패", e);
+                    isPhotoAttached = false;
                 }
             }
-        }
+}
 
         // 리뷰 저장
         Review savedReview = reviewRepository.save(review);
