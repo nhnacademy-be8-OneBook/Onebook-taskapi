@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/task")
+@Transactional
 @Tag(name = "CouponBox", description = "사용자가 가지고 있는 쿠폰 조회, 특정 도서에 적용가능한 쿠폰 조회, 사용자에게 쿠폰 발급")  // API 그룹 설명 추가
 public class CouponBoxController {
 
