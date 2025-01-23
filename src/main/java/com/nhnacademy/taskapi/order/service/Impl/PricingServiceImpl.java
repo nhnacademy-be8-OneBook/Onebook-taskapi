@@ -20,7 +20,7 @@ public class PricingServiceImpl implements PricingService {
 //                    .orElseThrow(() -> new BookNotFoundException("Book id " + item.getBookId() + "not found!!")).getSalePrice();
 
             if (item.getDiscountAmount() == 0) {
-                totalPrice += item.getPrice();
+                totalPrice += (item.getPrice() * item.getQuantity());
             } else {
                 totalPrice += item.getDiscountedPrice();
             }
@@ -33,7 +33,7 @@ public class PricingServiceImpl implements PricingService {
     public int calculatorDeliveryFee(List<BookOrderRequest> items) {
         int totalOriginalPrice = 0;
         for (BookOrderRequest item : items) {
-            totalOriginalPrice += item.getPrice();
+            totalOriginalPrice += (item.getPrice()*item.getQuantity());
         }
 
         return totalOriginalPrice < 30000 ? 5000 : 0;

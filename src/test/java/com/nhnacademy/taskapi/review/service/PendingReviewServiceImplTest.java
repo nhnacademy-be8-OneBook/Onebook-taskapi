@@ -108,8 +108,8 @@ class PendingReviewServiceImplTest {
         order.setDateTime(LocalDateTime.now());
 
         // 4) OrderDetail 생성
-        orderDetail1 = new OrderDetail(order, book1, 5000);
-        orderDetail2 = new OrderDetail(order, book2, 8000);
+        orderDetail1 = new OrderDetail(order, book1, 5000, 2000, 1000, 10);
+        orderDetail2 = new OrderDetail(order, book2, 8000, 2000, 1000, 10);
 
         List<OrderDetail> detailList = Arrays.asList(orderDetail1, orderDetail2);
         order.setOrderDetailList(detailList);
@@ -256,7 +256,7 @@ class PendingReviewServiceImplTest {
         given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
 
         // 동일 도서를 2번 구매 -> orderDetail 추가
-        OrderDetail detailBook1Again = new OrderDetail(order, book1, 5000);
+        OrderDetail detailBook1Again = new OrderDetail(order, book1, 5000, 1000, 10, 10);
 
         // order.detailList -> book1, book1, book2
         order.setOrderDetailList(Arrays.asList(orderDetail1, detailBook1Again, orderDetail2));

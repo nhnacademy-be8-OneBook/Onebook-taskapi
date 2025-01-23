@@ -41,7 +41,7 @@ public class Order {
     int totalPrice;
 
     // 양방향
-    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "order")
     List<OrderDetail> orderDetailList;
 
     @OneToMany(mappedBy = "order")
